@@ -64,7 +64,6 @@ services:
   - type: web
     name: hab-frontend-dev
     runtime: static
-    region: ohio
     branch: develop
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: frontend/dist
@@ -124,7 +123,6 @@ services:
   - type: web
     name: hab-frontend-qa
     runtime: static
-    region: ohio
     branch: staging
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: frontend/dist
@@ -184,7 +182,6 @@ services:
   - type: web
     name: hab-frontend
     runtime: static
-    region: ohio
     branch: master
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: frontend/dist
