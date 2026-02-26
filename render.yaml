@@ -61,9 +61,8 @@ services:
   # ─────────────────────────────────────────
   # FRONTEND - DEVELOPMENT (rama: develop)
   # ─────────────────────────────────────────
-  - type: web
+  - type: static
     name: hab-frontend-dev
-    runtime: static
     branch: develop
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: frontend/dist
@@ -120,9 +119,8 @@ services:
   # ─────────────────────────────────────────
   # FRONTEND - QA / STAGING (rama: staging)
   # ─────────────────────────────────────────
-  - type: web
+  - type: static
     name: hab-frontend-qa
-    runtime: static
     branch: staging
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: frontend/dist
@@ -179,9 +177,8 @@ services:
   # ─────────────────────────────────────────
   # FRONTEND - PRODUCTION (rama: master)
   # ─────────────────────────────────────────
-  - type: web
+  - type: static
     name: hab-frontend
-    runtime: static
     branch: master
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: frontend/dist
