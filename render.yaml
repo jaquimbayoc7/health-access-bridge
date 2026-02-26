@@ -63,6 +63,7 @@ services:
   # ─────────────────────────────────────────
   - type: web
     name: hab-frontend-dev
+    runtime: static
     branch: develop
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: frontend/dist
@@ -121,6 +122,7 @@ services:
   # ─────────────────────────────────────────
   - type: web
     name: hab-frontend-qa
+    runtime: static
     branch: staging
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: frontend/dist
@@ -179,6 +181,7 @@ services:
   # ─────────────────────────────────────────
   - type: web
     name: hab-frontend
+    runtime: static
     branch: master
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: frontend/dist
