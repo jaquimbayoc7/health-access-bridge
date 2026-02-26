@@ -14,7 +14,7 @@ databases:
   - name: hab-db-prod
     databaseName: hab_prod
     user: hab_user
-    plan: basic
+    plan: basic-256mb
     region: ohio
 
 services:
