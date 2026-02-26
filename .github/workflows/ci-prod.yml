@@ -1,0 +1,88 @@
+name: CI/CD - Production
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  backend-test:
+    name: Backend Tests (Prod)
+    runs-on: ubuntu-latest
+    environment: production
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: hab_user
+          POSTGRES_PASSWORD: hab_password
+          POSTGRES_DB: hab_prod_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install backend dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Run Alembic migrations
+        env:
+          DATABASE_URL: postgresql://hab_user:hab_password@localhost:5432/hab_prod_test
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ENVIRONMENT: production
+        run: cd backend && alembic upgrade head
+
+      - name: Run backend tests
+        env:
+          DATABASE_URL: postgresql://hab_user:hab_password@localhost:5432/hab_prod_test
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ENVIRONMENT: production
+        run: cd backend && pytest app/tests/ -v --tb=short
+
+  frontend-build:
+    name: Frontend Build (Prod)
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: cd frontend && npm ci
+
+      - name: Build frontend
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_ENVIRONMENT: production
+        run: cd frontend && npm run build
+
+  deploy-approval:
+    name: Deploy to Production (requires approval)
+    runs-on: ubuntu-latest
+    environment: production
+    needs: [backend-test, frontend-build]
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+
+    steps:
+      - name: Notify deploy approved
+        run: echo "Production deploy approved and triggered via Render auto-deploy from master branch."

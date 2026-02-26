@@ -1,0 +1,77 @@
+name: CI - Development
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+jobs:
+  backend-test:
+    name: Backend Tests (Dev)
+    runs-on: ubuntu-latest
+    environment: development
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: hab_user
+          POSTGRES_PASSWORD: hab_password
+          POSTGRES_DB: hab_dev
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install backend dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Run Alembic migrations
+        env:
+          DATABASE_URL: postgresql://hab_user:hab_password@localhost:5432/hab_dev
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ENVIRONMENT: development
+        run: cd backend && alembic upgrade head
+
+      - name: Run backend tests
+        env:
+          DATABASE_URL: postgresql://hab_user:hab_password@localhost:5432/hab_dev
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ENVIRONMENT: development
+        run: cd backend && pytest app/tests/ -v --tb=short
+
+  frontend-build:
+    name: Frontend Build (Dev)
+    runs-on: ubuntu-latest
+    environment: development
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: cd frontend && npm ci
+
+      - name: Build frontend
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_ENVIRONMENT: development
+        run: cd frontend && npm run build

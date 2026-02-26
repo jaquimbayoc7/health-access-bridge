@@ -1,0 +1,199 @@
+databases:
+  - name: hab-db-dev
+    databaseName: hab_dev
+    user: hab_user
+    plan: free
+    region: ohio
+
+  - name: hab-db-qa
+    databaseName: hab_qa
+    user: hab_user
+    plan: free
+    region: ohio
+
+  - name: hab-db-prod
+    databaseName: hab_prod
+    user: hab_user
+    plan: starter
+    region: ohio
+
+services:
+  # ─────────────────────────────────────────
+  # BACKEND - DEVELOPMENT (rama: develop)
+  # ─────────────────────────────────────────
+  - type: web
+    name: hab-backend-dev
+    runtime: python
+    region: ohio
+    branch: develop
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ENVIRONMENT
+        value: development
+      - key: DEBUG
+        value: "true"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hab-db-dev
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_EXPIRE_MINUTES
+        value: "480"
+      - key: ALLOWED_ORIGINS
+        value: https://hab-frontend-dev.onrender.com
+      - key: DEFAULT_ADMIN_EMAIL
+        value: admin@hab-dev.local
+      - key: DEFAULT_ADMIN_PASSWORD
+        generateValue: true
+      - key: PREDICTION_API_URL
+        value: https://hybrid-model-disability.onrender.com
+      - key: PREDICTION_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        value: gpt-3.5-turbo
+
+  # ─────────────────────────────────────────
+  # FRONTEND - DEVELOPMENT (rama: develop)
+  # ─────────────────────────────────────────
+  - type: web
+    name: hab-frontend-dev
+    runtime: static
+    region: ohio
+    branch: develop
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://hab-backend-dev.onrender.com/api
+      - key: VITE_ENVIRONMENT
+        value: development
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # ─────────────────────────────────────────
+  # BACKEND - QA / STAGING (rama: staging)
+  # ─────────────────────────────────────────
+  - type: web
+    name: hab-backend-qa
+    runtime: python
+    region: ohio
+    branch: staging
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ENVIRONMENT
+        value: staging
+      - key: DEBUG
+        value: "false"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hab-db-qa
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_EXPIRE_MINUTES
+        value: "120"
+      - key: ALLOWED_ORIGINS
+        value: https://hab-frontend-qa.onrender.com
+      - key: DEFAULT_ADMIN_EMAIL
+        value: admin@hab-qa.local
+      - key: DEFAULT_ADMIN_PASSWORD
+        generateValue: true
+      - key: PREDICTION_API_URL
+        value: https://hybrid-model-disability.onrender.com
+      - key: PREDICTION_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        value: gpt-3.5-turbo
+
+  # ─────────────────────────────────────────
+  # FRONTEND - QA / STAGING (rama: staging)
+  # ─────────────────────────────────────────
+  - type: web
+    name: hab-frontend-qa
+    runtime: static
+    region: ohio
+    branch: staging
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://hab-backend-qa.onrender.com/api
+      - key: VITE_ENVIRONMENT
+        value: staging
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # ─────────────────────────────────────────
+  # BACKEND - PRODUCTION (rama: master)
+  # ─────────────────────────────────────────
+  - type: web
+    name: hab-backend
+    runtime: python
+    region: ohio
+    branch: master
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hab-db-prod
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_EXPIRE_MINUTES
+        value: "60"
+      - key: ALLOWED_ORIGINS
+        value: https://hab-frontend.onrender.com
+      - key: DEFAULT_ADMIN_EMAIL
+        sync: false
+      - key: DEFAULT_ADMIN_PASSWORD
+        sync: false
+      - key: PREDICTION_API_URL
+        value: https://hybrid-model-disability.onrender.com
+      - key: PREDICTION_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        value: gpt-4
+
+  # ─────────────────────────────────────────
+  # FRONTEND - PRODUCTION (rama: master)
+  # ─────────────────────────────────────────
+  - type: web
+    name: hab-frontend
+    runtime: static
+    region: ohio
+    branch: master
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://hab-backend.onrender.com/api
+      - key: VITE_ENVIRONMENT
+        value: production
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
