@@ -91,7 +91,7 @@ docker-compose up --build
 
 ## Documentación
 
-- [Índice de Documentación](./docs/README.md)
+- [Índice de Documentación](https://github.com/jaquimbayoc7/health-access-bridge/tree/master/docs)
 - [Backlog](./BACKLOG.md)
 - [GitHub Project SCRUM Board](https://github.com/users/jaquimbayoc7/projects/1)
 - [GitHub Environments](https://github.com/jaquimbayoc7/health-access-bridge/settings/environments)
