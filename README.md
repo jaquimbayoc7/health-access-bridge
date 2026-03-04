@@ -34,11 +34,11 @@ Aplicación web para facilitar el acceso a servicios de salud para personas con 
 
 ## Épicas
 
-| Issue | Épica | Momento | Semanas | HUs | Pts |
-|-------|-------|---------|---------|-----|-----|
-| [#11](https://github.com/jaquimbayoc7/health-access-bridge/issues/11) | [EPICA-01] Estructuración y Diseño | Momento 1 | 1-3 | — | — |
-| [#12](https://github.com/jaquimbayoc7/health-access-bridge/issues/12) | [EPICA-02] Funcionalidades Core y Capacidades Avanzadas | Momento 2 | 10-18 | HU-04, HU-05, HU-06 | 42 |
-| [#13](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) | [EPICA-03] IA Generativa, Dashboards y Cierre | Momento 3 | 19-27 | HU-07, HU-08, HU-09, HU-10 | 47 |
+| Issue | Épica | Momento | Semanas | HUs | Pts | Estado |
+|-------|-------|---------|---------|-----|-----|--------|
+| [#11](https://github.com/jaquimbayoc7/health-access-bridge/issues/11) | [EPICA-01] Estructuración y Diseño | Momento 1 | 1-3 | — | — | ✅ Done |
+| [#12](https://github.com/jaquimbayoc7/health-access-bridge/issues/12) | [EPICA-02] Funcionalidades Core y Capacidades Avanzadas | Momento 2 | 10-18 | HU-04, HU-05, HU-06 | 42 | 📋 Backlog |
+| [#13](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) | [EPICA-03] IA Generativa, Dashboards y Cierre | Momento 3 | 19-27 | HU-07, HU-08, HU-09, HU-10 | 47 | 📋 Backlog |
 
 ## Issues / Historias de Usuario
 
@@ -48,7 +48,7 @@ Aplicación web para facilitar el acceso a servicios de salud para personas con 
 
 | Issue | Título | Sprint | Pts | Estado |
 |-------|--------|--------|-----|--------|
-| [#1](https://github.com/jaquimbayoc7/health-access-bridge/issues/1) | [HU-01] Sistema de Autenticación y Roles (RBAC) | Sprint 1 (Sem. 4-5) | 13 | 📋 Backlog |
+| [#1](https://github.com/jaquimbayoc7/health-access-bridge/issues/1) | [HU-01] Sistema de Autenticación y Roles (RBAC) | Sprint 1 (Sem. 4-5) | 13 | � En Progreso |
 | [#2](https://github.com/jaquimbayoc7/health-access-bridge/issues/2) | [HU-02] Registro y Precarga de Datos de Pacientes | Sprint 2 (Sem. 6-7) | 8 | 📋 Backlog |
 | [#3](https://github.com/jaquimbayoc7/health-access-bridge/issues/3) | [HU-03] Integración Frontend-Backend y Despliegue Local | Sprint 3 (Sem. 8-9) | 5 | 📋 Backlog |
 
@@ -58,7 +58,7 @@ Aplicación web para facilitar el acceso a servicios de salud para personas con 
 
 | Issue | Título | Sprint | Pts | Estado |
 |-------|--------|--------|-----|--------|
-| [#4](https://github.com/jaquimbayoc7/health-access-bridge/issues/4) | [HU-04] Integración del Modelo Predictivo (HybridModelDisability) | Sprint 4-5 (Sem. 10-13) | 21 | 📋 Backlog |
+| [#4](https://github.com/jaquimbayoc7/health-access-bridge/issues/4) | [HU-04] Integración del Modelo Predictivo (HybridModelDisability) | Sprint 4-5 (Sem. 10-13) | 21 | � En Progreso |
 | [#5](https://github.com/jaquimbayoc7/health-access-bridge/issues/5) | [HU-05] Modo Offline y PWA | Sprint 6-7 (Sem. 14-17) | 13 | 📋 Backlog |
 | [#6](https://github.com/jaquimbayoc7/health-access-bridge/issues/6) | [HU-06] Pruebas de Integración Backend-Frontend y Rendimiento API | Sprint 7 (Sem. 16-17) | 8 | 📋 Backlog |
 
