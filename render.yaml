@@ -24,7 +24,6 @@ services:
   - type: web
     name: hab-backend-dev
     runtime: python
-    pythonVersion: "3.11.10"
     region: ohio
     branch: develop
     buildCommand: cd backend && pip install --upgrade pip && pip install -r requirements.txt && bash build.sh
@@ -86,7 +85,6 @@ services:
   - type: web
     name: hab-backend-qa
     runtime: python
-    pythonVersion: "3.11.10"
     region: ohio
     branch: staging
     buildCommand: cd backend && pip install --upgrade pip && pip install -r requirements.txt && bash build.sh
@@ -148,7 +146,6 @@ services:
   - type: web
     name: hab-backend
     runtime: python
-    pythonVersion: "3.11.10"
     region: ohio
     branch: master
     buildCommand: cd backend && pip install --upgrade pip && pip install -r requirements.txt && bash build.sh
