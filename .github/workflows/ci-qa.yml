@@ -1,5 +1,16 @@
 name: CI/CD - QA Staging
 
+# ──────────────────────────────────────────────────────────────────────────────
+# STAGE 2 — QA
+# Trigger: PR develop→staging (aprobación requerida) o push a staging
+# Pasos:
+#   1. CI unit tests (Python 3.14)
+#   2. API smoke tests contra Render QA en vivo
+#   3. E2E frontend tests
+#   4. Aprobación manual (environment gate) antes de poder pasar a producción
+# Siguiente paso: abrir PR staging→master y esperar aprobación
+# ──────────────────────────────────────────────────────────────────────────────
+
 on:
   push:
     branches: [staging]
@@ -30,10 +41,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v4
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.14"
 
       - name: Install backend dependencies
         run: pip install -r backend/requirements.txt
@@ -82,11 +93,69 @@ jobs:
           VITE_ENVIRONMENT: staging
         run: cd frontend && npm run build
 
+  api-smoke-tests:
+    name: API Smoke Tests — Render QA
+    runs-on: ubuntu-latest
+    needs: [backend-test]
+    if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for Render QA deploy to be ready
+        run: |
+          echo "Waiting 60s for Render QA to finish deploying..."
+          sleep 60
+
+      - name: Health check — /health
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hab-backend-qa.onrender.com/health)
+          echo "Health check status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ Health check failed (HTTP $STATUS)"
+            exit 1
+          fi
+          echo "✅ /health OK"
+
+      - name: Smoke test — POST /api/v1/auth/login returns 422 or 200
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST https://hab-backend-qa.onrender.com/api/v1/auth/login \
+            -H "Content-Type: application/json" \
+            -d '{"username":"smoke@test.com","password":"smoke"}')
+          echo "Login endpoint status: $STATUS"
+          if [ "$STATUS" != "422" ] && [ "$STATUS" != "200" ] && [ "$STATUS" != "401" ]; then
+            echo "❌ Auth endpoint unreachable (HTTP $STATUS)"
+            exit 1
+          fi
+          echo "✅ /auth/login reachable"
+
+      - name: Smoke test — GET /api/v1/patients/ returns 401
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            https://hab-backend-qa.onrender.com/api/v1/patients/)
+          echo "Patients endpoint status: $STATUS"
+          if [ "$STATUS" != "401" ] && [ "$STATUS" != "403" ]; then
+            echo "❌ Patients endpoint unexpected response (HTTP $STATUS)"
+            exit 1
+          fi
+          echo "✅ /patients/ protected correctly"
+
+      - name: Smoke test — GET /docs returns 200
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hab-backend-qa.onrender.com/docs)
+          echo "Docs status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ /docs not available (HTTP $STATUS)"
+            exit 1
+          fi
+          echo "✅ /docs OK"
+
   e2e-tests:
     name: E2E Tests (QA)
     runs-on: ubuntu-latest
-    environment: qa
-    needs: [backend-test, frontend-build]
+    needs: [frontend-build, api-smoke-tests]
+    if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v4
@@ -103,3 +172,18 @@ jobs:
         env:
           PLAYWRIGHT_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
         run: cd frontend && npx playwright test
+
+  promote-to-production-gate:
+    name: "🔐 Approval Gate — Promote QA → Production"
+    runs-on: ubuntu-latest
+    needs: [backend-test, frontend-build, api-smoke-tests, e2e-tests]
+    environment: qa-to-prod-approval
+    if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
+
+    steps:
+      - name: QA approved — ready to promote
+        run: |
+          echo "✅ All QA checks passed and approved."
+          echo "📋 Next step: open a PR from staging → master to deploy to production."
+          echo "   URL QA backend: https://hab-backend-qa.onrender.com"
+          echo "   URL QA frontend: https://hab-frontend-qa.onrender.com"

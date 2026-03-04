@@ -83,3 +83,8 @@ app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 def read_root():
     """Endpoint raíz de bienvenida."""
     return {"message": "Bienvenido a la API de Perfilamiento de Discapacidad v3.1"}
+
+@app.get("/health", tags=["Health"])
+def health_check():
+    """Health check endpoint para CI/CD smoke tests y monitoreo."""
+    return {"status": "ok"}

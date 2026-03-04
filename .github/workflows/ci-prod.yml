@@ -1,5 +1,15 @@
 name: CI/CD - Production
 
+# ──────────────────────────────────────────────────────────────────────────
+# STAGE 3 — PRODUCTION
+# Trigger: PR staging→master (aprobación requerida) o push a master
+# Requisito previo: QA gate aprobado (promote-to-production-gate en ci-qa.yml)
+# Pasos:
+#   1. CI unit tests finales (Python 3.14)
+#   2. Aprobación manual obligatoria (environment gate "production")
+#   3. Render despliega a PROD automáticamente desde master
+# ──────────────────────────────────────────────────────────────────────────
+
 on:
   push:
     branches: [master]
@@ -10,7 +20,6 @@ jobs:
   backend-test:
     name: Backend Tests (Prod)
     runs-on: ubuntu-latest
-    environment: production
 
     services:
       postgres:
@@ -30,10 +39,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v4
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.14"
 
       - name: Install backend dependencies
         run: pip install -r backend/requirements.txt
@@ -55,7 +64,6 @@ jobs:
   frontend-build:
     name: Frontend Build (Prod)
     runs-on: ubuntu-latest
-    environment: production
 
     steps:
       - uses: actions/checkout@v4
@@ -77,12 +85,51 @@ jobs:
         run: cd frontend && npm run build
 
   deploy-approval:
-    name: Deploy to Production (requires approval)
+    name: "🔐 Approval Gate — Deploy to Production"
     runs-on: ubuntu-latest
     environment: production
     needs: [backend-test, frontend-build]
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
 
     steps:
-      - name: Notify deploy approved
-        run: echo "Production deploy approved and triggered via Render auto-deploy from master branch."
+      - name: Production deploy approved
+        run: |
+          echo "✅ Production deploy approved."
+          echo "🚀 Render is deploying to PRODUCTION from master branch."
+          echo "   URL PROD backend:  https://hab-backend.onrender.com"
+          echo "   URL PROD frontend: https://hab-frontend.onrender.com"
+
+  api-smoke-tests-prod:
+    name: API Smoke Tests — Render PROD
+    runs-on: ubuntu-latest
+    needs: [deploy-approval]
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+
+    steps:
+      - name: Wait for Render PROD deploy to be ready
+        run: |
+          echo "Waiting 90s for Render PROD to finish deploying..."
+          sleep 90
+
+      - name: Health check — /health
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hab-backend.onrender.com/health)
+          echo "Health check status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ Production health check failed (HTTP $STATUS)"
+            exit 1
+          fi
+          echo "✅ /health OK"
+
+      - name: Smoke test — POST /api/v1/auth/login reachable
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST https://hab-backend.onrender.com/api/v1/auth/login \
+            -H "Content-Type: application/json" \
+            -d '{"username":"smoke@test.com","password":"smoke"}')
+          echo "Login endpoint status: $STATUS"
+          if [ "$STATUS" != "422" ] && [ "$STATUS" != "200" ] && [ "$STATUS" != "401" ]; then
+            echo "❌ Auth endpoint unreachable in PROD (HTTP $STATUS)"
+            exit 1
+          fi
+          echo "✅ /auth/login reachable in PROD"
