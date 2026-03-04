@@ -26,8 +26,8 @@ services:
     runtime: python
     region: ohio
     branch: develop
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: cd backend && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: cd backend && pip install --upgrade pip && pip install -r requirements.txt && bash build.sh
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: ENVIRONMENT
         value: development
@@ -85,8 +85,8 @@ services:
     runtime: python
     region: ohio
     branch: staging
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: cd backend && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: cd backend && pip install --upgrade pip && pip install -r requirements.txt && bash build.sh
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: ENVIRONMENT
         value: staging
@@ -144,8 +144,8 @@ services:
     runtime: python
     region: ohio
     branch: master
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: cd backend && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: cd backend && pip install --upgrade pip && pip install -r requirements.txt && bash build.sh
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: ENVIRONMENT
         value: production
