@@ -13,13 +13,14 @@ Aplicación web para facilitar el acceso a servicios de salud para personas con 
 
 ## Ambientes
 
-| Ambiente | Rama | Backend URL | Frontend URL |
-|----------|------|-------------|--------------|
-| Development | `develop` | https://hab-backend-dev.onrender.com | https://hab-frontend-dev.onrender.com |
-| QA / Staging | `staging` | https://hab-backend-qa.onrender.com | https://hab-frontend-qa.onrender.com |
-| Production | `master` | https://hab-backend.onrender.com | https://hab-frontend.onrender.com |
+| Ambiente | Rama | Backend (externo) | Frontend HAB |
+|----------|------|-------------------|---------------|
+| Development | `develop` | https://hybridmodeldisability.onrender.com | https://hab-frontend-dev.onrender.com |
+| QA / Staging | `staging` | https://hybridmodeldisability.onrender.com | https://hab-frontend-qa.onrender.com |
+| Production | `master` | https://hybridmodeldisability.onrender.com | https://hab-frontend.onrender.com |
 
-> Las URLs de Render se activan automáticamente tras el primer deploy exitoso del scaffold de código.
+> **Backend:** [`jaquimbayoc7/HybridModelDisability`](https://github.com/jaquimbayoc7/HybridModelDisability) desplegado en Render — FastAPI + JWT + ML Model.
+> **Docs API:** https://hybridmodeldisability.onrender.com/docs
 
 ## GitHub Environments
 

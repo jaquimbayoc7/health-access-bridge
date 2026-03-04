@@ -50,7 +50,7 @@ services:
       - key: DEFAULT_ADMIN_PASSWORD
         generateValue: true
       - key: PREDICTION_API_URL
-        value: https://hybrid-model-disability.onrender.com
+        value: https://hybridmodeldisability.onrender.com
       - key: PREDICTION_API_KEY
         sync: false
       - key: OPENAI_API_KEY
@@ -69,7 +69,7 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://hab-backend-dev.onrender.com/api
+        value: https://hybridmodeldisability.onrender.com
       - key: VITE_ENVIRONMENT
         value: development
     routes:
@@ -109,7 +109,7 @@ services:
       - key: DEFAULT_ADMIN_PASSWORD
         generateValue: true
       - key: PREDICTION_API_URL
-        value: https://hybrid-model-disability.onrender.com
+        value: https://hybridmodeldisability.onrender.com
       - key: PREDICTION_API_KEY
         sync: false
       - key: OPENAI_API_KEY
@@ -128,7 +128,7 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://hab-backend-qa.onrender.com/api
+        value: https://hybridmodeldisability.onrender.com
       - key: VITE_ENVIRONMENT
         value: staging
     routes:
@@ -168,7 +168,7 @@ services:
       - key: DEFAULT_ADMIN_PASSWORD
         sync: false
       - key: PREDICTION_API_URL
-        value: https://hybrid-model-disability.onrender.com
+        value: https://hybridmodeldisability.onrender.com
       - key: PREDICTION_API_KEY
         sync: false
       - key: OPENAI_API_KEY
@@ -187,7 +187,7 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://hab-backend.onrender.com/api
+        value: https://hybridmodeldisability.onrender.com
       - key: VITE_ENVIRONMENT
         value: production
     routes:
