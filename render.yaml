@@ -30,6 +30,8 @@ services:
     buildCommand: cd backend && pip install --upgrade pip && pip install -r requirements.txt && bash build.sh
     startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.10
       - key: ENVIRONMENT
         value: development
       - key: DEBUG
@@ -90,6 +92,8 @@ services:
     buildCommand: cd backend && pip install --upgrade pip && pip install -r requirements.txt && bash build.sh
     startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.10
       - key: ENVIRONMENT
         value: staging
       - key: DEBUG
@@ -150,6 +154,8 @@ services:
     buildCommand: cd backend && pip install --upgrade pip && pip install -r requirements.txt && bash build.sh
     startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.10
       - key: ENVIRONMENT
         value: production
       - key: DEBUG
