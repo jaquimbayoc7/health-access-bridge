@@ -78,9 +78,9 @@ Aplicación web para facilitar el acceso a servicios de salud para personas con 
 
 | Milestone | Periodo | Épica | Issues | Avance |
 |-----------|---------|-------|--------|--------|
-| [Momento 1: Trabajo Integrador I](https://github.com/jaquimbayoc7/health-access-bridge/milestone/1) | Semanas 1-9 | EPICA-01 | HU-01, HU-02, HU-03 | 24% |
-| [Momento 2: Trabajo Integrador II](https://github.com/jaquimbayoc7/health-access-bridge/milestone/2) | Semanas 10-18 | EPICA-02 | HU-04, HU-05, HU-06 | 60% |
-| [Momento 3: Trabajo Integrador III](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) | Semanas 19-27 | EPICA-03 | HU-07, HU-08, HU-09, HU-10 | 100% |
+| [Momento 1: Trabajo Integrador I](https://github.com/jaquimbayoc7/health-access-bridge/milestone/1) | 27 Feb – 26 Jun 2026 | EPICA-01 | HU-01, HU-02, HU-03 | 24% |
+| [Momento 2: Trabajo Integrador II](https://github.com/jaquimbayoc7/health-access-bridge/milestone/2) | Por definir | EPICA-02 | HU-04, HU-05, HU-06 | 60% |
+| [Momento 3: Trabajo Integrador III](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) | Por definir | EPICA-03 | HU-07, HU-08, HU-09, HU-10 | 100% |
 
 ## Setup local
 
