@@ -52,23 +52,15 @@ def on_startup():
         print("Continuando con el startup... Las tablas se crearán cuando se necesiten.")
         return
     
-    # Crear usuario admin si no existe
+    # Ejecutar seed de datos de prueba (idempotente)
     try:
+        from .seed import run_seed
         db = SessionLocal()
-        admin_user = crud.get_user_by_email(db, email="administrador@salud.co")
-        if not admin_user:
-            admin_in = schemas.UserCreate(
-                email="administrador@salud.co",
-                password="adminpassword",
-                full_name="Administrador del Sistema",
-                role=schemas.Role.admin
-            )
-            crud.create_user(db=db, user=admin_in)
-            print("✓ Usuario administrador por defecto creado.")
+        print("Ejecutando seed de datos de prueba...")
+        run_seed(db)
         db.close()
     except Exception as e:
-        print(f"⚠ No se pudo crear usuario admin: {e}")
-        # No es crítico si falla
+        print(f"⚠ No se pudo ejecutar seed: {e}")
 
 # ======================================================================
 # CORRECCIÓN CLAVE: Asegurarse de que TODOS los routers están incluidos

@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
 
-from .. import schemas, auth, dependencies
+from .. import schemas, auth, dependencies, models
 
 # El router no lleva prefijo aquí, lo cual es correcto.
 router = APIRouter()
@@ -13,6 +13,11 @@ router = APIRouter()
 # Se elimina el endpoint de registro público (/register).
 # La creación de usuarios ahora es responsabilidad exclusiva del admin
 # a través del endpoint /admin/users/register.
+
+@router.get("/me", response_model=schemas.User)
+def read_users_me(current_user: models.User = Depends(dependencies.get_current_active_user)):
+    """Retorna la información del usuario autenticado actualmente."""
+    return current_user
 
 @router.post("/login", response_model=schemas.Token)
 def login_for_access_token(

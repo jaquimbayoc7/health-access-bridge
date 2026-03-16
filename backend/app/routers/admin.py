@@ -47,20 +47,3 @@ def toggle_user_activation(
     
     updated_user = crud.update_user_activity(db=db, user_id=user_id, is_active=status_update.is_active)
     return updated_user
-
-    return crud.create_user(db=db, user=user)
-
-@router.patch("/users/{user_id}/status", response_model=schemas.User)
-def toggle_user_activation(
-    user_id: int, 
-    status_update: schemas.UserStatusUpdate, 
-    db: Session = Depends(dependencies.get_db),
-    current_user: models.User = Depends(dependencies.get_current_active_admin)
-):
-    """Activa o desactiva un usuario. Solo para administradores."""
-    db_user = crud.get_user(db, user_id=user_id)
-    if not db_user:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
-    
-    updated_user = crud.update_user_activity(db=db, user_id=user_id, is_active=status_update.is_active)
-    return updated_user
