@@ -80,7 +80,7 @@ jobs:
 
       - name: Build frontend
         env:
-          VITE_API_BASE_URL: https://hab-backend.onrender.com
+          VITE_API_BASE_URL: https://hab-backend-szj1.onrender.com
           VITE_ENVIRONMENT: production
         run: cd frontend && npm run build
 
@@ -96,7 +96,7 @@ jobs:
         run: |
           echo "✅ Production deploy approved."
           echo "🚀 Render is deploying to PRODUCTION from master branch."
-          echo "   URL PROD backend:  https://hab-backend.onrender.com"
+          echo "   URL PROD backend:  https://hab-backend-szj1.onrender.com"
           echo "   URL PROD frontend: https://hab-frontend.onrender.com"
 
   api-smoke-tests-prod:
@@ -113,7 +113,7 @@ jobs:
 
       - name: Health check — /health
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hab-backend.onrender.com/health)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hab-backend-szj1.onrender.com/health)
           echo "Health check status: $STATUS"
           if [ "$STATUS" != "200" ]; then
             echo "❌ Production health check failed (HTTP $STATUS)"
@@ -124,7 +124,7 @@ jobs:
       - name: Smoke test — POST /api/v1/auth/login reachable
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -X POST https://hab-backend.onrender.com/api/v1/auth/login \
+            -X POST https://hab-backend-szj1.onrender.com/users/login \
             -H "Content-Type: application/json" \
             -d '{"username":"smoke@test.com","password":"smoke"}')
           echo "Login endpoint status: $STATUS"

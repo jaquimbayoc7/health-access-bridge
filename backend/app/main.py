@@ -26,7 +26,7 @@ app = FastAPI(
         "|----------|-----|\n"
         "| DEV | https://hab-backend-dev.onrender.com |\n"
         "| QA | https://hab-backend-qa.onrender.com |\n"
-        "| PROD | https://hab-backend.onrender.com |\n"
+        "| PROD | https://hab-backend-szj1.onrender.com |\n"
     ),
     version="1.0.0",
     contact={

@@ -193,7 +193,7 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://hab-backend.onrender.com
+        value: https://hab-backend-szj1.onrender.com
       - key: VITE_ENVIRONMENT
         value: production
     routes:
