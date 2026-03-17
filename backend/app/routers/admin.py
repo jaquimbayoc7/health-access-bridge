@@ -1,7 +1,9 @@
 # app/routers/admin.py
 
+import traceback
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from .. import schemas, crud, dependencies, models, seed as seed_module
@@ -58,11 +60,19 @@ def reset_and_reseed(
     Elimina TODOS los pacientes (hard delete) y vuelve a ejecutar el seed.
     Solo para administradores. Usar con precaución en producción.
     """
-    deleted = db.query(models.Patient).delete(synchronize_session=False)
-    db.commit()
-    db.expire_all()
-    result = seed_module.run_seed(db)
-    return {
-        "patients_deleted": deleted,
-        "seed_result": result
-    }
+    try:
+        result_proxy = db.execute(text("DELETE FROM patients"))
+        deleted = result_proxy.rowcount
+        db.commit()
+        db.expire_all()
+        result = seed_module.run_seed(db)
+        return {
+            "patients_deleted": deleted,
+            "seed_result": result
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"{type(e).__name__}: {str(e)}\n{traceback.format_exc()}"
+        )
