@@ -1,0 +1,1 @@
+{"query": "mutation { createProjectV2FieldOption(input: {fieldId: \"PVTSSF_lAHOBADC7M4BQPbrzg-axL4\", name: \"Backlog\", color: GRAY, description: \"Issues pendientes del product backlog\"}) { option { id name } } }"}

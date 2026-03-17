@@ -1,0 +1,1 @@
+{"query":"mutation{updateProjectV2ItemFieldValue(input:{projectId:\"PVT_kwHOBADC7M4BQPbr\",itemId:\"PVTI_lAHOBADC7M4BQPbrzgmPboM\",fieldId:\"PVTF_lAHOBADC7M4BQPbrzg-axWM\",value:{number:8}}){projectV2Item{id}}}"}

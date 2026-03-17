@@ -1,0 +1,30 @@
+query {
+  user(login: "jaquimbayoc7") {
+    projectV2(number: 1) {
+      id
+      items(first: 20) {
+        nodes {
+          id
+          content {
+            ... on Issue {
+              number
+              title
+            }
+          }
+        }
+      }
+      fields(first: 20) {
+        nodes {
+          ... on ProjectV2SingleSelectField {
+            id
+            name
+            options {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}

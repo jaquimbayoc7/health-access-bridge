@@ -1,0 +1,17 @@
+{
+  user(login: "jaquimbayoc7") {
+    projectV2(number: 1) {
+      items(first: 20) {
+        nodes {
+          id
+          content {
+            ... on Issue {
+              number
+              title
+            }
+          }
+        }
+      }
+    }
+  }
+}

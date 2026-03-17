@@ -1,0 +1,1 @@
+{"query":"mutation{createEnvironment(input:{repositoryId:\"R_kgDORY973s\",name:\"development\"}){environment{id name}}}"}

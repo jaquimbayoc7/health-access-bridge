@@ -1,0 +1,1 @@
+{"query": "query { node(id: \"PVT_kwHOBADC7M4BQPbr\") { ... on ProjectV2 { fields(first: 20) { nodes { ... on ProjectV2Field { id name } ... on ProjectV2SingleSelectField { id name options { id name } } } } } } }"}

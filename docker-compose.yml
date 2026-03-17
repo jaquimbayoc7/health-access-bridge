@@ -1,0 +1,89 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Health Access Bridge — Entorno de desarrollo local completo
+# Uso: docker-compose up --build
+#
+# Servicios:
+#   db       → PostgreSQL 15
+#   backend  → FastAPI (puerto 8000)
+#   frontend → React/Vite (puerto 5173) — requiere el repo assist-reach-aid
+#              en ../assist-reach-aid o ajustar FRONTEND_PATH abajo
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ──────────────────────────────────
+  # Base de datos PostgreSQL
+  # ──────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: hab-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hab_user
+      POSTGRES_PASSWORD: hab_password
+      POSTGRES_DB: hab_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - hab_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hab_user -d hab_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ──────────────────────────────────
+  # Backend FastAPI
+  # ──────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hab-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://hab_user:hab_password@db:5432/hab_dev
+      JWT_SECRET: dev-secret-change-in-production
+      JWT_ALGORITHM: HS256
+      JWT_EXPIRE_MINUTES: "480"
+      ENVIRONMENT: development
+      DEBUG: "true"
+      ALLOWED_ORIGINS: "http://localhost:5173,http://localhost:3000"
+      DEFAULT_ADMIN_EMAIL: administrador@salud.co
+      DEFAULT_ADMIN_PASSWORD: adminpassword
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # ──────────────────────────────────
+  # Frontend React/Vite
+  # Requiere el repo assist-reach-aid
+  # en la ruta ../assist-reach-aid
+  # ──────────────────────────────────
+  frontend:
+    build:
+      context: ../assist-reach-aid
+      dockerfile: Dockerfile
+    container_name: hab-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
+      VITE_ENVIRONMENT: development
+    volumes:
+      - ../assist-reach-aid:/app
+      - /app/node_modules
+
+volumes:
+  hab_pgdata:
+    driver: local

@@ -1,0 +1,1 @@
+{"query":"mutation{addProjectV2ItemById(input:{projectId:\"PVT_kwHOBADC7M4BQPbr\",contentId:\"I_kwDORY973s7t8YMB\"}){item{id}}}"}
