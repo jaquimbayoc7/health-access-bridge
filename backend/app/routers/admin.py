@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from sqlalchemy.orm import Session
 
-from .. import schemas, crud, dependencies, models
+from .. import schemas, crud, dependencies, models, seed as seed_module
 
 router = APIRouter(
     tags=["Admin"]
@@ -47,3 +47,21 @@ def toggle_user_activation(
     
     updated_user = crud.update_user_activity(db=db, user_id=user_id, is_active=status_update.is_active)
     return updated_user
+
+
+@router.post("/reset-seed", status_code=status.HTTP_200_OK)
+def reset_and_reseed(
+    db: Session = Depends(dependencies.get_db),
+    current_user: models.User = Depends(dependencies.get_current_active_admin)
+):
+    """
+    Elimina TODOS los pacientes (hard delete) y vuelve a ejecutar el seed.
+    Solo para administradores. Usar con precaución en producción.
+    """
+    deleted = db.query(models.Patient).delete()
+    db.commit()
+    result = seed_module.run_seed(db)
+    return {
+        "patients_deleted": deleted,
+        "seed_result": result
+    }
