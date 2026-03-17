@@ -60,18 +60,15 @@ services:
       - key: LLM_MODEL
         value: gpt-3.5-turbo
 
-  # ─────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────
   # FRONTEND - DEVELOPMENT (rama: develop)
-  # Repo: https://github.com/jaquimbayoc7/assist-reach-aid
-  # Conectar este servicio manualmente en Render al repo assist-reach-aid
-  # rama develop. La configuracion completa esta en assist-reach-aid/render.yaml
-  # ─────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────
   - type: web
     name: hab-frontend-dev
     runtime: static
     branch: develop
-    buildCommand: npm ci && npm run build
-    staticPublishPath: dist
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_BASE_URL
         value: https://hab-backend-dev.onrender.com
@@ -124,18 +121,15 @@ services:
       - key: LLM_MODEL
         value: gpt-3.5-turbo
 
-  # ─────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────
   # FRONTEND - QA / STAGING (rama: staging)
-  # Repo: https://github.com/jaquimbayoc7/assist-reach-aid
-  # Conectar este servicio manualmente en Render al repo assist-reach-aid
-  # rama staging. La configuracion completa esta en assist-reach-aid/render.yaml
-  # ─────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────
   - type: web
     name: hab-frontend-qa
     runtime: static
     branch: staging
-    buildCommand: npm ci && npm run build
-    staticPublishPath: dist
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_BASE_URL
         value: https://hab-backend-qa.onrender.com
@@ -188,18 +182,15 @@ services:
       - key: LLM_MODEL
         value: gpt-4
 
-  # ─────────────────────────────────────────────────────────────────
-  # FRONTEND - PRODUCTION (rama: main)
-  # Repo: https://github.com/jaquimbayoc7/assist-reach-aid
-  # Conectar este servicio manualmente en Render al repo assist-reach-aid
-  # rama main. La configuracion completa esta en assist-reach-aid/render.yaml
-  # ─────────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────
+  # FRONTEND - PRODUCTION (rama: master)
+  # ─────────────────────────────────────────
   - type: web
     name: hab-frontend
     runtime: static
-    branch: main
-    buildCommand: npm ci && npm run build
-    staticPublishPath: dist
+    branch: master
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_BASE_URL
         value: https://hab-backend.onrender.com

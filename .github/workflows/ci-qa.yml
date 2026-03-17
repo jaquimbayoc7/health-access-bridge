@@ -70,32 +70,28 @@ jobs:
           flags: qa
 
   frontend-build:
-    name: Frontend Build Verify (QA)
+    name: Frontend Build (QA)
     runs-on: ubuntu-latest
     environment: qa
 
     steps:
-      - name: Checkout frontend repo (assist-reach-aid)
-        uses: actions/checkout@v4
-        with:
-          repository: jaquimbayoc7/assist-reach-aid
-          ref: staging
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install frontend dependencies
-        run: npm ci
+        run: cd frontend && npm ci
 
       - name: Build frontend
         env:
           VITE_API_BASE_URL: https://hab-backend-qa.onrender.com
           VITE_ENVIRONMENT: staging
-        run: npm run build
+        run: cd frontend && npm run build
 
   api-smoke-tests:
     name: API Smoke Tests — Render QA

@@ -63,13 +63,11 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
   # ──────────────────────────────────
-  # Frontend React/Vite
-  # Requiere el repo assist-reach-aid
-  # en la ruta ../assist-reach-aid
+  # Frontend React/Vite (carpeta: ./frontend)
   # ──────────────────────────────────
   frontend:
     build:
-      context: ../assist-reach-aid
+      context: ./frontend
       dockerfile: Dockerfile
     container_name: hab-frontend
     restart: unless-stopped
@@ -78,10 +76,10 @@ services:
     ports:
       - "5173:5173"
     environment:
-      VITE_API_BASE_URL: http://localhost:8000
+      VITE_API_BASE_URL: http://backend:8000
       VITE_ENVIRONMENT: development
     volumes:
-      - ../assist-reach-aid:/app
+      - ./frontend:/app
       - /app/node_modules
 
 volumes:
