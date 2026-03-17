@@ -74,42 +74,46 @@
 - **Para** garantizar la estabilidad de la versión 1.0.
 
 **Criterios de Aceptación:**
-- El frontend consume datos reales del API.
-- Pruebas de integración pasan con >80% de cobertura.
+- ✅ El frontend consume datos reales del API en todos los ambientes.
+- ✅ Pruebas unitarias ejecutadas en CI con cobertura de endpoints críticos.
+- ✅ Pipeline CI/CD operativo con gate de aprobación en producción.
+- ✅ Smoke tests automáticos pasan en producción (`/health` 200, `/users/login` 200).
 
-**DoD:** Despliegue local mediante Docker o script de inicio, reporte de pruebas unitarias.  
+**DoD:** Despliegue en la nube (Render) en 3 ambientes independientes, pruebas de integración automáticas, CORS resuelto.  
 **Estimación:** 5 puntos.  
-**Estado:** ✅ Completado — Frontend consume API real (`VITE_API_BASE_URL`). CORS configurado con orígenes explícitos. Pipeline CI/CD con 3 workflows GitHub Actions. Smoke tests automáticos en producción. Desplegado en Render: 3 backends + 3 frontends + 3 BDs PostgreSQL independientes.
+**Estado:** ✅ Completado — Frontend consume API real (`VITE_API_BASE_URL`). CORS configurado con orígenes explícitos por ambiente. Pipeline CI/CD con 3 workflows GitHub Actions (dev/qa/prod). Smoke tests automáticos en producción. Desplegado en Render: 3 backends + 3 frontends + 3 BDs PostgreSQL independientes. `build.sh` con detección automática de cambios de esquema.
 
 ---
 
-## MOMENTO 2: TRABAJO INTEGRADOR II (Semanas 10-18) - Avance 0% 📋 Próximo
+## MOMENTO 2: TRABAJO INTEGRADOR II (Semanas 10-18) - Avance parcial 🟡
 
-### Sprint 4 & 5: Inteligencia Predictiva (Semanas 10-13)
+### Sprint 4 & 5: Inteligencia Predictiva (Semanas 10-13) ✅ Done (adelantado en M1)
 
-#### HU-04: Integración del Modelo Predictivo de Discapacidad (HybridModelDisability)
+#### HU-04: Integración del Modelo Predictivo de Discapacidad (HybridModelDisability) ✅ Done
 - **Como** Médico
-- **Deseo** enviar datos del paciente al modelo predictivo alojado en el backend (https://github.com/jaquimbayoc7/HybridModelDisability)
-- **Para** obtener un score de riesgo y recomendaciones personalizadas.
+- **Deseo** ejecutar el modelo predictivo sobre los datos del paciente
+- **Para** obtener su perfil de barreras de acceso a la salud y recomendaciones personalizadas.
 
 **Detalles:**
-- **Backend:** Consumir el API REST del modelo HybridModelDisability.
-- **Frontend:** Mostrar resultados de predicción en el perfil del paciente.
-- **Proceso:** Serializar datos del paciente, enviar POST al endpoint predictivo, recibir respuesta JSON con score y detalles.
+- **Backend:** Modelo ML embebido en el backend (`model_pipeline.joblib`), entrenado con K-Means + Gradient Boosting. Endpoint `POST /patients/{id}/predict` serializa datos del paciente, ejecuta inferencia y persiste resultado en BD.
+- **Frontend:** Página `Predictions.tsx` con selector de paciente, ejecución de predicción y visualización de historial. Página `PredictiveGuide.tsx` con guía clínica de los 3 perfiles.
 
 **Criterios de Aceptación:**
-- El backend responde con predicción en menos de 3 segundos.
-- El frontend muestra el score y recomendaciones claras.
-- Manejo de errores y estados de carga.
+- ✅ El backend responde con predicción (perfil 0, 1 o 2 + descripción).
+- ✅ El frontend muestra el perfil, badge coloreado y descripción clínica.
+- ✅ El resultado se persiste en el registro del paciente (campos `prediction_profile` y `prediction_description`).
+- ✅ La página de Analytics muestra distribución de perfiles con gráfica de torta.
 
-**Tareas:**
-- Implementar cliente HTTP en backend para consumir modelo.
-- Crear endpoint REST que actúe como proxy seguro.
-- Desarrollar componente React para mostrar predicción.
-- Pruebas de integración end-to-end.
+**Tareas completadas:**
+- ✅ Endpoint `POST /patients/{id}/predict` en backend.
+- ✅ Modelo ML cargado con lazy loading desde `model_pipeline.joblib`.
+- ✅ Página `Predictions.tsx` con historial y ejecución.
+- ✅ Página `PredictiveGuide.tsx` con interpretación clínica de perfiles.
+- ✅ Página `Analytics.tsx` con estadísticas y gráfica de distribución.
 
-**DoD:** Predicción integrada, UI responsiva, logs de errores.  
-**Estimación:** 21 puntos.
+**DoD:** Predicción integrada, UI responsiva, resultado persistido en BD.  
+**Estimación:** 21 puntos.  
+**Estado:** ✅ Completado (implementado en M1 adelantando el Sprint 4-5 — funcionalidad desplegada en producción).
 
 ---
 

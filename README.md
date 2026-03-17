@@ -115,7 +115,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 
 | Issue | Título | Sprint | Pts | Estado |
 |-------|--------|--------|-----|--------|
-| [#4](https://github.com/jaquimbayoc7/health-access-bridge/issues/4) | [HU-04] Integración Modelo Predictivo (HybridModelDisability) | Sprint 4-5 (Sem. 10-13) | 21 | 📋 Backlog |
+| [#4](https://github.com/jaquimbayoc7/health-access-bridge/issues/4) | [HU-04] Integración Modelo Predictivo (HybridModelDisability) | Sprint 4-5 (Sem. 10-13) | 21 | ✅ Done (adelantado en M1) |
 | [#5](https://github.com/jaquimbayoc7/health-access-bridge/issues/5) | [HU-05] Modo Offline y PWA | Sprint 6-7 (Sem. 14-17) | 13 | 📋 Backlog |
 | [#6](https://github.com/jaquimbayoc7/health-access-bridge/issues/6) | [HU-06] Pruebas de Integración y Rendimiento API | Sprint 7 (Sem. 16-17) | 8 | 📋 Backlog |
 
@@ -139,6 +139,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 | Issue | Épica | Momento | HUs | Pts | Estado |
 |-------|-------|---------|-----|-----|--------|
 | [#11](https://github.com/jaquimbayoc7/health-access-bridge/issues/11) | EPICA-01 Estructuración, Diseño e Implementación M1 | 1 · Sem. 1-9 | HU-01, 02, 03 | 26 | ✅ Done |
+| — | HU-04 adelantada en M1 | — | HU-04 | 21 | ✅ Done |
 | [#12](https://github.com/jaquimbayoc7/health-access-bridge/issues/12) | EPICA-02 Funcionalidades Core y Capacidades Avanzadas | 2 · Sem. 10-18 | HU-04, 05, 06 | 42 | 📋 Backlog |
 | [#13](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) | EPICA-03 IA Generativa, Dashboards y Cierre | 3 · Sem. 19-27 | HU-07 al 10 | 47 | 📋 Backlog |
 
