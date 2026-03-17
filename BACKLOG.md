@@ -3,6 +3,25 @@
 **Proyecto:** Health Access Bridge  
 **Metodología:** SCRUM  
 **Duración Total:** 27 Semanas  
+**Última actualización:** Marzo 2026 · Cierre Momento 1
+
+---
+
+## Tablero Kanban — Estado General
+
+| ✅ Done | 🟡 En Progreso | 📋 Backlog |
+|---------|---------------|-----------|
+| EPICA-01 Estructuración y Diseño | — | EPICA-02 Funcionalidades Core |
+| HU-01 Autenticación y Roles (8 pts) | — | EPICA-03 IA Generativa y Cierre |
+| HU-02 Registro y Precarga de Pacientes (13 pts) | — | HU-05 Modo Offline y PWA (13 pts) |
+| HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | HU-06 Pruebas de Integración y Rendimiento (8 pts) |
+| HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | HU-07 Orquestación LLM (21 pts) |
+| | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
+| | — | HU-09 Pruebas Completas y Feedback (8 pts) |
+| | — | HU-10 Despliegue Final y Manuales (5 pts) |
+
+**Puntos completados: 47 pts · Puntos pendientes: 68 pts · Total: 115 pts**  
+**Avance general: 41% (superando el 26% proyectado para Momento 1)**
 
 ---
 
