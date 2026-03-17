@@ -8,9 +8,34 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 
 app = FastAPI(
-    title="API de Perfilamiento de Discapacidad v3.1",
-    description="API para la gestión de pacientes y predicción de perfiles de discapacidad. Desarrollado por:\n Ing. Julián Andres Quimbayo Castro - Ing. Jose Miguel Llanos Mosquera - Ing. Cindy Vargas Duque y Est. Willians Aguilar Rodriguez",
-    version="1.0",
+    title="Health Access Bridge API",
+    description=(
+        "## Descripción\n\n"
+        "API RESTful para la plataforma **Health Access Bridge (HAB)**, orientada a la gestión clínica "
+        "de pacientes con discapacidad y al análisis predictivo de perfiles de barreras de acceso a la salud.\n\n"
+        "## Funcionalidades principales\n\n"
+        "- 🔐 **Autenticación y control de acceso** basado en roles (Admin, Médico) con JWT\n"
+        "- 👤 **Gestión de usuarios** — creación, activación/desactivación y consulta de perfil\n"
+        "- 🏥 **Gestión de pacientes** — CRUD completo con búsqueda, paginación y soft delete\n"
+        "- 🤖 **Predicción de perfiles de discapacidad** — modelo ML integrado (Hybrid Model)\n\n"
+        "## Seguridad\n\n"
+        "Todos los endpoints (excepto `/users/login` y `/health`) requieren autenticación mediante "
+        "token Bearer. Usa el botón **Authorize** para ingresar tu token JWT.\n\n"
+        "## Ambientes\n\n"
+        "| Ambiente | URL |\n"
+        "|----------|-----|\n"
+        "| DEV | https://hab-backend-dev.onrender.com |\n"
+        "| QA | https://hab-backend-qa.onrender.com |\n"
+        "| PROD | https://hab-backend.onrender.com |\n"
+    ),
+    version="1.0.0",
+    contact={
+        "name": "Health Access Bridge",
+        "url": "https://github.com/jaquimbayoc7/health-access-bridge",
+    },
+    license_info={
+        "name": "MIT",
+    },
 )
 
 # NO crear tablas aquí - se hace en el evento de startup
@@ -74,7 +99,7 @@ app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 @app.get("/", tags=["Root"])
 def read_root():
     """Endpoint raíz de bienvenida."""
-    return {"message": "Bienvenido a la API de Perfilamiento de Discapacidad v3.1"}
+    return {"message": "Health Access Bridge API v1.0.0 — docs disponibles en /docs"}
 
 @app.get("/health", tags=["Health"])
 def health_check():
