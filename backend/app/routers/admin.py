@@ -7,6 +7,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from .. import schemas, crud, dependencies, models, seed as seed_module
+from ..database import engine, Base
 
 router = APIRouter(
     tags=["Admin"]
@@ -61,13 +62,13 @@ def reset_and_reseed(
     Solo para administradores. Usar con precaución en producción.
     """
     try:
-        result_proxy = db.execute(text("DELETE FROM patients"))
-        deleted = result_proxy.rowcount
+        db.execute(text("DROP TABLE IF EXISTS patients"))
         db.commit()
+        Base.metadata.tables["patients"].create(engine, checkfirst=True)
         db.expire_all()
         result = seed_module.run_seed(db)
         return {
-            "patients_deleted": deleted,
+            "patients_deleted": "all (table dropped and recreated)",
             "seed_result": result
         }
     except Exception as e:
