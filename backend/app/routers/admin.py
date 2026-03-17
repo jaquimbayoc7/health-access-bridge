@@ -58,8 +58,9 @@ def reset_and_reseed(
     Elimina TODOS los pacientes (hard delete) y vuelve a ejecutar el seed.
     Solo para administradores. Usar con precaución en producción.
     """
-    deleted = db.query(models.Patient).delete()
+    deleted = db.query(models.Patient).delete(synchronize_session=False)
     db.commit()
+    db.expire_all()
     result = seed_module.run_seed(db)
     return {
         "patients_deleted": deleted,
