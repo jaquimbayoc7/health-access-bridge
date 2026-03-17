@@ -1,66 +1,118 @@
 # Health Access Bridge (HAB)
 
-Aplicación web para facilitar el acceso a servicios de salud para personas con discapacidad en zonas rurales.
+Plataforma web para la gestión clínica de pacientes con discapacidad y el análisis predictivo de perfiles de barreras de acceso a la salud en zonas rurales.
 
-## Stack
+---
 
-- **Backend:** Python 3.11 + FastAPI + SQLAlchemy + Alembic + PostgreSQL
-- **Frontend:** React 18 + TypeScript + Vite + TailwindCSS + shadcn/ui
-- **Auth:** JWT con claims de rol (Admin, Médico)
-- **IA Predictiva:** HybridModelDisability
-- **IA Generativa:** LLM (OpenAI GPT-4)
-- **Despliegue:** Render (Web Service + Static Site + PostgreSQL managed)
+## Estado del Proyecto — Momento 1
 
-## Ambientes
+> **Actualizado:** Marzo 2026
 
-| Ambiente | Rama | Backend (externo) | Frontend HAB |
-|----------|------|-------------------|---------------|
-| Development | `develop` | https://hybridmodeldisability.onrender.com | https://hab-frontend-dev.onrender.com |
-| QA / Staging | `staging` | https://hybridmodeldisability.onrender.com | https://hab-frontend-qa.onrender.com |
-| Production | `master` | https://hybridmodeldisability.onrender.com | https://hab-frontend.onrender.com |
+| Capa | Estado | Detalle |
+|------|--------|---------|
+| **Backend** | ✅ Desplegado en los 3 ambientes | Autenticación, CRUD de pacientes, predicción ML |
+| **Frontend** | ⏳ En desarrollo | Scaffold React pendiente |
+| **CI/CD** | ✅ Configurado | GitHub Actions → Render (auto-deploy) |
+| **Base de datos** | ✅ PostgreSQL en Render | 3 instancias independientes (dev/qa/prod) |
 
-> **Backend:** [`jaquimbayoc7/HybridModelDisability`](https://github.com/jaquimbayoc7/HybridModelDisability) desplegado en Render — FastAPI + JWT + ML Model.
-> **Docs API:** https://hybridmodeldisability.onrender.com/docs
+---
+
+## Stack Tecnológico
+
+| Capa | Tecnología |
+|------|-----------|
+| **Backend** | Python 3.11.10 · FastAPI · SQLAlchemy · PostgreSQL |
+| **Frontend** | React 18 · TypeScript · Vite · TailwindCSS · shadcn/ui *(pendiente)* |
+| **Autenticación** | JWT con claims de rol (Admin, Médico) · Bcrypt |
+| **IA Predictiva** | HybridModelDisability (modelo ML embebido) |
+| **IA Generativa** | LLM OpenAI GPT-4 *(HU-07 — futuro)* |
+| **Despliegue** | Render · Web Service · PostgreSQL managed |
+| **CI/CD** | GitHub Actions · 3 workflows (dev/qa/prod) |
+
+---
+
+## Ambientes y URLs
+
+| Ambiente | Rama | Backend | API Docs |
+|----------|------|---------|----------|
+| **Development** | `develop` | https://hab-backend-dev.onrender.com | [/docs](https://hab-backend-dev.onrender.com/docs) |
+| **QA / Staging** | `staging` | https://hab-backend-qa.onrender.com | [/docs](https://hab-backend-qa.onrender.com/docs) |
+| **Production** | `master` | https://hab-backend.onrender.com | [/docs](https://hab-backend.onrender.com/docs) |
+
+### Credenciales de prueba (seed — disponibles en los 3 ambientes)
+
+| Rol | Email | Contraseña |
+|-----|-------|------------|
+| **Admin** | `administrador@salud.co` | `adminpassword` |
+| **Médico** | `medico1@salud.co` | `medico123` |
+| **Médico** | `medico2@salud.co` | `medico123` |
+
+> `medico1@salud.co` tiene 10 pacientes de prueba. `medico2@salud.co` está vacío.
+
+---
+
+## Endpoints disponibles
+
+### Autenticación y Usuarios
+| Método | Endpoint | Acceso | Descripción |
+|--------|----------|--------|-------------|
+| `POST` | `/users/login` | Público | Login → retorna JWT |
+| `GET` | `/users/me` | Autenticado | Perfil del usuario actual |
+| `GET` | `/admin/users` | Admin | Lista todos los usuarios |
+| `POST` | `/admin/users/register` | Admin | Crear nuevo usuario (médico/admin) |
+| `PATCH` | `/admin/users/{id}/status` | Admin | Activar / desactivar usuario |
+
+### Pacientes
+| Método | Endpoint | Acceso | Descripción |
+|--------|----------|--------|-------------|
+| `POST` | `/patients/` | Médico | Crear paciente |
+| `GET` | `/patients/?search=&skip=&limit=` | Médico | Listar con búsqueda y paginación |
+| `GET` | `/patients/{id}` | Médico (dueño) | Detalle de paciente |
+| `PUT` | `/patients/{id}` | Médico (dueño) | Actualizar historia clínica |
+| `DELETE` | `/patients/{id}` | Médico (dueño) | Soft delete |
+| `POST` | `/patients/{id}/predict` | Médico (dueño) | Predicción perfil discapacidad |
+
+### Sistema
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| `GET` | `/health` | Health check (CI/CD) |
+| `GET` | `/` | Bienvenida |
+
+---
 
 ## GitHub Environments
 
-| Ambiente | Protección | Secrets configurados |
-|----------|-----------|----------------------|
-| `development` | Sin restricciones | `JWT_SECRET`, `VITE_API_BASE_URL` |
-| `qa` | Sin restricciones | `JWT_SECRET`, `VITE_API_BASE_URL` |
-| `production` | 🔒 Aprobación manual requerida | `JWT_SECRET`, `VITE_API_BASE_URL` |
+| Ambiente | Protección | Secrets |
+|----------|-----------|---------|
+| `development` | Sin restricciones | `DATABASE_URL`, `SECRET_KEY`, `PYTHON_VERSION` |
+| `qa` | Sin restricciones | `DATABASE_URL`, `SECRET_KEY`, `PYTHON_VERSION` |
+| `production` | � Aprobación manual requerida | `DATABASE_URL`, `SECRET_KEY`, `PYTHON_VERSION` |
 
 🔗 [Ver environments en GitHub](https://github.com/jaquimbayoc7/health-access-bridge/settings/environments)
 
-## Épicas
+---
 
-| Issue | Épica | Momento | Semanas | HUs | Pts | Estado |
-|-------|-------|---------|---------|-----|-----|--------|
-| [#11](https://github.com/jaquimbayoc7/health-access-bridge/issues/11) | [EPICA-01] Estructuración y Diseño | Momento 1 | 1-3 | — | — | ✅ Done |
-| [#12](https://github.com/jaquimbayoc7/health-access-bridge/issues/12) | [EPICA-02] Funcionalidades Core y Capacidades Avanzadas | Momento 2 | 10-18 | HU-04, HU-05, HU-06 | 42 | 📋 Backlog |
-| [#13](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) | [EPICA-03] IA Generativa, Dashboards y Cierre | Momento 3 | 19-27 | HU-07, HU-08, HU-09, HU-10 | 47 | 📋 Backlog |
-
-## Issues / Historias de Usuario
+## Historias de Usuario
 
 ### Momento 1 — Trabajo Integrador I (Semanas 1-9) · [Milestone](https://github.com/jaquimbayoc7/health-access-bridge/milestone/1)
 
 > Épica: [#11 EPICA-01 Estructuración y Diseño](https://github.com/jaquimbayoc7/health-access-bridge/issues/11)
 
-| Issue | Título | Sprint | Pts | Estado |
-|-------|--------|--------|-----|--------|
-| [#1](https://github.com/jaquimbayoc7/health-access-bridge/issues/1) | [HU-01] Sistema de Autenticación y Roles (RBAC) | Sprint 1 (Sem. 4-5) | 13 | � En Progreso |
-| [#2](https://github.com/jaquimbayoc7/health-access-bridge/issues/2) | [HU-02] Registro y Precarga de Datos de Pacientes | Sprint 2 (Sem. 6-7) | 8 | 📋 Backlog |
-| [#3](https://github.com/jaquimbayoc7/health-access-bridge/issues/3) | [HU-03] Integración Frontend-Backend y Despliegue Local | Sprint 3 (Sem. 8-9) | 5 | 📋 Backlog |
+| Issue | Título | Sprint | Pts | Backend | Frontend | Estado |
+|-------|--------|--------|-----|---------|----------|--------|
+| [#1](https://github.com/jaquimbayoc7/health-access-bridge/issues/1) | [HU-01] Autenticación y Roles (RBAC) | Sprint 1 (Sem. 4-5) | 8 | ✅ Completo | ⏳ Pendiente | 🟡 En Progreso |
+| [#2](https://github.com/jaquimbayoc7/health-access-bridge/issues/2) | [HU-02] Registro y Precarga de Pacientes | Sprint 2 (Sem. 6-7) | 13 | ✅ Completo | ⏳ Pendiente | � En Progreso |
+| [#3](https://github.com/jaquimbayoc7/health-access-bridge/issues/3) | [HU-03] Integración Frontend-Backend | Sprint 3 (Sem. 8-9) | 5 | — | ⏳ Pendiente | 📋 Backlog |
 
 ### Momento 2 — Trabajo Integrador II (Semanas 10-18) · [Milestone](https://github.com/jaquimbayoc7/health-access-bridge/milestone/2)
 
-> Épica: [#12 EPICA-02 Funcionalidades Core y Capacidades Avanzadas](https://github.com/jaquimbayoc7/health-access-bridge/issues/12)
+> Épica: [#12 EPICA-02 Funcionalidades Core](https://github.com/jaquimbayoc7/health-access-bridge/issues/12)
 
 | Issue | Título | Sprint | Pts | Estado |
 |-------|--------|--------|-----|--------|
-| [#4](https://github.com/jaquimbayoc7/health-access-bridge/issues/4) | [HU-04] Integración del Modelo Predictivo (HybridModelDisability) | Sprint 4-5 (Sem. 10-13) | 21 | � En Progreso |
+| [#4](https://github.com/jaquimbayoc7/health-access-bridge/issues/4) | [HU-04] Integración Modelo Predictivo (HybridModelDisability) | Sprint 4-5 (Sem. 10-13) | 21 | 📋 Backlog |
 | [#5](https://github.com/jaquimbayoc7/health-access-bridge/issues/5) | [HU-05] Modo Offline y PWA | Sprint 6-7 (Sem. 14-17) | 13 | 📋 Backlog |
-| [#6](https://github.com/jaquimbayoc7/health-access-bridge/issues/6) | [HU-06] Pruebas de Integración Backend-Frontend y Rendimiento API | Sprint 7 (Sem. 16-17) | 8 | 📋 Backlog |
+| [#6](https://github.com/jaquimbayoc7/health-access-bridge/issues/6) | [HU-06] Pruebas de Integración y Rendimiento API | Sprint 7 (Sem. 16-17) | 8 | 📋 Backlog |
 
 ### Momento 3 — Trabajo Integrador III (Semanas 19-27) · [Milestone](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3)
 
@@ -75,24 +127,78 @@ Aplicación web para facilitar el acceso a servicios de salud para personas con 
 
 🔗 [Ver todas las issues](https://github.com/jaquimbayoc7/health-access-bridge/issues) · [Ver SCRUM Board](https://github.com/users/jaquimbayoc7/projects/1)
 
-## Milestones
+---
 
-| Milestone | Periodo | Épica | Issues | Avance |
-|-----------|---------|-------|--------|--------|
-| [Momento 1: Trabajo Integrador I](https://github.com/jaquimbayoc7/health-access-bridge/milestone/1) | 27 Feb – 26 Jun 2026 | EPICA-01 | HU-01, HU-02, HU-03 | 24% |
-| [Momento 2: Trabajo Integrador II](https://github.com/jaquimbayoc7/health-access-bridge/milestone/2) | Por definir | EPICA-02 | HU-04, HU-05, HU-06 | 60% |
-| [Momento 3: Trabajo Integrador III](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) | Por definir | EPICA-03 | HU-07, HU-08, HU-09, HU-10 | 100% |
+## Épicas
+
+| Issue | Épica | Momento | HUs | Pts | Estado |
+|-------|-------|---------|-----|-----|--------|
+| [#11](https://github.com/jaquimbayoc7/health-access-bridge/issues/11) | EPICA-01 Estructuración y Diseño | 1 · Sem. 1-3 | — | — | ✅ Done |
+| [#12](https://github.com/jaquimbayoc7/health-access-bridge/issues/12) | EPICA-02 Funcionalidades Core y Capacidades Avanzadas | 2 · Sem. 10-18 | HU-04, 05, 06 | 42 | 📋 Backlog |
+| [#13](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) | EPICA-03 IA Generativa, Dashboards y Cierre | 3 · Sem. 19-27 | HU-07 al 10 | 47 | 📋 Backlog |
+
+---
 
 ## Setup local
 
 ```bash
+# 1. Clonar el repositorio
+git clone https://github.com/jaquimbayoc7/health-access-bridge.git
+cd health-access-bridge
+
+# 2. Configurar variables de entorno
 cp .env.dev.example .env
-docker-compose up --build
+
+# 3. Instalar dependencias backend
+cd backend
+pip install -r requirements.txt
+
+# 4. Iniciar el servidor de desarrollo
+uvicorn app.main:app --reload --port 8000
 ```
+
+> La app crea las tablas y ejecuta el seed automáticamente en el primer startup.
+> Documentación interactiva disponible en: http://localhost:8000/docs
+
+---
+
+## Estructura del proyecto
+
+```
+health-access-bridge/
+├── backend/
+│   ├── app/
+│   │   ├── main.py          # Entrypoint FastAPI + startup + CORS
+│   │   ├── models.py        # Modelos SQLAlchemy (User, Patient)
+│   │   ├── schemas.py       # Esquemas Pydantic
+│   │   ├── crud.py          # Operaciones de base de datos
+│   │   ├── auth.py          # JWT + Bcrypt
+│   │   ├── dependencies.py  # Inyección de dependencias y RBAC
+│   │   ├── database.py      # Configuración SQLAlchemy
+│   │   ├── seed.py          # Seed de datos de prueba (idempotente)
+│   │   └── routers/
+│   │       ├── users.py     # POST /users/login · GET /users/me
+│   │       ├── patients.py  # CRUD /patients/ + predicción
+│   │       └── admin.py     # Gestión de usuarios (solo Admin)
+│   ├── requirements.txt
+│   ├── build.sh
+│   └── runtime.txt          # python-3.11.10
+├── .env.dev.example
+├── .env.qa.example
+├── .env.prod.example
+├── render.yaml              # Blueprint Render (3 servicios + 3 DBs)
+├── runtime.txt
+└── .github/
+    └── workflows/
+        ├── ci-dev.yml       # Push a develop → tests + deploy DEV
+        ├── ci-qa.yml        # Push a staging → tests + deploy QA
+        └── ci-prod.yml      # Push a master → aprobación manual + deploy PROD
+```
+
+---
 
 ## Documentación
 
-- [Índice de Documentación](https://github.com/jaquimbayoc7/health-access-bridge/tree/master/docs)
 - [Backlog](./BACKLOG.md)
 - [GitHub Project SCRUM Board](https://github.com/users/jaquimbayoc7/projects/1)
 - [GitHub Environments](https://github.com/jaquimbayoc7/health-access-bridge/settings/environments)
