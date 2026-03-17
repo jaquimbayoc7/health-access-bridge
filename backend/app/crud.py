@@ -37,9 +37,18 @@ def update_user_activity(db: Session, user_id: int, is_active: bool):
 def get_patient(db: Session, patient_id: int):
     return db.query(models.Patient).filter(models.Patient.id == patient_id).first()
 
-
-def get_patients_by_owner(db: Session, owner_id: int, skip: int = 0, limit: int = 100):
-    return db.query(models.Patient).filter(models.Patient.owner_id == owner_id).offset(skip).limit(limit).all()
+def get_patients_by_owner(db: Session, owner_id: int, skip: int = 0, limit: int = 100, search: str = None):
+    query = db.query(models.Patient).filter(
+        models.Patient.owner_id == owner_id,
+        models.Patient.is_active == True
+    )
+    if search:
+        term = f"%{search}%"
+        query = query.filter(
+            models.Patient.nombre_apellidos.ilike(term) |
+            models.Patient.numero_documento.ilike(term)
+        )
+    return query.offset(skip).limit(limit).all()
 
 def create_user_patient(db: Session, patient: schemas.PatientCreate, user_id: int):
     db_patient = models.Patient(**patient.model_dump(), owner_id=user_id)
@@ -59,8 +68,9 @@ def update_patient(db: Session, db_patient: models.Patient, patient_update: sche
 def delete_patient(db: Session, patient_id: int):
     db_patient = get_patient(db, patient_id)
     if db_patient:
-        db.delete(db_patient)
+        db_patient.is_active = False
         db.commit()
+        db.refresh(db_patient)
     return db_patient
 
 def update_patient_prediction(db: Session, patient_id: int, profile: int, description: str):

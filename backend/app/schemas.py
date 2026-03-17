@@ -34,6 +34,7 @@ class UserStatusUpdate(BaseModel):
     is_active: bool
 
 class PatientBase(BaseModel):
+    numero_documento: str
     nombre_apellidos: str
     fecha_nacimiento: date
     edad: int = Field(..., gt=0)
@@ -59,6 +60,7 @@ class PatientUpdate(PatientBase):
 class Patient(PatientBase):
     id: int
     owner_id: int
+    is_active: bool = True
     prediction_profile: Optional[int] = None
     prediction_description: Optional[str] = None
     model_config = ConfigDict(from_attributes=True)

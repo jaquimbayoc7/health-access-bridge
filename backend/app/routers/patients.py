@@ -44,8 +44,15 @@ def get_model():
 def create_patient(patient: schemas.PatientCreate, db: Session = Depends(dependencies.get_db), current_user: models.User = Depends(dependencies.get_current_active_medico)):
     return crud.create_user_patient(db=db, patient=patient, user_id=current_user.id)
 @router.get("/", response_model=List[schemas.Patient])
-def read_patients(skip: int = 0, limit: int = 100, db: Session = Depends(dependencies.get_db), current_user: models.User = Depends(dependencies.get_current_active_medico)):
-    return crud.get_patients_by_owner(db=db, owner_id=current_user.id, skip=skip, limit=limit)
+def read_patients(
+    skip: int = 0,
+    limit: int = 100,
+    search: Optional[str] = None,
+    db: Session = Depends(dependencies.get_db),
+    current_user: models.User = Depends(dependencies.get_current_active_medico)
+):
+    """Lista pacientes del médico autenticado. Permite búsqueda por nombre o número de documento."""
+    return crud.get_patients_by_owner(db=db, owner_id=current_user.id, skip=skip, limit=limit, search=search)
 @router.get("/{patient_id}", response_model=schemas.Patient)
 def read_patient(
     patient_id: int,
@@ -112,11 +119,7 @@ def delete_patient(
     if db_patient.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Operación no permitida. No eres el propietario de este paciente.")
 
-    # Si todo está bien, procedemos a eliminar
-    db.delete(db_patient)
-    db.commit()
-    
-    # Devolvemos una respuesta sin contenido, como indica el código de estado 204
+    crud.delete_patient(db=db, patient_id=patient_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 

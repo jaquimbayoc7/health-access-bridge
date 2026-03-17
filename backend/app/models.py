@@ -22,6 +22,7 @@ class Patient(Base):
     __tablename__ = "patients"
 
     id = Column(Integer, primary_key=True, index=True)
+    numero_documento = Column(String, unique=True, index=True)
     nombre_apellidos = Column(String, index=True)
     fecha_nacimiento = Column(Date)
     edad = Column(Integer)
@@ -38,6 +39,7 @@ class Patient(Base):
     nivel_d6 = Column(Integer)
     nivel_global = Column(Integer)
     
+    is_active = Column(Boolean, default=True)
     prediction_profile = Column(Integer, nullable=True)
     prediction_description = Column(String, nullable=True)
 

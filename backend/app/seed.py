@@ -31,6 +31,7 @@ SEED_USERS = [
 # Pacientes de prueba (se asignan al medico1)
 SEED_PATIENTS = [
     {
+        "numero_documento": "1001234567",
         "nombre_apellidos": "Juan Pérez García",
         "fecha_nacimiento": "1985-03-15",
         "edad": 41,
@@ -48,6 +49,7 @@ SEED_PATIENTS = [
         "nivel_global": 42,
     },
     {
+        "numero_documento": "1002345678",
         "nombre_apellidos": "María Fernanda López",
         "fecha_nacimiento": "1990-07-22",
         "edad": 35,
@@ -65,6 +67,7 @@ SEED_PATIENTS = [
         "nivel_global": 67,
     },
     {
+        "numero_documento": "1003456789",
         "nombre_apellidos": "Carlos Eduardo Ramírez",
         "fecha_nacimiento": "1978-11-03",
         "edad": 47,
@@ -82,6 +85,7 @@ SEED_PATIENTS = [
         "nivel_global": 18,
     },
     {
+        "numero_documento": "1004567890",
         "nombre_apellidos": "Lucía Valentina Torres",
         "fecha_nacimiento": "1995-01-30",
         "edad": 31,
@@ -99,6 +103,7 @@ SEED_PATIENTS = [
         "nivel_global": 59,
     },
     {
+        "numero_documento": "1005678901",
         "nombre_apellidos": "Andrés Felipe Morales",
         "fecha_nacimiento": "1982-09-18",
         "edad": 43,
@@ -116,6 +121,7 @@ SEED_PATIENTS = [
         "nivel_global": 13,
     },
     {
+        "numero_documento": "1006789012",
         "nombre_apellidos": "Diana Patricia Herrera",
         "fecha_nacimiento": "1988-05-12",
         "edad": 37,
@@ -133,6 +139,7 @@ SEED_PATIENTS = [
         "nivel_global": 72,
     },
     {
+        "numero_documento": "1007890123",
         "nombre_apellidos": "Santiago Alejandro Ruiz",
         "fecha_nacimiento": "2000-12-05",
         "edad": 25,
@@ -150,6 +157,7 @@ SEED_PATIENTS = [
         "nivel_global": 59,
     },
     {
+        "numero_documento": "1008901234",
         "nombre_apellidos": "Valentina Sofía Castillo",
         "fecha_nacimiento": "1992-08-25",
         "edad": 33,
@@ -167,6 +175,7 @@ SEED_PATIENTS = [
         "nivel_global": 33,
     },
     {
+        "numero_documento": "1009012345",
         "nombre_apellidos": "Miguel Ángel Ortiz",
         "fecha_nacimiento": "1975-04-10",
         "edad": 50,
@@ -184,6 +193,7 @@ SEED_PATIENTS = [
         "nivel_global": 83,
     },
     {
+        "numero_documento": "1010123456",
         "nombre_apellidos": "Laura Camila Mendoza",
         "fecha_nacimiento": "1998-02-14",
         "edad": 28,
