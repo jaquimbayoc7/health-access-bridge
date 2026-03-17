@@ -43,17 +43,24 @@ app = FastAPI(
 
 
 # Agregar CORS middleware
+_raw_origins = os.getenv("ALLOWED_ORIGINS", "")
+_default_origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://localhost:8080",
+    "https://hab-frontend.onrender.com",
+    "https://hab-frontend-dev.onrender.com",
+    "https://hab-frontend-qa.onrender.com",
+    "https://e1bb997f-a232-4850-a558-28c9f9aba95b.lovableproject.com",
+]
+_env_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+allowed_origins = list(set(_default_origins + _env_origins))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8080",
-        "http://localhost:5173",
-        "https://e1bb997f-a232-4850-a558-28c9f9aba95b.lovableproject.com",
-        "https://*.lovableproject.com",
-        "https://*.onrender.com"  # Agregar dominios de Render
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], 
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["*"],
 )
 
