@@ -37,6 +37,16 @@ def update_user_activity(db: Session, user_id: int, is_active: bool):
 def get_patient(db: Session, patient_id: int):
     return db.query(models.Patient).filter(models.Patient.id == patient_id).first()
 
+def get_all_patients(db: Session, skip: int = 0, limit: int = 100, search: str = None):
+    query = db.query(models.Patient).filter(models.Patient.is_active == True)
+    if search:
+        term = f"%{search}%"
+        query = query.filter(
+            models.Patient.nombre_apellidos.ilike(term) |
+            models.Patient.numero_documento.ilike(term)
+        )
+    return query.offset(skip).limit(limit).all()
+
 def get_patients_by_owner(db: Session, owner_id: int, skip: int = 0, limit: int = 100, search: str = None):
     query = db.query(models.Patient).filter(
         models.Patient.owner_id == owner_id,

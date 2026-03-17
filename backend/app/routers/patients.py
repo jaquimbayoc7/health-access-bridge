@@ -43,91 +43,69 @@ def get_model():
 @router.post("/", response_model=schemas.Patient, status_code=status.HTTP_201_CREATED)
 def create_patient(patient: schemas.PatientCreate, db: Session = Depends(dependencies.get_db), current_user: models.User = Depends(dependencies.get_current_active_medico)):
     return crud.create_user_patient(db=db, patient=patient, user_id=current_user.id)
+
 @router.get("/", response_model=List[schemas.Patient])
 def read_patients(
     skip: int = 0,
     limit: int = 100,
     search: Optional[str] = None,
     db: Session = Depends(dependencies.get_db),
-    current_user: models.User = Depends(dependencies.get_current_active_medico)
+    current_user: models.User = Depends(dependencies.get_current_active_user)
 ):
-    """Lista pacientes del médico autenticado. Permite búsqueda por nombre o número de documento."""
+    """Lista pacientes. Admin ve todos; médico ve solo los suyos."""
+    if current_user.role == "admin":
+        return crud.get_all_patients(db=db, skip=skip, limit=limit, search=search)
     return crud.get_patients_by_owner(db=db, owner_id=current_user.id, skip=skip, limit=limit, search=search)
+
 @router.get("/{patient_id}", response_model=schemas.Patient)
 def read_patient(
     patient_id: int,
     db: Session = Depends(dependencies.get_db),
-    current_user: models.User = Depends(dependencies.get_current_active_medico)
+    current_user: models.User = Depends(dependencies.get_current_active_user)
 ):
-    """
-    Obtiene los detalles de un paciente específico.
-    Solo el médico propietario puede ver su paciente.
-    """
-    # --- LÍNEA CORREGIDA ---
-    # Cambiamos get_patient_by_id por la función correcta: get_patient
+    """Obtiene detalles de un paciente. Admin puede ver cualquiera; médico solo el suyo."""
     db_patient = crud.get_patient(db, patient_id=patient_id)
-    
     if db_patient is None:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    
-    # Verificación de propiedad
-    if db_patient.owner_id != current_user.id:
+    if current_user.role != "admin" and db_patient.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Operación no permitida. No eres el propietario de este paciente.")
-    
     return db_patient
+
 @router.put("/{patient_id}", response_model=schemas.Patient)
 def update_patient_details(
     patient_id: int,
     patient_update: schemas.PatientUpdate,
     db: Session = Depends(dependencies.get_db),
-    current_user: models.User = Depends(dependencies.get_current_active_medico)
+    current_user: models.User = Depends(dependencies.get_current_active_user)
 ):
-    """
-    Actualiza los detalles de un paciente específico.
-    Solo el médico propietario puede actualizar su paciente.
-    """
+    """Actualiza un paciente. Admin puede editar cualquiera; médico solo el suyo."""
     db_patient = crud.get_patient(db, patient_id=patient_id)
     if db_patient is None:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    
-    # Verificación de propiedad
-    if db_patient.owner_id != current_user.id:
+    if current_user.role != "admin" and db_patient.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Operación no permitida. No eres el propietario de este paciente.")
-
-    # --- LÍNEA CORREGIDA ---
-    # Se pasa el objeto `db_patient` completo, no el `patient_id`.
     return crud.update_patient(db=db, db_patient=db_patient, patient_update=patient_update)
 
 @router.delete("/{patient_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_patient(
     patient_id: int,
     db: Session = Depends(dependencies.get_db),
-    current_user: models.User = Depends(dependencies.get_current_active_medico)
+    current_user: models.User = Depends(dependencies.get_current_active_user)
 ):
-    """
-    Elimina un paciente específico.
-    Solo el médico propietario puede eliminar su paciente.
-    """
-    # --- LÍNEA CORREGIDA ---
-    # Cambiamos get_patient_by_id por la función correcta: get_patient
+    """Elimina un paciente. Admin puede eliminar cualquiera; médico solo el suyo."""
     db_patient = crud.get_patient(db, patient_id=patient_id)
-    
     if db_patient is None:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    
-    # Verificación de propiedad
-    if db_patient.owner_id != current_user.id:
+    if current_user.role != "admin" and db_patient.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Operación no permitida. No eres el propietario de este paciente.")
-
     crud.delete_patient(db=db, patient_id=patient_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-
 
 @router.post("/{patient_id}/predict", response_model=schemas.PredictionOutput)
 def predict_patient_profile(
     patient_id: int, 
     db: Session = Depends(dependencies.get_db),
-    current_user: models.User = Depends(dependencies.get_current_active_medico)
+    current_user: models.User = Depends(dependencies.get_current_active_user)
 ):
     db_patient = read_patient(patient_id, db, current_user)
     prediction_data = schemas.PredictionInput.model_validate(db_patient)

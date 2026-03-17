@@ -238,23 +238,28 @@ def run_seed(db: Session):
         else:
             print(f"  → Usuario ya existe: {user_data['email']}")
 
-    # 2. Crear pacientes (asignados a medico1@salud.co)
-    medico1 = crud.get_user_by_email(db, email="medico1@salud.co")
-    if medico1:
-        existing_patients = crud.get_patients_by_owner(db, owner_id=medico1.id)
-        if len(existing_patients) == 0:
-            from datetime import date
-            for p_data in SEED_PATIENTS:
-                patient_dict = p_data.copy()
-                patient_dict["fecha_nacimiento"] = date.fromisoformat(patient_dict["fecha_nacimiento"])
-                patient_in = schemas.PatientCreate(**patient_dict)
-                crud.create_user_patient(db=db, patient=patient_in, user_id=medico1.id)
-                created_patients += 1
-                print(f"  ✓ Paciente creado: {p_data['nombre_apellidos']}")
+    # 2. Crear pacientes: primeros 5 → medico1, siguientes 5 → medico2
+    from datetime import date
+    assignments = [
+        ("medico1@salud.co", SEED_PATIENTS[:5]),
+        ("medico2@salud.co", SEED_PATIENTS[5:]),
+    ]
+    for email, patients in assignments:
+        medico = crud.get_user_by_email(db, email=email)
+        if medico:
+            existing_patients = crud.get_patients_by_owner(db, owner_id=medico.id)
+            if len(existing_patients) == 0:
+                for p_data in patients:
+                    patient_dict = p_data.copy()
+                    patient_dict["fecha_nacimiento"] = date.fromisoformat(patient_dict["fecha_nacimiento"])
+                    patient_in = schemas.PatientCreate(**patient_dict)
+                    crud.create_user_patient(db=db, patient=patient_in, user_id=medico.id)
+                    created_patients += 1
+                    print(f"  ✓ Paciente creado para {email}: {p_data['nombre_apellidos']}")
+            else:
+                print(f"  → Pacientes ya existen para {email} ({len(existing_patients)} registros)")
         else:
-            print(f"  → Pacientes ya existen para medico1 ({len(existing_patients)} registros)")
-    else:
-        print("  ⚠ No se encontró medico1@salud.co para asignar pacientes")
+            print(f"  ⚠ No se encontró {email} para asignar pacientes")
 
     print(f"\n  Seed completado: {created_users} usuarios, {created_patients} pacientes creados")
     return {"users_created": created_users, "patients_created": created_patients}
