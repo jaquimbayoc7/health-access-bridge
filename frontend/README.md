@@ -4,8 +4,10 @@
 
 **Health Access Bridge** es un sistema inteligente de perfilamiento de discapacidad diseñado para profesionales de la salud. Permite evaluar y predecir barreras en personas con discapacidad mediante modelos híbridos de inteligencia artificial (Machine Learning). El frontend se conecta a una API REST desarrollada en FastAPI ([HybridModelDisability](https://github.com/jaquimbayoc7/HybridModelDisability)).
 
-**URL de producción:** https://assist-reach-aid.lovable.app  
-**API Backend:** https://hybridmodeldisability.onrender.com
+**URL de producción:** https://hab-frontend.onrender.com  
+**URL DEV:** https://hab-frontend-dev.onrender.com  
+**URL QA:** https://hab-frontend-qa.onrender.com  
+**API Backend PROD:** https://hab-backend-szj1.onrender.com
 
 ---
 
@@ -242,9 +244,10 @@ La aplicación soporta **español (ES)** e **inglés (EN)** mediante `LanguageCo
 
 ## Variables de Entorno
 
-| Variable | Descripción | Valor por defecto |
+| Variable | Descripción | Valor en Render |
 |---|---|---|
-| `VITE_API_URL` | URL base de la API backend | `https://hybridmodeldisability.onrender.com` |
+| `VITE_API_BASE_URL` | URL base de la API backend | `https://hab-backend-szj1.onrender.com` (prod) |
+| `VITE_ENVIRONMENT` | Ambiente actual | `production` / `qa` / `development` |
 
 ---
 
@@ -269,12 +272,17 @@ npm run build
 
 ## Despliegue en Render (Static Site)
 
-1. Conectar el repositorio GitHub en [Render](https://render.com)
-2. Crear un **Static Site** con:
-   - **Build Command:** `npm install && npm run build`
-   - **Publish Directory:** `dist`
-3. Agregar variable de entorno `VITE_API_URL` si se usa un backend diferente
-4. Desplegar
+Configurado mediante `render.yaml` en la raíz del repositorio. Tres servicios estáticos independientes:
+
+| Servicio | Rama | URL |
+|---|---|---|
+| `hab-frontend` | `master` | https://hab-frontend.onrender.com |
+| `hab-frontend-qa` | `staging` | https://hab-frontend-qa.onrender.com |
+| `hab-frontend-dev` | `develop` | https://hab-frontend-dev.onrender.com |
+
+**Build Command:** `cd frontend && npm ci && npm run build`  
+**Publish Directory:** `frontend/dist`  
+**Variable de entorno clave:** `VITE_API_BASE_URL` → URL del backend correspondiente al ambiente
 
 ---
 

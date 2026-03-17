@@ -6,14 +6,14 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 
 ## Estado del Proyecto — Momento 1
 
-> **Actualizado:** Marzo 2026
+> **Actualizado:** Marzo 2026 · Sprint 3 completado
 
 | Capa | Estado | Detalle |
-|------|--------|---------|
-| **Backend** | ✅ Desplegado en los 3 ambientes | Autenticación, CRUD de pacientes, predicción ML |
-| **Frontend** | ⏳ En desarrollo | Scaffold React pendiente |
-| **CI/CD** | ✅ Configurado | GitHub Actions → Render (auto-deploy) |
-| **Base de datos** | ✅ PostgreSQL en Render | 3 instancias independientes (dev/qa/prod) |
+|------|--------|----------|
+| **Backend** | ✅ Desplegado en los 3 ambientes | Autenticación, CRUD de pacientes, predicción ML, RBAC |
+| **Frontend** | ✅ Desplegado en los 3 ambientes | Login, Dashboard, Pacientes, Predicciones, Analíticas, Admin Panel |
+| **CI/CD** | ✅ Configurado | GitHub Actions → Render (auto-deploy + gate de aprobación en prod) |
+| **Base de datos** | ✅ PostgreSQL en Render | 3 instancias independientes (dev/qa/prod) con seed de datos |
 
 ---
 
@@ -22,7 +22,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 | Capa | Tecnología |
 |------|-----------|
 | **Backend** | Python 3.11.10 · FastAPI · SQLAlchemy · PostgreSQL |
-| **Frontend** | React 18 · TypeScript · Vite · TailwindCSS · shadcn/ui *(pendiente)* |
+| **Frontend** | React 18 · TypeScript · Vite · TailwindCSS · shadcn/ui · Recharts · React Query |
 | **Autenticación** | JWT con claims de rol (Admin, Médico) · Bcrypt |
 | **IA Predictiva** | HybridModelDisability (modelo ML embebido) |
 | **IA Generativa** | LLM OpenAI GPT-4 *(HU-07 — futuro)* |
@@ -33,11 +33,11 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 
 ## Ambientes y URLs
 
-| Ambiente | Rama | Backend | API Docs |
-|----------|------|---------|----------|
-| **Development** | `develop` | https://hab-backend-dev.onrender.com | [/docs](https://hab-backend-dev.onrender.com/docs) |
-| **QA / Staging** | `staging` | https://hab-backend-qa.onrender.com | [/docs](https://hab-backend-qa.onrender.com/docs) |
-| **Production** | `master` | https://hab-backend.onrender.com | [/docs](https://hab-backend.onrender.com/docs) |
+| Ambiente | Rama | Backend | Frontend | API Docs |
+|----------|------|---------|----------|----------|
+| **Development** | `develop` | https://hab-backend-dev.onrender.com | https://hab-frontend-dev.onrender.com | [/docs](https://hab-backend-dev.onrender.com/docs) |
+| **QA / Staging** | `staging` | https://hab-backend-qa.onrender.com | https://hab-frontend-qa.onrender.com | [/docs](https://hab-backend-qa.onrender.com/docs) |
+| **Production** | `master` | https://hab-backend.onrender.com | https://hab-frontend.onrender.com | [/docs](https://hab-backend.onrender.com/docs) |
 
 ### Credenciales de prueba (seed — disponibles en los 3 ambientes)
 
@@ -47,7 +47,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 | **Médico** | `medico1@salud.co` | `medico123` |
 | **Médico** | `medico2@salud.co` | `medico123` |
 
-> `medico1@salud.co` tiene 10 pacientes de prueba. `medico2@salud.co` está vacío.
+> `medico1@salud.co` tiene 5 pacientes de prueba. `medico2@salud.co` tiene 5 pacientes. `administrador@salud.co` puede ver los 10 (todos).
 
 ---
 
@@ -66,15 +66,20 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 | Método | Endpoint | Acceso | Descripción |
 |--------|----------|--------|-------------|
 | `POST` | `/patients/` | Médico | Crear paciente |
-| `GET` | `/patients/?search=&skip=&limit=` | Médico | Listar con búsqueda y paginación |
-| `GET` | `/patients/{id}` | Médico (dueño) | Detalle de paciente |
-| `PUT` | `/patients/{id}` | Médico (dueño) | Actualizar historia clínica |
-| `DELETE` | `/patients/{id}` | Médico (dueño) | Soft delete |
-| `POST` | `/patients/{id}/predict` | Médico (dueño) | Predicción perfil discapacidad |
+| `GET` | `/patients/?search=&skip=&limit=` | Admin (todos) · Médico (propios) | Listar con búsqueda y paginación |
+| `GET` | `/patients/{id}` | Admin (cualquiera) · Médico (dueño) | Detalle de paciente |
+| `PUT` | `/patients/{id}` | Admin (cualquiera) · Médico (dueño) | Actualizar historia clínica |
+| `DELETE` | `/patients/{id}` | Admin (cualquiera) · Médico (dueño) | Soft delete |
+| `POST` | `/patients/{id}/predict` | Admin · Médico | Predicción perfil discapacidad |
+
+### Admin — Utilidades
+| Método | Endpoint | Acceso | Descripción |
+|--------|----------|--------|-------------|
+| `POST` | `/admin/reset-seed` | Admin | DROP + recrear tabla patients y re-seedear |
 
 ### Sistema
 | Método | Endpoint | Descripción |
-|--------|----------|-------------|
+|--------|----------|--------------|
 | `GET` | `/health` | Health check (CI/CD) |
 | `GET` | `/` | Bienvenida |
 
@@ -86,9 +91,9 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 |----------|-----------|---------|
 | `development` | Sin restricciones | `DATABASE_URL`, `SECRET_KEY`, `PYTHON_VERSION` |
 | `qa` | Sin restricciones | `DATABASE_URL`, `SECRET_KEY`, `PYTHON_VERSION` |
-| `production` | � Aprobación manual requerida | `DATABASE_URL`, `SECRET_KEY`, `PYTHON_VERSION` |
+| `production` |  Aprobación manual requerida | `DATABASE_URL`, `SECRET_KEY`, `PYTHON_VERSION` |
 
-🔗 [Ver environments en GitHub](https://github.com/jaquimbayoc7/health-access-bridge/settings/environments)
+ [Ver environments en GitHub](https://github.com/jaquimbayoc7/health-access-bridge/settings/environments)
 
 ---
 
@@ -99,10 +104,10 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 > Épica: [#11 EPICA-01 Estructuración y Diseño](https://github.com/jaquimbayoc7/health-access-bridge/issues/11)
 
 | Issue | Título | Sprint | Pts | Backend | Frontend | Estado |
-|-------|--------|--------|-----|---------|----------|--------|
-| [#1](https://github.com/jaquimbayoc7/health-access-bridge/issues/1) | [HU-01] Autenticación y Roles (RBAC) | Sprint 1 (Sem. 4-5) | 8 | ✅ Completo | ⏳ Pendiente | 🟡 En Progreso |
-| [#2](https://github.com/jaquimbayoc7/health-access-bridge/issues/2) | [HU-02] Registro y Precarga de Pacientes | Sprint 2 (Sem. 6-7) | 13 | ✅ Completo | ⏳ Pendiente | � En Progreso |
-| [#3](https://github.com/jaquimbayoc7/health-access-bridge/issues/3) | [HU-03] Integración Frontend-Backend | Sprint 3 (Sem. 8-9) | 5 | — | ⏳ Pendiente | 📋 Backlog |
+|-------|--------|--------|-----|---------|----------|---------|
+| [#1](https://github.com/jaquimbayoc7/health-access-bridge/issues/1) | [HU-01] Autenticación y Roles (RBAC) | Sprint 1 (Sem. 4-5) | 8 | ✅ Completo | ✅ Completo | ✅ Done |
+| [#2](https://github.com/jaquimbayoc7/health-access-bridge/issues/2) | [HU-02] Registro y Precarga de Pacientes | Sprint 2 (Sem. 6-7) | 13 | ✅ Completo | ✅ Completo | ✅ Done |
+| [#3](https://github.com/jaquimbayoc7/health-access-bridge/issues/3) | [HU-03] Integración Frontend-Backend | Sprint 3 (Sem. 8-9) | 5 | ✅ Completo | ✅ Completo | ✅ Done |
 
 ### Momento 2 — Trabajo Integrador II (Semanas 10-18) · [Milestone](https://github.com/jaquimbayoc7/health-access-bridge/milestone/2)
 
@@ -133,7 +138,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 
 | Issue | Épica | Momento | HUs | Pts | Estado |
 |-------|-------|---------|-----|-----|--------|
-| [#11](https://github.com/jaquimbayoc7/health-access-bridge/issues/11) | EPICA-01 Estructuración y Diseño | 1 · Sem. 1-3 | — | — | ✅ Done |
+| [#11](https://github.com/jaquimbayoc7/health-access-bridge/issues/11) | EPICA-01 Estructuración, Diseño e Implementación M1 | 1 · Sem. 1-9 | HU-01, 02, 03 | 26 | ✅ Done |
 | [#12](https://github.com/jaquimbayoc7/health-access-bridge/issues/12) | EPICA-02 Funcionalidades Core y Capacidades Avanzadas | 2 · Sem. 10-18 | HU-04, 05, 06 | 42 | 📋 Backlog |
 | [#13](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) | EPICA-03 IA Generativa, Dashboards y Cierre | 3 · Sem. 19-27 | HU-07 al 10 | 47 | 📋 Backlog |
 
@@ -181,18 +186,27 @@ health-access-bridge/
 │   │       ├── patients.py  # CRUD /patients/ + predicción
 │   │       └── admin.py     # Gestión de usuarios (solo Admin)
 │   ├── requirements.txt
-│   ├── build.sh
+│   ├── requirements-test.txt # Deps de prueba (pytest, httpx) — solo CI
+│   ├── build.sh             # Script de build: verifica/recrea esquema BD
 │   └── runtime.txt          # python-3.11.10
 ├── .env.dev.example
 ├── .env.qa.example
 ├── .env.prod.example
-├── render.yaml              # Blueprint Render (3 servicios + 3 DBs)
+├── frontend/
+│   ├── src/
+│   │   ├── pages/           # Login, Dashboard, Patients, Predictions, Analytics, Admin
+│   │   ├── components/      # Layout, UI (shadcn), Dashboard widgets
+│   │   ├── services/        # api.ts (auth+admin), patients.ts (CRUD+predict)
+│   │   └── contexts/        # AuthContext (JWT), LanguageContext (ES/EN)
+│   ├── package.json
+│   └── vite.config.ts
+├── render.yaml              # Blueprint Render (3 backends + 3 frontends + 3 DBs)
 ├── runtime.txt
 └── .github/
     └── workflows/
         ├── ci-dev.yml       # Push a develop → tests + deploy DEV
         ├── ci-qa.yml        # Push a staging → tests + deploy QA
-        └── ci-prod.yml      # Push a master → aprobación manual + deploy PROD
+        └── ci-prod.yml      # Push a master → aprobación manual + smoke tests + deploy PROD
 ```
 
 ---

@@ -1,215 +1,171 @@
-# 🧬 Hybrid Profiling API for Patients with Disabilities 🤖
+# Health Access Bridge — Backend API
 
-[![Live API](https://img.shields.io/badge/API-Live-brightgreen)](https://hybridmodeldisability.onrender.com/docs)
+[![DEV](https://img.shields.io/badge/DEV-Live-blue)](https://hab-backend-dev.onrender.com/docs)
+[![QA](https://img.shields.io/badge/QA-Live-yellow)](https://hab-backend-qa.onrender.com/docs)
+[![PROD](https://img.shields.io/badge/PROD-Live-brightgreen)](https://hab-backend-szj1.onrender.com/docs)
 
-This repository contains the source code for a RESTful API developed with FastAPI for patient management and disability profile classification using a hybrid Machine Learning model.
+API REST desarrollada con **FastAPI** para la gestión clínica de pacientes con discapacidad y la predicción de perfiles de barreras de acceso a la salud, usando un modelo híbrido de Machine Learning.
 
-## 🔍 Overview
+## Descripción
 
-The API provides a secure and robust platform for medical staff to manage patient records. It includes token-based authentication (JWT), a role-based system (physician and admin), and a full suite of CRUD operations for patient data.
+El backend provee una plataforma segura para que profesionales de salud gestionen registros de pacientes con discapacidad. Integra autenticación JWT, control de acceso basado en roles (RBAC), CRUD completo de pacientes y un modelo de Machine Learning embebido para predicción de perfiles.
 
-The core of the project is the integration of a Machine Learning model that uses a two-stage approach:
-1.  **Clustering (K-Means):** To generate perception profiles based on barrier data.
-2.  **Classification (Gradient Boosting):** To predict a patient's profile from their demographic and assessment data.
+**Modelo ML (dos etapas):**
+1. **Clustering (K-Means):** Genera perfiles de percepción a partir de datos de barreras.
+2. **Clasificación (Gradient Boosting):** Predice el perfil de un paciente desde datos demográficos y clínicos.
 
-## ✨ Key Features
+## Características Principales
 
--   **Secure Authentication:** Registration and login for physicians with JWT access tokens.
--   **Patient Management (CRUD):** Full operations to create, read, update, and delete patient records.
--   **ML Model Integration:** A dedicated endpoint to run the model and predict a patient's profile.
--   **User Roles:**
-    -   `physician`: Access to the patient CRUD and the prediction endpoint.
-    -   `admin`: Access to list and manage the status (active/inactive) of physicians.
--   **Data Validation:** Robust and automatic data validation using Pydantic.
--   **Interactive Documentation:** Automatic generation of interactive API documentation with Swagger UI and ReDoc.
--   **Easy Deployment:** Configured for a straightforward deployment on platforms like Render.
+- **Autenticación JWT** con Bcrypt y control de expiración de tokens.
+- **RBAC (Roles):** `admin` (gestión global) · `médico` (gestión de sus propios pacientes).
+- **CRUD Pacientes:** Crear, listar, editar, eliminar (soft delete) con búsqueda y paginación.
+- **Predicción ML:** Endpoint dedicado que clasifica al paciente en Perfil 0 (Barreras Bajas), 1 (Moderadas) o 2 (Altas).
+- **Seed de datos:** 10 pacientes de prueba precargados (5 por médico) — idempotente.
+- **Documentación interactiva:** Swagger UI (`/docs`) y ReDoc (`/redoc`) autogenerados.
+- **3 ambientes independientes:** DEV · QA · PROD, cada uno con su propia BD PostgreSQL.
 
-## 🛠️ Tech Stack
+## Stack Tecnológico
 
--   **Backend:** [FastAPI](https://fastapi.tiangolo.com/)
--   **ASGI Server:** [Uvicorn](https://www.uvicorn.org/)
--   **Machine Learning:** [Scikit-learn](https://scikit-learn.org/), [Pandas](https://pandas.pydata.org/), [Joblib](https://joblib.readthedocs.io/)
--   **Security & Passwords:** [Passlib](https://passlib.readthedocs.io/en/stable/) with `bcrypt`
--   **JWT Tokens:** [python-jose](https://github.com/mpdavis/python-jose)
--   **Data Validation:** [Pydantic](https://docs.pydantic.dev/latest/)
+| Componente | Tecnología |
+|---|---|
+| **Framework** | FastAPI 0.111 |
+| **ASGI Server** | Uvicorn |
+| **ORM** | SQLAlchemy 2.x |
+| **Base de datos** | PostgreSQL 15 (Render managed) |
+| **Validación** | Pydantic v2 |
+| **Autenticación** | python-jose (JWT) · Passlib (Bcrypt) |
+| **ML** | scikit-learn · pandas · joblib |
+| **Testing** | pytest · pytest-cov · httpx |
+| **Python** | 3.11.10 |
 
-## 📂 Project Structure
+## Estructura del proyecto
 
 ```
-/
+backend/
 ├── app/
-│   ├── main.py             # Main API entry point
-│   ├── auth.py             # Authentication and JWT logic
-│   ├── crud.py             # CRUD functions for the (simulated) database
-│   ├── dependencies.py     # Dependencies for security and roles
-│   ├── schemas.py          # Pydantic models for validation
+│   ├── main.py             # Entrypoint FastAPI + CORS + startup seed
+│   ├── models.py           # Modelos SQLAlchemy (User, Patient)
+│   ├── schemas.py          # Esquemas Pydantic v2
+│   ├── crud.py             # Operaciones de BD (incluye get_all_patients para admin)
+│   ├── auth.py             # JWT + Bcrypt
+│   ├── dependencies.py     # RBAC: get_current_active_user/admin/medico
+│   ├── database.py         # Engine + SessionLocal + Base
+│   ├── seed.py             # Seed idempotente: 3 usuarios + 10 pacientes
 │   └── routers/
-│       ├── admin.py        # Endpoints for administrators
-│       ├── patients.py     # Endpoints for patients
-│       └── users.py        # Endpoints for registration and login
-│
+│       ├── users.py        # POST /users/login · GET /users/me
+│       ├── patients.py     # CRUD /patients/ + POST /{id}/predict
+│       └── admin.py        # /admin/users · /admin/reset-seed
 ├── model/
-│   ├── train_model.py      # Script to train and save the model
-│   └── model_pipeline.joblib # Trained model file (generated)
-│
-├── .gitignore
-└── requirements.txt
+│   ├── train_model.py      # Script de entrenamiento
+│   └── model_pipeline.joblib # Modelo entrenado (generado por build.sh)
+├── requirements.txt        # Dependencias de producción
+├── requirements-test.txt   # Dependencias de CI/testing
+├── build.sh                # Script Render: verifica/recrea esquema BD + modelo
+└── runtime.txt             # python-3.11.10
 ```
 
-## 🚀 Local Installation and Execution
+## Instalación y ejecución local
 
-Follow these steps to get the project up and running on your local machine.
+### Requisitos
+- Python 3.11+
+- PostgreSQL 15 (o usar SQLite cambiando `DATABASE_URL`)
 
-### 1. Prerequisites
-
--   Python 3.9 or higher.
--   Git.
-
-### 2. Clone the Repository
+### Pasos
 
 ```bash
-git clone https://github.com/jaquimbayoc7/HybridModelDisability.git
-cd HybridModelDisability
-```
+# 1. Clonar el repositorio
+git clone https://github.com/jaquimbayoc7/health-access-bridge.git
+cd health-access-bridge/backend
 
-### 3. Create and Activate a Virtual Environment
+# 2. Crear entorno virtual
+python -m venv venv
+venv\Scripts\Activate.ps1   # Windows
+# source venv/bin/activate  # Linux/Mac
 
-It's a good practice to isolate project dependencies.
-
--   **Windows (CMD/PowerShell):**
-    ```bash
-    # Create the environment
-    python -m venv venv
-    # Activate the environment
-    .\venv\Scripts\Activate.ps1
-    ```
-
--   **macOS / Linux:**
-    ```bash
-    # Create the environment
-    python3 -m venv venv
-    # Activate the environment
-    source venv/bin/activate
-    ```
-
-### 4. Install Dependencies
-
-With the virtual environment activated, install all the necessary libraries.
-
-```bash
+# 3. Instalar dependencias
 pip install -r requirements.txt
-```
 
-### 5. Train the Machine Learning Model
+# 4. Variables de entorno
+# Crear archivo .env con:
+# DATABASE_URL=postgresql://user:pass@localhost:5432/hab_dev
+# JWT_SECRET=tu_secreto_aqui
+# ENVIRONMENT=development
 
-This is a crucial one-time step. This script will generate the `model/model_pipeline.joblib` file that the API needs to function.
-
-```bash
+# 5. Entrenar el modelo ML (primera vez)
 python model/train_model.py
+
+# 6. Iniciar el servidor
+uvicorn app.main:app --reload --port 8000
 ```
 
-### 6. Start the API
+API disponible en `http://localhost:8000` · Docs en `http://localhost:8000/docs`
 
-Everything is set! Start the development server.
+> El seed se ejecuta automáticamente en el primer startup creando 3 usuarios y 10 pacientes.
+
+## Uso de la API
+
+**Docs interactivos:**
+- PROD: https://hab-backend-szj1.onrender.com/docs
+- DEV: https://hab-backend-dev.onrender.com/docs
+- Local: http://localhost:8000/docs
+
+### Flujo básico
 
 ```bash
-uvicorn app.main:app --reload
+# 1. Login (obtener token)
+curl -X POST https://hab-backend-szj1.onrender.com/users/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=medico1@salud.co&password=medico123"
+
+# 2. Listar pacientes
+TOKEN="tu_token_aqui"
+curl https://hab-backend-szj1.onrender.com/patients/ \
+  -H "Authorization: Bearer $TOKEN"
+
+# 3. Ejecutar predicción
+curl -X POST https://hab-backend-szj1.onrender.com/patients/1/predict \
+  -H "Authorization: Bearer $TOKEN"
+
+# 4. Resetear seed (solo admin)
+curl -X POST https://hab-backend-szj1.onrender.com/admin/reset-seed \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
 ```
 
-The API will be available at `http://127.0.0.1:8000`.
+## Despliegue en Render
 
-## 📖 API Usage
+| Parámetro | Valor |
+|---|---|
+| **Build Command** | `pip install -r requirements.txt && bash build.sh` |
+| **Start Command** | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+| **Runtime** | Python 3.11 |
 
-The easiest way to explore and test the API is through the interactive documentation.
+### Variables de entorno requeridas
 
--   **Live API Docs:** [**https://hybridmodeldisability.onrender.com/docs**](https://hybridmodeldisability.onrender.com/docs)
--   **Local Swagger UI:** `http://127.0.0.1:8000/docs`
--   **Local ReDoc:** `http://127.0.0.1:8000/redoc`
+| Variable | Descripción |
+|---|---|
+| `DATABASE_URL` | URL interna PostgreSQL de Render (`.internal`) |
+| `JWT_SECRET` | Secreto para firmar tokens JWT |
+| `ENVIRONMENT` | `development` / `qa` / `production` |
+| `ALLOWED_ORIGINS` | URLs del frontend separadas por coma (CORS) |
 
-### Basic Workflow
+### `build.sh` — qué hace
+1. Verifica / entrena el modelo ML si no existe.
+2. Inspecciona el esquema de la tabla `patients`; si está desactualizado la recrea.
+3. Ejecuta `create_all` para crear las tablas faltantes.
 
-1.  **Register a physician:** Use the `POST /users/register` endpoint.
-2.  **Log in:** Use `POST /users/login` with the physician's email and password to get an `access_token`.
-3.  **Authorize:** In the interactive documentation, click the "Authorize" button and paste the token in the format `Bearer <your_token>`.
-4.  **Manage Patients:** You can now use all `/patients` endpoints to create, read, update, delete, and predict patient profiles.
+### Credenciales de prueba (seed)
 
-### Example with `curl`
-
-*(Note: You can replace `http://127.0.0.1:8000` with the live URL `https://hybridmodeldisability.onrender.com` in these examples)*
-
-1.  **Login and get token:**
-    ```bash
-    curl -X POST "https://hybridmodeldisability.onrender.com/users/login" \
-         -H "Content-Type: application/x-www-form-urlencoded" \
-         -d "username=physician@example.com&password=password123"
-    ```
-
-2.  **Create a patient (using the obtained token):**
-    ```bash
-    TOKEN="your_access_token_here"
-
-    curl -X POST "https://hybridmodeldisability.onrender.com/patients/" \
-         -H "Authorization: Bearer $TOKEN" \
-         -H "Content-Type: application/json" \
-         -d '{
-              "nombre_apellidos": "John Patient",
-              "fecha_nacimiento": "1980-01-15",
-              "edad": 44,
-              "genero": "Masculino",
-              "orientacion_sexual": "Heterosexual",
-              "causa_deficiencia": "Accidente de trabajo",
-              "cat_fisica": "SI",
-              "cat_psicosocial": "NO",
-              "nivel_d1": 50,
-              "nivel_d2": 60,
-              "nivel_d3": 70,
-              "nivel_d4": 80,
-              "nivel_d5": 90,
-              "nivel_d6": 100,
-              "nivel_global": 75
-            }'
-    ```
-
-## ☁️ Deployment on Render
-
-This project is fully configured for deployment on **Render** (platform as a service).
-
-### Quick Start (Recommended)
-
-For detailed deployment instructions, see [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md).
-
-### Key Points:
-- **Build Command:** `pip install -r requirements.txt && bash build.sh`
-- **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-- **Runtime:** Python 3.11
-- **Required Environment Variables:**
-  - `SECRET_KEY`: Generate with `python -c "import secrets; print(secrets.token_urlsafe(32))"`
-  - `DATABASE_URL`: PostgreSQL connection string (provided by Render or your database)
-
-### Critical Configuration:
-
-1. **Use Internal Database URL**: Render PostgreSQL databases provide both internal and external URLs. **Always use the internal URL** (ending with `.internal`) in your Web Service.
-
-2. **Same Region**: Ensure your Web Service and PostgreSQL database are in the **same region** for optimal performance.
-
-3. **Automatic Initialization**: The build script automatically:
-   - Trains the ML model if it doesn't exist
-   - Creates database tables
-   - Initializes the default admin user
-
-### Troubleshooting:
-
-If you encounter connection errors:
-- Check `DATABASE_URL` format and that it uses the `.internal` domain
-- Verify both services are in the same region
-- Review Render logs: Dashboard → Web Service → Logs
-- Clear cache and redeploy: Dashboard → Web Service → Settings → "Clear Cache & Redeploy"
+| Rol | Email | Contraseña | Pacientes |
+|-----|-------|------------|-----------|
+| Admin | `administrador@salud.co` | `adminpassword` | Ve los 10 |
+| Médico 1 | `medico1@salud.co` | `medico123` | 5 |
+| Médico 2 | `medico2@salud.co` | `medico123` | 5 |
 
 ---
 
-## 👥 Authors
+## Autores
 
--   **Julian Andres Quimbayo Castro** - [julian.quimbayo@corhuila.edu.co](mailto:julian.quimbayo@corhuila.edu.co)
--   **Willians Aguilar Rodriguez** - [waguilar-2021a@corhuila.edu.co](mailto:waguilar-2021a@corhuila.edu.co)
--   **Jose Miguel Llanos Mosquera** - [jmllanosm@corhuila.edu.co](mailto:jmllanosm@corhuila.edu.co)
--   **Cindy Vargas Duque** - [sistemas@corhuila.edu.co](mailto:sistemas@corhuila.edu.co)
+- **Julián Andrés Quimbayo Castro** — [julian.quimbayo@corhuila.edu.co](mailto:julian.quimbayo@corhuila.edu.co)
+- **Willians Aguilar Rodríguez** — [waguilar-2021a@corhuila.edu.co](mailto:waguilar-2021a@corhuila.edu.co)
+- **Jose Miguel Llanos Mosquera** — [jmllanosm@corhuila.edu.co](mailto:jmllanosm@corhuila.edu.co)
+- **Cindy Vargas Duque** — [sistemas@corhuila.edu.co](mailto:sistemas@corhuila.edu.co)

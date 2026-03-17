@@ -6,14 +6,14 @@
 
 ---
 
-## MOMENTO 1: TRABAJO INTEGRADOR I (Semanas 1-9) - Avance 24%
+## MOMENTO 1: TRABAJO INTEGRADOR I (Semanas 1-9) - Avance 100% ✅
 
-### Épica 1: Estructuración y Diseño (Semanas 1-3)
+### Épica 1: Estructuración y Diseño (Semanas 1-3) ✅ Done
 *Artefactos: BPM, Release Plan, Arquitectura, Prototipo Figma.*
 
-### Sprint 1: Gestión de Usuarios y Estructura Backend (Semanas 4-5)
+### Sprint 1: Gestión de Usuarios y Estructura Backend (Semanas 4-5) ✅ Done
 
-#### HU-01: Sistema de Autenticación y Roles (RBAC)
+#### HU-01: Sistema de Autenticación y Roles (RBAC) ✅ Done
 - **Como** Administrador del sistema
 - **Deseo** gestionar el acceso mediante roles (Admin, Médico)
 - **Para** asegurar que solo personal autorizado acceda a la información clínica.
@@ -34,13 +34,14 @@
 - Crear vista de Login en React.
 
 **DoD:** Código en main, pruebas de login exitosas, documentación de endpoints.  
-**Estimación:** 8 puntos.
+**Estimación:** 8 puntos.  
+**Estado:** ✅ Completado — Backend (JWT, RBAC, Bcrypt) + Frontend (Login por roles, rutas protegidas, sidebar diferenciada por rol) desplegados en los 3 ambientes.
 
 ---
 
-### Sprint 2: Gestión de Pacientes y Base de Datos (Semanas 6-7)
+### Sprint 2: Gestión de Pacientes y Base de Datos (Semanas 6-7) ✅ Done
 
-#### HU-02: Registro y Precarga de Datos de Pacientes
+#### HU-02: Registro y Precarga de Datos de Pacientes ✅ Done
 - **Como** Médico
 - **Deseo** visualizar y gestionar pacientes con datos precargados
 - **Para** agilizar la consulta médica y no empezar desde cero con cada registro.
@@ -60,13 +61,14 @@
 - Desarrollar componentes de tabla y formulario de edición.
 
 **DoD:** CRUD funcional al 100%, base de datos normalizada, validación de campos obligatorios.  
-**Estimación:** 13 puntos.
+**Estimación:** 13 puntos.  
+**Estado:** ✅ Completado — Seed con 10 pacientes (5 por médico), CRUD en backend (FastAPI+PostgreSQL) y frontend (tabla, formulario, búsqueda, exportación Excel/PDF). Admin ve todos los pacientes; médico solo los propios.
 
 ---
 
-### Sprint 3: V1 Funcional y Pruebas (Semanas 8-9)
+### Sprint 3: V1 Funcional y Pruebas (Semanas 8-9) ✅ Done
 
-#### HU-03: Integración Frontend-Backend y Despliegue Local
+#### HU-03: Integración Frontend-Backend y Despliegue Cloud ✅ Done
 - **Como** Desarrollador
 - **Deseo** integrar las capas de la aplicación y realizar pruebas de estrés
 - **Para** garantizar la estabilidad de la versión 1.0.
@@ -76,11 +78,12 @@
 - Pruebas de integración pasan con >80% de cobertura.
 
 **DoD:** Despliegue local mediante Docker o script de inicio, reporte de pruebas unitarias.  
-**Estimación:** 5 puntos.
+**Estimación:** 5 puntos.  
+**Estado:** ✅ Completado — Frontend consume API real (`VITE_API_BASE_URL`). CORS configurado con orígenes explícitos. Pipeline CI/CD con 3 workflows GitHub Actions. Smoke tests automáticos en producción. Desplegado en Render: 3 backends + 3 frontends + 3 BDs PostgreSQL independientes.
 
 ---
 
-## MOMENTO 2: TRABAJO INTEGRADOR II (Semanas 10-18) - Avance 60%
+## MOMENTO 2: TRABAJO INTEGRADOR II (Semanas 10-18) - Avance 0% 📋 Próximo
 
 ### Sprint 4 & 5: Inteligencia Predictiva (Semanas 10-13)
 
