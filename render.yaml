@@ -60,18 +60,21 @@ services:
       - key: LLM_MODEL
         value: gpt-3.5-turbo
 
-  # ─────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────
   # FRONTEND - DEVELOPMENT (rama: develop)
-  # ─────────────────────────────────────────
+  # Repo: https://github.com/jaquimbayoc7/assist-reach-aid
+  # Conectar este servicio manualmente en Render al repo assist-reach-aid
+  # rama develop. La configuracion completa esta en assist-reach-aid/render.yaml
+  # ─────────────────────────────────────────────────────────────────
   - type: web
     name: hab-frontend-dev
     runtime: static
     branch: develop
-    buildCommand: cd frontend && npm ci && npm run build
-    staticPublishPath: frontend/dist
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://hybridmodeldisability.onrender.com
+        value: https://hab-backend-dev.onrender.com
       - key: VITE_ENVIRONMENT
         value: development
     routes:
@@ -121,18 +124,21 @@ services:
       - key: LLM_MODEL
         value: gpt-3.5-turbo
 
-  # ─────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────
   # FRONTEND - QA / STAGING (rama: staging)
-  # ─────────────────────────────────────────
+  # Repo: https://github.com/jaquimbayoc7/assist-reach-aid
+  # Conectar este servicio manualmente en Render al repo assist-reach-aid
+  # rama staging. La configuracion completa esta en assist-reach-aid/render.yaml
+  # ─────────────────────────────────────────────────────────────────
   - type: web
     name: hab-frontend-qa
     runtime: static
     branch: staging
-    buildCommand: cd frontend && npm ci && npm run build
-    staticPublishPath: frontend/dist
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://hybridmodeldisability.onrender.com
+        value: https://hab-backend-qa.onrender.com
       - key: VITE_ENVIRONMENT
         value: staging
     routes:
@@ -182,18 +188,21 @@ services:
       - key: LLM_MODEL
         value: gpt-4
 
-  # ─────────────────────────────────────────
-  # FRONTEND - PRODUCTION (rama: master)
-  # ─────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────
+  # FRONTEND - PRODUCTION (rama: main)
+  # Repo: https://github.com/jaquimbayoc7/assist-reach-aid
+  # Conectar este servicio manualmente en Render al repo assist-reach-aid
+  # rama main. La configuracion completa esta en assist-reach-aid/render.yaml
+  # ─────────────────────────────────────────────────────────────────
   - type: web
     name: hab-frontend
     runtime: static
-    branch: master
-    buildCommand: cd frontend && npm ci && npm run build
-    staticPublishPath: frontend/dist
+    branch: main
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://hybridmodeldisability.onrender.com
+        value: https://hab-backend.onrender.com
       - key: VITE_ENVIRONMENT
         value: production
     routes:
