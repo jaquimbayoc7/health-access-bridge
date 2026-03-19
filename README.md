@@ -218,4 +218,4 @@ health-access-bridge/
 - [GitHub Project SCRUM Board](https://github.com/users/jaquimbayoc7/projects/1)
 - [GitHub Environments](https://github.com/jaquimbayoc7/health-access-bridge/settings/environments)
 - [Historial de Deployments](https://github.com/jaquimbayoc7/health-access-bridge/deployments)
-- [📁 Documentos OneDrive (BPM, Release Plan, Arquitectura, Figma)](https://1drv.ms/f/c/1bb90464e00ae32f/IgClfUapHhO0Qqi0xchUzV7PAe4-x2Mk6pn1ZRdFia8Xz8c?e=w6exQH)
+- [🎨 Mockups de Diseño](./frontend/design/images/) - 8 pantallas: Login, Dashboard, Pacientes, Predicciones, Admin Panel, Análisis, Guía Predictiva, Perfil Funcional ICF

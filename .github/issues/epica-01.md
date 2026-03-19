@@ -17,7 +17,9 @@ Fase inicial del proyecto en la que se definen todos los artefactos de arquitect
 - [ ] **BPM (Business Process Model):** Modelado de procesos de negocio del flujo de atención médica
 - [ ] **Release Plan:** Plan de releases para las 27 semanas del proyecto
 - [ ] **Arquitectura:** Diagrama de arquitectura del sistema (frontend, backend, base de datos, modelo predictivo, LLM)
-- [ ] **Prototipo Figma:** Prototipo de alta fidelidad de las pantallas principales (Login, Pacientes, Predicción, Dashboard)
+- [x] **Mockups de Diseño:** Prototipos de alta fidelidad de las pantallas principales
+  - Ver mockups en: [`frontend/design/images/`](../../frontend/design/images/)
+  - Pantallas: Login, Dashboard, Pacientes, Predicciones, Admin Panel, Análisis, Guía Predictiva, Perfil Funcional ICF
 
 ---
 

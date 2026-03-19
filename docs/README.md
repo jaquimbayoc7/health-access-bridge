@@ -2,20 +2,30 @@
 
 ## Épica 1 — Estructuración y Diseño
 
-Todos los documentos de diseño y planificación del proyecto están disponibles en el siguiente enlace:
+### Mockups de Diseño
 
-**📁 [Ver documentos en OneDrive](https://1drv.ms/f/c/1bb90464e00ae32f/IgClfUapHhO0Qqi0xchUzV7PAe4-x2Mk6pn1ZRdFia8Xz8c?e=w6exQH)**
+**🎨 [Ver mockups en el repositorio](../frontend/design/images/)**
+
+Prototipos de alta fidelidad de las 8 pantallas principales del sistema:
+- 01 - Login / Landing
+- 02 - Dashboard
+- 03 - Pacientes
+- 04 - Predicciones
+- 05 - Admin Panel
+- 06 - Análisis
+- 07 - Guía Predictiva
+- 08 - Perfil Funcional ICF
 
 ---
 
-### Documentos incluidos
+### Documentos de planificación
 
-| Documento | Descripción |
-|-----------|-------------|
-| **BPM** | Business Process Model — Modelado de procesos del flujo de atención médica |
-| **Release Plan** | Plan de releases para las 27 semanas del proyecto |
-| **Arquitectura** | Diagrama del sistema (frontend, backend, base de datos, modelo predictivo, LLM) |
-| **Prototipo Figma** | Prototipo de alta fidelidad (Login, Pacientes, Predicción, Dashboard) |
+| Documento | Descripción | Estado |
+|-----------|-------------|--------|
+| **Mockups de Diseño** | Prototipos de alta fidelidad de las 8 pantallas principales | ✅ Completado |
+| **BPM** | Business Process Model — Modelado de procesos del flujo de atención médica | 📋 Pendiente |
+| **Release Plan** | Plan de releases para las 27 semanas del proyecto | 📋 Pendiente |
+| **Arquitectura** | Diagrama del sistema (frontend, backend, base de datos, modelo predictivo, LLM) | 📋 Pendiente |
 
 ---
 
