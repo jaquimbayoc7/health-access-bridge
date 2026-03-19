@@ -44,7 +44,9 @@ Los siguientes Sprints dependen de esta épica:
 ## Definition of Done (DoD)
 
 - [ ] Todos los artefactos documentados y en el repositorio (`/docs/`)
-- [ ] Prototipo Figma con enlace compartido en el README
+- [x] Mockups de diseño exportados y disponibles en el repositorio
+  - 📁 Ver mockups: [`frontend/design/images/`](../../frontend/design/images/)
+  - 8 pantallas completadas: Login, Dashboard, Pacientes, Predicciones, Admin Panel, Análisis, Guía Predictiva, Perfil Funcional ICF
 - [ ] Revisión y aprobación del equipo
 
 ---
