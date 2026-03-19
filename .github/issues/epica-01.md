@@ -28,7 +28,7 @@ Fase inicial del proyecto en la que se definen todos los artefactos de arquitect
 - [ ] BPM aprobado por el equipo y docente
 - [ ] Release Plan publicado en el repositorio
 - [ ] Diagrama de arquitectura documenta stack completo (FastAPI + React + PostgreSQL + HybridModelDisability + LLM)
-- [ ] Prototipo Figma cubre flujos de Admin y Médico
+- [x] Mockups de diseño cubren flujos de Admin y Médico (8 pantallas completadas)
 
 ---
 

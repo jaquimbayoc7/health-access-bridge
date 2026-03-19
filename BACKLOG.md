@@ -28,7 +28,11 @@
 ## MOMENTO 1: TRABAJO INTEGRADOR I (Semanas 1-9) - Avance 100% ✅
 
 ### Épica 1: Estructuración y Diseño (Semanas 1-3) ✅ Done
-*Artefactos: BPM, Release Plan, Arquitectura, Prototipo Figma.*
+*Artefactos completados:*
+- ✅ **Mockups de Diseño** - 8 pantallas en `frontend/design/images/`: Login, Dashboard, Pacientes, Predicciones, Admin Panel, Análisis, Guía Predictiva, Perfil Funcional ICF
+- 📋 BPM (pendiente)
+- 📋 Release Plan (pendiente)
+- 📋 Arquitectura (pendiente)
 
 ### Sprint 1: Gestión de Usuarios y Estructura Backend (Semanas 4-5) ✅ Done
 
