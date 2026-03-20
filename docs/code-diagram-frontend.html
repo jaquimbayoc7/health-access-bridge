@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Code Diagram — Health Access Bridge Frontend</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Courier New',monospace;background:#fff;padding:28px;display:flex;justify-content:center}
+.wrap{width:1560px;height:1060px;position:relative}
+
+.ns{position:absolute;border:2px solid #1168BD;background:rgba(17,104,189,.025)}
+.ns-lbl{position:absolute;top:0;left:0;font-size:11px;font-weight:bold;background:#1168BD;color:#fff;padding:2px 10px;font-family:'Segoe UI',sans-serif}
+.sub-ns{position:absolute;border:1.5px dashed #1168BD;background:rgba(17,104,189,.015)}
+.sub-lbl{position:absolute;bottom:4px;left:8px;font-size:10px;font-weight:bold;color:#1168BD;background:rgba(255,255,255,.9);padding:0 3px;font-family:'Segoe UI',sans-serif}
+
+.cls{position:absolute;border:2px solid #333;background:#fff;text-align:left}
+.cls-h{border-bottom:2px solid #333;padding:5px 8px;display:flex;align-items:center;gap:5px;background:#f5f5f5;min-height:32px}
+.stereo{width:18px;height:18px;border:2px solid #333;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold;flex-shrink:0;font-family:'Segoe UI',sans-serif}
+.s-c{background:#fff}.s-i{background:#dde8ff}.s-e{background:#e0e0e0}.s-f{background:#e8ffe8;border-color:#1a7a34;color:#1a7a34}
+.tri{color:#1168BD;font-size:12px;font-family:serif;font-weight:bold;margin:0 1px}
+.cls-name{font-weight:bold;font-size:11px;color:#000;white-space:nowrap}
+.cls-name.it{font-style:italic}
+.cls-b{padding:4px 8px 6px;font-size:9.5px;line-height:1.75;color:#222}
+.cls-b .attr{white-space:nowrap}
+.cls-b .sep{height:1px;background:#ddd;margin:3px -8px}
+.cls-b .method{white-space:nowrap;color:#1168BD}
+.cls.enum .cls-h{background:#f0f0f0}
+.cls.xtern{border-color:#888;background:#f8f8f8}
+.cls.xtern .cls-h{background:#ececec}
+.cls.page .cls-h{background:#fff3e0;border-bottom-color:#E67E22}
+.cls.page{border-color:#E67E22}
+.cls.page .stereo{border-color:#E67E22;color:#E67E22}
+.cls.page .cls-name{color:#E67E22}
+
+.inh{stroke:#333;stroke-width:1.5;fill:none;marker-end:url(#hollow)}
+.inh-dsh{stroke:#555;stroke-width:1.5;fill:none;marker-end:url(#hollow);stroke-dasharray:7,4}
+.dep{stroke:#555;stroke-width:1.3;fill:none;marker-end:url(#open);stroke-dasharray:6,4}
+.assoc{stroke:#000;stroke-width:1.5;fill:none;marker-end:url(#filled)}
+
+.lbl{position:absolute;font-size:9px;font-style:italic;color:#333;background:#fff;padding:0 2px;font-family:'Segoe UI',sans-serif;white-space:nowrap}
+.mult{position:absolute;font-size:9.5px;font-weight:bold;color:#000;font-family:'Courier New',monospace}
+.title-area{position:absolute;bottom:6px;left:0;right:0;padding:0 14px}
+.t1{font-family:'Segoe UI',sans-serif;font-size:18px;font-weight:bold;color:#000;margin-bottom:2px}
+.t2{font-family:'Segoe UI',sans-serif;font-size:10px;color:#666}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!--
+  LAYOUT (px — absolute in wrap):
+  ────────────────────────────────────────────────────────
+  src/services boundary   : x=30,  y=70,  w=920, h=760  right=950 bottom=830
+    api.ts sub-boundary   : x=50,  y=100, w=430, h=715  right=480 bottom=815
+      LoginCredentials [I]: x=65,  y=130, w=200, h=68
+      RegisterData [I]    : x=275, y=130, w=195, h=80
+      User(api) [I]       : x=65,  y=260, w=200, h=95
+      TokenResponse [I]   : x=275, y=260, w=195, h=68
+      ApiService [C]      : x=65,  y=415, w=400, h=375   bottom=790
+    patients.ts sub-bound : x=505, y=100, w=420, h=715  right=925 bottom=815
+      Patient [I]         : x=520, y=130, w=390, h=145
+      PatientCreate [I]   : x=520, y=335, w=390, h=145
+      PredictionResult [I]: x=520, y=540, w=200, h=68
+      PatientService [C]  : x=520, y=640, w=390, h=165   bottom=805
+
+  src/ right boundary     : x=970, y=70,  w=570, h=760  right=1540 bottom=830
+    AuthContext sub-bound : x=990, y=100, w=540, h=230  right=1530 bottom=330
+      User(ctx) [I]       : x=1005,y=130, w=225, h=90
+      AuthContextType [I] : x=1250,y=130, w=270, h=115
+    AuthProvider [C]      : x=990, y=355, w=265, h=165   bottom=520
+    useAuth [F]           : x=1280,y=355, w=230, h=90    bottom=445
+    pages sub-boundary    : x=990, y=545, w=540, h=265  right=1530 bottom=810
+      App [C]             : x=1005,y=570, w=200, h=95
+      DashboardLayout [C] : x=1220,y=570, w=290, h=95
+      LoginLanding [C]    : x=1005,y=680, w=140, h=55
+      Dashboard [C]       : x=1155,y=680, w=130, h=55
+      Patients [C]        : x=1298,y=680, w=120, h=55
+      AdminPanel [C]      : x=1005,y=745, w=140, h=55
+      Predictions [C]     : x=1155,y=745, w=130, h=55
+      Analytics [C]       : x=1298,y=745, w=120, h=55
+  ────────────────────────────────────────────────────────
+-->
+
+<svg width="1560" height="1060" style="position:absolute;top:0;left:0;pointer-events:none">
+<defs>
+  <marker id="hollow" markerWidth="12" markerHeight="12" refX="11" refY="5"
+          orient="auto" markerUnits="userSpaceOnUse">
+    <polygon points="0 0,10 5,0 10" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  </marker>
+  <marker id="filled" markerWidth="10" markerHeight="10" refX="9" refY="5"
+          orient="auto" markerUnits="userSpaceOnUse">
+    <polygon points="0 0,9 5,0 10" fill="#333"/>
+  </marker>
+  <marker id="open" markerWidth="10" markerHeight="10" refX="9" refY="5"
+          orient="auto" markerUnits="userSpaceOnUse">
+    <polyline points="0 0,9 5,0 10" fill="none" stroke="#555" stroke-width="1.5"/>
+  </marker>
+</defs>
+
+<!-- ===== 1. ApiService → LoginCredentials ===== -->
+<!-- ApiService top (265, 415) → LoginCredentials bottom (165, 198) -->
+<path class="dep" d="M 165 415 L 165 198"/>
+
+<!-- ===== 2. ApiService → RegisterData ===== -->
+<path class="dep" d="M 295 415 L 295 210"/>
+
+<!-- ===== 3. ApiService → User(api) ===== -->
+<!-- ApiService top-left area up to User(api) bottom (165, 355) -->
+<path class="dep" d="M 175 415 L 175 355"/>
+
+<!-- ===== 4. ApiService → TokenResponse ===== -->
+<path class="dep" d="M 320 415 L 320 328"/>
+
+<!-- ===== 5. PatientService → Patient ===== -->
+<!-- PatientService top-center (715, 640) → Patient bottom (715, 275) -->
+<path class="dep" d="M 695 640 L 695 275"/>
+
+<!-- ===== 6. PatientService → PatientCreate ===== -->
+<path class="dep" d="M 725 640 L 725 480"/>
+
+<!-- ===== 7. PatientService → PredictionResult ===== -->
+<path class="dep" d="M 620 640 L 620 608"/>
+
+<!-- ===== 8. AuthProvider → AuthContextType (implements) ===== -->
+<!-- AuthProvider top-right (1255, 355) → AuthContextType bottom (1385, 245) -->
+<path class="inh" d="M 1255 355 L 1255 330 L 1385 330 L 1385 245"/>
+
+<!-- ===== 9. AuthProvider → ApiService (uses/calls) ===== -->
+<!-- Cross-boundary: AuthProvider left (990, 437) → right of services boundary (950, 437) → ApiService right (465, 605) -->
+<path class="dep" d="M 990 437 L 960 437 L 960 605 L 465 605"/>
+
+<!-- ===== 10. useAuth → AuthProvider (reads context) ===== -->
+<path class="dep" d="M 1280 400 L 1255 400"/>
+
+<!-- ===== 11. DashboardLayout → useAuth ===== -->
+<path class="dep" d="M 1365 570 L 1365 445 L 1510 445 L 1510 400 L 1510 395"/>
+
+<!-- ===== 12. Patients page → PatientService (cross-boundary) ===== -->
+<!-- Patients(1358, 735) down to y=840, left to services area -->
+<path class="dep" d="M 1298 708 L 960 708 L 960 725 L 950 725 L 715 725 L 715 805"/>
+
+<!-- ===== 13. AdminPanel → ApiService (cross-boundary) ===== -->
+<path class="dep" d="M 1075 745 L 1075 840 L 960 840 L 960 775 L 950 775 L 465 775 L 465 790"/>
+
+<!-- ===== 14. App → AuthProvider ===== -->
+<path class="dep" d="M 1105 570 L 1105 520"/>
+
+</svg>
+
+<!-- Labels -->
+<div class="lbl" style="left:170px;top:380px">«uses»</div>
+<div class="lbl" style="left:298px;top:380px">«uses»</div>
+<div class="lbl" style="left:700px;top:570px">«uses»</div>
+<div class="lbl" style="left:730px;top:570px">«uses»</div>
+<div class="lbl" style="left:625px;top:620px">«uses»</div>
+<div class="lbl" style="left:996px;top:335px">«implements»</div>
+<div class="lbl" style="left:963px;top:415px">«uses ApiService»</div>
+<div class="lbl" style="left:1285px;top:388px">«context»</div>
+<div class="lbl" style="left:1080px;top:552px">«wraps»</div>
+
+<!-- ==================== src/services NAMESPACE ==================== -->
+<div class="ns" style="left:30px;top:70px;width:920px;height:760px">
+  <div class="ns-lbl">src/services &nbsp;[TypeScript Service Layer]</div>
+</div>
+
+<!-- api.ts sub-boundary -->
+<div class="sub-ns" style="left:50px;top:100px;width:430px;height:715px">
+  <div class="sub-lbl">api.ts</div>
+</div>
+
+<!-- LoginCredentials [I] -->
+<div class="cls" style="left:65px;top:130px;width:200px">
+  <div class="cls-h">
+    <div class="stereo s-i">I</div>
+    <span class="cls-name it">LoginCredentials</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ username : string</div>
+    <div class="attr">□ password : string</div>
+  </div>
+</div>
+
+<!-- RegisterData [I] -->
+<div class="cls" style="left:275px;top:130px;width:195px">
+  <div class="cls-h">
+    <div class="stereo s-i">I</div>
+    <span class="cls-name it">RegisterData</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ email : string</div>
+    <div class="attr">□ password : string</div>
+    <div class="attr">□ full_name : string</div>
+    <div class="attr">□ role : 'admin' | 'médico'</div>
+  </div>
+</div>
+
+<!-- User (api) [I] -->
+<div class="cls" style="left:65px;top:260px;width:200px">
+  <div class="cls-h">
+    <div class="stereo s-i">I</div>
+    <span class="cls-name it">User</span>
+    <span style="font-size:9px;color:#888;margin-left:3px;">(api)</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ id : number</div>
+    <div class="attr">□ email : string</div>
+    <div class="attr">□ full_name : string</div>
+    <div class="attr">□ is_active : boolean</div>
+    <div class="attr">□ role : 'admin' | 'médico'</div>
+  </div>
+</div>
+
+<!-- TokenResponse [I] -->
+<div class="cls" style="left:275px;top:260px;width:195px">
+  <div class="cls-h">
+    <div class="stereo s-i">I</div>
+    <span class="cls-name it">TokenResponse</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ access_token : string</div>
+    <div class="attr">□ token_type : string</div>
+  </div>
+</div>
+
+<!-- ApiService [C] -->
+<div class="cls" style="left:65px;top:415px;width:400px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">ApiService</span>
+    <span style="font-size:9px;color:#555;margin-left:4px;">→ singleton: apiService</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">- token : string | null</div>
+    <div class="sep"></div>
+    <div class="method">+ setToken(token: string) : void</div>
+    <div class="method">+ clearToken() : void</div>
+    <div class="method">+ login(creds: LoginCredentials) : Promise&lt;TokenResponse&gt;</div>
+    <div class="method">+ registerDoctor(data: RegisterData) : Promise&lt;User&gt;</div>
+    <div class="method">+ getUsers(skip, limit) : Promise&lt;User[]&gt;</div>
+    <div class="method">+ getCurrentUser() : Promise&lt;User&gt;</div>
+    <div class="method">+ updateUserStatus(id, active) : Promise&lt;User&gt;</div>
+    <div class="sep"></div>
+    <div class="attr" style="font-size:8.5px;color:#888">- getHeaders(includeAuth) : HeadersInit</div>
+    <div class="attr" style="font-size:8.5px;color:#888">Base URL: VITE_API_BASE_URL (env)</div>
+    <div class="attr" style="font-size:8.5px;color:#888">Token storage: localStorage['authToken']</div>
+  </div>
+</div>
+
+<!-- patients.ts sub-boundary -->
+<div class="sub-ns" style="left:505px;top:100px;width:420px;height:715px">
+  <div class="sub-lbl">patients.ts</div>
+</div>
+
+<!-- Patient [I] -->
+<div class="cls" style="left:520px;top:130px;width:390px">
+  <div class="cls-h">
+    <div class="stereo s-i">I</div>
+    <span class="cls-name it">Patient</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ id : number &nbsp;|&nbsp; owner_id : number</div>
+    <div class="attr">□ nombre_apellidos : string</div>
+    <div class="attr">□ numero_documento : string</div>
+    <div class="attr">□ edad : number &nbsp;|&nbsp; genero : string</div>
+    <div class="attr">□ nivel_d1..d6 : number &nbsp;|&nbsp; nivel_global : number</div>
+    <div class="attr">□ prediction_profile : number | null</div>
+    <div class="attr">□ prediction_description : string | null</div>
+  </div>
+</div>
+
+<!-- PatientCreate [I] -->
+<div class="cls" style="left:520px;top:335px;width:390px">
+  <div class="cls-h">
+    <div class="stereo s-i">I</div>
+    <span class="cls-name it">PatientCreate</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ nombre_apellidos : string</div>
+    <div class="attr">□ numero_documento : string</div>
+    <div class="attr">□ edad : number &nbsp;|&nbsp; genero : string</div>
+    <div class="attr">□ nivel_d1..d6 : number &nbsp;|&nbsp; nivel_global : number</div>
+    <div class="attr">□ causa_deficiencia : string</div>
+    <div class="attr">□ cat_fisica : string &nbsp;|&nbsp; cat_psicosocial : string</div>
+  </div>
+</div>
+
+<!-- PredictionResult [I] -->
+<div class="cls" style="left:520px;top:540px;width:200px">
+  <div class="cls-h">
+    <div class="stereo s-i">I</div>
+    <span class="cls-name it">PredictionResult</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ profile : number</div>
+    <div class="attr">□ description : string</div>
+  </div>
+</div>
+
+<!-- PatientService [C] -->
+<div class="cls" style="left:520px;top:640px;width:390px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">PatientService</span>
+    <span style="font-size:9px;color:#555;margin-left:4px;">→ singleton: patientService</span>
+  </div>
+  <div class="cls-b">
+    <div class="method">+ getPatients(skip,limit,search) : Promise&lt;Patient[]&gt;</div>
+    <div class="method">+ getPatient(id) : Promise&lt;Patient&gt;</div>
+    <div class="method">+ createPatient(p: PatientCreate) : Promise&lt;Patient&gt;</div>
+    <div class="method">+ updatePatient(id, p: PatientCreate) : Promise&lt;Patient&gt;</div>
+    <div class="method">+ deletePatient(id) : Promise&lt;void&gt;</div>
+    <div class="method">+ predictPatient(id) : Promise&lt;PredictionResult&gt;</div>
+    <div class="sep"></div>
+    <div class="attr" style="font-size:8.5px;color:#888">Auth: Bearer token from localStorage</div>
+  </div>
+</div>
+
+<!-- ==================== src/ RIGHT NAMESPACE ==================== -->
+<div class="ns" style="left:970px;top:70px;width:570px;height:760px">
+  <div class="ns-lbl">src/ &nbsp;[React App — Contexts &amp; Pages]</div>
+</div>
+
+<!-- AuthContext sub-boundary -->
+<div class="sub-ns" style="left:990px;top:100px;width:540px;height:230px">
+  <div class="sub-lbl">contexts/AuthContext.tsx</div>
+</div>
+
+<!-- User (context) [I] -->
+<div class="cls" style="left:1005px;top:130px;width:225px">
+  <div class="cls-h">
+    <div class="stereo s-i">I</div>
+    <span class="cls-name it">User</span>
+    <span style="font-size:9px;color:#888;margin-left:3px;">(context)</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ id : number</div>
+    <div class="attr">□ email : string</div>
+    <div class="attr">□ name : string</div>
+    <div class="attr">□ role : 'admin' | 'médico'</div>
+  </div>
+</div>
+
+<!-- AuthContextType [I] -->
+<div class="cls" style="left:1250px;top:130px;width:270px">
+  <div class="cls-h">
+    <div class="stereo s-i">I</div>
+    <span class="cls-name it">AuthContextType</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ user : User | null</div>
+    <div class="method">○ login(email, password) : Promise&lt;void&gt;</div>
+    <div class="method">○ logout() : void</div>
+    <div class="attr">□ isLoading : boolean</div>
+  </div>
+</div>
+
+<!-- AuthProvider [C] -->
+<div class="cls" style="left:990px;top:355px;width:270px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">AuthProvider</span>
+    <span style="font-size:9px;color:#555;margin-left:3px;">React.FC</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">- user : User | null</div>
+    <div class="attr">- isLoading : boolean</div>
+    <div class="sep"></div>
+    <div class="method">+ login(email, pass) : Promise&lt;void&gt;</div>
+    <div class="method">+ logout() : void</div>
+    <div class="attr" style="font-size:8.5px;color:#888">Stores token in localStorage</div>
+  </div>
+</div>
+
+<!-- useAuth [F] -->
+<div class="cls" style="left:1285px;top:355px;width:230px">
+  <div class="cls-h">
+    <div class="stereo s-f">F</div>
+    <span class="cls-name" style="color:#1a7a34">useAuth</span>
+    <span style="font-size:9px;color:#888;margin-left:3px;">Hook</span>
+  </div>
+  <div class="cls-b">
+    <div class="method" style="color:#1a7a34">○ useAuth() : AuthContextType</div>
+    <div class="attr" style="font-size:8.5px;color:#888">Throws if outside AuthProvider</div>
+  </div>
+</div>
+
+<!-- Pages sub-boundary -->
+<div class="sub-ns" style="left:990px;top:545px;width:540px;height:265px">
+  <div class="sub-lbl">App.tsx + pages/</div>
+</div>
+
+<!-- App [C] -->
+<div class="cls page" style="left:1005px;top:570px;width:200px">
+  <div class="cls-h">
+    <div class="stereo s-c" style="border-color:#E67E22">C</div>
+    <span class="tri" style="color:#E67E22">▲</span>
+    <span class="cls-name" style="color:#E67E22">App</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">QueryClientProvider</div>
+    <div class="attr">BrowserRouter + AuthProvider</div>
+    <div class="attr">LanguageProvider + Routes</div>
+  </div>
+</div>
+
+<!-- DashboardLayout [C] -->
+<div class="cls page" style="left:1220px;top:570px;width:285px">
+  <div class="cls-h">
+    <div class="stereo s-c" style="border-color:#E67E22">C</div>
+    <span class="tri" style="color:#E67E22">▲</span>
+    <span class="cls-name" style="color:#E67E22">DashboardLayout</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">SidebarProvider + AppSidebar</div>
+    <div class="attr">Header + &lt;Outlet /&gt;</div>
+    <div class="attr" style="color:#888;font-size:8.5px">Guards: redirects to /login if !user</div>
+  </div>
+</div>
+
+<!-- Pages Row 1 -->
+<div class="cls page" style="left:1005px;top:675px;width:140px">
+  <div class="cls-h"><div class="stereo s-c" style="border-color:#E67E22">C</div>
+    <span class="cls-name" style="color:#E67E22;font-size:10px">LoginLanding</span></div>
+  <div class="cls-b"><div class="attr" style="font-size:9px">useAuth hook</div></div>
+</div>
+<div class="cls page" style="left:1155px;top:675px;width:130px">
+  <div class="cls-h"><div class="stereo s-c" style="border-color:#E67E22">C</div>
+    <span class="cls-name" style="color:#E67E22;font-size:10px">Dashboard</span></div>
+  <div class="cls-b"><div class="attr" style="font-size:9px">useAuth hook</div></div>
+</div>
+<div class="cls page" style="left:1295px;top:675px;width:125px">
+  <div class="cls-h"><div class="stereo s-c" style="border-color:#E67E22">C</div>
+    <span class="cls-name" style="color:#E67E22;font-size:10px">Patients</span></div>
+  <div class="cls-b"><div class="attr" style="font-size:9px">patientService</div></div>
+</div>
+<div class="cls page" style="left:1430px;top:675px;width:85px">
+  <div class="cls-h"><div class="stereo s-c" style="border-color:#E67E22">C</div>
+    <span class="cls-name" style="color:#E67E22;font-size:9px">Predictions</span></div>
+  <div class="cls-b"><div class="attr" style="font-size:9px">patientSvc</div></div>
+</div>
+
+<!-- Pages Row 2 -->
+<div class="cls page" style="left:1005px;top:745px;width:140px">
+  <div class="cls-h"><div class="stereo s-c" style="border-color:#E67E22">C</div>
+    <span class="cls-name" style="color:#E67E22;font-size:10px">AdminPanel</span></div>
+  <div class="cls-b"><div class="attr" style="font-size:9px">apiService</div></div>
+</div>
+<div class="cls page" style="left:1155px;top:745px;width:130px">
+  <div class="cls-h"><div class="stereo s-c" style="border-color:#E67E22">C</div>
+    <span class="cls-name" style="color:#E67E22;font-size:10px">Analytics</span></div>
+  <div class="cls-b"><div class="attr" style="font-size:9px">patientService</div></div>
+</div>
+<div class="cls page" style="left:1295px;top:745px;width:125px">
+  <div class="cls-h"><div class="stereo s-c" style="border-color:#E67E22">C</div>
+    <span class="cls-name" style="color:#E67E22;font-size:10px">Settings</span></div>
+  <div class="cls-b"><div class="attr" style="font-size:9px">useAuth hook</div></div>
+</div>
+<div class="cls page" style="left:1430px;top:745px;width:85px">
+  <div class="cls-h"><div class="stereo s-c" style="border-color:#E67E22">C</div>
+    <span class="cls-name" style="color:#E67E22;font-size:9px">AdminRoute</span></div>
+  <div class="cls-b"><div class="attr" style="font-size:9px">role guard</div></div>
+</div>
+
+<!-- Title -->
+<div class="title-area">
+  <div class="t1">Code View: Frontend SPA — Health Access Bridge</div>
+  <div class="t2">src/services (TypeScript classes) + src/contexts + src/pages (React) | C4 Model | Health Access Bridge | License: CC BY 4.0</div>
+</div>
+
+</div>
+</body>
+</html>

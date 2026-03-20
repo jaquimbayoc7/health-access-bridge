@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Container Diagram — Health Access Bridge</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#fff;padding:40px;display:flex;justify-content:center}
+.wrap{width:1560px;height:1060px;position:relative}
+
+/* ── Persons ── */
+.person{position:absolute;width:210px;text-align:center}
+.p-circle{width:72px;height:72px;border:3px solid #1a7a34;border-radius:50%;margin:0 auto}
+.p-body{margin-top:-28px;padding:34px 14px 14px;border:3px solid #1a7a34;border-radius:14px;background:#fff}
+.p-name{font-weight:700;font-size:13px;color:#1a7a34}
+.p-tag{font-size:10px;color:#1a7a34;margin:2px 0 6px}
+.p-desc{font-size:11px;color:#333;line-height:1.4}
+
+/* ── System boundary ── */
+.boundary{position:absolute;border:3px dashed #1168BD;border-radius:14px;background:rgba(17,104,189,.03)}
+.b-label{position:absolute;bottom:8px;left:16px;font-size:13px;font-weight:700;color:#1168BD;background:#fff;padding:0 4px}
+
+/* ── Container boxes ── */
+.cbox{position:absolute;background:#fff;border:3px solid #1168BD;border-radius:11px;padding:12px 14px 14px;text-align:center}
+.c-icon{width:44px;height:32px;margin:0 auto 7px;border:2px solid #1168BD;border-radius:3px;position:relative}
+.c-icon.browser::before{content:'';display:block;height:7px;background:#1168BD;border-radius:2px 2px 0 0}
+.c-icon.terminal{font-family:monospace;font-size:13px;color:#1168BD;line-height:32px;text-align:left;padding-left:3px}
+.c-icon.terminal::before{content:'>_'}
+.c-icon.db{border-radius:3px 3px 0 0}
+.c-icon.db::after{content:'';position:absolute;bottom:-7px;left:-2px;right:-2px;height:7px;border:2px solid #1168BD;border-radius:0 0 3px 3px;background:#fff}
+.c-name{font-weight:700;font-size:14px;color:#1168BD;margin-bottom:2px}
+.c-tech{font-size:10px;color:#1168BD;margin-bottom:7px}
+.c-desc{font-size:11px;color:#333;line-height:1.4}
+
+/* ── External systems ── */
+.ext{position:absolute;background:#fff;border:3px solid #888;border-radius:11px;padding:14px;text-align:center;width:275px}
+.e-name{font-weight:700;font-size:13px;color:#555;margin-bottom:2px}
+.e-tag{font-size:10px;color:#555;margin-bottom:7px}
+.e-desc{font-size:11px;color:#333;line-height:1.4}
+.ext.red{border-color:#C0392B}.ext.red .e-name,.ext.red .e-tag{color:#C0392B}
+.ext.purple{border-color:#8E44AD}.ext.purple .e-name,.ext.purple .e-tag{color:#8E44AD}
+.ext.orange{border-color:#E67E22}.ext.orange .e-name,.ext.orange .e-tag{color:#E67E22}
+.ext.gray2{border-color:#666}.ext.gray2 .e-name,.ext.gray2 .e-tag{color:#444}
+
+/* ── Arrows ── */
+.arr{stroke:#444;stroke-width:2;fill:none;marker-end:url(#ah)}
+.dsh{stroke-dasharray:7,4}
+
+/* ── Labels ── */
+.lbl{position:absolute;font-size:11px;color:#333;background:#fff;padding:1px 5px;white-space:nowrap;line-height:1.5}
+.tech{font-size:10px;color:#666}
+
+/* ── Title ── */
+.title-area{position:absolute;bottom:8px;left:0;right:0;text-align:center}
+.t1{font-size:20px;font-weight:700;color:#222;margin-bottom:3px}
+.t2{font-size:12px;color:#777}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- SVG arrows
+  Box borders (px):
+  Admin        : x=55-265,   y=40-230,  cx=160
+  Médico       : x=1295-1505,y=40-230,  cx=1400
+  Boundary     : x=115-1085, y=265-945
+  Frontend SPA : x=145-445,  y=300-510
+  Backend API  : x=475-835,  y=415-660
+  PostgreSQL   : x=500-800,  y=775-910
+  HybridModel  : x=1130-1405,y=290-490
+  GitHub       : x=1130-1405,y=530-730
+  Render       : x=1130-1405,y=770-960
+-->
+<svg width="1560" height="1060" style="position:absolute;top:0;left:0;pointer-events:none">
+  <defs>
+    <marker id="ah" markerWidth="10" markerHeight="10" refX="10" refY="5"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0,10 5,0 10" fill="#444"/>
+    </marker>
+  </defs>
+
+  <!-- 1. Admin → Frontend (navegador) -->
+  <path class="arr" d="M 160 230 L 160 255 L 210 255 L 210 300"/>
+
+  <!-- 2. Médico → Frontend (navegador, ruta alta para evitar boundary) -->
+  <path class="arr" d="M 1400 230 L 1400 244 L 330 244 L 330 300"/>
+
+  <!-- 3. Frontend → Backend API [JSON/HTTPS] -->
+  <path class="arr dsh" d="M 445 415 L 461 415 L 461 535 L 475 535"/>
+
+  <!-- 4. Backend → PostgreSQL [PostgreSQL protocol] -->
+  <path class="arr dsh" d="M 650 660 L 650 775"/>
+
+  <!-- 5. Backend → HybridModel API [HTTPS/REST] -->
+  <path class="arr dsh" d="M 835 470 L 1090 470 L 1090 370 L 1130 370"/>
+
+  <!-- 6. GitHub Actions → Render [Render Deploy API] -->
+  <path class="arr dsh" d="M 1267 690 L 1267 770"/>
+
+  <!-- 7. Render → Backend [Hospeda Web Service] -->
+  <path class="arr dsh" d="M 1130 820 L 1095 820 L 1095 520 L 835 520"/>
+
+  <!-- 8. Render → PostgreSQL [PostgreSQL Managed] -->
+  <path class="arr dsh" d="M 1130 870 L 900 870 L 900 910 L 800 910"/>
+
+  <!-- 9. (Frontend hosted on Render — shown in description, no arrow to keep diagram clean) -->
+</svg>
+
+<!-- Labels -->
+<div class="lbl" style="left:165px;top:238px">Accede vía navegador<br><span class="tech">[HTTPS]</span></div>
+<div class="lbl" style="left:720px;top:226px">Accede vía navegador<br><span class="tech">[HTTPS]</span></div>
+<div class="lbl" style="left:450px;top:455px">Llama a la API<br><span class="tech">[JSON/HTTPS]</span></div>
+<div class="lbl" style="left:658px;top:710px">Lee y escribe datos<br><span class="tech">[PostgreSQL protocol]</span></div>
+<div class="lbl" style="left:940px;top:448px">Ejecuta predicción ML<br><span class="tech">[HTTPS/REST + API Key]</span></div>
+<div class="lbl" style="left:1278px;top:706px">Trigger deploy<br><span class="tech">[Render API]</span></div>
+<div class="lbl" style="left:945px;top:504px">Despliega y aloja<br><span class="tech">[Python Web Service]</span></div>
+<div class="lbl" style="left:870px;top:854px">Gestiona base de datos<br><span class="tech">[PostgreSQL Managed]</span></div>
+
+<!-- Persons -->
+<div class="person" style="left:55px;top:40px">
+  <div class="p-circle"></div>
+  <div class="p-body">
+    <div class="p-name">Administrador</div>
+    <div class="p-tag">[Person]</div>
+    <div class="p-desc">Gestiona usuarios, roles y métricas del sistema.</div>
+  </div>
+</div>
+<div class="person" style="left:1295px;top:40px">
+  <div class="p-circle"></div>
+  <div class="p-body">
+    <div class="p-name">Médico</div>
+    <div class="p-tag">[Person]</div>
+    <div class="p-desc">Registra pacientes y genera predicciones ICF.</div>
+  </div>
+</div>
+
+<!-- System Boundary -->
+<div class="boundary" style="left:115px;top:265px;width:970px;height:680px">
+  <div class="b-label">Health Access Bridge &nbsp;[Software System]</div>
+</div>
+
+<!-- Container: Frontend SPA -->
+<div class="cbox" style="left:145px;top:300px;width:295px">
+  <div class="c-icon browser"></div>
+  <div class="c-name">Frontend SPA</div>
+  <div class="c-tech">[Container: React 18 / TypeScript / Vite / TailwindCSS]</div>
+  <div class="c-desc">App de página única. Provee UI para login (RBAC), gestión de pacientes, predicciones de discapacidad y panel de administración. Build: <code>npm run build</code> → dist/.</div>
+</div>
+
+<!-- Container: Backend API -->
+<div class="cbox" style="left:475px;top:415px;width:360px">
+  <div class="c-icon terminal"></div>
+  <div class="c-name">Backend API</div>
+  <div class="c-tech">[Container: Python 3.11 / FastAPI / SQLAlchemy / Uvicorn]</div>
+  <div class="c-desc">API REST con autenticación JWT y RBAC (Admin / Médico). Gestiona pacientes (CRUD), delega predicciones al HybridModelDisability API externo y expone /docs (Swagger UI). Puerto $PORT vía Uvicorn.</div>
+</div>
+
+<!-- Container: PostgreSQL -->
+<div class="cbox" style="left:500px;top:775px;width:300px">
+  <div class="c-icon db"></div>
+  <div class="c-name">PostgreSQL 15</div>
+  <div class="c-tech">[Container: PostgreSQL — Render Managed DB]</div>
+  <div class="c-desc">Almacena usuarios, pacientes, historias clínicas y predicciones. 3 instancias aisladas: hab-db-dev / hab-db-qa / hab-db-prod (Ohio).</div>
+</div>
+
+<!-- External: HybridModelDisability API -->
+<div class="ext gray2" style="left:1130px;top:290px">
+  <div class="e-name">HybridModelDisability API</div>
+  <div class="e-tag">[Software System — ML Service]</div>
+  <div class="e-desc">Servicio externo alojado en Render.<br>
+  URL: <code>hybridmodeldisability.onrender.com</code><br>
+  Predice perfiles de barreras de discapacidad (K-Means + Gradient Boosting) basados en niveles de actividad D1–D6.</div>
+</div>
+
+<!-- External: GitHub Actions -->
+<div class="ext red" style="left:1130px;top:530px">
+  <div class="e-name">GitHub Actions</div>
+  <div class="e-tag">[Software System — CI/CD]</div>
+  <div class="e-desc">Workflows automatizados (ci-dev.yml / ci-prod.yml). Ejecuta pytest + build Vite en 3 ambientes (develop → dev, staging → qa, master → prod). Gate de aprobación manual en producción.</div>
+</div>
+
+<!-- External: Render Cloud Platform -->
+<div class="ext purple" style="left:1130px;top:770px">
+  <div class="e-name">Render Cloud Platform</div>
+  <div class="e-tag">[Software System — PaaS / Blueprint]</div>
+  <div class="e-desc">Hospeda Backend (Web Service Python), Frontend (Static Site) y PostgreSQL Managed en 3 ambientes independientes, definidos en <code>render.yaml</code> (Blueprint). Región: Ohio.</div>
+</div>
+
+<!-- Title -->
+<div class="title-area">
+  <div class="t1">Container View: Health Access Bridge</div>
+  <div class="t2">Diagrama de contenedores | C4 Model | Health Access Bridge | License: CC BY 4.0</div>
+</div>
+
+</div>
+</body>
+</html>

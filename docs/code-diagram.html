@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Code Diagram — Health Access Bridge Domain Model</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Courier New',monospace;background:#fff;padding:28px;display:flex;justify-content:center}
+.wrap{width:1560px;height:1040px;position:relative}
+
+/* Namespace boundary */
+.ns{position:absolute;border:2px solid #1168BD;background:rgba(17,104,189,.025);border-radius:0}
+.ns-lbl{position:absolute;top:0;left:0;font-size:11px;font-weight:bold;background:#1168BD;color:#fff;padding:2px 10px;font-family:'Segoe UI',sans-serif;letter-spacing:.3px}
+
+/* UML class box */
+.cls{position:absolute;border:2px solid #333;background:#fff;text-align:left}
+.cls-h{border-bottom:2px solid #333;padding:5px 8px;display:flex;align-items:center;gap:5px;background:#f5f5f5;min-height:34px}
+.stereo{width:19px;height:19px;border:2px solid #333;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold;flex-shrink:0;font-family:'Segoe UI',sans-serif}
+.s-c{background:#fff;color:#000}
+.s-i{background:#dde8ff;color:#000}
+.s-e{background:#e0e0e0;color:#000}
+.tri{color:#1168BD;font-size:12px;font-family:serif;font-weight:bold;margin:0 1px}
+.cls-name{font-weight:bold;font-size:11px;color:#000;white-space:nowrap}
+.cls-name.it{font-style:italic}
+.cls-b{padding:4px 8px 6px;font-size:9.5px;line-height:1.75;color:#222}
+.cls-b .attr{white-space:nowrap}
+.cls-b .sep{height:1px;background:#ddd;margin:3px -8px}
+.cls-b .method{white-space:nowrap;color:#1168BD}
+
+/* External (lighter border) */
+.cls.xtern{border-color:#888;background:#f8f8f8}
+.cls.xtern .cls-h{background:#ececec}
+.cls.xtern .stereo{border-color:#888}
+
+/* Enum special */
+.cls.enum .cls-h{background:#f0f0f0}
+
+/* SVG arrows */
+.inh{stroke:#333;stroke-width:1.5;fill:none;marker-end:url(#hollow)}
+.inh-dsh{stroke:#555;stroke-width:1.5;fill:none;marker-end:url(#hollow);stroke-dasharray:7,4}
+.dep{stroke:#555;stroke-width:1.3;fill:none;marker-end:url(#open);stroke-dasharray:6,4}
+.assoc{stroke:#000;stroke-width:1.5;fill:none;marker-end:url(#filled)}
+
+/* Labels */
+.lbl{position:absolute;font-size:9px;font-style:italic;color:#333;background:#fff;padding:0 2px;font-family:'Segoe UI',sans-serif;white-space:nowrap}
+.mult{position:absolute;font-size:9.5px;font-weight:bold;color:#000;font-family:'Courier New',monospace}
+
+.title-area{position:absolute;bottom:6px;left:0;right:0;padding:0 14px}
+.t1{font-family:'Segoe UI',sans-serif;font-size:18px;font-weight:bold;color:#000;margin-bottom:2px}
+.t2{font-family:'Segoe UI',sans-serif;font-size:10px;color:#666}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!--
+  Box coordinates (px — absolute within wrap):
+  DeclarativeBase [I] : x=155, y=28, w=260, h=50  bottom=78
+  BaseModel [I]        : x=975, y=28, w=240, h=50  bottom=78
+
+  Boundary app.models : x=30, y=85, w=660, h=290   bottom=375
+    User  [C]  : x=50,  y=115, w=295, h=185  bottom=300
+    Patient [C]: x=365, y=115, w=305, h=225  bottom=340
+
+  Boundary app.schemas: x=720, y=85, w=820, h=875  bottom=960
+    Token [C]          : x=740, y=115, w=190, h=90  bottom=205
+    Role  [E]          : x=950, y=115, w=210, h=90  bottom=205
+    UserBase [C]       : x=740, y=255, w=245, h=95  bottom=350
+    UserCreate [C]     : x=740, y=405, w=220, h=90  bottom=495
+    User(schema) [C]   : x=975, y=255, w=260, h=130 bottom=385
+    PatientBase [C]    : x=740, y=550, w=445, h=185 bottom=735
+    PatientCreate [C]  : x=740, y=790, w=185, h=55  bottom=845
+    PatientUpdate [C]  : x=945, y=790, w=185, h=55  bottom=845
+    Patient(schema) [C]: x=1210, y=550, w=275, h=185 bottom=735
+    PredictionOutput[C]: x=1210, y=790, w=275, h=100 bottom=890
+-->
+
+<svg width="1560" height="1040" style="position:absolute;top:0;left:0;pointer-events:none">
+<defs>
+  <!-- Hollow triangle (inheritance) -->
+  <marker id="hollow" markerWidth="12" markerHeight="12" refX="11" refY="5"
+          orient="auto" markerUnits="userSpaceOnUse">
+    <polygon points="0 0,10 5,0 10" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  </marker>
+  <!-- Filled arrow (association) -->
+  <marker id="filled" markerWidth="10" markerHeight="10" refX="9" refY="5"
+          orient="auto" markerUnits="userSpaceOnUse">
+    <polygon points="0 0,9 5,0 10" fill="#333"/>
+  </marker>
+  <!-- Open arrow (dependency) -->
+  <marker id="open" markerWidth="10" markerHeight="10" refX="9" refY="5"
+          orient="auto" markerUnits="userSpaceOnUse">
+    <polyline points="0 0,9 5,0 10" fill="none" stroke="#555" stroke-width="1.5"/>
+  </marker>
+</defs>
+
+<!-- ===== INHERITANCE ARROWS (ORM) ===== -->
+<!-- User → DeclarativeBase -->
+<path class="inh-dsh" d="M 197 115 L 197 88 L 285 88 L 285 78"/>
+<!-- Patient → DeclarativeBase -->
+<path class="inh-dsh" d="M 517 115 L 517 88 L 285 88 L 285 78"/>
+
+<!-- ===== ORM ASSOCIATION: User 1 → * Patient ===== -->
+<!-- Horizontal from User right (345,215) to Patient left (365,215) -->
+<path class="assoc" d="M 345 215 L 365 215"/>
+
+<!-- ===== INHERITANCE ARROWS (Pydantic schemas) ===== -->
+<!-- Token → BaseModel -->
+<path class="inh-dsh" d="M 837 115 L 837 88 L 1095 88 L 1095 78"/>
+<!-- Role  → BaseModel (Enum, shown via dep) -->
+<path class="dep" d="M 1055 115 L 1055 88 L 1095 88 L 1095 78"/>
+<!-- UserBase → BaseModel -->
+<path class="inh-dsh" d="M 940 255 L 940 88 L 1095 88 L 1095 78"/>
+<!-- PatientBase → BaseModel: routed through right gap to avoid overlaps -->
+<path class="inh-dsh" d="M 1185 545 L 1185 88 L 1095 88 L 1095 78"/>
+
+<!-- UserCreate → UserBase (vertical, below UserBase) -->
+<path class="inh" d="M 850 405 L 850 334"/>
+<!-- User(schema) → UserBase (horizontal, side by side) -->
+<path class="inh" d="M 1000 305 L 985 305"/>
+
+<!-- PatientCreate → PatientBase (vertical up to PatientBase bottom) -->
+<path class="inh" d="M 832 790 L 832 726"/>
+<!-- PatientUpdate → PatientBase (vertical) -->
+<path class="inh" d="M 1037 790 L 1037 726"/>
+<!-- Patient(schema) → PatientBase (horizontal, side by side) -->
+<path class="inh" d="M 1210 636 L 1185 636"/>
+
+<!-- ===== DEPENDENCY: schema → ORM via from_attributes ===== -->
+<!-- User(schema) → User(ORM): left through boundary gap then up -->
+<path class="dep" d="M 1000 316 L 714 316 L 714 207 L 345 207"/>
+<!-- Patient(schema) → Patient(ORM): down, left through gap, up -->
+<path class="dep" d="M 1495 614 L 1540 614 L 1540 950 L 714 950 L 714 241 L 670 241"/>
+</svg>
+
+<!-- Multiplicity (ORM association) -->
+<div class="mult" style="left:310px;top:200px">1</div>
+<div class="mult" style="left:368px;top:200px">0..*</div>
+
+<!-- Labels for arrows -->
+<div class="lbl" style="left:720px;top:300px">«from_attributes»</div>
+<div class="lbl" style="left:1510px;top:600px">«from_attributes»</div>
+<div class="lbl" style="left:344px;top:196px">owner</div>
+<div class="lbl" style="left:180px;top:70px">«extends»</div>
+<div class="lbl" style="left:1080px;top:70px">«extends / subtype»</div>
+
+<!-- ===== EXTERNAL CLASSES (above boundaries) ===== -->
+<div class="cls xtern" style="left:155px;top:28px;width:260px">
+  <div class="cls-h">
+    <div class="stereo s-i">I</div>
+    <span class="cls-name it">DeclarativeBase</span>
+    <span style="font-size:9px;color:#888;margin-left:4px;">[SQLAlchemy]</span>
+  </div>
+  <div class="cls-b">
+    <div class="method">○ metadata : MetaData</div>
+  </div>
+</div>
+
+<div class="cls xtern" style="left:975px;top:28px;width:240px">
+  <div class="cls-h">
+    <div class="stereo s-i">I</div>
+    <span class="cls-name it">BaseModel</span>
+    <span style="font-size:9px;color:#888;margin-left:4px;">[Pydantic v2]</span>
+  </div>
+  <div class="cls-b">
+    <div class="method">○ model_validate(obj)</div>
+    <div class="method">○ model_dump() : dict</div>
+  </div>
+</div>
+
+<!-- ===== NAMESPACE: app.models ===== -->
+<div class="ns" style="left:30px;top:85px;width:660px;height:290px">
+  <div class="ns-lbl">app.models &nbsp;[SQLAlchemy ORM — models.py]</div>
+</div>
+
+<!-- User ORM -->
+<div class="cls" style="left:50px;top:115px;width:295px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">User</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ id : int &nbsp;<em>[PK, auto]</em></div>
+    <div class="attr">□ email : str &nbsp;<em>[unique, index]</em></div>
+    <div class="attr">□ full_name : str</div>
+    <div class="attr">□ hashed_password : str</div>
+    <div class="attr">□ is_active : bool = True</div>
+    <div class="attr">□ role : str = "médico"</div>
+    <div class="sep"></div>
+    <div class="attr" style="color:#555">◇ patients : List[Patient]</div>
+    <div class="attr" style="font-size:8.5px;color:#888">&nbsp;&nbsp;&nbsp;[relationship, back_populates="owner"]</div>
+  </div>
+</div>
+
+<!-- Patient ORM -->
+<div class="cls" style="left:365px;top:115px;width:305px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">Patient</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ id : int &nbsp;<em>[PK, auto]</em></div>
+    <div class="attr">□ numero_documento : str &nbsp;<em>[unique]</em></div>
+    <div class="attr">□ nombre_apellidos : str</div>
+    <div class="attr">□ edad : int &nbsp;|&nbsp; genero : str</div>
+    <div class="attr">□ causa_deficiencia : str</div>
+    <div class="attr">□ nivel_d1..d6 : int &nbsp;|&nbsp; nivel_global : int</div>
+    <div class="attr">□ prediction_profile : int?</div>
+    <div class="attr">□ prediction_description : str?</div>
+    <div class="attr">□ is_active : bool = True</div>
+    <div class="attr">□ owner_id : int &nbsp;<em>[FK→users.id]</em></div>
+    <div class="sep"></div>
+    <div class="attr" style="color:#555">◇ owner : User</div>
+    <div class="attr" style="font-size:8.5px;color:#888">&nbsp;&nbsp;&nbsp;[relationship, back_populates="patients"]</div>
+  </div>
+</div>
+
+<!-- ===== NAMESPACE: app.schemas ===== -->
+<div class="ns" style="left:720px;top:85px;width:820px;height:875px">
+  <div class="ns-lbl">app.schemas &nbsp;[Pydantic v2 — schemas.py]</div>
+</div>
+
+<!-- Token -->
+<div class="cls" style="left:740px;top:115px;width:195px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">Token</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ access_token : str</div>
+    <div class="attr">□ token_type : str</div>
+  </div>
+</div>
+
+<!-- Role -->
+<div class="cls enum" style="left:950px;top:115px;width:210px">
+  <div class="cls-h">
+    <div class="stereo s-e">E</div>
+    <span class="cls-name">Role</span>
+    <span style="font-size:9px;color:#888;margin-left:3px;">«Enum»</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ admin = "admin"</div>
+    <div class="attr">□ medico = "médico"</div>
+  </div>
+</div>
+
+<!-- UserStatusUpdate -->
+<div class="cls" style="left:1210px;top:115px;width:235px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">UserStatusUpdate</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ is_active : bool</div>
+  </div>
+</div>
+
+<!-- UserBase -->
+<div class="cls" style="left:740px;top:255px;width:245px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">UserBase</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ email : EmailStr</div>
+    <div class="attr">□ full_name : str</div>
+  </div>
+</div>
+
+<!-- User (schema response) -->
+<div class="cls" style="left:1000px;top:255px;width:250px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">User</span>
+    <span style="font-size:9px;color:#1168BD;margin-left:3px;">«response»</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ id : int</div>
+    <div class="attr">□ is_active : bool</div>
+    <div class="attr">□ role : Role</div>
+    <div class="sep"></div>
+    <div class="attr" style="font-size:8.5px;color:#888">model_config = from_attributes=True</div>
+  </div>
+</div>
+
+<!-- UserCreate -->
+<div class="cls" style="left:740px;top:405px;width:220px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">UserCreate</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ password : str</div>
+    <div class="attr">□ role : Role</div>
+  </div>
+</div>
+
+<!-- PatientBase -->
+<div class="cls" style="left:740px;top:545px;width:445px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">PatientBase</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ numero_documento : str</div>
+    <div class="attr">□ nombre_apellidos : str &nbsp;|&nbsp; fecha_nacimiento : date</div>
+    <div class="attr">□ edad : int = Field(gt=0)</div>
+    <div class="attr">□ genero : str &nbsp;|&nbsp; orientacion_sexual : str</div>
+    <div class="attr">□ causa_deficiencia : str</div>
+    <div class="attr">□ cat_fisica : str &nbsp;|&nbsp; cat_psicosocial : str</div>
+    <div class="attr">□ nivel_d1..d6 : int = Field(ge=0, le=100)</div>
+    <div class="attr">□ nivel_global : int = Field(ge=0, le=100)</div>
+  </div>
+</div>
+
+<!-- PatientCreate -->
+<div class="cls" style="left:740px;top:790px;width:185px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">PatientCreate</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr" style="color:#888;font-style:italic">(hereda PatientBase)</div>
+  </div>
+</div>
+
+<!-- PatientUpdate -->
+<div class="cls" style="left:945px;top:790px;width:185px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">PatientUpdate</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr" style="color:#888;font-style:italic">(hereda PatientBase)</div>
+  </div>
+</div>
+
+<!-- Patient (schema response) -->
+<div class="cls" style="left:1210px;top:545px;width:285px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">Patient</span>
+    <span style="font-size:9px;color:#1168BD;margin-left:3px;">«response»</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ id : int</div>
+    <div class="attr">□ owner_id : int</div>
+    <div class="attr">□ is_active : bool = True</div>
+    <div class="attr">□ prediction_profile : Optional[int]</div>
+    <div class="attr">□ prediction_description : Optional[str]</div>
+    <div class="sep"></div>
+    <div class="attr" style="font-size:8.5px;color:#888">model_config = from_attributes=True</div>
+  </div>
+</div>
+
+<!-- PredictionInput / Output -->
+<div class="cls" style="left:1210px;top:790px;width:285px">
+  <div class="cls-h">
+    <div class="stereo s-c">C</div>
+    <span class="tri">▲</span>
+    <span class="cls-name">PredictionInput</span>
+    <span style="font-size:9px;color:#555;margin-left:2px;">/ Output</span>
+  </div>
+  <div class="cls-b">
+    <div class="attr">□ edad : int &nbsp;|&nbsp; genero : str</div>
+    <div class="attr">□ nivel_d1..d6 : int</div>
+    <div class="attr">□ nivel_global : int</div>
+    <div class="sep"></div>
+    <div class="attr" style="color:#1168BD">→ Output: profile : int</div>
+    <div class="attr" style="color:#1168BD">→ Output: description : str</div>
+  </div>
+</div>
+
+<!-- Title -->
+<div class="title-area">
+  <div class="t1">Code View: Backend API — Core Domain Model</div>
+  <div class="t2">app.models (SQLAlchemy ORM) + app.schemas (Pydantic v2) | C4 Model | Health Access Bridge | License: CC BY 4.0</div>
+</div>
+
+</div>
+</body>
+</html>

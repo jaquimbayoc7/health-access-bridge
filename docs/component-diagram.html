@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Component Diagram — Health Access Bridge Backend</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#fff;padding:30px;display:flex;justify-content:center}
+.wrap{width:1560px;height:1130px;position:relative}
+
+/* Containers outside boundary */
+.ext-cont{position:absolute;background:#fff;border:3px solid #1168BD;border-radius:10px;padding:12px;text-align:center}
+.ec-name{font-weight:700;font-size:13px;color:#1168BD;margin-bottom:2px}
+.ec-tech{font-size:10px;color:#1168BD;margin-bottom:6px}
+.ec-desc{font-size:11px;color:#333;line-height:1.4}
+.ec-icon{width:42px;height:30px;margin:0 auto 6px;border:2px solid #1168BD;border-radius:3px}
+.ec-icon.browser::before{content:'';display:block;height:6px;background:#1168BD;border-radius:2px 2px 0 0}
+.ec-icon.db{border-radius:3px 3px 0 0;position:relative}
+.ec-icon.db::after{content:'';position:absolute;bottom:-6px;left:-2px;right:-2px;height:6px;border:2px solid #1168BD;border-radius:0 0 3px 3px;background:#fff}
+
+/* External system box */
+.ext-sys{position:absolute;background:#fff;border:3px solid #888;border-radius:10px;padding:12px;text-align:center;width:230px}
+.es-name{font-weight:700;font-size:12px;color:#555;margin-bottom:2px}
+.es-tag{font-size:10px;color:#555;margin-bottom:6px}
+.es-desc{font-size:11px;color:#333;line-height:1.4}
+.ext-sys.red{border-color:#C0392B}.ext-sys.red .es-name,.ext-sys.red .es-tag{color:#C0392B}
+
+/* Backend boundary */
+.boundary{position:absolute;border:3px dashed #1168BD;border-radius:14px;background:rgba(17,104,189,.03)}
+.b-lbl{position:absolute;bottom:6px;left:14px;font-size:12px;font-weight:700;color:#1168BD;background:#fff;padding:0 4px}
+
+/* Component boxes (inside boundary) */
+.comp{position:absolute;background:#fff;border:2px solid #1168BD;border-radius:8px;padding:10px 12px 12px;text-align:center}
+.comp-plug{width:38px;height:24px;margin:0 auto 6px;border:2px solid #1168BD;border-radius:3px;position:relative;background:#fff}
+.comp-plug::before,.comp-plug::after{content:'';position:absolute;width:6px;height:9px;background:#fff;border:2px solid #1168BD;border-radius:1px;top:50%;transform:translateY(-50%)}
+.comp-plug::before{left:-8px}
+.comp-plug::after{right:-8px}
+.c-name{font-weight:700;font-size:12px;color:#1168BD;margin-bottom:1px}
+.c-tech{font-size:9px;color:#1168BD;margin-bottom:5px}
+.c-desc{font-size:10px;color:#333;line-height:1.4}
+
+/* Arrows */
+.arr{stroke:#444;stroke-width:1.8;fill:none;marker-end:url(#ah)}
+.dsh{stroke-dasharray:6,4}
+.lbl{position:absolute;font-size:10px;color:#333;background:#fff;padding:0 4px;white-space:nowrap}
+.tech{font-size:9px;color:#666}
+
+/* Person */
+.person{position:absolute;width:170px;text-align:center}
+.p-circ{width:56px;height:56px;border:3px solid #1a7a34;border-radius:50%;margin:0 auto}
+.p-body{margin-top:-22px;padding:28px 10px 10px;border:3px solid #1a7a34;border-radius:12px;background:#fff}
+.p-name{font-weight:700;font-size:12px;color:#1a7a34}
+.p-tag{font-size:9px;color:#1a7a34;margin:1px 0 4px}
+.p-desc{font-size:10px;color:#333;line-height:1.3}
+
+.title-area{position:absolute;bottom:6px;left:0;right:0;text-align:center}
+.t1{font-size:18px;font-weight:700;color:#222;margin-bottom:2px}
+.t2{font-size:11px;color:#777}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!--
+  LAYOUT (px):
+  Admin person       : x=30-200,   y=30-190,  cx=115
+  Médico person      : x=240-410,  y=30-190,  cx=325
+  Frontend SPA       : x=500-760,  y=30-180
+  Backend boundary   : x=80-1180,  y=210-920
+  -- Row 1 routers   : y=250
+     Users Router    : x=110-360
+     Admin Router    : x=390-620
+     Patients Router : x=650-920
+  -- Row 2 services  : y=480
+     Auth Component  : x=110-360
+     RBAC Guards     : x=390-620
+     ML Inference    : x=650-920
+  -- Row 3 data      : y=700
+     CRUD Layer      : x=150-450
+     DB Session      : x=500-760
+  PostgreSQL DB      : x=300-600,  y=940-1050
+  model.joblib       : x=1200-1430,y=580-720
+-->
+
+<svg width="1560" height="1130" style="position:absolute;top:0;left:0;pointer-events:none">
+<defs>
+  <marker id="ah" markerWidth="9" markerHeight="9" refX="9" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
+    <polygon points="0 0,9 4.5,0 9" fill="#444"/>
+  </marker>
+</defs>
+
+<!-- Admin → Users Router -->
+<path class="arr" d="M 115 190 L 115 215 L 175 215 L 175 250"/>
+
+<!-- Médico → Patients Router -->
+<path class="arr" d="M 325 190 L 325 215 L 760 215 L 760 250"/>
+
+<!-- Frontend → Users Router [JSON/HTTPS] -->
+<path class="arr dsh" d="M 560 180 L 560 215 L 200 215 L 200 250"/>
+
+<!-- Frontend → Admin Router [JSON/HTTPS] -->
+<path class="arr dsh" d="M 600 180 L 600 205 L 490 205 L 490 250"/>
+
+<!-- Frontend → Patients Router [JSON/HTTPS] -->
+<path class="arr dsh" d="M 660 180 L 660 215 L 770 215 L 770 250"/>
+
+<!-- Users Router → Auth Component -->
+<path class="arr dsh" d="M 235 400 L 235 480"/>
+
+<!-- Users Router → RBAC Guards -->
+<path class="arr dsh" d="M 280 400 L 280 440 L 505 440 L 505 480"/>
+
+<!-- Admin Router → RBAC Guards -->
+<path class="arr dsh" d="M 505 400 L 505 480"/>
+
+<!-- Patients Router → RBAC Guards -->
+<path class="arr dsh" d="M 700 400 L 700 440 L 555 440 L 555 480"/>
+
+<!-- Patients Router → ML Inference -->
+<path class="arr dsh" d="M 780 400 L 780 480"/>
+
+<!-- Auth Component → CRUD Layer -->
+<path class="arr dsh" d="M 235 640 L 235 680 L 280 680 L 280 700"/>
+
+<!-- RBAC Guards → CRUD Layer -->
+<path class="arr dsh" d="M 505 640 L 505 680 L 380 680 L 380 700"/>
+
+<!-- Patients Router → CRUD Layer -->
+<path class="arr dsh" d="M 750 380 L 1000 380 L 1000 680 L 430 680 L 430 700"/>
+
+<!-- Admin Router → CRUD Layer (via line down) -->
+<path class="arr dsh" d="M 470 400 L 470 650 L 330 650 L 330 700"/>
+
+<!-- CRUD Layer → DB Session -->
+<path class="arr dsh" d="M 455 770 L 510 770"/>
+
+<!-- DB Session → PostgreSQL -->
+<path class="arr dsh" d="M 630 860 L 630 900 L 480 900 L 480 940"/>
+
+<!-- ML Inference → model.joblib (reads file) -->
+<path class="arr dsh" d="M 920 560 L 1050 560 L 1050 640 L 1200 640"/>
+
+</svg>
+
+<!-- Labels -->
+<div class="lbl" style="left:120px;top:198px">Gestiona sistema<br><span class="tech">[HTTPS]</span></div>
+<div class="lbl" style="left:480px;top:198px">Registra/predice<br><span class="tech">[HTTPS]</span></div>
+<div class="lbl" style="left:410px;top:188px">API calls<br><span class="tech">[JSON/HTTPS]</span></div>
+<div class="lbl" style="left:240px;top:430px">Autentica usuario</div>
+<div class="lbl" style="left:520px;top:432px">Valida token y rol</div>
+<div class="lbl" style="left:790px;top:432px">Ejecuta predicción</div>
+<div class="lbl" style="left:460px;top:663px">Consultas ORM</div>
+<div class="lbl" style="left:460px;top:760px">Obtiene sesión<br><span class="tech">[SQLAlchemy Session]</span></div>
+<div class="lbl" style="left:540px;top:905px">Lee/escribe datos<br><span class="tech">[PostgreSQL protocol]</span></div>
+<div class="lbl" style="left:940px;top:600px">Carga modelo<br><span class="tech">[joblib.load()]</span></div>
+
+<!-- Persons -->
+<div class="person" style="left:30px;top:30px">
+  <div class="p-circ"></div>
+  <div class="p-body">
+    <div class="p-name">Administrador</div>
+    <div class="p-tag">[Person]</div>
+    <div class="p-desc">Gestiona usuarios y roles del sistema.</div>
+  </div>
+</div>
+<div class="person" style="left:240px;top:30px">
+  <div class="p-circ"></div>
+  <div class="p-body">
+    <div class="p-name">Médico</div>
+    <div class="p-tag">[Person]</div>
+    <div class="p-desc">Registra pacientes y genera predicciones ICF.</div>
+  </div>
+</div>
+
+<!-- Frontend SPA (container, outside backend boundary) -->
+<div class="ext-cont" style="left:500px;top:30px;width:260px">
+  <div class="ec-icon browser"></div>
+  <div class="ec-name">Frontend SPA</div>
+  <div class="ec-tech">[Container: React 18 / Vite]</div>
+  <div class="ec-desc">Interfaz web que consume la API REST del backend vía fetch/axios.</div>
+</div>
+
+<!-- Backend boundary -->
+<div class="boundary" style="left:80px;top:210px;width:1100px;height:720px">
+  <div class="b-lbl">Backend API &nbsp;[Container: Python 3.11 / FastAPI / Uvicorn]</div>
+</div>
+
+<!-- ROW 1: API Routers -->
+<div class="comp" style="left:110px;top:250px;width:250px">
+  <div class="comp-plug"></div>
+  <div class="c-name">Users Router</div>
+  <div class="c-tech">[Component: FastAPI APIRouter — routers/users.py]</div>
+  <div class="c-desc">Expone endpoints de sesión:<br>POST /users/login → emite JWT.<br>GET /users/me → retorna perfil del usuario autenticado.</div>
+</div>
+
+<div class="comp" style="left:390px;top:250px;width:230px">
+  <div class="comp-plug"></div>
+  <div class="c-name">Admin Router</div>
+  <div class="c-tech">[Component: FastAPI APIRouter — routers/admin.py]</div>
+  <div class="c-desc">Endpoints exclusivos Admin:<br>GET/POST /admin/users/*<br>PATCH activación/desactivación de usuarios. Requiere rol admin.</div>
+</div>
+
+<div class="comp" style="left:650px;top:250px;width:270px">
+  <div class="comp-plug"></div>
+  <div class="c-name">Patients Router</div>
+  <div class="c-tech">[Component: FastAPI APIRouter — routers/patients.py]</div>
+  <div class="c-desc">CRUD completo de pacientes:<br>GET/POST/PUT/DELETE /patients/*<br>POST /patients/{id}/predict → lanza predicción ML. Soporta paginación y búsqueda.</div>
+</div>
+
+<!-- ROW 2: Service components -->
+<div class="comp" style="left:110px;top:480px;width:250px">
+  <div class="comp-plug"></div>
+  <div class="c-name">Auth Component</div>
+  <div class="c-tech">[Component: python-jose / passlib / bcrypt — auth.py]</div>
+  <div class="c-desc">Crea y verifica tokens JWT (HS256). Hashea y verifica contraseñas con bcrypt. Configura OAuth2PasswordBearer.</div>
+</div>
+
+<div class="comp" style="left:390px;top:480px;width:230px">
+  <div class="comp-plug"></div>
+  <div class="c-name">RBAC Guards</div>
+  <div class="c-tech">[Component: FastAPI Depends — dependencies.py]</div>
+  <div class="c-desc">Valida Bearer token en cada request. Aplica guards de rol:<br>get_current_active_admin<br>get_current_active_medico</div>
+</div>
+
+<div class="comp" style="left:650px;top:480px;width:270px">
+  <div class="comp-plug"></div>
+  <div class="c-name">ML Inference Engine</div>
+  <div class="c-tech">[Component: scikit-learn / joblib / pandas]</div>
+  <div class="c-desc">Carga model_pipeline.joblib (lazy load). Recibe niveles D1–D6 del paciente, ejecuta pipeline K-Means + Gradient Boosting y retorna perfil 0/1/2 de barreras de discapacidad.</div>
+</div>
+
+<!-- ROW 3: Data layer -->
+<div class="comp" style="left:150px;top:700px;width:300px">
+  <div class="comp-plug"></div>
+  <div class="c-name">CRUD Layer</div>
+  <div class="c-tech">[Component: SQLAlchemy ORM — crud.py / models.py]</div>
+  <div class="c-desc">Operaciones de base de datos para User y Patient. Incluye filtrado por owner_id (RBAC a nivel de dato), soft-delete y actualización de predicciones.</div>
+</div>
+
+<div class="comp" style="left:500px;top:700px;width:260px">
+  <div class="comp-plug"></div>
+  <div class="c-name">Database Session</div>
+  <div class="c-tech">[Component: SQLAlchemy — database.py]</div>
+  <div class="c-desc">Gestiona el engine y las sesiones de SQLAlchemy. Provee get_db() como dependency inyectable. Crea tablas en startup via Base.metadata.create_all().</div>
+</div>
+
+<!-- PostgreSQL (container, outside backend boundary) -->
+<div class="ext-cont" style="left:320px;top:940px;width:260px">
+  <div class="ec-icon db"></div>
+  <div class="ec-name">PostgreSQL 15</div>
+  <div class="ec-tech">[Container: Render Managed DB]</div>
+  <div class="ec-desc">Tablas: users, patients. 3 instancias: dev / qa / prod.</div>
+</div>
+
+<!-- model_pipeline.joblib (external artifact) -->
+<div class="ext-sys red" style="left:1200px;top:580px">
+  <div class="es-name">model_pipeline.joblib</div>
+  <div class="es-tag">[Artifact: scikit-learn Pipeline]</div>
+  <div class="es-desc">Archivo binario del modelo ML (K-Means + Gradient Boosting). Generado por model/train_model.py. Incluido en el repositorio bajo backend/model/.</div>
+</div>
+
+<!-- Title -->
+<div class="title-area">
+  <div class="t1">Component View: Backend API — Health Access Bridge</div>
+  <div class="t2">Diagrama de componentes del container Backend API | C4 Model | Health Access Bridge | License: CC BY 4.0</div>
+</div>
+
+</div>
+</body>
+</html>

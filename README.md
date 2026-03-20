@@ -31,6 +31,22 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 
 ---
 
+## Arquitectura — C4 Model
+
+Documentación de arquitectura en cuatro niveles siguiendo el [C4 Model](https://c4model.com) de Simon Brown.
+
+| Nivel | Diagrama | Descripción |
+|-------|----------|-------------|
+| **L1 — Context** | [system-context-diagram.html](./docs/system-context-diagram.html) | Actores (Admin, Médico), sistema HAB e interacciones con sistemas externos (GitHub Actions, Render, HybridModelDisability API) |
+| **L2 — Container** | [container-diagram.html](./docs/container-diagram.html) | Contenedores internos: Frontend SPA (React/Vite), Backend API (FastAPI), PostgreSQL 15, pipeline CI/CD y plataforma Render |
+| **L3 — Component** | [component-diagram.html](./docs/component-diagram.html) | Componentes del Backend API: Routers (Users, Admin, Patients), Auth Component, RBAC Guards, ML Inference Engine, CRUD Layer, Database Session |
+| **L4 — Code (Backend)** | [code-diagram.html](./docs/code-diagram.html) | Diagrama de clases UML del dominio: modelos SQLAlchemy ORM (`User`, `Patient`) y jerarquía de esquemas Pydantic v2 |
+| **L4 — Code (Frontend)** | [code-diagram-frontend.html](./docs/code-diagram-frontend.html) | Diagrama de clases TypeScript: servicios `ApiService` y `PatientService`, contexto `AuthProvider`, hook `useAuth` y páginas React |
+
+> Los diagramas son HTML interactivos. Ábrelos directamente en el navegador desde la carpeta `docs/`.
+
+---
+
 ## Ambientes y URLs
 
 | Ambiente | Rama | Backend | Frontend | API Docs |
@@ -219,3 +235,13 @@ health-access-bridge/
 - [GitHub Environments](https://github.com/jaquimbayoc7/health-access-bridge/settings/environments)
 - [Historial de Deployments](https://github.com/jaquimbayoc7/health-access-bridge/deployments)
 - [🎨 Mockups de Diseño](./frontend/design/images/) - 8 pantallas: Login, Dashboard, Pacientes, Predicciones, Admin Panel, Análisis, Guía Predictiva, Perfil Funcional ICF
+
+### Diagramas de Arquitectura C4
+
+| Archivo | Nivel C4 |
+|---------|----------|
+| [system-context-diagram.html](./docs/system-context-diagram.html) | L1 — System Context |
+| [container-diagram.html](./docs/container-diagram.html) | L2 — Container |
+| [component-diagram.html](./docs/component-diagram.html) | L3 — Component (Backend API) |
+| [code-diagram.html](./docs/code-diagram.html) | L4 — Code (Backend Domain Model) |
+| [code-diagram-frontend.html](./docs/code-diagram-frontend.html) | L4 — Code (Frontend SPA) |

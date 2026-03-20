@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Context Diagram - Health Access Bridge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .diagram-container {
+            width: 1400px;
+            height: 1020px;
+            position: relative;
+        }
+        
+        /* Person boxes */
+        .person {
+            position: absolute;
+            width: 240px;
+            text-align: center;
+        }
+        
+        .person-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 10px;
+            border: 4px solid #2D7A3E;
+            border-radius: 50%;
+            background: white;
+        }
+        
+        .person-body {
+            width: 240px;
+            min-height: 140px;
+            padding: 20px;
+            background: white;
+            border: 4px solid #2D7A3E;
+            border-radius: 20px;
+            margin-top: -60px;
+            padding-top: 70px;
+        }
+        
+        .person-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #2D7A3E;
+            margin-bottom: 4px;
+        }
+        
+        .person-type {
+            font-size: 11px;
+            color: #2D7A3E;
+            margin-bottom: 8px;
+        }
+        
+        .person-desc {
+            font-size: 12px;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        /* Software System box */
+        .system {
+            position: absolute;
+            width: 340px;
+            min-height: 180px;
+            padding: 24px;
+            background: white;
+            border: 4px solid #1168BD;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .system-title {
+            font-weight: bold;
+            font-size: 18px;
+            color: #1168BD;
+            margin-bottom: 4px;
+        }
+        
+        .system-type {
+            font-size: 12px;
+            color: #1168BD;
+            margin-bottom: 12px;
+        }
+        
+        .system-desc {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        /* External System box */
+        .external-system {
+            position: absolute;
+            width: 300px;
+            min-height: 140px;
+            padding: 20px;
+            background: white;
+            border: 4px solid #999999;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .external-system-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .external-system-type {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .external-system-desc {
+            font-size: 12px;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        /* Future system (orange) */
+        .future-system {
+            border-color: #E67E22;
+        }
+        
+        .future-system .external-system-title,
+        .future-system .external-system-type {
+            color: #E67E22;
+        }
+        
+        /* CI/CD system (red) */
+        .cicd-system {
+            border-color: #C0392B;
+        }
+        
+        .cicd-system .external-system-title,
+        .cicd-system .external-system-type {
+            color: #C0392B;
+        }
+        
+        /* Cloud platform (purple) */
+        .cloud-system {
+            border-color: #8E44AD;
+        }
+        
+        .cloud-system .external-system-title,
+        .cloud-system .external-system-type {
+            color: #8E44AD;
+        }
+        
+        /* Arrows */
+        .arrow {
+            stroke: #333;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arr);
+        }
+        
+        .arrow-dashed {
+            stroke-dasharray: 8, 4;
+        }
+        
+        .arrow-label {
+            position: absolute;
+            font-size: 12px;
+            color: #333;
+            background: white;
+            padding: 2px 6px;
+            white-space: nowrap;
+        }
+        
+        .title-container {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+        
+        .diagram-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .diagram-subtitle {
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="diagram-container">
+        <!-- SVG for arrows -->
+        <!--
+          Box borders used for calculations:
+          Admin person  : x=80-320,  y=80-340  center-x=200
+          Médico person : x=1080-1320, y=80-340 center-x=1200
+          HAB system    : x=530-870, y=300-500
+          PostgreSQL    : x=550-850, y=620-780
+          ML Model      : x=1020-1320, y=540-710
+          OpenAI        : x=80-380,  y=540-700
+          GitHub Actions: x=80-380,  y=740-930
+          Render        : x=1020-1320, y=740-930
+        -->
+        <svg width="1400" height="1020" style="position: absolute; top: 0; left: 0; pointer-events: none;">
+            <defs>
+                <!-- refX=10 makes the TIP of the arrowhead land exactly at the path endpoint -->
+                <marker id="arr" markerWidth="10" markerHeight="10" refX="10" refY="5"
+                        orient="auto" markerUnits="userSpaceOnUse">
+                    <polygon points="0 0, 10 5, 0 10" fill="#333" />
+                </marker>
+            </defs>
+
+            <!-- 1. Admin → HAB: L-shape down to y=290, right to x=590, down to HAB top -->
+            <path class="arrow" d="M 200 340 L 200 290 L 590 290 L 590 300" />
+
+            <!-- 2. Médico → HAB: L-shape down to y=290, left to x=810, down to HAB top -->
+            <path class="arrow" d="M 1200 340 L 1200 290 L 810 290 L 810 300" />
+
+            <!-- 3. HAB → PostgreSQL: vertical down, left lane -->
+            <path class="arrow arrow-dashed" d="M 675 500 L 675 620" />
+
+            <!-- 4. PostgreSQL → HAB: vertical up, right lane -->
+            <path class="arrow arrow-dashed" d="M 645 620 L 645 500" />
+
+            <!-- 5. HAB → ML Model: right along y=375, down to ML Model top -->
+            <path class="arrow arrow-dashed" d="M 870 375 L 1010 375 L 1010 540" />
+
+            <!-- 6. ML Model → HAB: up from ML Model top, left to HAB right -->
+            <path class="arrow arrow-dashed" d="M 1050 540 L 1050 395 L 870 395" />
+
+            <!-- 7. HAB → OpenAI: left along y=380, down to OpenAI top -->
+            <path class="arrow arrow-dashed" d="M 530 380 L 370 380 L 370 540" />
+
+            <!-- 8. OpenAI → HAB: up from OpenAI top, right to HAB left -->
+            <path class="arrow arrow-dashed" d="M 340 540 L 340 360 L 530 360" />
+
+            <!-- 9. GitHub Actions → HAB: right to x=430 (gap), up to y=505, right to HAB bottom -->
+            <path class="arrow arrow-dashed" d="M 230 740 L 430 740 L 430 505 L 650 505 L 650 500" />
+
+            <!-- 10. GitHub Actions → Render: horizontal right -->
+            <path class="arrow arrow-dashed" d="M 380 825 L 1020 825" />
+
+            <!-- 11. Render → HAB: left to x=880 (gap), up to HAB bottom, left to HAB right -->
+            <path class="arrow arrow-dashed" d="M 1020 760 L 880 760 L 880 500 L 870 500" />
+
+            <!-- 12. Render → PostgreSQL: left to PostgreSQL right side at y=720 -->
+            <path class="arrow arrow-dashed" d="M 1020 720 L 850 720" />
+        </svg>
+        
+        <!-- Administrador (Person) -->
+        <div class="person" style="left: 80px; top: 80px;">
+            <div class="person-icon"></div>
+            <div class="person-body">
+                <div class="person-title">Administrador del Sistema</div>
+                <div class="person-type">[Person]</div>
+                <div class="person-desc">Gestiona usuarios del sistema, asigna roles y supervisa métricas globales.</div>
+            </div>
+        </div>
+        
+        <!-- Médico (Person) -->
+        <div class="person" style="right: 80px; top: 80px;">
+            <div class="person-icon"></div>
+            <div class="person-body">
+                <div class="person-title">Médico</div>
+                <div class="person-type">[Person]</div>
+                <div class="person-desc">Registra pacientes, realiza predicciones de discapacidad y genera perfiles funcionales ICF.</div>
+            </div>
+        </div>
+        
+        <!-- Health Access Bridge (Main System) -->
+        <div class="system" style="left: 530px; top: 300px;">
+            <div class="system-title">Health Access Bridge</div>
+            <div class="system-type">[Software System]</div>
+            <div class="system-desc">Plataforma web para gestión clínica de pacientes con discapacidad y análisis predictivo de perfiles de barreras de acceso a la salud en zonas rurales. Incluye autenticación RBAC, CRUD de pacientes, predicción ML y dashboards analíticos.</div>
+        </div>
+        
+        <!-- PostgreSQL Database (External System) -->
+        <div class="external-system" style="left: 550px; top: 620px;">
+            <div class="external-system-title">PostgreSQL Database</div>
+            <div class="external-system-type">[Software System]</div>
+            <div class="external-system-desc">Base de datos relacional managed en Render. Almacena usuarios, pacientes, historias clínicas y resultados de predicciones.</div>
+        </div>
+        
+        <!-- HybridModelDisability ML Model (External System) -->
+        <div class="external-system" style="right: 80px; top: 540px;">
+            <div class="external-system-title">HybridModelDisability<br>ML Model</div>
+            <div class="external-system-type">[Software System]</div>
+            <div class="external-system-desc">Modelo de Machine Learning embebido (K-Means + Gradient Boosting). Predice perfiles de barreras de discapacidad basado en niveles de actividad D1-D6.</div>
+        </div>
+        
+        <!-- OpenAI GPT-4 API (Future External System) -->
+        <div class="external-system future-system" style="left: 80px; top: 540px;">
+            <div class="external-system-title">OpenAI GPT-4 API</div>
+            <div class="external-system-type">[Software System]</div>
+            <div class="external-system-desc">Servicio de IA generativa para orquestación de recomendaciones clínicas personalizadas. <strong>(HU-07 - Futuro)</strong></div>
+        </div>
+        
+        <!-- GitHub Actions (CI/CD System) -->
+        <div class="external-system cicd-system" style="left: 80px; top: 740px;">
+            <div class="external-system-title">GitHub Actions</div>
+            <div class="external-system-type">[Software System]</div>
+            <div class="external-system-desc">Pipeline CI/CD automatizado. Ejecuta pruebas (pytest), build (Vite), y despliega a Render en 3 ambientes (dev/qa/prod) con gate de aprobación manual en producción.</div>
+        </div>
+        
+        <!-- Render Cloud Platform (External System) -->
+        <div class="external-system cloud-system" style="right: 80px; top: 740px;">
+            <div class="external-system-title">Render Cloud Platform</div>
+            <div class="external-system-type">[Software System]</div>
+            <div class="external-system-desc">Plataforma de hosting cloud. Despliega backend (Python/FastAPI), frontend (Node.js/Vite) y PostgreSQL managed en 3 ambientes independientes con auto-deploy desde GitHub.</div>
+        </div>
+        
+        <!-- Arrow Labels (verified positions, no overlap with boxes) -->
+        <!-- Label 1: on horizontal y=290, between Admin right(320) and HAB left(530) -->
+        <div class="arrow-label" style="left: 340px; top: 272px;">Gestiona usuarios,<br>visualiza métricas</div>
+
+        <!-- Label 2: on horizontal y=290, between HAB right(870) and Médico left(1080) -->
+        <div class="arrow-label" style="left: 880px; top: 272px;">Registra pacientes,<br>genera predicciones</div>
+
+        <!-- Label 3: between HAB bottom(500) and PostgreSQL top(620), at x=692 (right of paths) -->
+        <div class="arrow-label" style="left: 692px; top: 548px;">Persiste y consulta<br>datos de pacientes</div>
+
+        <!-- Label 4: on horizontal y=395, between HAB right(870) and ML Model left(1020) -->
+        <div class="arrow-label" style="left: 878px; top: 378px;">Ejecuta predicciones<br>de perfiles ML</div>
+
+        <!-- Label 5: between OpenAI right(380) and HAB left(530), above OpenAI top(540) -->
+        <div class="arrow-label" style="left: 395px; top: 345px;">Genera recomendaciones<br>clínicas con LLM</div>
+
+        <!-- Label 6: on vertical x=430 (gap 380-530), below OpenAI bottom(700) and above GitHub top(740) -->
+        <div class="arrow-label" style="left: 440px; top: 710px;">Ejecuta CI/CD:<br>tests + build + deploy</div>
+
+        <!-- Label 7: on horizontal y=825, between GitHub right(380) and Render left(1020) -->
+        <div class="arrow-label" style="left: 620px; top: 808px;">Trigger deploy<br>en 3 ambientes</div>
+
+        <!-- Label 8: on vertical x=880 (gap 870-1020), between HAB bottom(500) and Render top(740) -->
+        <div class="arrow-label" style="left: 892px; top: 610px;">Hospeda app<br>y base de datos</div>
+
+        <!-- Label 9: on horizontal y=720 (gap between ML Model bottom 710 and Render top 740) -->
+        <div class="arrow-label" style="left: 870px; top: 703px;">Provee PostgreSQL<br>managed</div>
+        
+        <!-- Title -->
+        <div class="title-container">
+            <div class="diagram-title">System Context View: Health Access Bridge</div>
+            <div class="diagram-subtitle">Diagrama de contexto del sistema para Health Access Bridge | C4 Model | License: CC BY 4.0</div>
+        </div>
+    </div>
+</body>
+</html>
