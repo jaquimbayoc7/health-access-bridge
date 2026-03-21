@@ -22,10 +22,12 @@ El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Se
 
 | Artefacto | Estado | Ubicación |
 |-----------|--------|-----------|
-| **Mockups de Diseño** | ✅ Completado | [`frontend/design/images/`](../frontend/design/images/) |
-| BPM | 📋 Pendiente | - |
-| Release Plan | 📋 Pendiente | - |
-| Arquitectura | 📋 Pendiente | - |
+| **Mockups de Diseño** (8 pantallas) | ✅ Completado | [`frontend/design/images/`](../frontend/design/images/) |
+| **Arquitectura C4** (6 diagramas HTML) | ✅ Completado | [`docs/`](./) — L1 Context · L2 Container · L3 Component · L4 Code × 2 · Deployment |
+| **Reporte de Insights GitHub** | ✅ Completado | [`INSIGHTS_REPORT.md`](./INSIGHTS_REPORT.md) |
+| **Reporte de Testing** | ✅ Completado | [`TESTING_REPORT.md`](./TESTING_REPORT.md) |
+| BPM | 📋 Pendiente | — |
+| Release Plan | 📋 Pendiente | — |
 
 **Mockups completados (8 pantallas):**
 1. 01 - Login / Landing (`bi8Au.png`)

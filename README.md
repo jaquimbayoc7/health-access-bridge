@@ -232,6 +232,9 @@ health-access-bridge/
 ## Documentación
 
 - [Backlog](./BACKLOG.md)
+- [Estado del Proyecto](./docs/PROJECT_STATUS.md)
+- [Reporte de Insights GitHub](./docs/INSIGHTS_REPORT.md)
+- [Reporte de Testing](./docs/TESTING_REPORT.md)
 - [GitHub Project SCRUM Board](https://github.com/users/jaquimbayoc7/projects/1)
 - [GitHub Environments](https://github.com/jaquimbayoc7/health-access-bridge/settings/environments)
 - [Historial de Deployments](https://github.com/jaquimbayoc7/health-access-bridge/deployments)
@@ -246,3 +249,4 @@ health-access-bridge/
 | [component-diagram.html](./docs/component-diagram.html) | L3 — Component (Backend API) |
 | [code-diagram.html](./docs/code-diagram.html) | L4 — Code (Backend Domain Model) |
 | [code-diagram-frontend.html](./docs/code-diagram-frontend.html) | L4 — Code (Frontend SPA) |
+| [deployment-diagram.html](./docs/deployment-diagram.html) | Deployment — DEV / QA / PROD |

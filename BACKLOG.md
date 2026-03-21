@@ -30,9 +30,11 @@
 ### Épica 1: Estructuración y Diseño (Semanas 1-3) ✅ Done
 *Artefactos completados:*
 - ✅ **Mockups de Diseño** - 8 pantallas en `frontend/design/images/`: Login, Dashboard, Pacientes, Predicciones, Admin Panel, Análisis, Guía Predictiva, Perfil Funcional ICF
+- ✅ **Arquitectura C4** - 6 diagramas HTML en `docs/`: L1 Context, L2 Container, L3 Component, L4 Code (Backend), L4 Code (Frontend), Deployment
+- ✅ **Reporte de Insights GitHub** - `docs/INSIGHTS_REPORT.md`
+- ✅ **Reporte de Testing** - `docs/TESTING_REPORT.md`
 - 📋 BPM (pendiente)
 - 📋 Release Plan (pendiente)
-- 📋 Arquitectura (pendiente)
 
 ### Sprint 1: Gestión de Usuarios y Estructura Backend (Semanas 4-5) ✅ Done
 
@@ -173,7 +175,7 @@
 
 ---
 
-## MOMENTO 3: TRABAJO INTEGRADOR III (Semanas 19-27) - Avance 100%
+## MOMENTO 3: TRABAJO INTEGRADOR III (Semanas 19-27) - Avance 0% 🔴
 
 ### Sprint 8 & 9: IA Generativa y Recomendaciones (Semanas 19-22)
 
