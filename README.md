@@ -42,6 +42,7 @@ Documentación de arquitectura en cuatro niveles siguiendo el [C4 Model](https:/
 | **L3 — Component** | [component-diagram.html](./docs/component-diagram.html) | Componentes del Backend API: Routers (Users, Admin, Patients), Auth Component, RBAC Guards, ML Inference Engine, CRUD Layer, Database Session |
 | **L4 — Code (Backend)** | [code-diagram.html](./docs/code-diagram.html) | Diagrama de clases UML del dominio: modelos SQLAlchemy ORM (`User`, `Patient`) y jerarquía de esquemas Pydantic v2 |
 | **L4 — Code (Frontend)** | [code-diagram-frontend.html](./docs/code-diagram-frontend.html) | Diagrama de clases TypeScript: servicios `ApiService` y `PatientService`, contexto `AuthProvider`, hook `useAuth` y páginas React |
+| **Deployment** | [deployment-diagram.html](./docs/deployment-diagram.html) | Infraestructura de despliegue: DEV / QA / PROD en Render Cloud, GitHub Actions CI/CD con gate de aprobación manual, PostgreSQL 15 gestionado |
 
 > Los diagramas son HTML interactivos. Ábrelos directamente en el navegador desde la carpeta `docs/`.
 
