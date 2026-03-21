@@ -40,7 +40,7 @@
 <p class="sub">Infraestructura de despliegue en Render Cloud — Ambientes DEV / QA / PROD con CI/CD en GitHub Actions</p>
 
 <div class="wrap">
-<svg width="1420" height="930" xmlns="http://www.w3.org/2000/svg">
+<svg width="1420" height="1145" xmlns="http://www.w3.org/2000/svg">
 <defs>
   <marker id="arr" markerWidth="9" markerHeight="6" refX="9" refY="3" orient="auto">
     <polygon points="0 0,9 3,0 6" fill="#555"/>
@@ -63,32 +63,40 @@
   <text x="710" y="109" text-anchor="middle" class="t-sub" style="font-style:italic">Ejecutado en el navegador del usuario final</text>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     GITHUB  (left column)
+     GITHUB  (bottom, horizontal — same width as Render Platform)
 ════════════════════════════════════════════════════════════════ -->
-<rect x="8" y="218" width="218" height="305" rx="4" class="dn"/>
-<text x="117" y="536" text-anchor="middle" class="t-node">GitHub</text>
-<text x="117" y="549" text-anchor="middle" class="t-kind">[Deployment Node: github.com]</text>
+<rect x="252" y="942" width="1158" height="162" rx="4" class="dn"/>
+<text x="831" y="1117" text-anchor="middle" class="t-node">GitHub</text>
+<text x="831" y="1130" text-anchor="middle" class="t-kind">[Deployment Node: github.com]</text>
 
-  <!-- GitHub Actions container -->
-  <rect x="20" y="230" width="194" height="282" rx="4" class="ct"/>
-  <text x="117" y="254" text-anchor="middle" class="t-head">GitHub Actions</text>
-  <text x="117" y="269" text-anchor="middle" class="t-sub">[Container: CI/CD Platform]</text>
-  <text x="117" y="290" text-anchor="middle" class="t-sub">Repo: jaquimbayoc7/</text>
-  <text x="117" y="304" text-anchor="middle" class="t-sub">health-access-bridge</text>
-  <line x1="40" y1="312" x2="194" y2="312" stroke="#6c8ebf" stroke-width="1" stroke-dasharray="3,2"/>
-  <text x="117" y="326" text-anchor="middle" class="t-sub">3 workflows:</text>
-  <text x="117" y="341" text-anchor="middle" class="t-sub">deploy-dev.yml  →  DEV</text>
-  <text x="117" y="356" text-anchor="middle" class="t-sub">deploy-qa.yml   →  QA</text>
-  <text x="117" y="371" text-anchor="middle" class="t-sub">deploy-prod.yml →  PROD</text>
-  <line x1="40" y1="380" x2="194" y2="380" stroke="#6c8ebf" stroke-width="1" stroke-dasharray="3,2"/>
-  <text x="117" y="394" text-anchor="middle" class="t-sub">Trigger: push to master</text>
-  <text x="117" y="409" text-anchor="middle" class="t-sub">Python 3.11 · Node 18</text>
-  <text x="117" y="424" text-anchor="middle" class="t-sub">pytest (30 tests) · vite build</text>
-  <line x1="40" y1="433" x2="194" y2="433" stroke="#6c8ebf" stroke-width="1" stroke-dasharray="3,2"/>
-  <text x="117" y="448" text-anchor="middle" class="t-sub" style="font-weight:bold">⚠ Manual Approval Gate</text>
-  <text x="117" y="462" text-anchor="middle" class="t-sub">requerido en PROD</text>
-  <text x="117" y="478" text-anchor="middle" class="t-sub">Deploy via Render API</text>
-  <text x="117" y="494" text-anchor="middle" class="t-sub">(render.yaml)</text>
+  <!-- GitHub Actions container (horizontal) -->
+  <rect x="265" y="955" width="1132" height="136" rx="4" class="ct"/>
+  <text x="831" y="976" text-anchor="middle" class="t-head">GitHub Actions</text>
+  <text x="831" y="990" text-anchor="middle" class="t-sub">[Container: CI/CD Platform — jaquimbayoc7/health-access-bridge]</text>
+
+  <!-- Vertical divider left -->
+  <line x1="618" y1="963" x2="618" y2="1083" stroke="#6c8ebf" stroke-width="1" stroke-dasharray="3,2"/>
+  <!-- Vertical divider right -->
+  <line x1="1044" y1="963" x2="1044" y2="1083" stroke="#6c8ebf" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- Left section: repo + trigger + tools -->
+  <text x="441" y="1012" text-anchor="middle" class="t-sub">Repo: jaquimbayoc7/health-access-bridge</text>
+  <text x="441" y="1028" text-anchor="middle" class="t-sub">Trigger: push to master</text>
+  <text x="441" y="1044" text-anchor="middle" class="t-sub">Python 3.11 · Node 18</text>
+  <text x="441" y="1060" text-anchor="middle" class="t-sub">pytest (30 tests) · vite build</text>
+  <text x="441" y="1076" text-anchor="middle" class="t-sub">Deploy via render.yaml + Render API</text>
+
+  <!-- Center section: 3 workflows -->
+  <text x="831" y="1012" text-anchor="middle" class="t-sub" style="font-weight:bold">3 Workflows de Despliegue:</text>
+  <text x="831" y="1030" text-anchor="middle" class="t-sub">deploy-dev.yml    →    DEV  (auto)</text>
+  <text x="831" y="1048" text-anchor="middle" class="t-sub">deploy-qa.yml     →    QA   (auto)</text>
+  <text x="831" y="1066" text-anchor="middle" class="t-sub">deploy-prod.yml   →    PROD  (gate manual)</text>
+
+  <!-- Right section: gate badge -->
+  <rect x="1058" y="1005" width="330" height="70" rx="3" class="gate"/>
+  <text x="1223" y="1025" text-anchor="middle" class="t-gate">⚠  Manual Approval Gate</text>
+  <text x="1223" y="1042" text-anchor="middle" class="t-gate">requerido antes del</text>
+  <text x="1223" y="1059" text-anchor="middle" class="t-gate">deploy a PROD</text>
 
 <!-- ═══════════════════════════════════════════════════════════════
      RENDER CLOUD PLATFORM  (large outer node)
@@ -220,17 +228,18 @@
 <path class="rel" d="M 820 163 Q 1100 190 1150 254"/>
 <text x="920" y="192" class="t-lbl">HTTPS · Entrega SPA</text>
 
-<!-- GitHub Actions → Backend DEV -->
-<path class="rel" d="M 214 310 Q 250 345 278 395"/>
-<text x="200" y="358" class="t-lbl" text-anchor="end">deploy</text>
+<!-- GitHub Actions → Backend DEV  (sube por la izquierda del cilindro PostgreSQL DEV) -->
+<path class="rel" d="M 318 942 Q 275 740 282 542"/>
+<text x="270" y="858" class="t-lbl">deploy DEV</text>
 
-<!-- GitHub Actions → Backend QA -->
-<path class="rel" d="M 214 340 Q 430 358 641 395"/>
-<text x="400" y="354" class="t-lbl">deploy</text>
+<!-- GitHub Actions → Backend QA  (sube por la izquierda del cilindro PostgreSQL QA) -->
+<path class="rel" d="M 681 942 Q 644 740 648 542"/>
+<text x="634" y="858" class="t-lbl">deploy QA</text>
 
-<!-- GitHub Actions → Backend PROD -->
-<path class="rel" d="M 214 370 Q 600 385 1004 418"/>
-<text x="580" y="386" class="t-lbl">deploy (aprobación manual)</text>
+<!-- GitHub Actions → Backend PROD  (sube por la izquierda del cilindro PostgreSQL PROD) -->
+<path class="rel" d="M 1044 942 Q 1010 740 1010 564"/>
+<text x="998" y="858" class="t-lbl">deploy PROD</text>
+<text x="998" y="870" class="t-lbl" style="fill:#e65100">(gate manual)</text>
 
 <!-- Frontend DEV → Backend DEV -->
 <path class="rel2" d="M 437 352 L 437 374"/>
