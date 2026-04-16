@@ -16,9 +16,9 @@
 | HU-02 Registro y Precarga de Pacientes (13 pts) | — | HU-05 Modo Offline y PWA (13 pts) |
 | HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | HU-06 Pruebas de Integración y Rendimiento (8 pts) |
 | HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | HU-07 Orquestación LLM (21 pts) |
-| HU-11 Pruebas Smoke en Producción (3 pts) | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
-| HU-12 Pruebas de Integración Backend (5 pts) | — | HU-09 Pruebas Completas y Feedback (8 pts) |
-| HU-13 Pruebas de Diseño y UI Frontend (8 pts) | — | HU-10 Despliegue Final y Manuales (5 pts) |
+| [#14] HU-11 Pruebas Smoke en Producción (3 pts) | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
+| [#15] HU-12 Pruebas de Integración Backend (5 pts) | — | HU-09 Pruebas Completas y Feedback (8 pts) |
+| [#16] HU-13 Pruebas de Diseño y UI Frontend (8 pts) | — | HU-10 Despliegue Final y Manuales (5 pts) |
 
 **Puntos completados: 63 pts · Puntos pendientes: 68 pts · Total: 131 pts**  
 **Avance general: 48% · Momento 1 100% completado (Sprint 3.5 incluido)**
@@ -112,7 +112,7 @@
 
 ### Sprint 3.5: Calidad y Pruebas — Cierre Momento 1 (Semana 9) ✅ Done
 
-#### HU-11: Pruebas Smoke en Producción (CI/CD) ✅ Done
+#### [#14] HU-11: Pruebas Smoke en Producción (CI/CD) ✅ Done
 - **Como** DevOps / QA
 - **Deseo** que el pipeline valide automáticamente que la app esté viva después de cada deploy a producción
 - **Para** detectar fallos críticos antes de que lleguen a los usuarios finales.
@@ -136,7 +136,7 @@
 
 ---
 
-#### HU-12: Pruebas de Integración Backend (pytest) ✅ Done
+#### [#15] HU-12: Pruebas de Integración Backend (pytest) ✅ Done
 - **Como** QA / Desarrollador
 - **Deseo** un conjunto completo de pruebas de integración automatizadas para el backend
 - **Para** garantizar que cada endpoint responde correctamente antes de promover a producción.
@@ -160,7 +160,7 @@
 
 ---
 
-#### HU-13: Pruebas de Diseño y UI Frontend (Vitest + RTL) ✅ Done
+#### [#16] HU-13: Pruebas de Diseño y UI Frontend (Vitest + RTL) ✅ Done
 - **Como** QA / Desarrollador Frontend
 - **Deseo** pruebas automatizadas que validen el comportamiento visual y funcional de los componentes React
 - **Para** detectar regresiones de UI y garantizar que los flujos de usuario funcionen correctamente.

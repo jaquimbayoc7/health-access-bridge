@@ -125,9 +125,9 @@ Documentación de arquitectura en cuatro niveles siguiendo el [C4 Model](https:/
 | [#1](https://github.com/jaquimbayoc7/health-access-bridge/issues/1) | [HU-01] Autenticación y Roles (RBAC) | Sprint 1 (Sem. 4-5) | 8 | ✅ Completo | ✅ Completo | ✅ Done |
 | [#2](https://github.com/jaquimbayoc7/health-access-bridge/issues/2) | [HU-02] Registro y Precarga de Pacientes | Sprint 2 (Sem. 6-7) | 13 | ✅ Completo | ✅ Completo | ✅ Done |
 | [#3](https://github.com/jaquimbayoc7/health-access-bridge/issues/3) | [HU-03] Integración Frontend-Backend | Sprint 3 (Sem. 8-9) | 5 | ✅ Completo | ✅ Completo | ✅ Done |
-| — | [HU-11] Pruebas Smoke en Producción | Sprint 3.5 (Sem. 9) | 3 | ✅ CI/CD | — | ✅ Done |
-| — | [HU-12] Pruebas de Integración Backend | Sprint 3.5 (Sem. 9) | 5 | ✅ pytest | — | ✅ Done |
-| — | [HU-13] Pruebas de Diseño y UI Frontend | Sprint 3.5 (Sem. 9) | 8 | — | ✅ 16/16 tests | ✅ Done |
+| [#14](https://github.com/jaquimbayoc7/health-access-bridge/issues/14) | [HU-11] Pruebas Smoke en Producción | Sprint 3.5 (Sem. 9) | 3 | ✅ CI/CD | — | ✅ Done |
+| [#15](https://github.com/jaquimbayoc7/health-access-bridge/issues/15) | [HU-12] Pruebas de Integración Backend | Sprint 3.5 (Sem. 9) | 5 | ✅ pytest | — | ✅ Done |
+| [#16](https://github.com/jaquimbayoc7/health-access-bridge/issues/16) | [HU-13] Pruebas de Diseño y UI Frontend | Sprint 3.5 (Sem. 9) | 8 | — | ✅ 16/16 tests | ✅ Done |
 
 ### Momento 2 — Trabajo Integrador II (Semanas 10-18) · [Milestone](https://github.com/jaquimbayoc7/health-access-bridge/milestone/2)
 
