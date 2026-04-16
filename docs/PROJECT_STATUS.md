@@ -102,6 +102,46 @@ El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Se
 
 ---
 
+### Sprint 3.5 — Calidad y Pruebas (Semana 9)
+
+### ✅ HU-11: Pruebas Smoke en Producción
+**Sprint:** 3.5 (Semana 9) | **Puntos:** 3 | **Estado:** ✅ COMPLETADO
+
+**Implementación:**
+- Job `api-smoke-tests-prod` en `.github/workflows/ci-prod.yml`
+- Prueba 1: `GET /health` → HTTP 200 post-deploy
+- Prueba 2: `POST /users/login` → HTTP 200/401/422 (alcanzable)
+- Espera 90s post-deploy para que Render finalice el contenedor
+- Pipeline falla automáticamente si alguno de los checks falla
+
+---
+
+### ✅ HU-12: Pruebas de Integración Backend
+**Sprint:** 3.5 (Semana 9) | **Puntos:** 5 | **Estado:** ✅ COMPLETADO
+
+**Implementación:**
+- Framework: pytest + FastAPI TestClient + SQLite en memoria
+- `backend/app/tests/test_auth.py` — 17 casos (Login, JWT, RBAC, admin endpoints)
+- `backend/app/tests/test_patients.py` — 18 casos (CRUD, búsqueda, aislamiento por médico)
+- Fixtures compartidas en `conftest.py` (admin_user, medico_user, tokens, headers)
+- Ejecutado automáticamente en CI/CD en los 3 ambientes
+- Documentado en `docs/TESTING_REPORT.md`
+
+---
+
+### 📋 HU-13: Pruebas de Diseño y UI Frontend
+**Sprint:** 3.5 (Semana 9) | **Puntos:** 8 | **Estado:** 📋 BACKLOG
+
+**Stack:** Vitest + React Testing Library + jsdom + `@testing-library/user-event`
+
+**Por implementar — 16 tests en 4 módulos:**
+- `__tests__/AuthContext.test.tsx` — 4 tests (estado inicial, login, logout, error)
+- `__tests__/Login.test.tsx` — 4 tests (campos, loading, redirect, idioma)
+- `__tests__/DashboardLayout.test.tsx` — 4 tests (guards, sidebar por rol, AdminRoute)
+- `__tests__/Patients.test.tsx` — 4 tests (debounce, empty state, dialog, confirm delete)
+
+---
+
 ### 📋 EPICA-02: Funcionalidades Core y Capacidades Avanzadas (PENDIENTE)
 
 **Periodo:** Semanas 10-18  
@@ -138,12 +178,14 @@ El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Se
 
 | Métrica | Valor |
 |---------|-------|
-| **Puntos completados** | 47 pts |
-| **Puntos pendientes** | 68 pts |
-| **Total del proyecto** | 115 pts |
-| **Avance general** | 41% |
+| **Puntos completados** | 55 pts |
+| **Puntos pendientes** | 76 pts |
+| **Total del proyecto** | 131 pts |
+| **Avance general** | 42% |
 | **Avance proyectado M1** | 26% |
-| **Superación del plan** | +15% |
+| **Superación del plan** | +16% |
+| **HUs M1 completadas** | HU-01, HU-02, HU-03, HU-04*, HU-11, HU-12 |
+| **HUs M1 backlog** | HU-13 (Pruebas UI Frontend) |
 
 ---
 

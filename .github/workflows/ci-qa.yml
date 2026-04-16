@@ -87,6 +87,9 @@ jobs:
       - name: Install frontend dependencies
         run: cd frontend && npm ci
 
+      - name: Run frontend unit tests (HU-13)
+        run: cd frontend && npm run test
+
       - name: Build frontend
         env:
           VITE_API_BASE_URL: https://hab-backend-qa.onrender.com

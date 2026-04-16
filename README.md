@@ -121,10 +121,13 @@ Documentación de arquitectura en cuatro niveles siguiendo el [C4 Model](https:/
 > Épica: [#11 EPICA-01 Estructuración y Diseño](https://github.com/jaquimbayoc7/health-access-bridge/issues/11)
 
 | Issue | Título | Sprint | Pts | Backend | Frontend | Estado |
-|-------|--------|--------|-----|---------|----------|---------|
+|-------|--------|--------|-----|---------|----------|--------|
 | [#1](https://github.com/jaquimbayoc7/health-access-bridge/issues/1) | [HU-01] Autenticación y Roles (RBAC) | Sprint 1 (Sem. 4-5) | 8 | ✅ Completo | ✅ Completo | ✅ Done |
 | [#2](https://github.com/jaquimbayoc7/health-access-bridge/issues/2) | [HU-02] Registro y Precarga de Pacientes | Sprint 2 (Sem. 6-7) | 13 | ✅ Completo | ✅ Completo | ✅ Done |
 | [#3](https://github.com/jaquimbayoc7/health-access-bridge/issues/3) | [HU-03] Integración Frontend-Backend | Sprint 3 (Sem. 8-9) | 5 | ✅ Completo | ✅ Completo | ✅ Done |
+| — | [HU-11] Pruebas Smoke en Producción | Sprint 3.5 (Sem. 9) | 3 | ✅ CI/CD | — | ✅ Done |
+| — | [HU-12] Pruebas de Integración Backend | Sprint 3.5 (Sem. 9) | 5 | ✅ pytest | — | ✅ Done |
+| — | [HU-13] Pruebas de Diseño y UI Frontend | Sprint 3.5 (Sem. 9) | 8 | — | 📋 Vitest+RTL | 📋 Backlog |
 
 ### Momento 2 — Trabajo Integrador II (Semanas 10-18) · [Milestone](https://github.com/jaquimbayoc7/health-access-bridge/milestone/2)
 
@@ -132,7 +135,7 @@ Documentación de arquitectura en cuatro niveles siguiendo el [C4 Model](https:/
 
 | Issue | Título | Sprint | Pts | Estado |
 |-------|--------|--------|-----|--------|
-| [#4](https://github.com/jaquimbayoc7/health-access-bridge/issues/4) | [HU-04] Integración Modelo Predictivo (HybridModelDisability) | Sprint 4-5 (Sem. 10-13) | 21 | ✅ Done (adelantado en M1) |
+| [#4](https://github.com/jaquimbayoc7/health-access-bridge/issues/4) | [HU-04] Integración Modelo Predictivo (HybridModelDisability) | Sprint 4-5 (Sem. 10-13) | 21 | ✅ Done (adelantado en M1) · no cuenta en M1 sprint |
 | [#5](https://github.com/jaquimbayoc7/health-access-bridge/issues/5) | [HU-05] Modo Offline y PWA | Sprint 6-7 (Sem. 14-17) | 13 | 📋 Backlog |
 | [#6](https://github.com/jaquimbayoc7/health-access-bridge/issues/6) | [HU-06] Pruebas de Integración y Rendimiento API | Sprint 7 (Sem. 16-17) | 8 | 📋 Backlog |
 

@@ -3,7 +3,7 @@
 **Proyecto:** Health Access Bridge  
 **Periodo:** Momento 1 - Trabajo Integrador I (Semanas 1-9)  
 **Fecha del reporte:** Marzo 2026  
-**Historias de Usuario evaluadas:** HU-01, HU-02, HU-03
+**Historias de Usuario evaluadas:** HU-01, HU-02, HU-03, HU-11, HU-12 (completadas) · HU-13 (planificada)
 
 ---
 
@@ -16,8 +16,10 @@ El proyecto Health Access Bridge ha implementado un conjunto completo de **prueb
 | Métrica | Valor |
 |---------|-------|
 | **Total de pruebas backend** | 35+ casos de prueba |
-| **Cobertura de HUs** | HU-01, HU-02, HU-03 |
-| **Framework de pruebas** | pytest + FastAPI TestClient |
+| **Pruebas frontend planificadas** | 16 casos (HU-13) |
+| **Cobertura de HUs** | HU-01, HU-02, HU-03, HU-11, HU-12 (done) · HU-13 (backlog) |
+| **Framework backend** | pytest + FastAPI TestClient |
+| **Framework frontend** | Vitest + React Testing Library + jsdom |
 | **Base de datos de prueba** | SQLite en memoria (aislamiento total) |
 | **CI/CD** | GitHub Actions (3 workflows) |
 | **Smoke tests en producción** | Automáticos post-deploy |
@@ -185,6 +187,42 @@ El proyecto Health Access Bridge ha implementado un conjunto completo de **prueb
 
 ---
 
+## HU-11: Pruebas Smoke en Producción (CI/CD)
+
+**Archivo:** `.github/workflows/ci-prod.yml` → job `api-smoke-tests-prod`  
+**Total de pruebas:** 2 smoke tests
+
+| # | Caso de Prueba | Endpoint | Validación | Estado |
+|---|----------------|----------|-----------|--------|
+| 1 | `smoke_health_check` | `GET /health` | HTTP 200 | ✅ Pasa |
+| 2 | `smoke_auth_reachable` | `POST /users/login` | HTTP 200/401/422 | ✅ Pasa |
+
+**Configuración:**
+- Espera 90 segundos post-deploy para que Render finalice
+- Falla el pipeline si cualquier smoke test retorna código inesperado
+- Se ejecuta solo en push a `master` (después del gate de aprobación manual)
+
+### Criterios de Aceptación Validados
+
+| Criterio | Validado | Evidencia |
+|----------|----------|-----------|
+| `/health` retorna 200 post-deploy | ✅ | `smoke_health_check` |
+| `/users/login` es alcanzable | ✅ | `smoke_auth_reachable` |
+| Pipeline falla si smoke falla | ✅ | `exit 1` en script bash |
+
+---
+
+## HU-12: Pruebas de Integración Backend
+
+> **Nota:** Las pruebas de integración backend están documentadas bajo HU-01 y HU-02 en este reporte (archivos `test_auth.py` y `test_patients.py`). HU-12 formaliza el conjunto completo como una historia de usuario independiente dentro del Sprint 3.5.
+
+**Resumen de cobertura:**
+- `test_auth.py`: 17 casos — HU-01 (autenticación, JWT, RBAC)
+- `test_patients.py`: 18 casos — HU-02 (CRUD, búsqueda, aislamiento)
+- **Total: 35 casos de prueba** pasando en CI/CD en los 3 ambientes
+
+---
+
 ## HU-03: Integración Frontend-Backend y Despliegue Cloud
 
 ### Pruebas de Integración CI/CD
@@ -314,6 +352,59 @@ Similar a Dev, con:
 
 ---
 
+## HU-13: Pruebas de Diseño y UI Frontend (Planificadas)
+
+**Estado:** 📋 Planificado — Sprint 3.5 cierre  
+**Stack:** Vitest + React Testing Library + jsdom + `@testing-library/user-event`  
+**Total de casos:** 16 tests en 4 archivos
+
+### Módulo A: AuthContext (`__tests__/AuthContext.test.tsx`) — 4 tests
+
+| # | Caso de Prueba | Descripción | Archivo |
+|---|----------------|-------------|--------|
+| 1 | `useAuth_returns_null_when_not_logged` | `user` es `null` al iniciar la app sin sesión | `AuthContext.tsx` |
+| 2 | `login_stores_user_and_token` | `login()` actualiza `user` y persiste token en `localStorage` | `AuthContext.tsx` |
+| 3 | `logout_clears_state` | `logout()` borra token y resetea `user` a `null` | `AuthContext.tsx` |
+| 4 | `invalid_credentials_do_not_update_state` | Error en `login()` no persiste el usuario | `AuthContext.tsx` |
+
+### Módulo B: Login page (`__tests__/Login.test.tsx`) — 4 tests
+
+| # | Caso de Prueba | Descripción | Componente |
+|---|----------------|-------------|----------|
+| 5 | `renders_email_and_password_fields` | Campos `email` y `password` presentes en el DOM | `Login.tsx` |
+| 6 | `submit_button_disabled_while_loading` | Botón deshabilitado cuando `isLoading = true` | `Login.tsx` |
+| 7 | `redirects_to_dashboard_if_authenticated` | Renderiza `<Navigate to="/dashboard">` si hay `user` | `Login.tsx` |
+| 8 | `language_toggle_switches_es_en` | `DropdownMenu` alterna entre ES y EN | `Login.tsx` |
+
+### Módulo C: DashboardLayout / AdminRoute (`__tests__/DashboardLayout.test.tsx`) — 4 tests
+
+| # | Caso de Prueba | Descripción | Componente |
+|---|----------------|-------------|----------|
+| 9 | `unauthenticated_redirects_to_login` | Guard redirige a `/login` si `user === null` | `DashboardLayout.tsx` |
+| 10 | `admin_sees_admin_panel_link` | Sidebar muestra enlace "Admin Panel" cuando `role === 'admin'` | `AppSidebar.tsx` |
+| 11 | `medico_does_not_see_admin_panel` | Sidebar oculta "Admin Panel" cuando `role === 'médico'` | `AppSidebar.tsx` |
+| 12 | `admin_route_blocks_non_admin` | `AdminRoute` redirige médico a `/dashboard` | `App.tsx` |
+
+### Módulo D: Patients page (`__tests__/Patients.test.tsx`) — 4 tests
+
+| # | Caso de Prueba | Descripción | Componente |
+|---|----------------|-------------|----------|
+| 13 | `search_input_triggers_debounced_load` | Input dispara `loadPatients` después de 300ms de inactividad | `Patients.tsx` |
+| 14 | `empty_state_shown_when_no_patients` | Mensaje de lista vacía visible cuando `patients = []` | `Patients.tsx` |
+| 15 | `new_patient_button_opens_dialog` | Click en "Nuevo Paciente" abre `<Dialog>` | `Patients.tsx` |
+| 16 | `delete_opens_confirmation_dialog` | Click en 🗑 abre `<AlertDialog>` de confirmación | `Patients.tsx` |
+
+### Criterios de Aceptación HU-13
+
+| Criterio | Estado |
+|----------|--------|
+| 16 tests pasando con `npm run test` | 📋 Pendiente |
+| Vitest configurado en `vite.config.ts` con entorno `jsdom` | 📋 Pendiente |
+| Script `test` operativo en `package.json` | 📋 Pendiente |
+| Integrado a los 3 workflows CI/CD | 📋 Pendiente |
+
+---
+
 ## Pruebas Frontend
 
 ### Pruebas Realizadas
@@ -376,7 +467,10 @@ Aunque no hay pruebas unitarias automatizadas del frontend en el repositorio act
 |----|-------------|---------|-------------------|
 | HU-01 | Autenticación y RBAC | 17 casos | ~90% endpoints críticos |
 | HU-02 | Gestión de Pacientes | 18 casos | ~95% endpoints críticos |
-| HU-03 | Integración y Despliegue | 2 smoke tests + CI/CD | 100% pipeline |
+| HU-03 | Integración y Despliegue | CI/CD pipelines | 100% pipeline |
+| HU-11 | Smoke Tests en Producción | 2 smoke tests | 100% endpoints vitales |
+| HU-12 | Integración Backend (formal) | 35 casos totales | ~92% endpoints críticos |
+| HU-13 | Diseño y UI Frontend | 16 casos (planificados) | Guards, forms, routing |
 
 ### Áreas Cubiertas
 
