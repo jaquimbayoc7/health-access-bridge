@@ -160,7 +160,7 @@
 
 ---
 
-#### HU-13: Pruebas de Diseño y UI Frontend (Vitest + RTL) 📋 Backlog
+#### HU-13: Pruebas de Diseño y UI Frontend (Vitest + RTL) ✅ Done
 - **Como** QA / Desarrollador Frontend
 - **Deseo** pruebas automatizadas que validen el comportamiento visual y funcional de los componentes React
 - **Para** detectar regresiones de UI y garantizar que los flujos de usuario funcionen correctamente.
