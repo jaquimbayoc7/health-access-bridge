@@ -34,6 +34,7 @@ html{scroll-behavior:smooth}
       <a href="#stack" class="hover:text-primary transition-colors">Stack</a>
       <a href="#historias" class="hover:text-primary transition-colors">HUs</a>
       <a href="#testing" class="hover:text-primary transition-colors">Testing</a>
+      <a href="#casos" class="hover:text-primary transition-colors">Casos</a>
       <a href="#mockups" class="hover:text-primary transition-colors">Mockups</a>
       <a href="#roadmap" class="hover:text-primary transition-colors">Roadmap</a>
       <a href="https://hab-frontend.onrender.com/login" target="_blank" class="bg-primary text-white px-4 py-1.5 rounded-lg hover:bg-pdark transition-colors">Abrir App →</a>
@@ -409,6 +410,422 @@ html{scroll-behavior:smooth}
           </div>
         </a>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASOS DE PRUEBA -->
+<section id="casos" class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl font-bold mb-2 section-title">Casos de Prueba</h2>
+    <p class="text-slate-500 text-sm mb-4 mt-4">53 casos documentados en estándar Gherkin BDD — Given / When / Then</p>
+    <a href="https://github.com/jaquimbayoc7/health-access-bridge/blob/master/docs/TEST_CASES.md" target="_blank"
+       class="inline-flex items-center gap-2 text-xs text-primary border border-primary px-3 py-1.5 rounded-lg hover:bg-plight transition-colors mb-8">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Ver TEST_CASES.md completo en GitHub
+    </a>
+    <style>
+      .gh-kw{color:#7C3AED;font-weight:600}
+      .gh-sc{color:#0369A1;font-weight:600}
+      .gh-step{color:#15803D;font-weight:500}
+      .gh-val{color:#B45309}
+      details>summary{cursor:pointer;list-style:none}
+      details>summary::-webkit-details-marker{display:none}
+      details[open] .chev{transform:rotate(90deg)}
+      .chev{transition:transform .2s;display:inline-block}
+      pre.gh{font-family:"Fira Code","Cascadia Code",monospace;font-size:11.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+    </style>
+
+    <div class="space-y-3">
+
+      <!-- SUITE 1: SMOKE -->
+      <details class="bg-orange-50 border border-orange-200 rounded-xl overflow-hidden">
+        <summary class="flex items-center justify-between px-5 py-4 hover:bg-orange-100 transition-colors">
+          <div class="flex items-center gap-3">
+            <span class="bg-orange-200 text-orange-800 text-xs font-bold px-2 py-0.5 rounded">HU-11</span>
+            <span class="font-semibold text-slate-800 text-sm">Smoke Tests en Producción</span>
+            <span class="text-xs text-slate-400">ci-prod.yml · 2 escenarios</span>
+          </div>
+          <div class="flex items-center gap-2"><span class="text-green-600 text-xs font-medium">✅ 2/2</span><span class="chev text-slate-400">▶</span></div>
+        </summary>
+        <div class="px-5 pb-5">
+          <pre class="gh bg-white rounded-lg p-4 border border-orange-100 mt-3"><span class="gh-kw">Feature:</span> Smoke Tests de Producción
+
+  <span class="gh-kw">Background:</span>
+    <span class="gh-step">Given</span> el pipeline ejecutó un despliegue exitoso en Render producción
+    <span class="gh-step">And</span> han transcurrido al menos 90 segundos desde el inicio del contenedor
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-S01</span> — Health check responde HTTP 200
+    <span class="gh-step">Given</span> el endpoint GET /health está expuesto
+    <span class="gh-step">When</span>  el job smoke test realiza GET /health
+    <span class="gh-step">Then</span>  la respuesta tiene código 200
+    <span class="gh-step">And</span>   el servicio se considera operativo
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-S02</span> — Endpoint de login es alcanzable
+    <span class="gh-step">Given</span> el endpoint POST /users/login está expuesto
+    <span class="gh-step">When</span>  el job smoke test realiza POST /users/login sin credenciales
+    <span class="gh-step">Then</span>  la respuesta tiene código 200, 401 o 422 (no 5xx)
+    <span class="gh-step">And</span>   el pipeline continúa si todos los checks pasan</pre>
+        </div>
+      </details>
+
+      <!-- SUITE 2: AUTH BACKEND -->
+      <details class="bg-green-50 border border-green-200 rounded-xl overflow-hidden">
+        <summary class="flex items-center justify-between px-5 py-4 hover:bg-green-100 transition-colors">
+          <div class="flex items-center gap-3">
+            <span class="bg-green-200 text-green-800 text-xs font-bold px-2 py-0.5 rounded">HU-12</span>
+            <span class="font-semibold text-slate-800 text-sm">Backend — Autenticación y RBAC</span>
+            <span class="text-xs text-slate-400">test_auth.py · 18 escenarios</span>
+          </div>
+          <div class="flex items-center gap-2"><span class="text-green-600 text-xs font-medium">✅ 18/18</span><span class="chev text-slate-400">▶</span></div>
+        </summary>
+        <div class="px-5 pb-5">
+          <pre class="gh bg-white rounded-lg p-4 border border-green-100 mt-3"><span class="gh-kw">Feature:</span> Endpoints del Sistema (Health)
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B01</span> — Health check retorna HTTP 200
+    <span class="gh-step">When</span>  GET /health
+    <span class="gh-step">Then</span>  código 200
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B02</span> — Root endpoint retorna HTTP 200
+    <span class="gh-step">When</span>  GET /
+    <span class="gh-step">Then</span>  código 200
+
+<span class="gh-kw">Feature:</span> Login de Usuarios
+
+  <span class="gh-kw">Background:</span>
+    <span class="gh-step">Given</span> existen admin@test.com (admin) y medico@test.com (médico)
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B03</span> — Login exitoso como Administrador
+    <span class="gh-step">When</span>  POST /users/login {username: admin@test.com, password: adminpass123}
+    <span class="gh-step">Then</span>  código 200, body contiene access_token y token_type: bearer
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B04</span> — Login exitoso como Médico
+    <span class="gh-step">When</span>  POST /users/login {username: medico@test.com, password: medicopass123}
+    <span class="gh-step">Then</span>  código 200, body contiene access_token
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B05</span> — Login con contraseña incorrecta
+    <span class="gh-step">When</span>  POST /users/login {password: wrongpass}
+    <span class="gh-step">Then</span>  código 401
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B06</span> — Login con usuario inexistente
+    <span class="gh-step">When</span>  POST /users/login {username: noexiste@test.com}
+    <span class="gh-step">Then</span>  código 401
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B07</span> — Login sin campos requeridos
+    <span class="gh-step">When</span>  POST /users/login con body vacío {}
+    <span class="gh-step">Then</span>  código 422 con errores de validación
+
+<span class="gh-kw">Feature:</span> Perfil del Usuario Autenticado (GET /users/me)
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B08</span> — Obtener perfil con token válido
+    <span class="gh-step">Given</span> header Authorization: Bearer {token_medico}
+    <span class="gh-step">When</span>  GET /users/me
+    <span class="gh-step">Then</span>  código 200, email=medico@test.com, role=médico
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B09</span> — Sin token es rechazado
+    <span class="gh-step">When</span>  GET /users/me sin Authorization
+    <span class="gh-step">Then</span>  código 401
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B10</span> — Token inválido es rechazado
+    <span class="gh-step">When</span>  GET /users/me con Bearer token_invalido
+    <span class="gh-step">Then</span>  código 401
+
+<span class="gh-kw">Feature:</span> Gestión de Usuarios — Admin Endpoints
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B11</span> — Admin lista usuarios
+    <span class="gh-step">When</span>  GET /admin/users con token admin
+    <span class="gh-step">Then</span>  código 200, body es lista JSON
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B12</span> — Médico no puede listar usuarios (403)
+    <span class="gh-step">When</span>  GET /admin/users con token médico
+    <span class="gh-step">Then</span>  código 403
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B13</span> — Sin auth no puede listar usuarios
+    <span class="gh-step">When</span>  GET /admin/users sin Authorization
+    <span class="gh-step">Then</span>  código 401
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B14</span> — Admin registra nuevo usuario
+    <span class="gh-step">When</span>  POST /admin/users/register {email, password, full_name, role}
+    <span class="gh-step">Then</span>  código 200/201, body.email = nuevo_medico@test.com
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B15</span> — Email duplicado es rechazado
+    <span class="gh-step">When</span>  POST /admin/users/register con email ya existente
+    <span class="gh-step">Then</span>  código 400
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B16</span> — Médico no puede registrar usuarios (403)
+    <span class="gh-step">When</span>  POST /admin/users/register con token médico
+    <span class="gh-step">Then</span>  código 403
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B17</span> — Admin desactiva y reactiva usuario
+    <span class="gh-step">When</span>  PATCH /admin/users/{id}/status {is_active: false}
+    <span class="gh-step">Then</span>  código 200, is_active=false
+    <span class="gh-step">When</span>  PATCH /admin/users/{id}/status {is_active: true}
+    <span class="gh-step">Then</span>  código 200, is_active=true
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B18</span> — Toggle usuario inexistente retorna 404
+    <span class="gh-step">When</span>  PATCH /admin/users/99999/status
+    <span class="gh-step">Then</span>  código 404</pre>
+        </div>
+      </details>
+
+      <!-- SUITE 3: PATIENTS BACKEND -->
+      <details class="bg-blue-50 border border-blue-200 rounded-xl overflow-hidden">
+        <summary class="flex items-center justify-between px-5 py-4 hover:bg-blue-100 transition-colors">
+          <div class="flex items-center gap-3">
+            <span class="bg-blue-200 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">HU-12</span>
+            <span class="font-semibold text-slate-800 text-sm">Backend — Gestión de Pacientes</span>
+            <span class="text-xs text-slate-400">test_patients.py · 17 escenarios</span>
+          </div>
+          <div class="flex items-center gap-2"><span class="text-green-600 text-xs font-medium">✅ 17/17</span><span class="chev text-slate-400">▶</span></div>
+        </summary>
+        <div class="px-5 pb-5">
+          <pre class="gh bg-white rounded-lg p-4 border border-blue-100 mt-3"><span class="gh-kw">Feature:</span> Control de Acceso a Pacientes
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B19</span> — Sin autenticación: 401
+    <span class="gh-step">When</span>  GET /patients/ sin Authorization
+    <span class="gh-step">Then</span>  código 401
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B20</span> — Admin no puede listar pacientes (403)
+    <span class="gh-step">When</span>  GET /patients/ con token admin
+    <span class="gh-step">Then</span>  código 403
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B21</span> — Crear paciente sin autenticación: 401
+    <span class="gh-step">When</span>  POST /patients/ sin Authorization
+    <span class="gh-step">Then</span>  código 401
+
+<span class="gh-kw">Feature:</span> CRUD Completo de Pacientes
+
+  <span class="gh-kw">Background:</span>
+    <span class="gh-step">Given</span> médico autenticado con token JWT válido
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B22</span> — Crear paciente
+    <span class="gh-step">When</span>  POST /patients/ con payload válido
+    <span class="gh-step">Then</span>  código 200/201, body.id generado, nombre y documento correctos
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B23</span> — Listar pacientes propios
+    <span class="gh-step">When</span>  GET /patients/
+    <span class="gh-step">Then</span>  código 200, body es lista JSON
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B24</span> — Aislamiento: médico solo ve sus pacientes
+    <span class="gh-step">Given</span> segundo médico sin pacientes registrados
+    <span class="gh-step">When</span>  segundo médico hace GET /patients/
+    <span class="gh-step">Then</span>  código 200, body = []
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B25</span> — Obtener paciente por ID
+    <span class="gh-step">Given</span> paciente creado con {patient_id}
+    <span class="gh-step">When</span>  GET /patients/{patient_id}
+    <span class="gh-step">Then</span>  código 200, body.id = {patient_id}
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B26</span> — Paciente inexistente retorna 404
+    <span class="gh-step">When</span>  GET /patients/99999
+    <span class="gh-step">Then</span>  código 404
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B27</span> — Actualizar historia clínica
+    <span class="gh-step">When</span>  PUT /patients/{id} con nombre_apellidos actualizado
+    <span class="gh-step">Then</span>  código 200, body.nombre_apellidos = "Juan Pérez Actualizado"
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B28</span> — Soft delete de paciente
+    <span class="gh-step">When</span>  DELETE /patients/{id}
+    <span class="gh-step">Then</span>  código 200
+    <span class="gh-step">And</span>   GET /patients/{id} retorna 404
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B29</span> — Eliminar inexistente retorna 404
+    <span class="gh-step">When</span>  DELETE /patients/99999
+    <span class="gh-step">Then</span>  código 404
+
+<span class="gh-kw">Feature:</span> Búsqueda de Pacientes
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B30</span> — Buscar por nombre
+    <span class="gh-step">When</span>  GET /patients/?search=María López
+    <span class="gh-step">Then</span>  código 200, resultado contiene paciente con "María" en nombre
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B31</span> — Buscar por número de documento
+    <span class="gh-step">When</span>  GET /patients/?search=3001112222
+    <span class="gh-step">Then</span>  código 200, resultado contiene numero_documento=3001112222
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B32</span> — Sin resultados retorna lista vacía
+    <span class="gh-step">When</span>  GET /patients/?search=xyzNoExiste999
+    <span class="gh-step">Then</span>  código 200, body = []
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B33</span> — Query vacío retorna todos los pacientes
+    <span class="gh-step">When</span>  GET /patients/ y GET /patients/?search=
+    <span class="gh-step">Then</span>  ambos retornan el mismo número de pacientes
+
+<span class="gh-kw">Feature:</span> Propiedad y Aislamiento entre Médicos
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-B35</span> — Médico no accede al paciente de otro médico
+    <span class="gh-step">Given</span> médico A creó paciente {patient_id}
+    <span class="gh-step">When</span>  médico B hace GET /patients/{patient_id}
+    <span class="gh-step">Then</span>  código 404 (aislamiento RBAC por owner_id)</pre>
+        </div>
+      </details>
+
+      <!-- SUITE 4: AuthContext -->
+      <details class="bg-purple-50 border border-purple-200 rounded-xl overflow-hidden">
+        <summary class="flex items-center justify-between px-5 py-4 hover:bg-purple-100 transition-colors">
+          <div class="flex items-center gap-3">
+            <span class="bg-purple-200 text-purple-800 text-xs font-bold px-2 py-0.5 rounded">HU-13</span>
+            <span class="font-semibold text-slate-800 text-sm">Frontend — AuthContext</span>
+            <span class="text-xs text-slate-400">AuthContext.test.tsx · 4 escenarios</span>
+          </div>
+          <div class="flex items-center gap-2"><span class="text-green-600 text-xs font-medium">✅ 4/4</span><span class="chev text-slate-400">▶</span></div>
+        </summary>
+        <div class="px-5 pb-5">
+          <pre class="gh bg-white rounded-lg p-4 border border-purple-100 mt-3"><span class="gh-kw">Feature:</span> Contexto de Autenticación (AuthContext)
+
+  <span class="gh-kw">Background:</span>
+    <span class="gh-step">Given</span> AuthProvider envuelve la app en MemoryRouter
+    <span class="gh-step">And</span>   apiService está mockeado (login, getCurrentUser, setToken, clearToken)
+    <span class="gh-step">And</span>   localStorage está limpio antes de cada test
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F01</span> — Estado inicial sin sesión activa
+    <span class="gh-step">Given</span> no existe token ni usuario en localStorage
+    <span class="gh-step">When</span>  se renderiza useAuth() y isLoading resuelve a false
+    <span class="gh-step">Then</span>  user debe ser null
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F02</span> — Login almacena usuario en estado y localStorage
+    <span class="gh-step">Given</span> apiService.login responde {access_token: "test-token"}
+    <span class="gh-step">And</span>   apiService.getCurrentUser responde {email: "admin@hab.co", role: "admin"}
+    <span class="gh-step">When</span>  se llama login("admin@hab.co", "adminpassword")
+    <span class="gh-step">Then</span>  user.email = "admin@hab.co"
+    <span class="gh-step">And</span>   localStorage contiene la clave "user"
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F03</span> — Logout limpia estado y localStorage
+    <span class="gh-step">Given</span> localStorage tiene authToken y user de sesión activa
+    <span class="gh-step">When</span>  se llama logout()
+    <span class="gh-step">Then</span>  user = null
+    <span class="gh-step">And</span>   localStorage no contiene authToken ni user
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F04</span> — Credenciales inválidas no actualizan estado
+    <span class="gh-step">Given</span> apiService.login lanza Error("Unauthorized")
+    <span class="gh-step">When</span>  se llama login("bad@email.com", "wrongpassword")
+    <span class="gh-step">Then</span>  la función lanza excepción
+    <span class="gh-step">And</span>   user permanece null</pre>
+        </div>
+      </details>
+
+      <!-- SUITE 5+6+7: Login + Dashboard + Patients UI -->
+      <details class="bg-yellow-50 border border-yellow-200 rounded-xl overflow-hidden">
+        <summary class="flex items-center justify-between px-5 py-4 hover:bg-yellow-100 transition-colors">
+          <div class="flex items-center gap-3">
+            <span class="bg-yellow-200 text-yellow-800 text-xs font-bold px-2 py-0.5 rounded">HU-13</span>
+            <span class="font-semibold text-slate-800 text-sm">Frontend — Login · DashboardLayout · Pacientes UI</span>
+            <span class="text-xs text-slate-400">3 archivos · 12 escenarios</span>
+          </div>
+          <div class="flex items-center gap-2"><span class="text-green-600 text-xs font-medium">✅ 12/12</span><span class="chev text-slate-400">▶</span></div>
+        </summary>
+        <div class="px-5 pb-5">
+          <pre class="gh bg-white rounded-lg p-4 border border-yellow-100 mt-3"><span class="gh-kw">Feature:</span> Página de Login
+
+  <span class="gh-kw">Background:</span>
+    <span class="gh-step">Given</span> Login renderizado en MemoryRouter
+    <span class="gh-step">And</span>   useAuth: {user: null, isLoading: false}
+    <span class="gh-step">And</span>   useLanguage: {language: "en", t: key => key}
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F05</span> — Muestra campos email y password
+    <span class="gh-step">When</span>  Login se monta
+    <span class="gh-step">Then</span>  existen input#email e input#password en el DOM
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F06</span> — Botón se deshabilita durante login en vuelo
+    <span class="gh-step">Given</span> login devuelve Promise que nunca resuelve
+    <span class="gh-step">When</span>  usuario ingresa credenciales y hace clic en submit
+    <span class="gh-step">Then</span>  el botón muestra estado "loading" y está disabled
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F07</span> — Usuario autenticado no ve el formulario
+    <span class="gh-step">Given</span> useAuth devuelve user con email "doc@hab.co"
+    <span class="gh-step">When</span>  Login se monta
+    <span class="gh-step">Then</span>  el elemento form no está en el DOM
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F08</span> — Header contiene botón de idioma
+    <span class="gh-step">When</span>  Login se monta
+    <span class="gh-step">Then</span>  existen al menos 2 botones (language toggle + submit)
+
+<span class="gh-kw">Feature:</span> Layout Protegido del Dashboard
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F09</span> — Muestra spinner mientras autenticación resuelve
+    <span class="gh-step">Given</span> useAuth: {user: null, isLoading: true}
+    <span class="gh-step">When</span>  DashboardLayout se monta
+    <span class="gh-step">Then</span>  existe elemento con clase animate-spin en el DOM
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F10</span> — Redirige usuario no autenticado a /login
+    <span class="gh-step">Given</span> useAuth: {user: null, isLoading: false}
+    <span class="gh-step">And</span>   usuario navega a /dashboard
+    <span class="gh-step">When</span>  DashboardLayout evalúa autenticación
+    <span class="gh-step">Then</span>  renderiza componente de /login (data-testid="login-page")
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F11</span> — Autenticado ve contenido protegido (outlet)
+    <span class="gh-step">Given</span> useAuth: {user: {role: "médico"}}
+    <span class="gh-step">When</span>  usuario navega a /dashboard
+    <span class="gh-step">Then</span>  renderiza data-testid="protected-content"
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F12</span> — Sidebar: "userList" solo para admin
+    <span class="gh-step">Given</span> items: dashboard, patients, predictions, analytics, predictiveGuide, userList
+    <span class="gh-step">When</span>  filtro para rol "admin"
+    <span class="gh-step">Then</span>  contiene userList, NO contiene patients/predictions/analytics
+    <span class="gh-step">When</span>  filtro para rol "médico"
+    <span class="gh-step">Then</span>  contiene patients, NO contiene userList
+
+<span class="gh-kw">Feature:</span> Gestión de Pacientes — Interfaz de Usuario
+
+  <span class="gh-kw">Background:</span>
+    <span class="gh-step">Given</span> Patients renderizado, médico autenticado, patientService mockeado
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F13</span> — Muestra campo de búsqueda
+    <span class="gh-step">Given</span> getPatients resuelve con []
+    <span class="gh-step">When</span>  componente carga
+    <span class="gh-step">Then</span>  existe input con placeholder "search"
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F14</span> — Estado vacío cuando no hay pacientes
+    <span class="gh-step">Given</span> getPatients resuelve con []
+    <span class="gh-step">When</span>  lista se renderiza
+    <span class="gh-step">Then</span>  existe texto "noPatientsYet" en el DOM
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F15</span> — Botón "Agregar" abre diálogo de creación
+    <span class="gh-step">When</span>  clic en botón "addPatient"
+    <span class="gh-step">Then</span>  existe elemento con role="dialog" en el DOM
+
+  <span class="gh-sc">Scenario:</span> <span class="gh-val">TC-F16</span> — Ícono eliminar activa AlertDialog de confirmación
+    <span class="gh-step">Given</span> getPatients resuelve con [{nombre: "Juan Pérez", id: 1}]
+    <span class="gh-step">When</span>  clic en botón ícono (SVG, sin texto) de eliminar
+    <span class="gh-step">Then</span>  existe elemento con role="alertdialog" en el DOM</pre>
+        </div>
+      </details>
+
+    </div>
+
+    <!-- Traceability table -->
+    <div class="mt-8 bg-slate-50 rounded-xl border border-slate-200 p-5 overflow-x-auto">
+      <h3 class="font-semibold text-slate-700 text-sm mb-4">Matriz de Trazabilidad</h3>
+      <table class="w-full text-xs text-slate-600">
+        <thead><tr class="border-b border-slate-200 text-left">
+          <th class="pb-2 font-semibold text-slate-700 pr-4">Código</th>
+          <th class="pb-2 font-semibold text-slate-700 pr-4">HU</th>
+          <th class="pb-2 font-semibold text-slate-700 pr-4">Archivo</th>
+          <th class="pb-2 font-semibold text-slate-700 pr-4">Descripción</th>
+          <th class="pb-2 font-semibold text-slate-700">Estado</th>
+        </tr></thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-S01</td><td class="pr-4">HU-11</td><td class="pr-4 font-mono">ci-prod.yml</td><td class="pr-4">GET /health → 200 post-deploy</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-S02</td><td class="pr-4">HU-11</td><td class="pr-4 font-mono">ci-prod.yml</td><td class="pr-4">POST /login alcanzable (no 5xx)</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-B01</td><td class="pr-4">HU-12</td><td class="pr-4 font-mono">test_auth.py</td><td class="pr-4">Health check HTTP 200</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-B02</td><td class="pr-4">HU-12</td><td class="pr-4 font-mono">test_auth.py</td><td class="pr-4">Root endpoint HTTP 200</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-B03</td><td class="pr-4">HU-12</td><td class="pr-4 font-mono">test_auth.py</td><td class="pr-4">Login admin exitoso → token JWT</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-B04</td><td class="pr-4">HU-12</td><td class="pr-4 font-mono">test_auth.py</td><td class="pr-4">Login médico exitoso → token JWT</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-B05</td><td class="pr-4">HU-12</td><td class="pr-4 font-mono">test_auth.py</td><td class="pr-4">Contraseña incorrecta → 401</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-B06</td><td class="pr-4">HU-12</td><td class="pr-4 font-mono">test_auth.py</td><td class="pr-4">Usuario inexistente → 401</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-B07</td><td class="pr-4">HU-12</td><td class="pr-4 font-mono">test_auth.py</td><td class="pr-4">Body vacío → 422</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-B08–10</td><td class="pr-4">HU-12</td><td class="pr-4 font-mono">test_auth.py</td><td class="pr-4">GET /users/me: auth / sin auth / token inválido</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-B11–18</td><td class="pr-4">HU-12</td><td class="pr-4 font-mono">test_auth.py</td><td class="pr-4">Admin endpoints: listar / registrar / toggle usuarios</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-B19–21</td><td class="pr-4">HU-12</td><td class="pr-4 font-mono">test_patients.py</td><td class="pr-4">Control de acceso a pacientes (401/403)</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-B22–29</td><td class="pr-4">HU-12</td><td class="pr-4 font-mono">test_patients.py</td><td class="pr-4">CRUD completo + aislamiento por médico</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-B30–33</td><td class="pr-4">HU-12</td><td class="pr-4 font-mono">test_patients.py</td><td class="pr-4">Búsqueda por nombre, documento, vacío</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-B35</td><td class="pr-4">HU-12</td><td class="pr-4 font-mono">test_patients.py</td><td class="pr-4">Médico no accede a paciente de otro médico</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-F01–04</td><td class="pr-4">HU-13</td><td class="pr-4 font-mono">AuthContext.test.tsx</td><td class="pr-4">Estado inicial · login · logout · inválido</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-F05–08</td><td class="pr-4">HU-13</td><td class="pr-4 font-mono">Login.test.tsx</td><td class="pr-4">Campos DOM · loading · redirect · idioma</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-F09–12</td><td class="pr-4">HU-13</td><td class="pr-4 font-mono">DashboardLayout.test.tsx</td><td class="pr-4">Spinner · redirect · outlet · sidebar RBAC</td><td class="text-green-600">✅</td></tr>
+          <tr><td class="py-1.5 pr-4 font-mono text-primary">TC-F13–16</td><td class="pr-4">HU-13</td><td class="pr-4 font-mono">Patients.test.tsx</td><td class="pr-4">Búsqueda · empty state · dialog · alertdialog</td><td class="text-green-600">✅</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
