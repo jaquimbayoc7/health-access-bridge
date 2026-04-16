@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Health Access Bridge — Momento 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']},colors:{primary:'#2563EB','pdark':'#1D4ED8','plight':'#EFF6FF'}}}}</script>
+<style>
+html{scroll-behavior:smooth}
+.card{transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(37,99,235,.12)}
+.section-title::after{content:'';display:block;width:48px;height:4px;background:#2563EB;border-radius:2px;margin-top:8px}
+.lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;align-items:center;justify-content:center}
+.lb.on{display:flex}
+@keyframes fi{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fi{animation:fi .5s ease forwards}
+</style>
+</head>
+<body class="bg-slate-100 font-sans text-slate-800 antialiased">
+
+<!-- NAV -->
+<nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href="#hero" class="flex items-center gap-2">
+      <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <span class="font-semibold text-slate-900 text-sm">Health Access Bridge</span>
+    </a>
+    <div class="hidden md:flex items-center gap-5 text-sm text-slate-600 font-medium">
+      <a href="#contexto" class="hover:text-primary transition-colors">Contexto</a>
+      <a href="#stack" class="hover:text-primary transition-colors">Stack</a>
+      <a href="#historias" class="hover:text-primary transition-colors">HUs</a>
+      <a href="#testing" class="hover:text-primary transition-colors">Testing</a>
+      <a href="#mockups" class="hover:text-primary transition-colors">Mockups</a>
+      <a href="#roadmap" class="hover:text-primary transition-colors">Roadmap</a>
+      <a href="https://hab-frontend.onrender.com/login" target="_blank" class="bg-primary text-white px-4 py-1.5 rounded-lg hover:bg-pdark transition-colors">Abrir App →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero" class="bg-white pt-16 pb-20">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+    <div class="fi">
+      <div class="flex gap-2 mb-4">
+        <span class="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">✅ Momento 1 Completado</span>
+        <span class="bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">Abril 2026</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-slate-900 leading-tight mb-4">
+        Sistema Inteligente de<br/>Perfilamiento de<br/><span class="text-primary">Discapacidad</span>
+      </h1>
+      <p class="text-slate-500 text-base leading-relaxed mb-6 max-w-md">Herramienta para profesionales de la salud que facilita la predicción de barreras de acceso en personas con discapacidad en zonas rurales de Colombia, mediante inteligencia artificial.</p>
+      <div class="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-200">
+        <div class="flex justify-between text-xs font-medium text-slate-500 mb-2">
+          <span>Avance del proyecto</span><span class="text-primary font-bold">48% completado</span>
+        </div>
+        <div class="h-3 bg-slate-200 rounded-full overflow-hidden">
+          <div id="pbar" class="h-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-1000" style="width:0%"></div>
+        </div>
+        <div class="flex justify-between text-xs text-slate-400 mt-2">
+          <span>Plan M1: 26%</span>
+          <span class="text-green-600 font-semibold">+22% sobre el plan ↑</span>
+          <span>Total: 131 pts</span>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a href="https://hab-frontend.onrender.com/login" target="_blank" class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-medium hover:bg-pdark transition-colors shadow-md">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Abrir App en Producción
+        </a>
+        <a href="https://hab-backend-szj1.onrender.com/docs" target="_blank" class="flex items-center gap-2 border border-primary text-primary px-5 py-2.5 rounded-lg font-medium hover:bg-plight transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Ver API Docs
+        </a>
+        <a href="https://github.com/jaquimbayoc7/health-access-bridge" target="_blank" class="flex items-center gap-2 border border-slate-300 text-slate-600 px-5 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors">GitHub</a>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-primary rounded-2xl p-5 text-white col-span-2">
+        <div class="text-4xl font-bold">63 <span class="text-blue-200 text-xl font-normal">/ 131 pts</span></div>
+        <div class="text-blue-200 text-sm mt-1">Story Points completados — Momento 1</div>
+        <div class="mt-3 flex gap-2 flex-wrap text-xs">
+          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">7 HUs completadas</span>
+          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">Sprint 3.5 extra</span>
+          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">+22% sobre plan</span>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-slate-200 card">
+        <div class="text-2xl font-bold text-slate-900">53</div>
+        <div class="text-slate-500 text-xs mt-0.5">Tests automatizados</div>
+        <div class="flex gap-1 mt-2 flex-wrap text-xs">
+          <span class="bg-green-100 text-green-700 px-1.5 py-0.5 rounded">35 backend</span>
+          <span class="bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">16 frontend</span>
+          <span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded">2 smoke</span>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-slate-200 card">
+        <div class="text-2xl font-bold text-slate-900">65</div>
+        <div class="text-slate-500 text-xs mt-0.5">Commits al repo</div>
+        <div class="text-xs text-slate-400 mt-2">8 días activos</div>
+        <div class="text-xs text-green-600 font-medium">26 Feb – 16 Abr</div>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-slate-200 card">
+        <div class="text-2xl font-bold text-slate-900">3</div>
+        <div class="text-slate-500 text-xs mt-0.5">Ambientes activos</div>
+        <div class="text-xs text-green-600 mt-2">● DEV · QA · PROD</div>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-slate-200 card">
+        <div class="text-2xl font-bold text-slate-900">100%</div>
+        <div class="text-slate-500 text-xs mt-0.5">Momento 1</div>
+        <div class="text-xs text-blue-600 font-medium mt-2">Plan 26% → Real 48%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTEXTO -->
+<section id="contexto" class="py-16">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl font-bold mb-2 section-title">Contexto y Problema</h2>
+    <p class="text-slate-500 text-sm mb-10 mt-4">¿Por qué existe Health Access Bridge?</p>
+    <div class="grid md:grid-cols-3 gap-6 mb-6">
+      <div class="bg-white rounded-xl p-6 border border-slate-200 card">
+        <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center mb-4 text-xl">🚧</div>
+        <h3 class="font-semibold text-slate-800 mb-2">El Problema</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Las personas con discapacidad en zonas rurales de Colombia enfrentan barreras de acceso al sistema de salud que no son identificadas ni sistematizadas eficientemente.</p>
+      </div>
+      <div class="bg-white rounded-xl p-6 border border-slate-200 card">
+        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-4 text-xl">💡</div>
+        <h3 class="font-semibold text-slate-800 mb-2">La Solución</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Plataforma web con IA que permite a médicos registrar pacientes, ejecutar predicciones de perfiles de barreras (Baja/Moderada/Alta) y consultar guías de intervención.</p>
+      </div>
+      <div class="bg-white rounded-xl p-6 border border-slate-200 card">
+        <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-4 text-xl">📊</div>
+        <h3 class="font-semibold text-slate-800 mb-2">El Impacto</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Modelo HybridModelDisability (K-Means + Gradient Boosting) clasifica perfiles usando dimensiones CIF D1-D6 para priorización clínica en campo.</p>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl p-5 border border-slate-200 grid grid-cols-4 gap-4 text-center">
+      <div><div class="text-2xl font-bold text-primary">10</div><div class="text-xs text-slate-500 mt-1">Pacientes seed</div></div>
+      <div><div class="text-2xl font-bold text-primary">3</div><div class="text-xs text-slate-500 mt-1">Perfiles barreras</div></div>
+      <div><div class="text-2xl font-bold text-primary">6</div><div class="text-xs text-slate-500 mt-1">Dimensiones CIF (D1-D6)</div></div>
+      <div><div class="text-2xl font-bold text-primary">2</div><div class="text-xs text-slate-500 mt-1">Roles: Admin / Médico</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK + SVG -->
+<section id="stack" class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl font-bold mb-2 section-title">Stack Tecnológico</h2>
+    <p class="text-slate-500 text-sm mb-8 mt-4">Tecnologías implementadas en Momento 1</p>
+    <div class="grid grid-cols-4 md:grid-cols-8 gap-3 mb-10 text-center text-xs">
+      <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 card"><div class="font-bold text-green-700 text-base">Py</div><div class="font-medium text-slate-700 mt-1">FastAPI</div><div class="text-slate-400">3.11.10</div></div>
+      <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 card"><div class="font-bold text-blue-600 text-base">TS</div><div class="font-medium text-slate-700 mt-1">React 18</div><div class="text-slate-400">TypeScript</div></div>
+      <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 card"><div class="font-bold text-sky-600 text-base">Tw</div><div class="font-medium text-slate-700 mt-1">Tailwind</div><div class="text-slate-400">shadcn/ui</div></div>
+      <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 card"><div class="font-bold text-blue-800 text-base">PG</div><div class="font-medium text-slate-700 mt-1">PostgreSQL</div><div class="text-slate-400">v15</div></div>
+      <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 card"><div class="font-bold text-purple-700 text-base">ML</div><div class="font-medium text-slate-700 mt-1">HybridML</div><div class="text-slate-400">K-Means+GB</div></div>
+      <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 card"><div class="text-orange-500 text-base">🔐</div><div class="font-medium text-slate-700 mt-1">JWT+Bcrypt</div><div class="text-slate-400">RBAC</div></div>
+      <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 card"><div class="text-base">⚙️</div><div class="font-medium text-slate-700 mt-1">GH Actions</div><div class="text-slate-400">CI/CD</div></div>
+      <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 card"><div class="text-teal-500 text-base">☁️</div><div class="font-medium text-slate-700 mt-1">Render</div><div class="text-slate-400">DEV/QA/PROD</div></div>
+    </div>
+    <!-- SVG Architecture -->
+    <div class="bg-slate-50 rounded-2xl border border-slate-200 p-6">
+      <h3 class="font-semibold text-slate-800 mb-1 text-center">Arquitectura del Sistema</h3>
+      <p class="text-slate-400 text-xs text-center mb-5">Flujo completo desde el usuario hasta la infraestructura cloud</p>
+      <div class="overflow-x-auto">
+        <svg viewBox="0 0 940 460" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-4xl mx-auto" style="min-width:600px">
+          <defs>
+            <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#94A3B8"/></marker>
+          </defs>
+          <!-- Layer bands -->
+          <rect x="10" y="8"  width="920" height="58" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+          <rect x="10" y="90" width="920" height="88" rx="8" fill="#EFF6FF" stroke="#BFDBFE"/>
+          <rect x="10" y="202" width="920" height="88" rx="8" fill="#F0FDF4" stroke="#BBF7D0"/>
+          <rect x="10" y="314" width="920" height="88" rx="8" fill="#FDF4FF" stroke="#E9D5FF"/>
+          <rect x="10" y="420" width="920" height="32" rx="6" fill="#1E293B"/>
+          <!-- Layer labels -->
+          <text x="24" y="44" font-family="Inter,sans-serif" font-size="9" fill="#94A3B8" font-weight="700">USUARIO</text>
+          <text x="24" y="126" font-family="Inter,sans-serif" font-size="9" fill="#93C5FD" font-weight="700">FRONTEND — React 18 · TypeScript · Vite · TailwindCSS · shadcn/ui</text>
+          <text x="24" y="238" font-family="Inter,sans-serif" font-size="9" fill="#86EFAC" font-weight="700">BACKEND — FastAPI · Python 3.11 · SQLAlchemy · Pydantic v2</text>
+          <text x="24" y="350" font-family="Inter,sans-serif" font-size="9" fill="#D8B4FE" font-weight="700">DATOS &amp; IA — PostgreSQL 15 · HybridModelDisability · ORM</text>
+          <text x="24" y="440" font-family="Inter,sans-serif" font-size="9" fill="#94A3B8" font-weight="700">CI/CD — GitHub Actions: 3 workflows (dev/qa/prod) → Auto-deploy + Approval Gate → Render Cloud · Smoke Tests</text>
+          <!-- Browser -->
+          <rect x="370" y="18" width="200" height="38" rx="7" fill="#1E293B" stroke="#334155"/>
+          <text x="470" y="34" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="white" font-weight="600">🌐 Navegador Web</text>
+          <text x="470" y="48" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#94A3B8">Médico / Administrador</text>
+          <!-- Arrow Browser→Frontend -->
+          <line x1="470" y1="56" x2="470" y2="98" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ar)"/>
+          <rect x="444" y="69" width="52" height="13" rx="3" fill="#EFF6FF"/>
+          <text x="470" y="79" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#2563EB">HTTPS</text>
+          <!-- Frontend boxes -->
+          <rect x="70" y="106" width="170" height="62" rx="8" fill="#2563EB" stroke="#1D4ED8"/>
+          <text x="155" y="125" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="white" font-weight="600">React SPA</text>
+          <text x="155" y="139" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#BFDBFE">Login · Dashboard · Patients</text>
+          <text x="155" y="152" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#BFDBFE">Predictions · Analytics · Admin</text>
+          <rect x="295" y="106" width="160" height="62" rx="8" fill="#3B82F6" stroke="#2563EB"/>
+          <text x="375" y="125" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="white" font-weight="600">Auth Context</text>
+          <text x="375" y="139" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#BFDBFE">JWT · RBAC Guards</text>
+          <text x="375" y="152" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#BFDBFE">Protected Routes</text>
+          <rect x="510" y="106" width="160" height="62" rx="8" fill="#0EA5E9" stroke="#0284C7"/>
+          <text x="590" y="125" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="white" font-weight="600">API Service</text>
+          <text x="590" y="139" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#BAE6FD">axios · React Query</text>
+          <text x="590" y="152" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#BAE6FD">api.ts · patients.ts</text>
+          <rect x="725" y="106" width="175" height="62" rx="8" fill="#6366F1" stroke="#4F46E5"/>
+          <text x="812" y="125" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="white" font-weight="600">UI Components</text>
+          <text x="812" y="139" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#C7D2FE">shadcn/ui · Recharts</text>
+          <text x="812" y="152" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#C7D2FE">Analytics · Charts</text>
+          <!-- Arrow Frontend→Backend -->
+          <line x1="470" y1="178" x2="470" y2="210" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ar)"/>
+          <rect x="440" y="186" width="60" height="13" rx="3" fill="#F0FDF4"/>
+          <text x="470" y="196" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#16A34A">REST API</text>
+          <!-- Backend box -->
+          <rect x="280" y="218" width="380" height="62" rx="8" fill="#16A34A" stroke="#15803D"/>
+          <text x="470" y="237" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="white" font-weight="700">FastAPI Backend</text>
+          <text x="470" y="251" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#BBF7D0">Routers: users · patients · admin · /health</text>
+          <text x="470" y="265" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#BBF7D0">Auth · RBAC · CRUD · ML Inference · Schemas Pydantic</text>
+          <!-- Arrows Backend→Data -->
+          <line x1="380" y1="280" x2="220" y2="322" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ar)"/>
+          <line x1="470" y1="280" x2="470" y2="322" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ar)"/>
+          <line x1="560" y1="280" x2="720" y2="322" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ar)"/>
+          <rect x="264" y="291" width="30" height="12" rx="2" fill="white"/><text x="279" y="300" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#64748B">SQL</text>
+          <rect x="445" y="291" width="50" height="12" rx="2" fill="white"/><text x="470" y="300" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#64748B">joblib</text>
+          <rect x="608" y="291" width="38" height="12" rx="2" fill="white"/><text x="627" y="300" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#64748B">ORM</text>
+          <!-- Data boxes -->
+          <rect x="60" y="330" width="200" height="62" rx="8" fill="#D97706" stroke="#B45309"/>
+          <text x="160" y="350" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="white" font-weight="600">PostgreSQL 15</text>
+          <text x="160" y="364" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#FEF3C7">3 instancias Render managed</text>
+          <text x="160" y="378" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#FEF3C7">users · patients · predictions</text>
+          <rect x="370" y="330" width="200" height="62" rx="8" fill="#7C3AED" stroke="#6D28D9"/>
+          <text x="470" y="350" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="white" font-weight="600">HybridModelDisability</text>
+          <text x="470" y="364" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#DDD6FE">K-Means + GradientBoosting</text>
+          <text x="470" y="378" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#DDD6FE">Perfil 0 (Baja) · 1 (Media) · 2 (Alta)</text>
+          <rect x="680" y="330" width="200" height="62" rx="8" fill="#0F766E" stroke="#0D6E67"/>
+          <text x="780" y="350" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="white" font-weight="600">SQLAlchemy ORM</text>
+          <text x="780" y="364" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#CCFBF1">models.py · crud.py</text>
+          <text x="780" y="378" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#CCFBF1">User · Patient · Pydantic v2</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORIAS -->
+<section id="historias" class="py-16">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl font-bold mb-2 section-title">Historias de Usuario Completadas</h2>
+    <p class="text-slate-500 text-sm mb-10 mt-4">7 HUs entregadas en Momento 1 — 63 Story Points</p>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <!-- HU cards -->
+      <div class="bg-white rounded-xl border border-slate-200 p-4 card">
+        <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded">HU-01</span><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">✅</span></div><span class="text-xs text-slate-400">8 pts · S1</span></div>
+        <h3 class="font-semibold text-slate-800 text-sm mb-2">Autenticación y Roles</h3>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• JWT + Bcrypt · RBAC Admin/Médico</li><li>• Login, rutas protegidas, sidebar por rol</li><li>• Seed: admin + 2 médicos</li></ul>
+        <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/1" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #1 →</a>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-4 card">
+        <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded">HU-02</span><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">✅</span></div><span class="text-xs text-slate-400">13 pts · S2</span></div>
+        <h3 class="font-semibold text-slate-800 text-sm mb-2">Registro de Pacientes</h3>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• CRUD completo POST/GET/PUT/DELETE</li><li>• 15+ campos · Dimensiones D1-D6</li><li>• Búsqueda, paginación, exportación PDF/Excel</li></ul>
+        <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/2" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #2 →</a>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-4 card">
+        <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded">HU-03</span><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">✅</span></div><span class="text-xs text-slate-400">5 pts · S3</span></div>
+        <h3 class="font-semibold text-slate-800 text-sm mb-2">Integración y Despliegue</h3>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• CORS por ambiente · VITE_API_BASE_URL</li><li>• 3 workflows CI/CD GitHub Actions</li><li>• render.yaml — 6 servicios en Render</li></ul>
+        <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/3" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #3 →</a>
+      </div>
+      <div class="bg-white rounded-xl border-2 border-purple-200 p-4 card">
+        <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded">HU-04</span><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">✅</span><span class="bg-orange-100 text-orange-600 text-xs px-1.5 py-0.5 rounded-full">★</span></div><span class="text-xs text-slate-400">21 pts · S3</span></div>
+        <h3 class="font-semibold text-slate-800 text-sm mb-2">Modelo Predictivo ML <span class="text-orange-500 text-xs">(adelantada)</span></h3>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• K-Means + GradientBoosting embebido</li><li>• POST /patients/{'{id}'}/predict → Perfil 0/1/2</li><li>• Analytics: torta distribución + historial</li></ul>
+        <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/4" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #4 →</a>
+      </div>
+      <div class="bg-white rounded-xl border-l-4 border-l-orange-400 border border-slate-200 p-4 card">
+        <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded">HU-11</span><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">✅</span></div><span class="text-xs text-slate-400">3 pts · S3.5</span></div>
+        <h3 class="font-semibold text-slate-800 text-sm mb-2">Pruebas Smoke Producción</h3>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• GET /health → HTTP 200 post-deploy</li><li>• POST /users/login → alcanzable</li><li>• ci-prod.yml · espera 90s</li></ul>
+        <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/14" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #14 →</a>
+      </div>
+      <div class="bg-white rounded-xl border-l-4 border-l-orange-400 border border-slate-200 p-4 card">
+        <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded">HU-12</span><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">✅</span></div><span class="text-xs text-slate-400">5 pts · S3.5</span></div>
+        <h3 class="font-semibold text-slate-800 text-sm mb-2">Pruebas Integración Backend</h3>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• pytest + FastAPI TestClient + SQLite</li><li>• test_auth.py: 17 casos</li><li>• test_patients.py: 18 casos</li></ul>
+        <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/15" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #15 →</a>
+      </div>
+      <div class="bg-white rounded-xl border-l-4 border-l-orange-400 border border-slate-200 p-4 card">
+        <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded">HU-13</span><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">✅</span></div><span class="text-xs text-slate-400">8 pts · S3.5</span></div>
+        <h3 class="font-semibold text-slate-800 text-sm mb-2">Pruebas UI Frontend</h3>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• Vitest + RTL + jsdom · 16/16 ✅</li><li>• AuthContext · Login · Dashboard · Patients</li><li>• CI/CD integrado · 8.36s</li></ul>
+        <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/16" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #16 →</a>
+      </div>
+      <!-- Velocity summary -->
+      <div class="bg-primary rounded-xl p-4 text-white">
+        <div class="text-xs text-blue-200 mb-3 font-semibold">VELOCITY POR SPRINT</div>
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between"><span>Sprint 1</span><span class="font-bold">8 pts · 4/sem</span></div>
+          <div class="flex justify-between"><span>Sprint 2</span><span class="font-bold">13 pts · 6.5/sem</span></div>
+          <div class="flex justify-between"><span>Sprint 3</span><span class="font-bold">26 pts · 13/sem</span></div>
+          <div class="flex justify-between text-orange-300"><span>Sprint 3.5 🏆</span><span class="font-bold">16 pts · 16/sem</span></div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-white/20 text-xs text-blue-200">Mayor velocity del proyecto</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTING -->
+<section id="testing" class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl font-bold mb-2 section-title">Testing y Calidad</h2>
+    <p class="text-slate-500 text-sm mb-10 mt-4">53 pruebas automatizadas activas en CI/CD</p>
+    <div class="grid md:grid-cols-3 gap-5 mb-6">
+      <div class="bg-green-50 border border-green-200 rounded-xl p-5 card">
+        <div class="text-4xl font-bold text-green-700 mb-2 text-center">35</div>
+        <div class="text-green-700 font-semibold text-sm text-center mb-3">Backend Tests</div>
+        <div class="space-y-1.5 text-xs">
+          <div class="bg-white rounded-lg px-3 py-2 text-slate-600"><b>test_auth.py</b> — 17 casos (Login, JWT, RBAC)</div>
+          <div class="bg-white rounded-lg px-3 py-2 text-slate-600"><b>test_patients.py</b> — 18 casos (CRUD, aislamiento)</div>
+          <div class="bg-white rounded-lg px-3 py-2 text-slate-500">pytest · FastAPI TestClient · SQLite</div>
+        </div>
+      </div>
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 card">
+        <div class="text-4xl font-bold text-blue-700 mb-2 text-center">16</div>
+        <div class="text-blue-700 font-semibold text-sm text-center mb-3">Frontend Tests</div>
+        <div class="space-y-1.5 text-xs">
+          <div class="bg-white rounded-lg px-3 py-2 text-slate-600">AuthContext · Login · DashboardLayout · Patients</div>
+          <div class="bg-white rounded-lg px-3 py-2 text-slate-600">4 tests por módulo · 16/16 ✅ · 8.36s</div>
+          <div class="bg-white rounded-lg px-3 py-2 text-slate-500">Vitest · React Testing Library · jsdom</div>
+        </div>
+      </div>
+      <div class="bg-orange-50 border border-orange-200 rounded-xl p-5 card">
+        <div class="text-4xl font-bold text-orange-600 mb-2 text-center">2</div>
+        <div class="text-orange-700 font-semibold text-sm text-center mb-3">Smoke Tests</div>
+        <div class="space-y-1.5 text-xs">
+          <div class="bg-white rounded-lg px-3 py-2 text-slate-600">GET /health → HTTP 200</div>
+          <div class="bg-white rounded-lg px-3 py-2 text-slate-600">POST /users/login → alcanzable</div>
+          <div class="bg-white rounded-lg px-3 py-2 text-slate-500">ci-prod.yml · post-deploy · 90s wait</div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-slate-50 rounded-xl border border-slate-200 p-4">
+      <div class="text-xs font-semibold text-slate-600 mb-3">Pipeline CI/CD completo:</div>
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <span class="bg-slate-800 text-white px-3 py-1.5 rounded-lg font-mono">git push</span>
+        <span class="text-slate-400">→</span>
+        <span class="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg">GitHub Actions</span>
+        <span class="text-slate-400">→</span>
+        <span class="bg-green-100 text-green-700 px-3 py-1.5 rounded-lg">pytest (35)</span>
+        <span class="text-slate-400">→</span>
+        <span class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg">npm build</span>
+        <span class="text-slate-400">→</span>
+        <span class="bg-yellow-100 text-yellow-700 px-3 py-1.5 rounded-lg">npm test (16)</span>
+        <span class="text-slate-400">→</span>
+        <span class="bg-orange-100 text-orange-700 px-3 py-1.5 rounded-lg">[prod] Smoke (2)</span>
+        <span class="text-slate-400">→</span>
+        <span class="bg-teal-100 text-teal-700 px-3 py-1.5 rounded-lg">Deploy Render ✅</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CI/CD AMBIENTES -->
+<section class="py-16">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl font-bold mb-2 section-title">Ambientes de Despliegue</h2>
+    <p class="text-slate-500 text-sm mb-10 mt-4">3 ambientes independientes en Render Cloud</p>
+    <div class="grid md:grid-cols-3 gap-5 mb-6">
+      <div class="bg-white rounded-xl border border-slate-200 p-5 card">
+        <div class="flex justify-between mb-3"><span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded">DEV</span><span class="text-green-500 text-xs">● Activo</span></div>
+        <div class="text-xs font-mono text-slate-400 mb-3">rama: <code class="bg-slate-100 px-1 rounded">develop</code></div>
+        <div class="space-y-1.5 text-xs"><div>🔗 <a href="https://hab-frontend-dev.onrender.com" target="_blank" class="text-primary hover:underline">hab-frontend-dev.onrender.com</a></div><div>🔗 <a href="https://hab-backend-dev.onrender.com/docs" target="_blank" class="text-primary hover:underline">hab-backend-dev.onrender.com</a></div></div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-5 card">
+        <div class="flex justify-between mb-3"><span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-0.5 rounded">QA</span><span class="text-green-500 text-xs">● Activo</span></div>
+        <div class="text-xs font-mono text-slate-400 mb-3">rama: <code class="bg-slate-100 px-1 rounded">staging</code></div>
+        <div class="space-y-1.5 text-xs"><div>🔗 <a href="https://hab-frontend-qa.onrender.com" target="_blank" class="text-primary hover:underline">hab-frontend-qa.onrender.com</a></div><div>🔗 <a href="https://hab-backend-qa.onrender.com/docs" target="_blank" class="text-primary hover:underline">hab-backend-qa.onrender.com</a></div></div>
+      </div>
+      <div class="bg-white rounded-xl border-2 border-green-300 p-5 card">
+        <div class="flex justify-between mb-3"><span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded">PROD ★</span><span class="text-green-500 text-xs">● Activo</span></div>
+        <div class="text-xs font-mono text-slate-400 mb-3">rama: <code class="bg-slate-100 px-1 rounded">master</code></div>
+        <div class="space-y-1.5 text-xs mb-3"><div>🔗 <a href="https://hab-frontend.onrender.com/login" target="_blank" class="text-primary hover:underline font-medium">hab-frontend.onrender.com</a></div><div>🔗 <a href="https://hab-backend-szj1.onrender.com/docs" target="_blank" class="text-primary hover:underline font-medium">hab-backend-szj1.onrender.com/docs</a></div></div>
+        <div class="text-xs text-orange-600">⚠️ Aprobación manual requerida</div>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+      <h3 class="text-sm font-semibold text-slate-700 mb-3">Credenciales de prueba (todos los ambientes)</h3>
+      <div class="grid md:grid-cols-3 gap-3 text-xs">
+        <div class="bg-slate-50 rounded-lg p-3"><div class="font-medium text-slate-700 mb-1">👑 Admin</div><div class="font-mono text-slate-500">administrador@salud.co</div><div class="font-mono text-slate-400">adminpassword</div><div class="text-slate-400 mt-1">Ve todos los 10 pacientes</div></div>
+        <div class="bg-slate-50 rounded-lg p-3"><div class="font-medium text-slate-700 mb-1">🩺 Médico 1</div><div class="font-mono text-slate-500">medico1@salud.co</div><div class="font-mono text-slate-400">medico123</div><div class="text-slate-400 mt-1">5 pacientes propios</div></div>
+        <div class="bg-slate-50 rounded-lg p-3"><div class="font-medium text-slate-700 mb-1">🩺 Médico 2</div><div class="font-mono text-slate-500">medico2@salud.co</div><div class="font-mono text-slate-400">medico123</div><div class="text-slate-400 mt-1">5 pacientes propios</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOCKUPS -->
+<section id="mockups" class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl font-bold mb-2 section-title">Diseño de Pantallas</h2>
+    <p class="text-slate-500 text-sm mb-10 mt-4">8 pantallas — prototipo de alta fidelidad Momento 1 · haz clic para ampliar</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div onclick="openLb('../../frontend/design/images/1-Login.png','01 · Login / Landing')" class="cursor-pointer rounded-xl overflow-hidden border border-slate-200 card group">
+        <div class="h-36 overflow-hidden bg-slate-100"><img src="../../frontend/design/images/1-Login.png" alt="Login" class="w-full h-full object-cover group-hover:scale-105 transition-transform"/></div>
+        <div class="bg-white px-3 py-2 text-xs font-medium text-slate-700">01 · Login / Landing</div>
+      </div>
+      <div onclick="openLb('../../frontend/design/images/2-Admin.png','02 · Panel Administrador')" class="cursor-pointer rounded-xl overflow-hidden border border-slate-200 card group">
+        <div class="h-36 overflow-hidden bg-slate-100"><img src="../../frontend/design/images/2-Admin.png" alt="Admin" class="w-full h-full object-cover group-hover:scale-105 transition-transform"/></div>
+        <div class="bg-white px-3 py-2 text-xs font-medium text-slate-700">02 · Panel Admin</div>
+      </div>
+      <div onclick="openLb('../../frontend/design/images/3-DashMedico.png','03 · Dashboard Médico')" class="cursor-pointer rounded-xl overflow-hidden border border-slate-200 card group">
+        <div class="h-36 overflow-hidden bg-slate-100"><img src="../../frontend/design/images/3-DashMedico.png" alt="Dashboard" class="w-full h-full object-cover group-hover:scale-105 transition-transform"/></div>
+        <div class="bg-white px-3 py-2 text-xs font-medium text-slate-700">03 · Dashboard Médico</div>
+      </div>
+      <div onclick="openLb('../../frontend/design/images/4-Pacientes.png','04 · Gestión Pacientes')" class="cursor-pointer rounded-xl overflow-hidden border border-slate-200 card group">
+        <div class="h-36 overflow-hidden bg-slate-100"><img src="../../frontend/design/images/4-Pacientes.png" alt="Pacientes" class="w-full h-full object-cover group-hover:scale-105 transition-transform"/></div>
+        <div class="bg-white px-3 py-2 text-xs font-medium text-slate-700">04 · Gestión Pacientes</div>
+      </div>
+      <div onclick="openLb('../../frontend/design/images/5-Predicciones.png','05 · Predicciones ML')" class="cursor-pointer rounded-xl overflow-hidden border border-slate-200 card group">
+        <div class="h-36 overflow-hidden bg-slate-100"><img src="../../frontend/design/images/5-Predicciones.png" alt="Predicciones" class="w-full h-full object-cover group-hover:scale-105 transition-transform"/></div>
+        <div class="bg-white px-3 py-2 text-xs font-medium text-slate-700">05 · Predicciones ML</div>
+      </div>
+      <div onclick="openLb('../../frontend/design/images/6-Analisis.png','06 · Analíticas')" class="cursor-pointer rounded-xl overflow-hidden border border-slate-200 card group">
+        <div class="h-36 overflow-hidden bg-slate-100"><img src="../../frontend/design/images/6-Analisis.png" alt="Analisis" class="w-full h-full object-cover group-hover:scale-105 transition-transform"/></div>
+        <div class="bg-white px-3 py-2 text-xs font-medium text-slate-700">06 · Analíticas</div>
+      </div>
+      <div onclick="openLb('../../frontend/design/images/7-GuiaPrediccion.png','07 · Guía Predictiva')" class="cursor-pointer rounded-xl overflow-hidden border border-slate-200 card group">
+        <div class="h-36 overflow-hidden bg-slate-100"><img src="../../frontend/design/images/7-GuiaPrediccion.png" alt="Guia" class="w-full h-full object-cover group-hover:scale-105 transition-transform"/></div>
+        <div class="bg-white px-3 py-2 text-xs font-medium text-slate-700">07 · Guía Predictiva</div>
+      </div>
+      <div onclick="openLb('../../frontend/design/images/8-PerfilICF.png','08 · Perfil Funcional ICF')" class="cursor-pointer rounded-xl overflow-hidden border border-slate-200 card group">
+        <div class="h-36 overflow-hidden bg-slate-100"><img src="../../frontend/design/images/8-PerfilICF.png" alt="ICF" class="w-full h-full object-cover group-hover:scale-105 transition-transform"/></div>
+        <div class="bg-white px-3 py-2 text-xs font-medium text-slate-700">08 · Perfil Funcional ICF</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METRICAS -->
+<section id="metricas" class="py-16">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl font-bold mb-2 section-title">Métricas del Repositorio</h2>
+    <p class="text-slate-500 text-sm mb-10 mt-4">GitHub — 26 Feb · 16 Abr 2026</p>
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="bg-white rounded-xl border border-slate-200 p-6">
+        <h3 class="font-semibold text-slate-700 mb-4 text-sm">Distribución de Lenguajes</h3>
+        <div class="flex items-center gap-6">
+          <div class="w-44 h-44 flex-shrink-0"><canvas id="langChart"></canvas></div>
+          <div class="space-y-2 text-xs">
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-blue-500 flex-shrink-0"></div><span>TypeScript</span><span class="text-slate-400 ml-auto font-medium">81.3%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-green-500 flex-shrink-0"></div><span>Python</span><span class="text-slate-400 ml-auto font-medium">16.3%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-pink-400 flex-shrink-0"></div><span>CSS</span><span class="text-slate-400 ml-auto font-medium">1.0%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-yellow-400 flex-shrink-0"></div><span>Shell</span><span class="text-slate-400 ml-auto font-medium">0.7%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-slate-300 flex-shrink-0"></div><span>Otros</span><span class="text-slate-400 ml-auto font-medium">0.7%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-6">
+        <h3 class="font-semibold text-slate-700 mb-4 text-sm">Actividad de Commits</h3>
+        <div class="grid grid-cols-2 gap-3 mb-4 text-center text-xs">
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">65</div><div class="text-slate-500">Total commits</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">8</div><div class="text-slate-500">Días activos</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-green-600">8</div><div class="text-slate-500">Issues cerradas</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-orange-500">13</div><div class="text-slate-500">Pico (4 Mar)</div></div>
+        </div>
+        <div class="space-y-2 text-xs">
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">docs:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-blue-400 h-2 rounded-full" style="width:37%"></div></div><span class="text-slate-400 w-6">24</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">fix:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-red-400 h-2 rounded-full" style="width:34%"></div></div><span class="text-slate-400 w-6">22</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">feat:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-green-400 h-2 rounded-full" style="width:23%"></div></div><span class="text-slate-400 w-6">15</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">chore:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-slate-400 h-2 rounded-full" style="width:6%"></div></div><span class="text-slate-400 w-6">4</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- C4 -->
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl font-bold mb-2 section-title">Arquitectura C4</h2>
+    <p class="text-slate-500 text-sm mb-10 mt-4">6 diagramas HTML interactivos — C4 Model de Simon Brown</p>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <a href="../system-context-diagram.html" target="_blank" class="bg-slate-50 rounded-xl border border-slate-200 p-5 card block hover:no-underline">
+        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mb-3"><span class="text-blue-700 text-xs font-bold">L1</span></div>
+        <div class="font-semibold text-sm text-slate-800">System Context</div>
+        <div class="text-xs text-slate-400 mt-1">Actores externos e interacciones de alto nivel</div>
+      </a>
+      <a href="../container-diagram.html" target="_blank" class="bg-slate-50 rounded-xl border border-slate-200 p-5 card block hover:no-underline">
+        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mb-3"><span class="text-blue-700 text-xs font-bold">L2</span></div>
+        <div class="font-semibold text-sm text-slate-800">Container</div>
+        <div class="text-xs text-slate-400 mt-1">Frontend SPA, Backend API, PostgreSQL, CI/CD</div>
+      </a>
+      <a href="../component-diagram.html" target="_blank" class="bg-slate-50 rounded-xl border border-slate-200 p-5 card block hover:no-underline">
+        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mb-3"><span class="text-green-700 text-xs font-bold">L3</span></div>
+        <div class="font-semibold text-sm text-slate-800">Component — Backend</div>
+        <div class="text-xs text-slate-400 mt-1">Routers, Auth, RBAC, ML Engine, CRUD Layer</div>
+      </a>
+      <a href="../code-diagram.html" target="_blank" class="bg-slate-50 rounded-xl border border-slate-200 p-5 card block hover:no-underline">
+        <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mb-3"><span class="text-purple-700 text-xs font-bold">L4</span></div>
+        <div class="font-semibold text-sm text-slate-800">Code — Backend</div>
+        <div class="text-xs text-slate-400 mt-1">UML: User/Patient SQLAlchemy + Pydantic</div>
+      </a>
+      <a href="../code-diagram-frontend.html" target="_blank" class="bg-slate-50 rounded-xl border border-slate-200 p-5 card block hover:no-underline">
+        <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mb-3"><span class="text-purple-700 text-xs font-bold">L4</span></div>
+        <div class="font-semibold text-sm text-slate-800">Code — Frontend</div>
+        <div class="text-xs text-slate-400 mt-1">TypeScript: ApiService, AuthProvider, Hooks</div>
+      </a>
+      <a href="../deployment-diagram.html" target="_blank" class="bg-slate-50 rounded-xl border border-slate-200 p-5 card block hover:no-underline">
+        <div class="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center mb-3"><span class="text-teal-700 text-xs font-bold">☁</span></div>
+        <div class="font-semibold text-sm text-slate-800">Deployment</div>
+        <div class="text-xs text-slate-400 mt-1">DEV/QA/PROD en Render + GitHub Actions gate</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap" class="py-16">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl font-bold mb-2 section-title">Roadmap del Proyecto</h2>
+    <p class="text-slate-500 text-sm mb-10 mt-4">27 semanas · 3 Momentos · 131 Story Points</p>
+    <div class="space-y-4">
+      <div class="bg-white rounded-xl border-2 border-green-300 p-5 card">
+        <div class="flex flex-wrap items-center justify-between mb-3">
+          <div><h3 class="font-bold text-slate-800">M1 — Trabajo Integrador I</h3><div class="text-xs text-slate-400">Semanas 1-9 · Sprint 1-3 + Sprint 3.5</div></div>
+          <div class="flex items-center gap-2"><span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">✅ 100% COMPLETADO</span><span class="text-green-700 font-bold">63 pts</span></div>
+        </div>
+        <div class="flex flex-wrap gap-1.5 text-xs">
+          <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">HU-01 Auth (8)</span>
+          <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">HU-02 Pacientes (13)</span>
+          <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">HU-03 Despliegue (5)</span>
+          <span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded">HU-04 ML Adelantada (21)</span>
+          <span class="bg-orange-50 text-orange-700 px-2 py-0.5 rounded">HU-11 Smoke (3)</span>
+          <span class="bg-orange-50 text-orange-700 px-2 py-0.5 rounded">HU-12 Backend Tests (5)</span>
+          <span class="bg-orange-50 text-orange-700 px-2 py-0.5 rounded">HU-13 UI Tests (8)</span>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-5 opacity-75">
+        <div class="flex flex-wrap items-center justify-between mb-3">
+          <div><h3 class="font-bold text-slate-800">M2 — Trabajo Integrador II</h3><div class="text-xs text-slate-400">Semanas 10-18</div></div>
+          <div class="flex items-center gap-2"><span class="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full">📋 Pendiente</span><span class="text-slate-500 font-bold">21 pts</span></div>
+        </div>
+        <div class="flex flex-wrap gap-1.5 text-xs">
+          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-05 PWA Offline (13)</span>
+          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-06 Integration Tests (8)</span>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-5 opacity-60">
+        <div class="flex flex-wrap items-center justify-between mb-3">
+          <div><h3 class="font-bold text-slate-800">M3 — Trabajo Integrador III</h3><div class="text-xs text-slate-400">Semanas 19-27</div></div>
+          <div class="flex items-center gap-2"><span class="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full">📋 Pendiente</span><span class="text-slate-500 font-bold">47 pts</span></div>
+        </div>
+        <div class="flex flex-wrap gap-1.5 text-xs">
+          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-07 LLM GPT-4 (21)</span>
+          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-08 Dashboard+ (13)</span>
+          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-09 UAT (8)</span>
+          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-10 Deploy Final (5)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-slate-900 text-slate-400 py-10">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-wrap justify-between gap-6">
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <span class="text-white font-semibold text-sm">Health Access Bridge</span>
+        </div>
+        <p class="text-xs max-w-xs">Plataforma de gestión clínica e IA predictiva para pacientes con discapacidad en zonas rurales de Colombia.</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-6 text-xs">
+        <div><div class="text-white font-medium mb-2">App</div>
+          <div class="space-y-1.5">
+            <a href="https://hab-frontend.onrender.com/login" target="_blank" class="block hover:text-white transition-colors">Frontend Prod</a>
+            <a href="https://hab-backend-szj1.onrender.com/docs" target="_blank" class="block hover:text-white transition-colors">API Docs</a>
+            <a href="https://hab-frontend-dev.onrender.com" target="_blank" class="block hover:text-white transition-colors">Frontend Dev</a>
+          </div>
+        </div>
+        <div><div class="text-white font-medium mb-2">Docs</div>
+          <div class="space-y-1.5">
+            <a href="https://github.com/jaquimbayoc7/health-access-bridge" target="_blank" class="block hover:text-white transition-colors">GitHub Repo</a>
+            <a href="https://github.com/users/jaquimbayoc7/projects/1" target="_blank" class="block hover:text-white transition-colors">SCRUM Board</a>
+            <a href="../PROJECT_STATUS.md" class="block hover:text-white transition-colors">Project Status</a>
+          </div>
+        </div>
+        <div><div class="text-white font-medium mb-2">Reports</div>
+          <div class="space-y-1.5">
+            <a href="../INSIGHTS_REPORT2.md" class="block hover:text-white transition-colors">Insights Report</a>
+            <a href="../TESTING_REPORT.md" class="block hover:text-white transition-colors">Testing Report</a>
+            <a href="../../BACKLOG.md" class="block hover:text-white transition-colors">Backlog</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-slate-800 mt-8 pt-6 text-center text-xs">
+      Health Access Bridge · Momento 1 completado · Abril 2026 · <a href="https://github.com/jaquimbayoc7" class="hover:text-white">@jaquimbayoc7</a>
+    </div>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div id="lb" class="lb" onclick="closeLb()">
+  <div class="relative max-w-5xl max-h-screen p-4">
+    <img id="lb-img" src="" alt="" class="max-w-full max-h-screen rounded-xl shadow-2xl"/>
+    <div id="lb-cap" class="text-white text-center mt-3 text-sm font-medium"></div>
+    <button onclick="closeLb()" class="absolute top-2 right-2 w-8 h-8 bg-white/20 rounded-full text-white flex items-center justify-center hover:bg-white/30 text-lg">×</button>
+  </div>
+</div>
+
+<script>
+  // Progress bar animation
+  window.addEventListener('load', () => {
+    setTimeout(() => { document.getElementById('pbar').style.width = '48%'; }, 300);
+  });
+
+  // Chart.js language donut
+  const ctx = document.getElementById('langChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['TypeScript','Python','CSS','Shell','Otros'],
+      datasets: [{
+        data: [81.3, 16.3, 1.0, 0.7, 0.7],
+        backgroundColor: ['#3B82F6','#22C55E','#EC4899','#EAB308','#CBD5E1'],
+        borderWidth: 2, borderColor: '#fff'
+      }]
+    },
+    options: {
+      cutout: '68%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}%` } } }
+    }
+  });
+
+  // Lightbox
+  function openLb(src, cap) {
+    document.getElementById('lb-img').src = src;
+    document.getElementById('lb-cap').textContent = cap;
+    document.getElementById('lb').classList.add('on');
+  }
+  function closeLb() { document.getElementById('lb').classList.remove('on'); }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+</script>
+</body>
+</html>
