@@ -3,7 +3,7 @@
 **Proyecto:** Health Access Bridge  
 **Periodo:** Momento 1 - Trabajo Integrador I (Semanas 1-9)  
 **Fecha del reporte:** Abril 2026  
-**Historias de Usuario evaluadas:** HU-01, HU-02, HU-03, HU-11, HU-12, HU-13 (todas completadas en Momento 1)
+**Historias de Usuario evaluadas:** HU-01, HU-02, HU-03, [HU-11 #14](https://github.com/jaquimbayoc7/health-access-bridge/issues/14), [HU-12 #15](https://github.com/jaquimbayoc7/health-access-bridge/issues/15), [HU-13 #16](https://github.com/jaquimbayoc7/health-access-bridge/issues/16) (todas completadas en Momento 1)
 
 ---
 
@@ -187,7 +187,7 @@ El proyecto Health Access Bridge ha implementado un conjunto completo de **prueb
 
 ---
 
-## HU-11: Pruebas Smoke en Producción (CI/CD)
+## [HU-11 — Issue #14](https://github.com/jaquimbayoc7/health-access-bridge/issues/14): Pruebas Smoke en Producción (CI/CD)
 
 **Archivo:** `.github/workflows/ci-prod.yml` → job `api-smoke-tests-prod`  
 **Total de pruebas:** 2 smoke tests
@@ -212,7 +212,7 @@ El proyecto Health Access Bridge ha implementado un conjunto completo de **prueb
 
 ---
 
-## HU-12: Pruebas de Integración Backend
+## [HU-12 — Issue #15](https://github.com/jaquimbayoc7/health-access-bridge/issues/15): Pruebas de Integración Backend
 
 > **Nota:** Las pruebas de integración backend están documentadas bajo HU-01 y HU-02 en este reporte (archivos `test_auth.py` y `test_patients.py`). HU-12 formaliza el conjunto completo como una historia de usuario independiente dentro del Sprint 3.5.
 
@@ -352,7 +352,7 @@ Similar a Dev, con:
 
 ---
 
-## HU-13: Pruebas de Diseño y UI Frontend
+## [HU-13 — Issue #16](https://github.com/jaquimbayoc7/health-access-bridge/issues/16): Pruebas de Diseño y UI Frontend
 
 **Estado:** ✅ Completado — Sprint 3.5 cierre  
 **Stack:** Vitest + React Testing Library + jsdom + `@testing-library/user-event`  
@@ -491,9 +491,9 @@ Con la implementación de HU-13, el frontend cuenta con **16 pruebas unitarias a
 | HU-01 | Autenticación y RBAC | 17 casos | ~90% endpoints críticos |
 | HU-02 | Gestión de Pacientes | 18 casos | ~95% endpoints críticos |
 | HU-03 | Integración y Despliegue | CI/CD pipelines | 100% pipeline |
-| HU-11 | Smoke Tests en Producción | 2 smoke tests | 100% endpoints vitales |
-| HU-12 | Integración Backend (formal) | 35 casos totales | ~92% endpoints críticos |
-| HU-13 | Diseño y UI Frontend | 16 casos ✅ | Guards, forms, routing, dialogs, debounce |
+| [HU-11 #14](https://github.com/jaquimbayoc7/health-access-bridge/issues/14) | Smoke Tests en Producción | 2 smoke tests | 100% endpoints vitales |
+| [HU-12 #15](https://github.com/jaquimbayoc7/health-access-bridge/issues/15) | Integración Backend (formal) | 35 casos totales | ~92% endpoints críticos |
+| [HU-13 #16](https://github.com/jaquimbayoc7/health-access-bridge/issues/16) | Diseño y UI Frontend | 16 casos ✅ | Guards, forms, routing, dialogs, debounce |
 
 ### Áreas Cubiertas
 

@@ -7,7 +7,7 @@
 
 ## Resumen Ejecutivo
 
-El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Semanas 1-9) con un avance del **48%** sobre el total del proyecto, superando el 26% proyectado inicialmente. Se adelantó la implementación de **HU-04** (Modelo Predictivo ML) y se completó el **Sprint 3.5 de Calidad** incluyendo las 16 pruebas UI frontend (HU-13).
+El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Semanas 1-9) con un avance del **48%** sobre el total del proyecto, superando el 26% proyectado inicialmente. Se adelantó la implementación de **[HU-04 #4](https://github.com/jaquimbayoc7/health-access-bridge/issues/4)** (Modelo Predictivo ML) y se completó el **Sprint 3.5 de Calidad** incluyendo smoke tests ([#14](https://github.com/jaquimbayoc7/health-access-bridge/issues/14)), pruebas backend ([#15](https://github.com/jaquimbayoc7/health-access-bridge/issues/15)) y 16 pruebas UI frontend ([#16](https://github.com/jaquimbayoc7/health-access-bridge/issues/16)).
 
 ---
 
@@ -104,7 +104,7 @@ El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Se
 
 ### Sprint 3.5 — Calidad y Pruebas (Semana 9)
 
-### ✅ HU-11: Pruebas Smoke en Producción
+### ✅ [HU-11 — Issue #14](https://github.com/jaquimbayoc7/health-access-bridge/issues/14): Pruebas Smoke en Producción
 **Sprint:** 3.5 (Semana 9) | **Puntos:** 3 | **Estado:** ✅ COMPLETADO
 
 **Implementación:**
@@ -116,7 +116,7 @@ El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Se
 
 ---
 
-### ✅ HU-12: Pruebas de Integración Backend
+### ✅ [HU-12 — Issue #15](https://github.com/jaquimbayoc7/health-access-bridge/issues/15): Pruebas de Integración Backend
 **Sprint:** 3.5 (Semana 9) | **Puntos:** 5 | **Estado:** ✅ COMPLETADO
 
 **Implementación:**
@@ -129,7 +129,7 @@ El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Se
 
 ---
 
-### ✅ HU-13: Pruebas de Diseño y UI Frontend
+### ✅ [HU-13 — Issue #16](https://github.com/jaquimbayoc7/health-access-bridge/issues/16): Pruebas de Diseño y UI Frontend
 **Sprint:** 3.5 (Semana 9) | **Puntos:** 8 | **Estado:** ✅ COMPLETADO
 
 **Implementación:**
@@ -186,7 +186,7 @@ El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Se
 | **Avance general** | 48% |
 | **Avance proyectado M1** | 26% |
 | **Superación del plan** | +22% |
-| **HUs M1 completadas** | HU-01, HU-02, HU-03, HU-04*, HU-11, HU-12, HU-13 |
+| **HUs M1 completadas** | HU-01 [#1](https://github.com/jaquimbayoc7/health-access-bridge/issues/1), HU-02 [#2](https://github.com/jaquimbayoc7/health-access-bridge/issues/2), HU-03 [#3](https://github.com/jaquimbayoc7/health-access-bridge/issues/3), HU-04* [#4](https://github.com/jaquimbayoc7/health-access-bridge/issues/4), HU-11 [#14](https://github.com/jaquimbayoc7/health-access-bridge/issues/14), HU-12 [#15](https://github.com/jaquimbayoc7/health-access-bridge/issues/15), HU-13 [#16](https://github.com/jaquimbayoc7/health-access-bridge/issues/16) |
 | **HUs M1 backlog** | — (Momento 1 100% completo) |
 
 ---
