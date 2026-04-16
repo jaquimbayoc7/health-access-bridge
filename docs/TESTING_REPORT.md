@@ -2,8 +2,8 @@
 
 **Proyecto:** Health Access Bridge  
 **Periodo:** Momento 1 - Trabajo Integrador I (Semanas 1-9)  
-**Fecha del reporte:** Marzo 2026  
-**Historias de Usuario evaluadas:** HU-01, HU-02, HU-03, HU-11, HU-12 (completadas) · HU-13 (planificada)
+**Fecha del reporte:** Abril 2026  
+**Historias de Usuario evaluadas:** HU-01, HU-02, HU-03, HU-11, HU-12, HU-13 (todas completadas en Momento 1)
 
 ---
 
@@ -15,13 +15,13 @@ El proyecto Health Access Bridge ha implementado un conjunto completo de **prueb
 
 | Métrica | Valor |
 |---------|-------|
-| **Total de pruebas backend** | 35+ casos de prueba |
-| **Pruebas frontend planificadas** | 16 casos (HU-13) |
-| **Cobertura de HUs** | HU-01, HU-02, HU-03, HU-11, HU-12 (done) · HU-13 (backlog) |
+| **Total de pruebas backend** | 35 casos de prueba |
+| **Total de pruebas frontend** | 16 casos (HU-13) — 16/16 ✅ pasando |
+| **Cobertura de HUs** | HU-01, HU-02, HU-03, HU-11, HU-12, HU-13 (todas ✅) |
 | **Framework backend** | pytest + FastAPI TestClient |
 | **Framework frontend** | Vitest + React Testing Library + jsdom |
 | **Base de datos de prueba** | SQLite en memoria (aislamiento total) |
-| **CI/CD** | GitHub Actions (3 workflows) |
+| **CI/CD** | GitHub Actions (3 workflows — incluye frontend tests) |
 | **Smoke tests en producción** | Automáticos post-deploy |
 
 ---
@@ -352,64 +352,86 @@ Similar a Dev, con:
 
 ---
 
-## HU-13: Pruebas de Diseño y UI Frontend (Planificadas)
+## HU-13: Pruebas de Diseño y UI Frontend
 
-**Estado:** 📋 Planificado — Sprint 3.5 cierre  
+**Estado:** ✅ Completado — Sprint 3.5 cierre  
 **Stack:** Vitest + React Testing Library + jsdom + `@testing-library/user-event`  
-**Total de casos:** 16 tests en 4 archivos
+**Total de casos:** 16 tests en 4 archivos — **16/16 pasando**  
+**Commit:** `e98427f` — `feat(testing): HU-13 frontend UI tests + Vitest config + CI/CD integration`
 
-### Módulo A: AuthContext (`__tests__/AuthContext.test.tsx`) — 4 tests
+### Módulo A: AuthContext (`__tests__/AuthContext.test.tsx`) — 4 tests ✅
 
-| # | Caso de Prueba | Descripción | Archivo |
+| # | Caso de Prueba | Descripción | Estado |
 |---|----------------|-------------|--------|
-| 1 | `useAuth_returns_null_when_not_logged` | `user` es `null` al iniciar la app sin sesión | `AuthContext.tsx` |
-| 2 | `login_stores_user_and_token` | `login()` actualiza `user` y persiste token en `localStorage` | `AuthContext.tsx` |
-| 3 | `logout_clears_state` | `logout()` borra token y resetea `user` a `null` | `AuthContext.tsx` |
-| 4 | `invalid_credentials_do_not_update_state` | Error en `login()` no persiste el usuario | `AuthContext.tsx` |
+| 1 | `returns null user when not logged in` | `user` es `null` al iniciar la app sin sesión | ✅ Pasa |
+| 2 | `login stores user in state and localStorage` | `login()` actualiza `user` y persiste en `localStorage` | ✅ Pasa |
+| 3 | `logout clears user state and removes localStorage entries` | `logout()` borra token y resetea `user` a `null` | ✅ Pasa |
+| 4 | `invalid credentials do not update user state` | Error en `login()` no persiste el usuario | ✅ Pasa |
 
-### Módulo B: Login page (`__tests__/Login.test.tsx`) — 4 tests
+**Técnica:** `renderHook` + `act` + `waitFor` sobre `AuthProvider` real con `apiService` mockeado.
 
-| # | Caso de Prueba | Descripción | Componente |
-|---|----------------|-------------|----------|
-| 5 | `renders_email_and_password_fields` | Campos `email` y `password` presentes en el DOM | `Login.tsx` |
-| 6 | `submit_button_disabled_while_loading` | Botón deshabilitado cuando `isLoading = true` | `Login.tsx` |
-| 7 | `redirects_to_dashboard_if_authenticated` | Renderiza `<Navigate to="/dashboard">` si hay `user` | `Login.tsx` |
-| 8 | `language_toggle_switches_es_en` | `DropdownMenu` alterna entre ES y EN | `Login.tsx` |
+### Módulo B: Login page (`__tests__/Login.test.tsx`) — 4 tests ✅
 
-### Módulo C: DashboardLayout / AdminRoute (`__tests__/DashboardLayout.test.tsx`) — 4 tests
+| # | Caso de Prueba | Descripción | Estado |
+|---|----------------|-------------|--------|
+| 5 | `renders email and password input fields` | Campos `email` y `password` presentes en el DOM | ✅ Pasa |
+| 6 | `submit button is disabled while login request is in flight` | Botón deshabilitado cuando `isLoading = true` | ✅ Pasa |
+| 7 | `does not render the login form when user is already authenticated` | No renderiza `<form>` si hay `user` activo | ✅ Pasa |
+| 8 | `language toggle button is rendered in the header area` | Botón de idioma presente en cabecera | ✅ Pasa |
 
-| # | Caso de Prueba | Descripción | Componente |
-|---|----------------|-------------|----------|
-| 9 | `unauthenticated_redirects_to_login` | Guard redirige a `/login` si `user === null` | `DashboardLayout.tsx` |
-| 10 | `admin_sees_admin_panel_link` | Sidebar muestra enlace "Admin Panel" cuando `role === 'admin'` | `AppSidebar.tsx` |
-| 11 | `medico_does_not_see_admin_panel` | Sidebar oculta "Admin Panel" cuando `role === 'médico'` | `AppSidebar.tsx` |
-| 12 | `admin_route_blocks_non_admin` | `AdminRoute` redirige médico a `/dashboard` | `App.tsx` |
+**Técnica:** `render` + `userEvent.type/click` + `waitFor`. `AuthContext` y `LanguageContext` mockeados con `vi.mock`.
 
-### Módulo D: Patients page (`__tests__/Patients.test.tsx`) — 4 tests
+### Módulo C: DashboardLayout / Guards (`__tests__/DashboardLayout.test.tsx`) — 4 tests ✅
 
-| # | Caso de Prueba | Descripción | Componente |
-|---|----------------|-------------|----------|
-| 13 | `search_input_triggers_debounced_load` | Input dispara `loadPatients` después de 300ms de inactividad | `Patients.tsx` |
-| 14 | `empty_state_shown_when_no_patients` | Mensaje de lista vacía visible cuando `patients = []` | `Patients.tsx` |
-| 15 | `new_patient_button_opens_dialog` | Click en "Nuevo Paciente" abre `<Dialog>` | `Patients.tsx` |
-| 16 | `delete_opens_confirmation_dialog` | Click en 🗑 abre `<AlertDialog>` de confirmación | `Patients.tsx` |
+| # | Caso de Prueba | Descripción | Estado |
+|---|----------------|-------------|--------|
+| 9 | `shows loading spinner while authentication is resolving` | Muestra `.animate-spin` cuando `isLoading = true` | ✅ Pasa |
+| 10 | `redirects unauthenticated user to /login` | Guard redirige a `/login` si `user === null` | ✅ Pasa |
+| 11 | `renders protected outlet content for an authenticated user` | Outlet visible para usuario autenticado | ✅ Pasa |
+| 12 | `sidebar filter logic shows userList only to admin, hides it from médico` | Lógica de filtro del sidebar validada | ✅ Pasa |
+
+**Técnica:** `render` + `Routes`/`MemoryRouter`. `useAuth` mockeado con `vi.mocked`.
+
+### Módulo D: Patients page (`__tests__/Patients.test.tsx`) — 4 tests ✅
+
+| # | Caso de Prueba | Descripción | Estado |
+|---|----------------|-------------|--------|
+| 13 | `renders the search input field` | Input de búsqueda presente en el DOM | ✅ Pasa |
+| 14 | `shows empty state message when no patients are returned` | Mensaje `noPatientsYet` visible con `patients = []` | ✅ Pasa |
+| 15 | `Add Patient button opens the create dialog` | Click en "addPatient" abre `<Dialog>` | ✅ Pasa |
+| 16 | `clicking the delete icon triggers the confirmation AlertDialog` | Click en ícono papelera abre `<AlertDialog>` | ✅ Pasa |
+
+**Técnica:** `render` + `vi.useFakeTimers` para debounce + `userEvent.click` + `waitFor`. `patientService` mockeado.
 
 ### Criterios de Aceptación HU-13
 
 | Criterio | Estado |
 |----------|--------|
-| 16 tests pasando con `npm run test` | 📋 Pendiente |
-| Vitest configurado en `vite.config.ts` con entorno `jsdom` | 📋 Pendiente |
-| Script `test` operativo en `package.json` | 📋 Pendiente |
-| Integrado a los 3 workflows CI/CD | 📋 Pendiente |
+| 16 tests pasando con `npm run test` | ✅ Completado — 16/16 en 8.36s |
+| Vitest configurado en `vite.config.ts` con entorno `jsdom` | ✅ Completado |
+| Script `test` operativo en `package.json` | ✅ Completado |
+| Integrado a los 3 workflows CI/CD (dev/qa/prod) | ✅ Completado |
+
+### Resultado de Ejecución Local
+
+```
+✓ src/__tests__/AuthContext.test.tsx (4 tests)
+✓ src/__tests__/Login.test.tsx (4 tests)
+✓ src/__tests__/DashboardLayout.test.tsx (4 tests)
+✓ src/__tests__/Patients.test.tsx (4 tests)
+
+Test Files  4 passed (4)
+      Tests  16 passed (16)
+   Duration  8.36s
+```
 
 ---
 
 ## Pruebas Frontend
 
-### Pruebas Realizadas
+### Pruebas Automatizadas (HU-13 ✅)
 
-Aunque no hay pruebas unitarias automatizadas del frontend en el repositorio actual, se realizaron las siguientes validaciones:
+Con la implementación de HU-13, el frontend cuenta con **16 pruebas unitarias automatizadas** ejecutadas con Vitest + RTL. Adicionalmente se realizaron las siguientes validaciones:
 
 #### 1. Build de Producción
 - ✅ Build exitoso con Vite en los 3 ambientes
@@ -436,21 +458,22 @@ Aunque no hay pruebas unitarias automatizadas del frontend en el repositorio act
 
 ### Estado Actual de Pruebas
 
-| Ambiente | Backend Tests | Frontend Build | Smoke Tests | Estado |
-|----------|---------------|----------------|-------------|--------|
-| **Development** | ✅ 35+ passing | ✅ Build OK | N/A | ✅ Passing |
-| **QA** | ✅ 35+ passing | ✅ Build OK | N/A | ✅ Passing |
-| **Production** | ✅ 35+ passing | ✅ Build OK | ✅ 2/2 passing | ✅ Passing |
+| Ambiente | Backend Tests | Frontend Tests | Frontend Build | Smoke Tests | Estado |
+|----------|---------------|----------------|----------------|-------------|--------|
+| **Development** | ✅ 35 passing | ✅ 16 passing | ✅ Build OK | N/A | ✅ Passing |
+| **QA** | ✅ 35 passing | ✅ 16 passing | ✅ Build OK | N/A | ✅ Passing |
+| **Production** | ✅ 35 passing | ✅ 16 passing | ✅ Build OK | ✅ 2/2 passing | ✅ Passing |
 
 ### Última Ejecución CI/CD
 
-**Fecha:** Marzo 2026  
+**Fecha:** Abril 2026  
 **Rama:** `master`  
 **Resultado:** ✅ All checks passed
 
 **Logs de ejemplo:**
 ```
 ✅ Backend Tests (Prod) — 35 passed in 12.34s
+✅ Frontend Unit Tests — 16 passed in 8.36s
 ✅ Frontend Build (Prod) — Build completed in 45.67s
 ✅ Production deploy approved
 ✅ /health OK (HTTP 200)
@@ -470,7 +493,7 @@ Aunque no hay pruebas unitarias automatizadas del frontend en el repositorio act
 | HU-03 | Integración y Despliegue | CI/CD pipelines | 100% pipeline |
 | HU-11 | Smoke Tests en Producción | 2 smoke tests | 100% endpoints vitales |
 | HU-12 | Integración Backend (formal) | 35 casos totales | ~92% endpoints críticos |
-| HU-13 | Diseño y UI Frontend | 16 casos (planificados) | Guards, forms, routing |
+| HU-13 | Diseño y UI Frontend | 16 casos ✅ | Guards, forms, routing, dialogs, debounce |
 
 ### Áreas Cubiertas
 
@@ -502,32 +525,67 @@ Aunque no hay pruebas unitarias automatizadas del frontend en el repositorio act
 
 ## Recomendaciones
 
-### Mejoras Sugeridas
+### Mejoras Completadas (Sprint 3.5 → Abril 2026)
 
-1. **Pruebas Frontend Automatizadas:**
-   - Implementar pruebas unitarias con Vitest
-   - Agregar pruebas de componentes con React Testing Library
-   - Implementar pruebas E2E con Playwright o Cypress
+1. ✅ **Pruebas Frontend Automatizadas (HU-13):**
+   - 16 tests unitarios con Vitest + React Testing Library
+   - Entorno jsdom configurado con polyfill de `window.matchMedia`
+   - Integrado a los 3 pipelines CI/CD
 
-2. **Cobertura de Código:**
-   - Agregar reporte de cobertura con `pytest-cov`
-   - Establecer umbral mínimo de cobertura (ej. 80%)
-   - Integrar reporte de cobertura en CI/CD
+---
 
-3. **Pruebas de Rendimiento:**
-   - Implementar pruebas de carga con Locust o k6
-   - Validar tiempos de respuesta bajo carga
-   - Identificar cuellos de botella
+## Trabajo Pendiente y Mejoras Futuras
 
-4. **Pruebas de Seguridad:**
-   - Escaneo de vulnerabilidades con Bandit
-   - Análisis de dependencias con Safety
-   - Pruebas de penetración básicas
+### Por Área — Priorización
 
-5. **Documentación:**
-   - Documentar casos de prueba en formato BDD (Given-When-Then)
-   - Crear matriz de trazabilidad Requisitos-Pruebas
-   - Documentar datos de prueba y escenarios
+#### Backend
+
+| # | Mejora | Impacto | Prioridad |
+|---|--------|---------|----------|
+| B-01 | **Reporte de cobertura con `pytest-cov`** — agregar `--cov=app --cov-report=xml` al comando pytest y publicar en CI | Visibilidad del % real cubierto | 🔴 Alta |
+| B-02 | **Tests del endpoint `/patients/{id}/predict`** — HU-04 no tiene cobertura en `test_patients.py` | Regresión en modelo ML | 🔴 Alta |
+| B-03 | **Tests de paginación** — `GET /patients/?skip=&limit=` no está probado con valores distintos de 0/100 | Confiabilidad del listado | 🟡 Media |
+| B-04 | **Test del endpoint `/admin/reset-seed`** — operación destructiva sin cobertura de prueba | Estabilidad del seed | 🟡 Media |
+| B-05 | **Tests unitarios del modelo ML** — `HybridModelDisability` no tiene tests de inferencia aislada | Regresión en predicción | 🟡 Media |
+| B-06 | **Pruebas de seguridad** — escaneo con `Bandit` (vulnerabilidades Python) + `Safety` (dependencias) en CI | Seguridad de la app | 🟠 Media-Alta |
+| B-07 | **Pruebas de rendimiento** — benchmark con `locust` o `k6`; validar que endpoints clave respondan < 200ms bajo 50 usuarios | Rendimiento en producción | 🟡 Media |
+
+#### Frontend
+
+| # | Mejora | Impacto | Prioridad |
+|---|--------|---------|----------|
+| F-01 | **Reporte de cobertura** — agregar `@vitest/coverage-v8` y publicar en CI (`npm run test -- --coverage`) | Visibilidad del % cubierto | 🔴 Alta |
+| F-02 | **Tests de `Predictions.tsx`** — página HU-04 sin cobertura: selector de paciente, ejecución y historial | Regresión en predicción ML | 🔴 Alta |
+| F-03 | **Tests de `Analytics.tsx`** — gráfica de torta y estadísticas de distribución de perfiles sin tests | Regresión en analíticas | 🟡 Media |
+| F-04 | **Tests de `Dashboard.tsx`** — métricas del dashboard y carga condicional por rol sin cobertura | Regresión en dashboard | 🟡 Media |
+| F-05 | **Tests de `PredictiveGuide.tsx`** — guía clínica de perfiles sin tests | Regresión en guía | 🟢 Baja |
+| F-06 | **Pruebas de accesibilidad** — integrar `@axe-core/react` o `jest-axe` para validar WCAG en componentes críticos | Accesibilidad WCAG 2.1 | 🟡 Media |
+| F-07 | **Pruebas E2E** — implementar Playwright en el pipeline de QA para flujos login→pacientes→predicción | Confianza en flujos completos | 🟠 Media-Alta |
+
+#### Integración y CI/CD
+
+| # | Mejora | Impacto | Prioridad |
+|---|--------|---------|----------|
+| I-01 | **Smoke tests extendidos** — agregar `/patients/`, `/users/me` y `/patients/{id}/predict` a los checks post-deploy | Cobertura smoke en producción | 🔴 Alta |
+| I-02 | **Tests E2E en pipeline QA** — ejecutar Playwright contra el ambiente QA desplegado (flujo completo) | Confianza en integraciones | 🟠 Media-Alta |
+| I-03 | **Umbral de cobertura en CI** — configurar `fail_under=80` para backend y `coverage.thresholds` para frontend | Garantizar cobertura mínima | 🟡 Media |
+| I-04 | **Notificaciones de fallos** — integrar Slack/email para alertas cuando CI falla en `master` | Visibilidad operacional | 🟢 Baja |
+| I-05 | **Matriz de trazabilidad** — documento que mapee cada criterio de aceptación con sus pruebas | Auditoría y entrega académica | 🟡 Media |
+
+### Resumen de Deuda Técnica en Pruebas
+
+| Área | Tests actuales | Tests faltantes clave | Estado |
+|------|---------------|----------------------|--------|
+| Backend auth/RBAC | 17 ✅ | Cobertura % (B-01) | 🟡 Incompleto |
+| Backend pacientes | 18 ✅ | Predict endpoint (B-02), paginación (B-03) | 🟡 Incompleto |
+| Frontend Auth/Login | 8 ✅ | — | ✅ Cubierto |
+| Frontend Layout/Guards | 4 ✅ | — | ✅ Cubierto |
+| Frontend Patients | 4 ✅ | — | ✅ Cubierto |
+| Frontend Predictions | 0 ❌ | Tests completos (F-02) | 🔴 Sin cobertura |
+| Frontend Analytics | 0 ❌ | Tests completos (F-03) | 🔴 Sin cobertura |
+| Frontend Dashboard | 0 ❌ | Tests completos (F-04) | 🔴 Sin cobertura |
+| E2E integración | 0 ❌ | Playwright QA (I-02) | 🔴 Sin cobertura |
+| Smoke production | 2 ✅ | Endpoints adicionales (I-01) | 🟡 Básico |
 
 ---
 
@@ -535,26 +593,29 @@ Aunque no hay pruebas unitarias automatizadas del frontend en el repositorio act
 
 ### Fortalezas
 
-✅ **Cobertura sólida de endpoints críticos:** 35+ casos de prueba cubren autenticación, RBAC y CRUD de pacientes  
-✅ **CI/CD robusto:** Pipeline automatizado en 3 ambientes con gate de aprobación en producción  
-✅ **Aislamiento de pruebas:** SQLite en memoria garantiza independencia total  
-✅ **Smoke tests en producción:** Validación automática post-deploy  
-✅ **RBAC bien probado:** Separación de roles Admin/Médico validada exhaustivamente
+✅ **Cobertura sólida de endpoints críticos:** 35 casos de prueba cubren autenticación, RBAC y CRUD de pacientes  
+✅ **16 pruebas frontend automatizadas:** HU-13 completa — AuthContext, Login, DashboardLayout y Patients con 16/16 pasando  
+✅ **CI/CD robusto:** Pipeline en 3 ambientes con backend tests + frontend tests + build + gate de aprobación  
+✅ **Aislamiento de pruebas:** SQLite en memoria garantiza independencia total en backend  
+✅ **Smoke tests en producción:** Validación automática post-deploy en `/health` y `/users/login`  
+✅ **RBAC bien probado:** Separación de roles Admin/Médico validada en backend (pytest) y frontend (Vitest)
 
 ### Áreas de Oportunidad
 
-⚠️ **Falta de pruebas frontend automatizadas:** No hay pruebas unitarias ni E2E del frontend  
-⚠️ **Sin reporte de cobertura:** No se mide el % de código cubierto por pruebas  
+⚠️ **Sin reporte de cobertura cuantitativo:** No se mide el % de código cubierto (falta `pytest-cov` + `@vitest/coverage-v8`)  
+⚠️ **Páginas HU-04 sin tests frontend:** `Predictions.tsx`, `Analytics.tsx`, `Dashboard.tsx` sin cobertura unitaria  
+⚠️ **Sin pruebas E2E:** No hay tests de flujo completo con Playwright/Cypress en el pipeline QA  
 ⚠️ **Sin pruebas de rendimiento:** No se validan tiempos de respuesta bajo carga  
-⚠️ **Sin pruebas de seguridad automatizadas:** No hay escaneo de vulnerabilidades en CI/CD
+⚠️ **Smoke tests básicos:** Solo 2 endpoints monitoreados en producción; faltan `/patients/` y `/predict`  
+⚠️ **Sin pruebas de seguridad automatizadas:** No hay escaneo de vulnerabilidades (Bandit, Safety) en CI/CD
 
 ### Estado General
 
 El proyecto Health Access Bridge cuenta con una **base sólida de pruebas automatizadas** que cubren los flujos críticos de autenticación, autorización y gestión de pacientes. El pipeline CI/CD garantiza que todas las pruebas pasen antes de desplegar a producción, con un gate de aprobación manual adicional para máxima seguridad.
 
-**Calificación general:** ⭐⭐⭐⭐☆ (4/5)
+**Calificación general:** ⭐⭐⭐⭐½ (4.5/5)
 
-El proyecto está listo para producción desde el punto de vista de pruebas de integración backend. Se recomienda agregar pruebas frontend automatizadas y reportes de cobertura para alcanzar el nivel de excelencia (5/5).
+El proyecto cuenta con una cobertura de pruebas automatizadas completa en los flujos críticos de autenticación, RBAC, CRUD de pacientes y componentes frontend clave. Para alcanzar el nivel de excelencia se recomienda implementar: reportes de cobertura cuantitativa (B-01, F-01), tests de las páginas HU-04 (F-02, F-03), pruebas E2E con Playwright (I-02), y extensión de smoke tests en producción (I-01).
 
 ---
 
@@ -581,6 +642,22 @@ pytest app/tests/test_patients.py -v
 **Ejecutar con reporte detallado:**
 ```bash
 pytest app/tests/ -v --tb=short
+```
+
+**Ejecutar con reporte de cobertura (pendiente configurar):**
+```bash
+pytest app/tests/ -v --cov=app --cov-report=term-missing --cov-report=xml
+```
+
+**Ejecutar tests frontend:**
+```bash
+cd frontend
+npm run test
+```
+
+**Ejecutar tests frontend con cobertura (pendiente configurar):**
+```bash
+npm run test -- --coverage
 ```
 
 ### B. Variables de Entorno de Prueba

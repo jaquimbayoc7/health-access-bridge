@@ -3,7 +3,7 @@
 **Proyecto:** Health Access Bridge  
 **Metodología:** SCRUM  
 **Duración Total:** 27 Semanas  
-**Última actualización:** Marzo 2026 · Cierre Momento 1
+**Última actualización:** Abril 2026 · Cierre Momento 1 — Sprint 3.5 completado
 
 ---
 
@@ -18,11 +18,10 @@
 | HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | HU-07 Orquestación LLM (21 pts) |
 | HU-11 Pruebas Smoke en Producción (3 pts) | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
 | HU-12 Pruebas de Integración Backend (5 pts) | — | HU-09 Pruebas Completas y Feedback (8 pts) |
-| | — | HU-10 Despliegue Final y Manuales (5 pts) |
-| | — | HU-13 Pruebas de Diseño y UI Frontend (8 pts) |
+| HU-13 Pruebas de Diseño y UI Frontend (8 pts) | — | HU-10 Despliegue Final y Manuales (5 pts) |
 
-**Puntos completados: 55 pts · Puntos pendientes: 76 pts · Total: 131 pts**  
-**Avance general: 42% · Sprint 3.5 formaliza pruebas ya ejecutadas en M1**
+**Puntos completados: 63 pts · Puntos pendientes: 68 pts · Total: 131 pts**  
+**Avance general: 48% · Momento 1 100% completado (Sprint 3.5 incluido)**
 
 ---
 
@@ -183,7 +182,7 @@
 
 **DoD:** 16 tests pasando · Script `npm run test` operativo · Integrado al CI/CD.  
 **Estimación:** 8 puntos.  
-**Estado:** 📋 Backlog — Por implementar en Sprint 3.5 cierre.
+**Estado:** ✅ Completado — 16/16 tests pasando en 8.36s. Vitest configurado con jsdom. Integrado a los 3 workflows CI/CD (dev/qa/prod). Commit `e98427f`.
 
 ---
 

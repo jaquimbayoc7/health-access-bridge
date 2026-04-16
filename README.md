@@ -6,7 +6,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 
 ## Estado del Proyecto — Momento 1
 
-> **Actualizado:** Marzo 2026 · Sprint 3 completado
+> **Actualizado:** Abril 2026 · Sprint 3.5 completado — Momento 1 al 100%
 
 | Capa | Estado | Detalle |
 |------|--------|----------|
@@ -127,7 +127,7 @@ Documentación de arquitectura en cuatro niveles siguiendo el [C4 Model](https:/
 | [#3](https://github.com/jaquimbayoc7/health-access-bridge/issues/3) | [HU-03] Integración Frontend-Backend | Sprint 3 (Sem. 8-9) | 5 | ✅ Completo | ✅ Completo | ✅ Done |
 | — | [HU-11] Pruebas Smoke en Producción | Sprint 3.5 (Sem. 9) | 3 | ✅ CI/CD | — | ✅ Done |
 | — | [HU-12] Pruebas de Integración Backend | Sprint 3.5 (Sem. 9) | 5 | ✅ pytest | — | ✅ Done |
-| — | [HU-13] Pruebas de Diseño y UI Frontend | Sprint 3.5 (Sem. 9) | 8 | — | 📋 Vitest+RTL | 📋 Backlog |
+| — | [HU-13] Pruebas de Diseño y UI Frontend | Sprint 3.5 (Sem. 9) | 8 | — | ✅ 16/16 tests | ✅ Done |
 
 ### Momento 2 — Trabajo Integrador II (Semanas 10-18) · [Milestone](https://github.com/jaquimbayoc7/health-access-bridge/milestone/2)
 
@@ -218,9 +218,10 @@ health-access-bridge/
 │   │   ├── pages/           # Login, Dashboard, Patients, Predictions, Analytics, Admin
 │   │   ├── components/      # Layout, UI (shadcn), Dashboard widgets
 │   │   ├── services/        # api.ts (auth+admin), patients.ts (CRUD+predict)
-│   │   └── contexts/        # AuthContext (JWT), LanguageContext (ES/EN)
+│   │   ├── contexts/        # AuthContext (JWT), LanguageContext (ES/EN)
+│   │   └── __tests__/       # Vitest+RTL: AuthContext, Login, DashboardLayout, Patients (16 tests)
 │   ├── package.json
-│   └── vite.config.ts
+│   └── vite.config.ts       # Vitest config (jsdom environment)
 ├── render.yaml              # Blueprint Render (3 backends + 3 frontends + 3 DBs)
 ├── runtime.txt
 └── .github/
