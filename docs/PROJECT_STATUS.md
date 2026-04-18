@@ -1,13 +1,13 @@
 # Estado del Proyecto Health Access Bridge
 
-**Última actualización:** Marzo 2026  
+**Última actualización:** Abril 2026  
 **Momento actual:** Momento 1 - Trabajo Integrador I (Completado)
 
 ---
 
 ## Resumen Ejecutivo
 
-El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Semanas 1-9) con un avance del **41%** sobre el total del proyecto, superando el 26% proyectado inicialmente. Adicionalmente, se adelantó la implementación de la **HU-04** (Modelo Predictivo ML), originalmente planificada para el Momento 2.
+El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Semanas 1-9) con un avance del **48%** sobre el total del proyecto, superando el 26% proyectado inicialmente. Se adelantó la implementación de **[HU-04 #4](https://github.com/jaquimbayoc7/health-access-bridge/issues/4)** (Modelo Predictivo ML) y se completó el **Sprint 3.5 de Calidad** incluyendo smoke tests ([#14](https://github.com/jaquimbayoc7/health-access-bridge/issues/14)), pruebas backend ([#15](https://github.com/jaquimbayoc7/health-access-bridge/issues/15)) y 16 pruebas UI frontend ([#16](https://github.com/jaquimbayoc7/health-access-bridge/issues/16)).
 
 ---
 
@@ -16,7 +16,7 @@ El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Se
 ### ✅ EPICA-01: Estructuración, Diseño e Implementación M1 (COMPLETADA)
 
 **Periodo:** Semanas 1-9  
-**Puntos:** 26 pts (HU-01, 02, 03) + 21 pts (HU-04 adelantada) = **47 pts completados**
+**Puntos:** 26 pts (HU-01, 02, 03) + 21 pts (HU-04 adelantada) + 16 pts (HU-11, 12, 13) = **63 pts completados**
 
 #### Artefactos de Diseño
 
@@ -102,6 +102,48 @@ El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Se
 
 ---
 
+### Sprint 3.5 — Calidad y Pruebas (Semana 9)
+
+### ✅ [HU-11 — Issue #14](https://github.com/jaquimbayoc7/health-access-bridge/issues/14): Pruebas Smoke en Producción
+**Sprint:** 3.5 (Semana 9) | **Puntos:** 3 | **Estado:** ✅ COMPLETADO
+
+**Implementación:**
+- Job `api-smoke-tests-prod` en `.github/workflows/ci-prod.yml`
+- Prueba 1: `GET /health` → HTTP 200 post-deploy
+- Prueba 2: `POST /users/login` → HTTP 200/401/422 (alcanzable)
+- Espera 90s post-deploy para que Render finalice el contenedor
+- Pipeline falla automáticamente si alguno de los checks falla
+
+---
+
+### ✅ [HU-12 — Issue #15](https://github.com/jaquimbayoc7/health-access-bridge/issues/15): Pruebas de Integración Backend
+**Sprint:** 3.5 (Semana 9) | **Puntos:** 5 | **Estado:** ✅ COMPLETADO
+
+**Implementación:**
+- Framework: pytest + FastAPI TestClient + SQLite en memoria
+- `backend/app/tests/test_auth.py` — 17 casos (Login, JWT, RBAC, admin endpoints)
+- `backend/app/tests/test_patients.py` — 18 casos (CRUD, búsqueda, aislamiento por médico)
+- Fixtures compartidas en `conftest.py` (admin_user, medico_user, tokens, headers)
+- Ejecutado automáticamente en CI/CD en los 3 ambientes
+- Documentado en `docs/TESTING_REPORT.md`
+
+---
+
+### ✅ [HU-13 — Issue #16](https://github.com/jaquimbayoc7/health-access-bridge/issues/16): Pruebas de Diseño y UI Frontend
+**Sprint:** 3.5 (Semana 9) | **Puntos:** 8 | **Estado:** ✅ COMPLETADO
+
+**Implementación:**
+- Stack: Vitest + React Testing Library + jsdom + `@testing-library/user-event`
+- `frontend/src/__tests__/setup.ts` — polyfill `window.matchMedia` + `@testing-library/jest-dom`
+- `__tests__/AuthContext.test.tsx` — 4 tests (estado inicial, login, logout, credenciales inválidas)
+- `__tests__/Login.test.tsx` — 4 tests (campos DOM, botón loading, redirect, toggle idioma)
+- `__tests__/DashboardLayout.test.tsx` — 4 tests (spinner, redirect login, outlet, filtro sidebar)
+- `__tests__/Patients.test.tsx` — 4 tests (búsqueda, empty state, dialog crear, AlertDialog borrar)
+- **16/16 tests pasando** en 8.36s — integrado a los 3 workflows CI/CD
+- Commit: `e98427f`
+
+---
+
 ### 📋 EPICA-02: Funcionalidades Core y Capacidades Avanzadas (PENDIENTE)
 
 **Periodo:** Semanas 10-18  
@@ -138,12 +180,14 @@ El proyecto Health Access Bridge ha completado exitosamente el **Momento 1** (Se
 
 | Métrica | Valor |
 |---------|-------|
-| **Puntos completados** | 47 pts |
+| **Puntos completados** | 63 pts |
 | **Puntos pendientes** | 68 pts |
-| **Total del proyecto** | 115 pts |
-| **Avance general** | 41% |
+| **Total del proyecto** | 131 pts |
+| **Avance general** | 48% |
 | **Avance proyectado M1** | 26% |
-| **Superación del plan** | +15% |
+| **Superación del plan** | +22% |
+| **HUs M1 completadas** | HU-01 [#1](https://github.com/jaquimbayoc7/health-access-bridge/issues/1), HU-02 [#2](https://github.com/jaquimbayoc7/health-access-bridge/issues/2), HU-03 [#3](https://github.com/jaquimbayoc7/health-access-bridge/issues/3), HU-04* [#4](https://github.com/jaquimbayoc7/health-access-bridge/issues/4), HU-11 [#14](https://github.com/jaquimbayoc7/health-access-bridge/issues/14), HU-12 [#15](https://github.com/jaquimbayoc7/health-access-bridge/issues/15), HU-13 [#16](https://github.com/jaquimbayoc7/health-access-bridge/issues/16) |
+| **HUs M1 backlog** | — (Momento 1 100% completo) |
 
 ---
 

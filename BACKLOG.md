@@ -3,7 +3,7 @@
 **Proyecto:** Health Access Bridge  
 **Metodología:** SCRUM  
 **Duración Total:** 27 Semanas  
-**Última actualización:** Marzo 2026 · Cierre Momento 1
+**Última actualización:** Abril 2026 · Cierre Momento 1 — Sprint 3.5 completado
 
 ---
 
@@ -16,12 +16,12 @@
 | HU-02 Registro y Precarga de Pacientes (13 pts) | — | HU-05 Modo Offline y PWA (13 pts) |
 | HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | HU-06 Pruebas de Integración y Rendimiento (8 pts) |
 | HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | HU-07 Orquestación LLM (21 pts) |
-| | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
-| | — | HU-09 Pruebas Completas y Feedback (8 pts) |
-| | — | HU-10 Despliegue Final y Manuales (5 pts) |
+| [#14 HU-11](https://github.com/jaquimbayoc7/health-access-bridge/issues/14) Pruebas Smoke en Producción (3 pts) | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
+| [#15 HU-12](https://github.com/jaquimbayoc7/health-access-bridge/issues/15) Pruebas de Integración Backend (5 pts) | — | HU-09 Pruebas Completas y Feedback (8 pts) |
+| [#16 HU-13](https://github.com/jaquimbayoc7/health-access-bridge/issues/16) Pruebas de Diseño y UI Frontend (8 pts) | — | HU-10 Despliegue Final y Manuales (5 pts) |
 
-**Puntos completados: 47 pts · Puntos pendientes: 68 pts · Total: 115 pts**  
-**Avance general: 41% (superando el 26% proyectado para Momento 1)**
+**Puntos completados: 63 pts · Puntos pendientes: 68 pts · Total: 131 pts**  
+**Avance general: 48% · Momento 1 100% completado (Sprint 3.5 incluido)**
 
 ---
 
@@ -107,6 +107,82 @@
 **DoD:** Despliegue en la nube (Render) en 3 ambientes independientes, pruebas de integración automáticas, CORS resuelto.  
 **Estimación:** 5 puntos.  
 **Estado:** ✅ Completado — Frontend consume API real (`VITE_API_BASE_URL`). CORS configurado con orígenes explícitos por ambiente. Pipeline CI/CD con 3 workflows GitHub Actions (dev/qa/prod). Smoke tests automáticos en producción. Desplegado en Render: 3 backends + 3 frontends + 3 BDs PostgreSQL independientes. `build.sh` con detección automática de cambios de esquema.
+
+---
+
+### Sprint 3.5: Calidad y Pruebas — Cierre Momento 1 (Semana 9) ✅ Done
+
+#### [HU-11 — Issue #14](https://github.com/jaquimbayoc7/health-access-bridge/issues/14): Pruebas Smoke en Producción (CI/CD) ✅ Done · 3 pts · Sprint 3.5
+- **Como** DevOps / QA
+- **Deseo** que el pipeline valide automáticamente que la app esté viva después de cada deploy a producción
+- **Para** detectar fallos críticos antes de que lleguen a los usuarios finales.
+
+**Pruebas implementadas** (`.github/workflows/ci-prod.yml` → job `api-smoke-tests-prod`):
+
+| # | Test | Endpoint | Validación |
+|---|------|----------|-----------|
+| 1 | `smoke_health_check` | `GET /health` | HTTP 200 |
+| 2 | `smoke_auth_reachable` | `POST /users/login` | HTTP 200/401/422 |
+
+**Criterios de Aceptación:**
+- ✅ `/health` retorna HTTP 200 post-deploy en PROD.
+- ✅ `/users/login` es alcanzable (acepta 200, 401 o 422).
+- ✅ Pipeline falla automáticamente si alguno de los smoke tests falla.
+- ✅ Espera 90 segundos para que Render termine el deploy antes de ejecutar.
+
+**DoD:** Job `api-smoke-tests-prod` operativo en ci-prod.yml · Validado en cada push a master.  
+**Estimación:** 3 puntos.  
+**Estado:** ✅ Completado — Smoke tests automáticos activos en producción desde Sprint 3.
+
+---
+
+#### [HU-12 — Issue #15](https://github.com/jaquimbayoc7/health-access-bridge/issues/15): Pruebas de Integración Backend (pytest) ✅ Done · 5 pts · Sprint 3.5
+- **Como** QA / Desarrollador
+- **Deseo** un conjunto completo de pruebas de integración automatizadas para el backend
+- **Para** garantizar que cada endpoint responde correctamente antes de promover a producción.
+
+**Pruebas implementadas** (`backend/app/tests/`):
+
+| Archivo | Casos | Cobertura |
+|---------|-------|-----------|
+| `test_auth.py` | 17 casos | Login, JWT, `/users/me`, RBAC Admin |
+| `test_patients.py` | 18 casos | CRUD, búsqueda, aislamiento médico, soft delete |
+
+**Criterios de Aceptación:**
+- ✅ 35+ pruebas pasan en los 3 ambientes (dev/qa/prod) de forma automática.
+- ✅ Aislamiento total: SQLite en memoria, sin dependencia de BD real.
+- ✅ Fixtures reutilizables en `conftest.py` (admin/médico users, tokens, headers).
+- ✅ RBAC validado: Admin 403/401 en rutas de médico y viceversa.
+
+**DoD:** pytest pasa sin errores en CI/CD · Cobertura ~90% endpoints críticos · Documentado en `docs/TESTING_REPORT.md`.  
+**Estimación:** 5 puntos.  
+**Estado:** ✅ Completado — 35 pruebas pasan en 12.34s. Documentadas en `docs/TESTING_REPORT.md`.
+
+---
+
+#### [HU-13 — Issue #16](https://github.com/jaquimbayoc7/health-access-bridge/issues/16): Pruebas de Diseño y UI Frontend (Vitest + RTL) ✅ Done · 8 pts · Sprint 3.5
+- **Como** QA / Desarrollador Frontend
+- **Deseo** pruebas automatizadas que validen el comportamiento visual y funcional de los componentes React
+- **Para** detectar regresiones de UI y garantizar que los flujos de usuario funcionen correctamente.
+
+**Stack:** Vitest + React Testing Library + jsdom + `@testing-library/user-event`
+
+**Criterios de Aceptación:**
+- 16 casos de prueba distribuidos en 4 módulos (`AuthContext`, `Login`, `DashboardLayout`, `Patients`).
+- `npm run test` operativo y pasando en los 3 workflows CI/CD.
+- Cobertura de: guards de ruta, redirección por rol, formularios, debounce, diálogos, estado vacío.
+
+**Tareas:**
+- Configurar Vitest en `vite.config.ts` con entorno `jsdom`.
+- Crear `frontend/src/__tests__/AuthContext.test.tsx` (4 tests).
+- Crear `frontend/src/__tests__/Login.test.tsx` (4 tests).
+- Crear `frontend/src/__tests__/DashboardLayout.test.tsx` (4 tests).
+- Crear `frontend/src/__tests__/Patients.test.tsx` (4 tests).
+- Agregar `npm run test` a los 3 workflows GitHub Actions.
+
+**DoD:** 16 tests pasando · Script `npm run test` operativo · Integrado al CI/CD.  
+**Estimación:** 8 puntos.  
+**Estado:** ✅ Completado — 16/16 tests pasando en 8.36s. Vitest configurado con jsdom. Integrado a los 3 workflows CI/CD (dev/qa/prod). Commit `e98427f`.
 
 ---
 
