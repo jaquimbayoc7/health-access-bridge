@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HAB — Frontend Docs</title>
+  <style>
+    :root {
+      --primary: #1F3864;
+      --accent:  #2E74B5;
+      --light:   #D6E4F0;
+      --bg:      #f8f9fa;
+      --sidebar-w: 260px;
+      --code-bg: #1a2a3a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15px; color: #2d2d2d; display: flex; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    nav {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--bg);
+      border-right: 1px solid #dee2e6;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 0 0 32px;
+    }
+    .nav-logo {
+      background: var(--primary);
+      color: #fff;
+      padding: 18px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.4;
+      letter-spacing: 0.02em;
+    }
+    .nav-logo span { display: block; font-size: 11px; font-weight: 400; opacity: 0.75; margin-top: 2px; }
+    .nav-section { padding: 18px 20px 4px; font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.08em; }
+    nav a {
+      display: block;
+      padding: 7px 20px;
+      color: #444;
+      text-decoration: none;
+      font-size: 13.5px;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    nav a:hover { background: #e9ecef; color: var(--primary); border-left-color: var(--accent); }
+    nav a.active { background: var(--light); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+
+    /* ── MAIN ── */
+    main { flex: 1; padding: 48px 56px; max-width: 900px; }
+    section { margin-bottom: 64px; scroll-margin-top: 24px; }
+    h1 { font-size: 28px; color: var(--primary); font-weight: 700; margin-bottom: 8px; }
+    h2 { font-size: 20px; color: var(--primary); font-weight: 700; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--light); }
+    h3 { font-size: 15px; color: var(--accent); font-weight: 700; margin: 24px 0 8px; }
+    p { line-height: 1.7; margin-bottom: 12px; color: #444; }
+    a { color: var(--accent); }
+
+    .subtitle { font-size: 16px; color: #666; margin-bottom: 24px; }
+    .badge { display: inline-block; padding: 2px 9px; border-radius: 12px; font-size: 11.5px; font-weight: 600; margin-right: 4px; }
+    .badge-blue   { background: var(--light); color: var(--primary); }
+    .badge-green  { background: #d4edda; color: #155724; }
+    .badge-yellow { background: #fff3cd; color: #856404; }
+    .badge-red    { background: #f8d7da; color: #721c24; }
+    .badge-gray   { background: #e9ecef; color: #495057; }
+
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+    th { background: var(--primary); color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; font-size: 13px; }
+    td { padding: 8px 12px; border-bottom: 1px solid #e9ecef; vertical-align: top; }
+    tr:nth-child(even) td { background: #f4f7fb; }
+
+    code { background: #e8f0f7; color: var(--primary); padding: 1px 6px; border-radius: 4px; font-family: 'SF Mono', 'Fira Code', Consolas, monospace; font-size: 13px; }
+    pre {
+      background: var(--code-bg);
+      color: #e2e8f0;
+      padding: 18px 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 13px;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      line-height: 1.6;
+      margin: 12px 0 20px;
+    }
+    pre .kw { color: #7dd3fc; }
+    pre .str { color: #86efac; }
+    pre .cm { color: #6b7280; }
+    pre .fn { color: #fde68a; }
+    pre .ty { color: #f9a8d4; }
+
+    .card { border: 1px solid #dee2e6; border-radius: 8px; padding: 18px 20px; margin-bottom: 16px; background: #fff; }
+    .card h3 { margin-top: 0; }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 12px; }
+
+    .route-pill { display: inline-block; font-family: 'SF Mono', Consolas, monospace; font-size: 12px; background: #f1f3f5; color: #333; padding: 2px 8px; border-radius: 4px; border: 1px solid #ddd; }
+    .role-admin  { color: #1F3864; font-weight: 700; }
+    .role-medico { color: #2E74B5; font-weight: 700; }
+    .role-all    { color: #555; }
+
+    .info-box { background: #e8f4fd; border-left: 4px solid var(--accent); padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 16px 0; font-size: 13.5px; line-height: 1.6; }
+    .warn-box  { background: #fff8e1; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 16px 0; font-size: 13.5px; }
+
+    .divider { border: none; border-top: 1px solid #e9ecef; margin: 40px 0; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ SIDEBAR ══════════════════════════════════════ -->
+<nav>
+  <div class="nav-logo">
+    HAB — Frontend Docs
+    <span>Health Access Bridge v1.0.0</span>
+  </div>
+
+  <div class="nav-section">Introducción</div>
+  <a href="#overview">Visión General</a>
+  <a href="#stack">Stack Tecnológico</a>
+  <a href="#structure">Estructura del Proyecto</a>
+
+  <div class="nav-section">Arquitectura</div>
+  <a href="#routing">Rutas y Navegación</a>
+  <a href="#auth">Contexto de Autenticación</a>
+  <a href="#lang">Contexto de Idioma</a>
+
+  <div class="nav-section">Servicios</div>
+  <a href="#api-service">ApiService</a>
+  <a href="#patient-service">PatientService</a>
+
+  <div class="nav-section">Páginas</div>
+  <a href="#page-login">LoginLanding</a>
+  <a href="#page-dashboard">Dashboard</a>
+  <a href="#page-patients">Patients</a>
+  <a href="#page-predictions">Predictions</a>
+  <a href="#page-analytics">Analytics</a>
+  <a href="#page-guide">PredictiveGuide</a>
+  <a href="#page-admin">AdminPanel</a>
+
+  <div class="nav-section">Componentes</div>
+  <a href="#comp-layout">DashboardLayout</a>
+  <a href="#comp-ui">UI Components</a>
+
+  <div class="nav-section">Testing</div>
+  <a href="#tests">Pruebas UI (Vitest)</a>
+</nav>
+
+<!-- ══════════════════════════════════════ MAIN ══════════════════════════════════════ -->
+<main>
+
+  <!-- ─── OVERVIEW ─── -->
+  <section id="overview">
+    <h1>Frontend — Health Access Bridge</h1>
+    <p class="subtitle">Documentación de la SPA React para la plataforma de gestión clínica HAB.</p>
+    <p>
+      El frontend de HAB es una <strong>Single Page Application (SPA)</strong> construida con React 18 + TypeScript,
+      que consume la API RESTful del backend FastAPI. Provee interfaces diferenciadas por rol
+      (<span class="role-admin">Admin</span> / <span class="role-medico">Médico</span>) para la gestión clínica
+      de pacientes con discapacidad, análisis predictivo y visualización de métricas.
+    </p>
+    <div class="info-box">
+      <strong>Ambientes desplegados:</strong><br/>
+      DEV → <a href="https://hab-frontend-dev.onrender.com" target="_blank">hab-frontend-dev.onrender.com</a><br/>
+      QA &nbsp;→ <a href="https://hab-frontend-qa.onrender.com" target="_blank">hab-frontend-qa.onrender.com</a><br/>
+      PROD → <a href="https://hab-frontend.onrender.com" target="_blank">hab-frontend.onrender.com</a>
+    </div>
+  </section>
+
+  <!-- ─── STACK ─── -->
+  <section id="stack">
+    <h2>Stack Tecnológico</h2>
+    <table>
+      <tr><th>Categoría</th><th>Tecnología</th><th>Versión</th></tr>
+      <tr><td>Framework</td><td><code>React</code></td><td>18</td></tr>
+      <tr><td>Lenguaje</td><td><code>TypeScript</code></td><td>5.x</td></tr>
+      <tr><td>Build Tool</td><td><code>Vite</code></td><td>5.x</td></tr>
+      <tr><td>Estilos</td><td><code>TailwindCSS</code></td><td>3.x</td></tr>
+      <tr><td>Componentes UI</td><td><code>shadcn/ui</code> (Radix UI)</td><td>latest</td></tr>
+      <tr><td>Gráficas</td><td><code>Recharts</code></td><td>2.x</td></tr>
+      <tr><td>Routing</td><td><code>React Router DOM</code></td><td>6.x</td></tr>
+      <tr><td>Data Fetching</td><td><code>TanStack React Query</code></td><td>5.x</td></tr>
+      <tr><td>Iconos</td><td><code>Lucide React</code></td><td>latest</td></tr>
+      <tr><td>Testing</td><td><code>Vitest</code> + <code>React Testing Library</code></td><td>1.x / 14.x</td></tr>
+    </table>
+  </section>
+
+  <!-- ─── STRUCTURE ─── -->
+  <section id="structure">
+    <h2>Estructura del Proyecto</h2>
+    <pre><span class="cm">frontend/src/</span>
+├── <span class="fn">App.tsx</span>               <span class="cm"># Raíz: providers, router, rutas protegidas</span>
+├── <span class="fn">main.tsx</span>              <span class="cm"># Entry point React + DOM mount</span>
+├── <span class="kw">pages/</span>                <span class="cm"># Vistas de la aplicación (1 archivo = 1 ruta)</span>
+│   ├── LoginLanding.tsx
+│   ├── Dashboard.tsx
+│   ├── Patients.tsx
+│   ├── Predictions.tsx
+│   ├── Analytics.tsx
+│   ├── PredictiveGuide.tsx
+│   ├── AdminPanel.tsx
+│   └── Settings.tsx
+├── <span class="kw">services/</span>             <span class="cm"># Capa de comunicación con la API</span>
+│   ├── api.ts            <span class="cm"># ApiService — auth + admin endpoints</span>
+│   └── patients.ts       <span class="cm"># PatientService — CRUD + predicción</span>
+├── <span class="kw">contexts/</span>             <span class="cm"># Estado global via Context API</span>
+│   ├── AuthContext.tsx   <span class="cm"># JWT, login, logout, user state</span>
+│   └── LanguageContext.tsx <span class="cm"># i18n ES/EN</span>
+├── <span class="kw">components/</span>
+│   ├── <span class="kw">layout/</span>
+│   │   ├── DashboardLayout.tsx  <span class="cm"># Shell: sidebar + topbar + outlet</span>
+│   │   ├── Sidebar.tsx
+│   │   └── Header.tsx
+│   ├── <span class="kw">dashboard/</span>
+│   │   └── StatsCard.tsx
+│   └── <span class="kw">ui/</span>               <span class="cm"># 49 componentes shadcn/ui</span>
+├── <span class="kw">hooks/</span>
+│   └── use-toast.ts
+└── <span class="kw">__tests__/</span>            <span class="cm"># 16 tests Vitest + RTL</span></pre>
+  </section>
+
+  <!-- ─── ROUTING ─── -->
+  <section id="routing">
+    <h2>Rutas y Navegación</h2>
+    <p>El router está configurado en <code>App.tsx</code> con React Router v6. Todas las rutas protegidas están envueltas en <code>DashboardLayout</code>.</p>
+    <table>
+      <tr><th>Ruta</th><th>Componente</th><th>Acceso</th><th>Descripción</th></tr>
+      <tr><td><code>/</code></td><td>Redirect</td><td class="role-all">Todos</td><td>Redirige a <code>/dashboard</code></td></tr>
+      <tr><td><code>/login</code></td><td><code>LoginLanding</code></td><td class="role-all">Público</td><td>Pantalla de autenticación</td></tr>
+      <tr><td><code>/dashboard</code></td><td><code>Dashboard</code></td><td class="role-medico">Médico</td><td>Resumen de métricas del médico</td></tr>
+      <tr><td><code>/patients</code></td><td><code>Patients</code></td><td class="role-all">Ambos</td><td>CRUD de pacientes</td></tr>
+      <tr><td><code>/predictions</code></td><td><code>Predictions</code></td><td class="role-all">Ambos</td><td>Ejecución del modelo ML</td></tr>
+      <tr><td><code>/analytics</code></td><td><code>Analytics</code></td><td class="role-all">Ambos</td><td>Gráficas y estadísticas</td></tr>
+      <tr><td><code>/predictive-guide</code></td><td><code>PredictiveGuide</code></td><td class="role-all">Ambos</td><td>Guía clínica de perfiles ICF</td></tr>
+      <tr><td><code>/settings</code></td><td><code>Settings</code></td><td class="role-all">Ambos</td><td>Configuración de cuenta</td></tr>
+      <tr><td><code>/admin</code></td><td><code>AdminPanel</code></td><td class="role-admin">Admin</td><td>Gestión de usuarios — guard <code>AdminRoute</code></td></tr>
+      <tr><td><code>*</code></td><td><code>NotFound</code></td><td class="role-all">Todos</td><td>Página 404</td></tr>
+    </table>
+    <h3>AdminRoute Guard</h3>
+    <pre><span class="kw">const</span> <span class="fn">AdminRoute</span> = () => {
+  <span class="kw">const</span> { user } = <span class="fn">useAuth</span>();
+  <span class="kw">if</span> (!user) <span class="kw">return</span> &lt;<span class="ty">Navigate</span> to=<span class="str">"/login"</span> replace /&gt;;
+  <span class="kw">if</span> (user.role !== <span class="str">'admin'</span>) <span class="kw">return</span> &lt;<span class="ty">Navigate</span> to=<span class="str">"/dashboard"</span> replace /&gt;;
+  <span class="kw">return</span> &lt;<span class="ty">Outlet</span> /&gt;;
+};</pre>
+  </section>
+
+  <!-- ─── AUTH CONTEXT ─── -->
+  <section id="auth">
+    <h2>Contexto de Autenticación</h2>
+    <p>Archivo: <code>src/contexts/AuthContext.tsx</code></p>
+    <p>Provee estado global de autenticación. El token JWT y los datos del usuario se persisten en <code>localStorage</code>.</p>
+
+    <h3>Interfaz AuthContextType</h3>
+    <table>
+      <tr><th>Propiedad</th><th>Tipo</th><th>Descripción</th></tr>
+      <tr><td><code>user</code></td><td><code>User | null</code></td><td>Usuario autenticado. <code>null</code> si no hay sesión.</td></tr>
+      <tr><td><code>login(email, password)</code></td><td><code>Promise&lt;void&gt;</code></td><td>Llama a <code>POST /users/login</code>, persiste token, redirige por rol.</td></tr>
+      <tr><td><code>logout()</code></td><td><code>void</code></td><td>Limpia token + localStorage + redirige a <code>/login</code>.</td></tr>
+      <tr><td><code>isLoading</code></td><td><code>boolean</code></td><td><code>true</code> mientras se verifica el token al inicio.</td></tr>
+    </table>
+
+    <h3>Interfaz User (interna)</h3>
+    <pre>{ id: <span class="ty">number</span>; email: <span class="ty">string</span>; name: <span class="ty">string</span>; role: <span class="str">'admin'</span> | <span class="str">'médico'</span> }</pre>
+
+    <h3>Uso</h3>
+    <pre><span class="kw">import</span> { useAuth } <span class="kw">from</span> <span class="str">'@/contexts/AuthContext'</span>;
+
+<span class="kw">const</span> { user, login, logout, isLoading } = <span class="fn">useAuth</span>();</pre>
+
+    <div class="warn-box">⚠️ <code>useAuth()</code> lanza un error si se usa fuera de <code>&lt;AuthProvider&gt;</code>.</div>
+  </section>
+
+  <!-- ─── LANG CONTEXT ─── -->
+  <section id="lang">
+    <h2>Contexto de Idioma</h2>
+    <p>Archivo: <code>src/contexts/LanguageContext.tsx</code></p>
+    <p>Provee internacionalización (i18n) básica ES/EN. Expone el hook <code>useLanguage()</code> con la función <code>t(key)</code> para traducir cadenas.</p>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ─── API SERVICE ─── -->
+  <section id="api-service">
+    <h2>ApiService</h2>
+    <p>Archivo: <code>src/services/api.ts</code> · Singleton exportado como <code>apiService</code>.</p>
+    <p>Gestiona el token JWT en memoria y <code>localStorage</code>. Cubre los endpoints de <strong>autenticación</strong> y <strong>administración de usuarios</strong>.</p>
+
+    <table>
+      <tr><th>Método</th><th>Firma</th><th>Endpoint</th></tr>
+      <tr><td><code>login</code></td><td><code>(creds: LoginCredentials) → Promise&lt;TokenResponse&gt;</code></td><td><code>POST /users/login</code></td></tr>
+      <tr><td><code>getCurrentUser</code></td><td><code>() → Promise&lt;User&gt;</code></td><td><code>GET /users/me</code></td></tr>
+      <tr><td><code>registerDoctor</code></td><td><code>(data: RegisterData) → Promise&lt;User&gt;</code></td><td><code>POST /admin/users/register</code></td></tr>
+      <tr><td><code>getUsers</code></td><td><code>(skip?, limit?) → Promise&lt;User[]&gt;</code></td><td><code>GET /admin/users</code></td></tr>
+      <tr><td><code>updateUserStatus</code></td><td><code>(userId, isActive) → Promise&lt;User&gt;</code></td><td><code>PATCH /admin/users/{id}/status</code></td></tr>
+      <tr><td><code>setToken</code></td><td><code>(token: string) → void</code></td><td>—</td></tr>
+      <tr><td><code>clearToken</code></td><td><code>() → void</code></td><td>—</td></tr>
+    </table>
+
+    <h3>Interfaces</h3>
+    <pre><span class="kw">interface</span> <span class="ty">LoginCredentials</span> { username: <span class="ty">string</span>; password: <span class="ty">string</span>; }
+<span class="kw">interface</span> <span class="ty">RegisterData</span>    { email: <span class="ty">string</span>; password: <span class="ty">string</span>; full_name: <span class="ty">string</span>; role: <span class="str">'admin'</span> | <span class="str">'médico'</span>; }
+<span class="kw">interface</span> <span class="ty">TokenResponse</span>  { access_token: <span class="ty">string</span>; token_type: <span class="ty">string</span>; }
+<span class="kw">interface</span> <span class="ty">User</span>           { id: <span class="ty">number</span>; email: <span class="ty">string</span>; full_name: <span class="ty">string</span>; is_active: <span class="ty">boolean</span>; role: <span class="str">'admin'</span> | <span class="str">'médico'</span>; }</pre>
+  </section>
+
+  <!-- ─── PATIENT SERVICE ─── -->
+  <section id="patient-service">
+    <h2>PatientService</h2>
+    <p>Archivo: <code>src/services/patients.ts</code> · Singleton exportado como <code>patientService</code>.</p>
+    <p>Gestiona el CRUD completo de pacientes y la ejecución del modelo predictivo ML.</p>
+
+    <table>
+      <tr><th>Método</th><th>Firma</th><th>Endpoint</th></tr>
+      <tr><td><code>getPatients</code></td><td><code>(skip?, limit?, search?) → Promise&lt;Patient[]&gt;</code></td><td><code>GET /patients/</code></td></tr>
+      <tr><td><code>getPatient</code></td><td><code>(id: number) → Promise&lt;Patient&gt;</code></td><td><code>GET /patients/{id}</code></td></tr>
+      <tr><td><code>createPatient</code></td><td><code>(data: PatientCreate) → Promise&lt;Patient&gt;</code></td><td><code>POST /patients/</code></td></tr>
+      <tr><td><code>updatePatient</code></td><td><code>(id, data: PatientCreate) → Promise&lt;Patient&gt;</code></td><td><code>PUT /patients/{id}</code></td></tr>
+      <tr><td><code>deletePatient</code></td><td><code>(id: number) → Promise&lt;void&gt;</code></td><td><code>DELETE /patients/{id}</code></td></tr>
+      <tr><td><code>predictPatient</code></td><td><code>(id: number) → Promise&lt;PredictionResult&gt;</code></td><td><code>POST /patients/{id}/predict</code></td></tr>
+    </table>
+
+    <h3>Interfaces</h3>
+    <pre><span class="kw">interface</span> <span class="ty">Patient</span> {
+  id: <span class="ty">number</span>; nombre_apellidos: <span class="ty">string</span>; numero_documento: <span class="ty">string</span>;
+  fecha_nacimiento: <span class="ty">string</span>; edad: <span class="ty">number</span>; genero: <span class="ty">string</span>;
+  orientacion_sexual: <span class="ty">string</span>; causa_deficiencia: <span class="ty">string</span>;
+  cat_fisica: <span class="ty">string</span>; cat_psicosocial: <span class="ty">string</span>;
+  nivel_d1..d6: <span class="ty">number</span>; nivel_global: <span class="ty">number</span>;
+  owner_id: <span class="ty">number</span>; prediction_profile: <span class="ty">number</span> | <span class="ty">null</span>; prediction_description: <span class="ty">string</span> | <span class="ty">null</span>;
+}
+<span class="kw">interface</span> <span class="ty">PredictionResult</span> { profile: <span class="ty">number</span>; description: <span class="ty">string</span>; }</pre>
+
+    <div class="info-box">Si el token expira (HTTP 401), <code>PatientService</code> limpia <code>localStorage</code> y redirige automáticamente a <code>/login</code>.</div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ─── PAGES ─── -->
+  <section id="page-login">
+    <h2>Página: LoginLanding</h2>
+    <p>Ruta: <code>/login</code> · Archivo: <code>pages/LoginLanding.tsx</code></p>
+    <p>Pantalla de acceso al sistema. Incluye formulario de email/contraseña, validación en cliente y llamada a <code>AuthContext.login()</code>. Redirige automáticamente según rol tras el login exitoso.</p>
+    <table>
+      <tr><th>Evento</th><th>Acción</th></tr>
+      <tr><td>Submit formulario</td><td>Llama <code>login(email, password)</code> del contexto.</td></tr>
+      <tr><td>Login exitoso — Admin</td><td>Redirige a <code>/admin</code></td></tr>
+      <tr><td>Login exitoso — Médico</td><td>Redirige a <code>/dashboard</code></td></tr>
+      <tr><td>Error</td><td>Muestra toast de error con el mensaje del backend.</td></tr>
+    </table>
+  </section>
+
+  <section id="page-dashboard">
+    <h2>Página: Dashboard</h2>
+    <p>Ruta: <code>/dashboard</code> · Archivo: <code>pages/Dashboard.tsx</code></p>
+    <p>Vista principal del médico con métricas clave: total de pacientes, predicciones ejecutadas, distribución de perfiles y accesos rápidos. Usa <code>patientService.getPatients()</code> para calcular estadísticas en cliente.</p>
+    <table>
+      <tr><th>Widget</th><th>Fuente de datos</th></tr>
+      <tr><td>Total pacientes</td><td><code>GET /patients/</code></td></tr>
+      <tr><td>Predicciones ejecutadas</td><td>Filtro <code>prediction_profile !== null</code></td></tr>
+      <tr><td>Distribución de perfiles</td><td>Conteo local de perfiles 0/1/2</td></tr>
+      <tr><td>Últimos pacientes</td><td>Slice de los 5 más recientes</td></tr>
+    </table>
+  </section>
+
+  <section id="page-patients">
+    <h2>Página: Patients</h2>
+    <p>Ruta: <code>/patients</code> · Archivo: <code>pages/Patients.tsx</code> (~29 KB)</p>
+    <p>Módulo CRUD completo de pacientes. Incluye tabla con búsqueda debounced, diálogo de creación/edición, confirmación de eliminación y exportación a Excel/PDF.</p>
+    <table>
+      <tr><th>Funcionalidad</th><th>Detalle</th></tr>
+      <tr><td>Listar</td><td><code>patientService.getPatients(skip, limit, search)</code></td></tr>
+      <tr><td>Crear</td><td>Formulario en diálogo modal → <code>createPatient()</code></td></tr>
+      <tr><td>Editar</td><td>Formulario pre-relleno → <code>updatePatient()</code></td></tr>
+      <tr><td>Eliminar</td><td>Confirm dialog → <code>deletePatient()</code></td></tr>
+      <tr><td>Búsqueda</td><td>Debounce 300ms → parámetro <code>search</code> en API</td></tr>
+      <tr><td>Exportar</td><td>Cliente: Excel (SheetJS) / PDF (jsPDF)</td></tr>
+    </table>
+  </section>
+
+  <section id="page-predictions">
+    <h2>Página: Predictions</h2>
+    <p>Ruta: <code>/predictions</code> · Archivo: <code>pages/Predictions.tsx</code></p>
+    <p>Módulo de predicción ML. Permite seleccionar un paciente, ejecutar el modelo <strong>HybridModelDisability</strong> y ver el historial de predicciones con badges de color por perfil.</p>
+    <table>
+      <tr><th>Perfil</th><th>Badge</th><th>Descripción</th></tr>
+      <tr><td><code>0</code></td><td><span class="badge badge-green">Barreras Bajas</span></td><td>Paciente con mínimas barreras de acceso.</td></tr>
+      <tr><td><code>1</code></td><td><span class="badge badge-yellow">Barreras Moderadas</span></td><td>Requiere intervención preventiva.</td></tr>
+      <tr><td><code>2</code></td><td><span class="badge badge-red">Barreras Altas</span></td><td>Prioridad de atención e intervención inmediata.</td></tr>
+    </table>
+  </section>
+
+  <section id="page-analytics">
+    <h2>Página: Analytics</h2>
+    <p>Ruta: <code>/analytics</code> · Archivo: <code>pages/Analytics.tsx</code></p>
+    <p>Dashboard analítico con gráficas Recharts. Muestra distribución de perfiles predictivos (gráfica de torta), métricas demográficas y tablas de resumen.</p>
+    <h3>Componentes Recharts usados</h3>
+    <p><code>PieChart</code> · <code>BarChart</code> · <code>ResponsiveContainer</code> · <code>Tooltip</code> · <code>Legend</code></p>
+  </section>
+
+  <section id="page-guide">
+    <h2>Página: PredictiveGuide</h2>
+    <p>Ruta: <code>/predictive-guide</code> · Archivo: <code>pages/PredictiveGuide.tsx</code></p>
+    <p>Guía clínica estática que explica la interpretación de los 3 perfiles ICF del modelo predictivo. Incluye criterios de clasificación, recomendaciones de intervención y glosario.</p>
+  </section>
+
+  <section id="page-admin">
+    <h2>Página: AdminPanel</h2>
+    <p>Ruta: <code>/admin</code> · Archivo: <code>pages/AdminPanel.tsx</code> (~15 KB) · <span class="badge badge-blue">Solo Admin</span></p>
+    <p>Panel de administración con gestión completa de usuarios: listar, crear nuevos médicos/admins, activar/desactivar cuentas y visualizar estadísticas globales del sistema.</p>
+    <table>
+      <tr><th>Funcionalidad</th><th>API</th></tr>
+      <tr><td>Listar usuarios</td><td><code>GET /admin/users</code></td></tr>
+      <tr><td>Crear usuario</td><td><code>POST /admin/users/register</code></td></tr>
+      <tr><td>Activar/Desactivar</td><td><code>PATCH /admin/users/{id}/status</code></td></tr>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ─── COMPONENTS ─── -->
+  <section id="comp-layout">
+    <h2>DashboardLayout</h2>
+    <p>Archivo: <code>src/components/layout/DashboardLayout.tsx</code></p>
+    <p>Shell de la aplicación autenticada. Contiene el <code>Sidebar</code> de navegación (diferenciado por rol), el <code>Header</code> con info del usuario y el área de contenido principal (<code>&lt;Outlet /&gt;</code>).</p>
+    <div class="info-box">
+      El <code>Sidebar</code> oculta el enlace <code>/admin</code> automáticamente para el rol <strong>Médico</strong>.
+    </div>
+  </section>
+
+  <section id="comp-ui">
+    <h2>UI Components (shadcn/ui)</h2>
+    <p>49 componentes basados en <strong>Radix UI</strong> + <strong>TailwindCSS</strong> en <code>src/components/ui/</code>.</p>
+    <div class="card-grid">
+      <div class="card"><h3>Formularios</h3><p><code>Button</code> · <code>Input</code> · <code>Label</code> · <code>Select</code> · <code>Checkbox</code> · <code>Textarea</code> · <code>Form</code></p></div>
+      <div class="card"><h3>Feedback</h3><p><code>Toast / Sonner</code> · <code>Alert</code> · <code>Badge</code> · <code>Progress</code> · <code>Skeleton</code></p></div>
+      <div class="card"><h3>Navegación</h3><p><code>Tabs</code> · <code>Breadcrumb</code> · <code>NavigationMenu</code> · <code>Pagination</code></p></div>
+      <div class="card"><h3>Overlays</h3><p><code>Dialog</code> · <code>AlertDialog</code> · <code>Sheet</code> · <code>Popover</code> · <code>Tooltip</code> · <code>DropdownMenu</code></p></div>
+      <div class="card"><h3>Layout</h3><p><code>Card</code> · <code>Separator</code> · <code>Table</code> · <code>Accordion</code> · <code>Collapsible</code> · <code>ScrollArea</code></p></div>
+      <div class="card"><h3>Data</h3><p><code>Avatar</code> · <code>Calendar</code> · <code>Chart</code> · <code>Command</code> · <code>Carousel</code></p></div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ─── TESTS ─── -->
+  <section id="tests">
+    <h2>Pruebas UI — Vitest + React Testing Library</h2>
+    <p>16 tests distribuidos en 4 módulos. Ejecutar con <code>npm run test</code>. Integrados en los 3 workflows CI/CD (dev/qa/prod).</p>
+    <table>
+      <tr><th>Archivo</th><th>Tests</th><th>Cubre</th></tr>
+      <tr>
+        <td><code>__tests__/AuthContext.test.tsx</code></td>
+        <td>4</td>
+        <td>Estado inicial, login exitoso, manejo de errores, logout + limpieza localStorage.</td>
+      </tr>
+      <tr>
+        <td><code>__tests__/Login.test.tsx</code></td>
+        <td>4</td>
+        <td>Render del formulario, submit con credenciales, mensaje de error, redirección por rol.</td>
+      </tr>
+      <tr>
+        <td><code>__tests__/DashboardLayout.test.tsx</code></td>
+        <td>4</td>
+        <td>Guard de ruta (no autenticado → login), render del sidebar, diferenciación de menú por rol.</td>
+      </tr>
+      <tr>
+        <td><code>__tests__/Patients.test.tsx</code></td>
+        <td>4</td>
+        <td>Render tabla de pacientes, búsqueda debounce, diálogo de creación, estado vacío.</td>
+      </tr>
+    </table>
+
+    <h3>Configuración</h3>
+    <pre><span class="cm"># vite.config.ts — entorno jsdom</span>
+test: {
+  environment: <span class="str">'jsdom'</span>,
+  setupFiles: [<span class="str">'./src/__tests__/setup.ts'</span>],
+  globals: <span class="kw">true</span>
+}</pre>
+
+    <pre><span class="cm"># package.json</span>
+<span class="str">"test"</span>: <span class="str">"vitest run"</span>,
+<span class="str">"test:watch"</span>: <span class="str">"vitest"</span></pre>
+  </section>
+
+</main>
+
+<script>
+  // Highlight active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('nav a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-10% 0px -80% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

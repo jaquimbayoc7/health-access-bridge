@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HAB — API Reference</title>
+  <style>
+    body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  </style>
+</head>
+<body>
+  <div id="redoc-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/redoc@latest/bundles/redoc.standalone.js"></script>
+  <script>
+    const spec = {
+      "openapi": "3.0.3",
+      "info": {
+        "title": "Health Access Bridge API",
+        "version": "1.0.0",
+        "description": "## Descripción\n\nAPI RESTful para la plataforma **Health Access Bridge (HAB)**, orientada a la gestión clínica de pacientes con discapacidad y al análisis predictivo de perfiles de barreras de acceso a la salud en zonas rurales de Colombia y Latinoamérica.\n\n## Funcionalidades principales\n\n- 🔐 **Autenticación y RBAC** — JWT con claims de rol (Admin / Médico)\n- 👤 **Gestión de usuarios** — creación, activación/desactivación, perfil\n- 🏥 **Gestión de pacientes** — CRUD completo + búsqueda + paginación + soft delete\n- 🤖 **Predicción ML** — modelo HybridModelDisability (K-Means + Gradient Boosting) integrado en backend\n\n## Seguridad\n\nTodos los endpoints excepto `POST /users/login`, `GET /`, y `GET /health` requieren autenticación Bearer JWT.\n\n## Ambientes\n\n| Ambiente | URL |\n|----------|-----|\n| DEV | https://hab-backend-dev.onrender.com |\n| QA | https://hab-backend-qa.onrender.com |\n| PROD | https://hab-backend.onrender.com |\n\n## Credenciales de prueba\n\n| Rol | Email | Contraseña |\n|-----|-------|------------|\n| Admin | administrador@salud.co | adminpassword |\n| Médico 1 | medico1@salud.co | medico123 |\n| Médico 2 | medico2@salud.co | medico123 |",
+        "contact": {
+          "name": "Health Access Bridge",
+          "url": "https://github.com/jaquimbayoc7/health-access-bridge"
+        },
+        "license": { "name": "MIT" }
+      },
+      "servers": [
+        { "url": "https://hab-backend.onrender.com", "description": "Producción" },
+        { "url": "https://hab-backend-qa.onrender.com", "description": "QA / Staging" },
+        { "url": "https://hab-backend-dev.onrender.com", "description": "Desarrollo" },
+        { "url": "http://localhost:8000", "description": "Local" }
+      ],
+      "security": [{ "BearerAuth": [] }],
+      "tags": [
+        { "name": "Sistema", "description": "Endpoints de salud y bienvenida del sistema." },
+        { "name": "Users & Authentication", "description": "Autenticación de usuarios y consulta del perfil propio." },
+        { "name": "Patients", "description": "Gestión del ciclo de vida de pacientes con discapacidad. El Admin accede a todos los registros; el Médico solo a los propios." },
+        { "name": "Admin", "description": "Operaciones exclusivas del rol **Admin**: gestión de usuarios y utilidades de base de datos." }
+      ],
+      "components": {
+        "securitySchemes": {
+          "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+            "description": "Token JWT obtenido en `POST /users/login`. Prefijo `Bearer ` incluido automáticamente."
+          }
+        },
+        "schemas": {
+          "Token": {
+            "type": "object",
+            "description": "Respuesta de autenticación con el token de acceso JWT.",
+            "required": ["access_token", "token_type"],
+            "properties": {
+              "access_token": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
+              "token_type": { "type": "string", "example": "bearer" }
+            }
+          },
+          "Role": {
+            "type": "string",
+            "enum": ["admin", "médico"],
+            "description": "Rol del usuario en el sistema."
+          },
+          "User": {
+            "type": "object",
+            "description": "Representación pública de un usuario del sistema.",
+            "required": ["id", "email", "full_name", "is_active", "role"],
+            "properties": {
+              "id": { "type": "integer", "example": 1 },
+              "email": { "type": "string", "format": "email", "example": "medico1@salud.co" },
+              "full_name": { "type": "string", "example": "Dr. Juan Pérez" },
+              "is_active": { "type": "boolean", "example": true },
+              "role": { "$ref": "#/components/schemas/Role" }
+            }
+          },
+          "UserCreate": {
+            "type": "object",
+            "description": "Datos requeridos para crear un nuevo usuario (solo Admin).",
+            "required": ["email", "password", "full_name", "role"],
+            "properties": {
+              "email": { "type": "string", "format": "email", "example": "nuevo.medico@salud.co" },
+              "password": { "type": "string", "minLength": 8, "example": "contraseña_segura" },
+              "full_name": { "type": "string", "example": "Dra. Ana López" },
+              "role": { "$ref": "#/components/schemas/Role" }
+            }
+          },
+          "UserStatusUpdate": {
+            "type": "object",
+            "description": "Payload para activar o desactivar una cuenta de usuario.",
+            "required": ["is_active"],
+            "properties": {
+              "is_active": { "type": "boolean", "example": false }
+            }
+          },
+          "PatientBase": {
+            "type": "object",
+            "description": "Datos clínicos y demográficos base de un paciente con discapacidad.",
+            "required": [
+              "numero_documento", "nombre_apellidos", "fecha_nacimiento", "edad",
+              "genero", "orientacion_sexual", "causa_deficiencia", "cat_fisica",
+              "cat_psicosocial", "nivel_d1", "nivel_d2", "nivel_d3", "nivel_d4",
+              "nivel_d5", "nivel_d6", "nivel_global"
+            ],
+            "properties": {
+              "numero_documento": { "type": "string", "example": "10234567890", "description": "Número de documento de identidad único." },
+              "nombre_apellidos": { "type": "string", "example": "María García Torres" },
+              "fecha_nacimiento": { "type": "string", "format": "date", "example": "1985-03-15" },
+              "edad": { "type": "integer", "minimum": 1, "example": 39 },
+              "genero": { "type": "string", "example": "Femenino", "description": "Género del paciente." },
+              "orientacion_sexual": { "type": "string", "example": "Heterosexual" },
+              "causa_deficiencia": { "type": "string", "example": "Enfermedad general", "description": "Causa principal de la deficiencia." },
+              "cat_fisica": { "type": "string", "example": "Movilidad reducida", "description": "Categoría de deficiencia física." },
+              "cat_psicosocial": { "type": "string", "example": "Sin afectación", "description": "Categoría de afectación psicosocial." },
+              "nivel_d1": { "type": "integer", "minimum": 0, "maximum": 100, "example": 45, "description": "Nivel de dificultad D1 (Aprendizaje y aplicación del conocimiento), 0–100." },
+              "nivel_d2": { "type": "integer", "minimum": 0, "maximum": 100, "example": 30, "description": "Nivel de dificultad D2 (Tareas y demandas generales), 0–100." },
+              "nivel_d3": { "type": "integer", "minimum": 0, "maximum": 100, "example": 60, "description": "Nivel de dificultad D3 (Comunicación), 0–100." },
+              "nivel_d4": { "type": "integer", "minimum": 0, "maximum": 100, "example": 75, "description": "Nivel de dificultad D4 (Movilidad), 0–100." },
+              "nivel_d5": { "type": "integer", "minimum": 0, "maximum": 100, "example": 50, "description": "Nivel de dificultad D5 (Autocuidado), 0–100." },
+              "nivel_d6": { "type": "integer", "minimum": 0, "maximum": 100, "example": 40, "description": "Nivel de dificultad D6 (Vida doméstica), 0–100." },
+              "nivel_global": { "type": "integer", "minimum": 0, "maximum": 100, "example": 50, "description": "Nivel global de dificultad funcional, 0–100." }
+            }
+          },
+          "PatientCreate": {
+            "allOf": [{ "$ref": "#/components/schemas/PatientBase" }],
+            "description": "Datos requeridos para crear un nuevo paciente."
+          },
+          "PatientUpdate": {
+            "allOf": [{ "$ref": "#/components/schemas/PatientBase" }],
+            "description": "Datos para actualizar la historia clínica de un paciente."
+          },
+          "Patient": {
+            "allOf": [{ "$ref": "#/components/schemas/PatientBase" }],
+            "description": "Paciente completo con metadatos del sistema y resultado de predicción.",
+            "required": ["id", "owner_id", "is_active"],
+            "properties": {
+              "id": { "type": "integer", "example": 1 },
+              "owner_id": { "type": "integer", "example": 2, "description": "ID del médico propietario del registro." },
+              "is_active": { "type": "boolean", "example": true, "description": "Soft delete: false = eliminado lógicamente." },
+              "prediction_profile": { "type": "integer", "nullable": true, "enum": [0, 1, 2], "example": 1, "description": "Perfil de barreras predicho: 0=Bajas, 1=Moderadas, 2=Altas." },
+              "prediction_description": { "type": "string", "nullable": true, "example": "Perfil de Barreras Moderadas" }
+            }
+          },
+          "PredictionOutput": {
+            "type": "object",
+            "description": "Resultado de la predicción del modelo ML HybridModelDisability.",
+            "required": ["profile", "description"],
+            "properties": {
+              "profile": { "type": "integer", "enum": [0, 1, 2], "example": 1, "description": "0 = Barreras Bajas · 1 = Barreras Moderadas · 2 = Barreras Altas" },
+              "description": { "type": "string", "example": "Perfil de Barreras Moderadas", "description": "Descripción textual del perfil predicho." }
+            }
+          },
+          "HTTPError": {
+            "type": "object",
+            "properties": {
+              "detail": { "type": "string", "example": "Credenciales incorrectas" }
+            }
+          },
+          "ValidationError": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "loc": { "type": "array", "items": { "type": "string" } },
+                    "msg": { "type": "string" },
+                    "type": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "paths": {
+        "/": {
+          "get": {
+            "tags": ["Sistema"],
+            "summary": "Bienvenida",
+            "description": "Endpoint raíz de bienvenida. No requiere autenticación.",
+            "operationId": "read_root",
+            "security": [],
+            "responses": {
+              "200": {
+                "description": "Mensaje de bienvenida.",
+                "content": {
+                  "application/json": {
+                    "schema": { "type": "object", "properties": { "message": { "type": "string" } } },
+                    "example": { "message": "Health Access Bridge API v1.0.0 — docs disponibles en /docs" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/health": {
+          "get": {
+            "tags": ["Sistema"],
+            "summary": "Health Check",
+            "description": "Endpoint de salud usado por el pipeline CI/CD (smoke tests) y monitoreo de Render. Retorna HTTP 200 cuando la app está operativa.",
+            "operationId": "health_check",
+            "security": [],
+            "responses": {
+              "200": {
+                "description": "Servicio operativo.",
+                "content": {
+                  "application/json": {
+                    "schema": { "type": "object", "properties": { "status": { "type": "string" } } },
+                    "example": { "status": "ok" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/users/login": {
+          "post": {
+            "tags": ["Users & Authentication"],
+            "summary": "Login — Obtener token JWT",
+            "description": "Autentica al usuario con email y contraseña. Retorna un token JWT que incluye los claims `sub` (email) y `role`. El token debe enviarse como `Authorization: Bearer <token>` en todas las solicitudes posteriores.\n\n**Content-Type requerido:** `application/x-www-form-urlencoded`",
+            "operationId": "login_for_access_token",
+            "security": [],
+            "requestBody": {
+              "required": true,
+              "content": {
+                "application/x-www-form-urlencoded": {
+                  "schema": {
+                    "type": "object",
+                    "required": ["username", "password"],
+                    "properties": {
+                      "username": { "type": "string", "description": "Email del usuario (campo llamado `username` por compatibilidad OAuth2).", "example": "medico1@salud.co" },
+                      "password": { "type": "string", "example": "medico123" }
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "Autenticación exitosa. Retorna el token JWT.",
+                "content": {
+                  "application/json": {
+                    "schema": { "$ref": "#/components/schemas/Token" },
+                    "example": { "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtZWRpY28xQHNhbHVkLmNvIiwicm9sZSI6Im3DqWRpY28iLCJleHAiOjE3MTQ3MDAwMDB9.abc123", "token_type": "bearer" }
+                  }
+                }
+              },
+              "400": { "description": "Cuenta de usuario inactiva.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/HTTPError" }, "example": { "detail": "Cuenta de usuario inactiva" } } } },
+              "401": { "description": "Credenciales incorrectas.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/HTTPError" }, "example": { "detail": "Correo electrónico o contraseña incorrectos" } } } },
+              "422": { "description": "Error de validación en el cuerpo de la solicitud.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ValidationError" } } } }
+            }
+          }
+        },
+        "/users/me": {
+          "get": {
+            "tags": ["Users & Authentication"],
+            "summary": "Perfil del usuario autenticado",
+            "description": "Retorna los datos del usuario asociado al token JWT actual.",
+            "operationId": "read_users_me",
+            "responses": {
+              "200": {
+                "description": "Datos del usuario autenticado.",
+                "content": {
+                  "application/json": {
+                    "schema": { "$ref": "#/components/schemas/User" },
+                    "example": { "id": 2, "email": "medico1@salud.co", "full_name": "Dr. Carlos Médico", "is_active": true, "role": "médico" }
+                  }
+                }
+              },
+              "401": { "description": "Token inválido o expirado.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/HTTPError" } } } }
+            }
+          }
+        },
+        "/admin/users": {
+          "get": {
+            "tags": ["Admin"],
+            "summary": "Listar usuarios",
+            "description": "Retorna todos los usuarios registrados en el sistema. **Acceso exclusivo: Admin.**",
+            "operationId": "read_users",
+            "parameters": [
+              { "name": "skip", "in": "query", "schema": { "type": "integer", "default": 0 }, "description": "Número de registros a saltar (paginación)." },
+              { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 100 }, "description": "Número máximo de registros a retornar." }
+            ],
+            "responses": {
+              "200": {
+                "description": "Lista de usuarios.",
+                "content": {
+                  "application/json": {
+                    "schema": { "type": "array", "items": { "$ref": "#/components/schemas/User" } }
+                  }
+                }
+              },
+              "401": { "description": "No autenticado." },
+              "403": { "description": "Acceso denegado — se requiere rol Admin." }
+            }
+          }
+        },
+        "/admin/users/register": {
+          "post": {
+            "tags": ["Admin"],
+            "summary": "Crear usuario",
+            "description": "Crea un nuevo usuario (médico o admin). **Acceso exclusivo: Admin.**",
+            "operationId": "create_user_by_admin",
+            "requestBody": {
+              "required": true,
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/UserCreate" },
+                  "example": { "email": "nuevo.medico@salud.co", "password": "segura123", "full_name": "Dra. Ana López", "role": "médico" }
+                }
+              }
+            },
+            "responses": {
+              "201": {
+                "description": "Usuario creado exitosamente.",
+                "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } }
+              },
+              "400": { "description": "El correo electrónico ya está registrado.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/HTTPError" }, "example": { "detail": "El correo electrónico ya está registrado" } } } },
+              "401": { "description": "No autenticado." },
+              "403": { "description": "Acceso denegado — se requiere rol Admin." },
+              "422": { "description": "Error de validación." }
+            }
+          }
+        },
+        "/admin/users/{user_id}/status": {
+          "patch": {
+            "tags": ["Admin"],
+            "summary": "Activar / Desactivar usuario",
+            "description": "Cambia el estado `is_active` de un usuario. Desactivar un usuario impide su login. **Acceso exclusivo: Admin.**",
+            "operationId": "toggle_user_activation",
+            "parameters": [
+              { "name": "user_id", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID del usuario a modificar.", "example": 3 }
+            ],
+            "requestBody": {
+              "required": true,
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/UserStatusUpdate" },
+                  "example": { "is_active": false }
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "Estado actualizado.",
+                "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } }
+              },
+              "404": { "description": "Usuario no encontrado." },
+              "401": { "description": "No autenticado." },
+              "403": { "description": "Acceso denegado — se requiere rol Admin." }
+            }
+          }
+        },
+        "/admin/reset-seed": {
+          "post": {
+            "tags": ["Admin"],
+            "summary": "Reset y re-seed de pacientes",
+            "description": "⚠️ **Operación destructiva.** Elimina TODOS los pacientes (DROP TABLE), recrea el esquema y ejecuta el seed de datos de prueba (10 pacientes). Útil para resetear el ambiente a un estado conocido. **Solo Admin. Usar con precaución en producción.**",
+            "operationId": "reset_and_reseed",
+            "responses": {
+              "200": {
+                "description": "Reset ejecutado exitosamente.",
+                "content": {
+                  "application/json": {
+                    "schema": { "type": "object" },
+                    "example": { "patients_deleted": "all (table dropped and recreated)", "seed_result": { "created": 10 } }
+                  }
+                }
+              },
+              "401": { "description": "No autenticado." },
+              "403": { "description": "Acceso denegado — se requiere rol Admin." },
+              "500": { "description": "Error interno durante el reset." }
+            }
+          }
+        },
+        "/patients/": {
+          "post": {
+            "tags": ["Patients"],
+            "summary": "Crear paciente",
+            "description": "Registra un nuevo paciente. El paciente queda asignado al médico autenticado (`owner_id`). **Acceso: Médico.**",
+            "operationId": "create_patient",
+            "requestBody": {
+              "required": true,
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/PatientCreate" },
+                  "example": {
+                    "numero_documento": "10299887766", "nombre_apellidos": "Pedro Sánchez Ruiz",
+                    "fecha_nacimiento": "1992-07-20", "edad": 32, "genero": "Masculino",
+                    "orientacion_sexual": "Heterosexual", "causa_deficiencia": "Accidente de trabajo",
+                    "cat_fisica": "Amputación miembro inferior", "cat_psicosocial": "Ansiedad leve",
+                    "nivel_d1": 20, "nivel_d2": 35, "nivel_d3": 15, "nivel_d4": 80,
+                    "nivel_d5": 60, "nivel_d6": 45, "nivel_global": 42
+                  }
+                }
+              }
+            },
+            "responses": {
+              "201": {
+                "description": "Paciente creado exitosamente.",
+                "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Patient" } } }
+              },
+              "401": { "description": "No autenticado." },
+              "403": { "description": "Acceso denegado — se requiere rol Médico." },
+              "422": { "description": "Error de validación." }
+            }
+          },
+          "get": {
+            "tags": ["Patients"],
+            "summary": "Listar pacientes",
+            "description": "Retorna la lista de pacientes. **Admin** ve todos los registros activos; **Médico** solo ve sus propios pacientes. Soporta búsqueda por nombre/documento y paginación.",
+            "operationId": "read_patients",
+            "parameters": [
+              { "name": "skip", "in": "query", "schema": { "type": "integer", "default": 0 }, "description": "Registros a saltar (paginación)." },
+              { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 100 }, "description": "Máximo de registros a retornar." },
+              { "name": "search", "in": "query", "schema": { "type": "string" }, "description": "Texto libre para filtrar por `nombre_apellidos` o `numero_documento`.", "example": "García" }
+            ],
+            "responses": {
+              "200": {
+                "description": "Lista de pacientes.",
+                "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Patient" } } } }
+              },
+              "401": { "description": "No autenticado." }
+            }
+          }
+        },
+        "/patients/{patient_id}": {
+          "get": {
+            "tags": ["Patients"],
+            "summary": "Obtener paciente",
+            "description": "Retorna los datos completos de un paciente. **Admin** puede ver cualquier paciente; **Médico** solo los propios.",
+            "operationId": "read_patient",
+            "parameters": [
+              { "name": "patient_id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+            ],
+            "responses": {
+              "200": {
+                "description": "Datos del paciente.",
+                "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Patient" } } }
+              },
+              "403": { "description": "El médico no es propietario del paciente." },
+              "404": { "description": "Paciente no encontrado." },
+              "401": { "description": "No autenticado." }
+            }
+          },
+          "put": {
+            "tags": ["Patients"],
+            "summary": "Actualizar paciente",
+            "description": "Actualiza la historia clínica completa de un paciente. **Admin** puede editar cualquiera; **Médico** solo los propios.",
+            "operationId": "update_patient_details",
+            "parameters": [
+              { "name": "patient_id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+            ],
+            "requestBody": {
+              "required": true,
+              "content": {
+                "application/json": { "schema": { "$ref": "#/components/schemas/PatientUpdate" } }
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "Paciente actualizado.",
+                "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Patient" } } }
+              },
+              "403": { "description": "El médico no es propietario del paciente." },
+              "404": { "description": "Paciente no encontrado." },
+              "401": { "description": "No autenticado." },
+              "422": { "description": "Error de validación." }
+            }
+          },
+          "delete": {
+            "tags": ["Patients"],
+            "summary": "Eliminar paciente (soft delete)",
+            "description": "Marca el paciente como inactivo (`is_active = false`). No elimina el registro físicamente. **Admin** puede eliminar cualquiera; **Médico** solo los propios.",
+            "operationId": "delete_patient",
+            "parameters": [
+              { "name": "patient_id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+            ],
+            "responses": {
+              "204": { "description": "Paciente eliminado (sin contenido)." },
+              "403": { "description": "El médico no es propietario del paciente." },
+              "404": { "description": "Paciente no encontrado." },
+              "401": { "description": "No autenticado." }
+            }
+          }
+        },
+        "/patients/{patient_id}/predict": {
+          "post": {
+            "tags": ["Patients"],
+            "summary": "Predecir perfil de barreras",
+            "description": "Ejecuta el modelo ML **HybridModelDisability** (K-Means + Gradient Boosting) sobre los datos del paciente y retorna su perfil de barreras de acceso a la salud. El resultado se persiste en `prediction_profile` y `prediction_description` del paciente.\n\n**Perfiles:**\n- `0` — Perfil de Barreras Bajas\n- `1` — Perfil de Barreras Moderadas\n- `2` — Perfil de Barreras Altas\n\n**Acceso:** Admin y Médico.",
+            "operationId": "predict_patient_profile",
+            "parameters": [
+              { "name": "patient_id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 3 }
+            ],
+            "responses": {
+              "200": {
+                "description": "Predicción ejecutada y persistida.",
+                "content": {
+                  "application/json": {
+                    "schema": { "$ref": "#/components/schemas/PredictionOutput" },
+                    "example": { "profile": 1, "description": "Perfil de Barreras Moderadas" }
+                  }
+                }
+              },
+              "404": { "description": "Paciente no encontrado." },
+              "403": { "description": "Acceso denegado al paciente." },
+              "503": { "description": "Modelo ML no disponible — ejecutar `python model/train_model.py`." },
+              "500": { "description": "Error interno durante la inferencia del modelo." },
+              "401": { "description": "No autenticado." }
+            }
+          }
+        }
+      }
+    };
+
+    Redoc.init(spec, {
+      theme: {
+        colors: {
+          primary: { main: '#1F3864' }
+        },
+        typography: {
+          fontSize: '15px',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          headings: { fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', fontWeight: '600' }
+        },
+        sidebar: {
+          backgroundColor: '#f8f9fa',
+          textColor: '#1F3864'
+        },
+        rightPanel: {
+          backgroundColor: '#1F3864'
+        }
+      },
+      scrollYOffset: 0,
+      hideHostname: false,
+      expandResponses: '200,201',
+      requiredPropsFirst: true,
+      sortPropsAlphabetically: false,
+      hideDownloadButton: false,
+      pathInMiddlePanel: false
+    }, document.getElementById('redoc-container'));
+  </script>
+</body>
+</html>

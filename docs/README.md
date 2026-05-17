@@ -15,6 +15,17 @@
 
 ---
 
+## Documentación de API y Frontend (ReDoc)
+
+| Documento | Descripción |
+|-----------|-------------|
+| [redoc-api.html](./redoc-api.html) | **API Reference** — Documentación interactiva ReDoc del backend FastAPI (OpenAPI 3.0 completo: todos los endpoints, esquemas, ejemplos, seguridad y ambientes) |
+| [frontend-docs.html](./frontend-docs.html) | **Frontend Docs** — Arquitectura de la SPA React: rutas, contextos, servicios, páginas, componentes y pruebas UI |
+
+> Ambos documentos son HTML estáticos. Ábrelos directamente en el navegador (sin servidor requerido).
+
+---
+
 ## Diagramas de Arquitectura C4
 
 | Archivo | Nivel C4 | Descripción |
