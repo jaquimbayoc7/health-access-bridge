@@ -1,4 +1,4 @@
-# User Personas — Health Access Bridge (HAB)
+﻿# User Personas — Health Access Bridge (HAB)
 
 > **Método:** Derivadas del Diagrama de Afinidad — Método KJ (6 temas, 21 notas, 3 entrevistas)  
 > **Fecha de elaboración:** Mayo 2026  
@@ -10,7 +10,7 @@
 
 | Criterio | Persona 1 | Persona 2 |
 |----------|-----------|-----------|
-| **Origen** | Entrevista E1 — Dra. Amparo Medina Salazar | Entrevista E2 — Willians Aguilar Rodriguez |
+| **Origen** | Entrevista E1 — Dra. Emilly Maria Celis Barreto | Entrevista E2 — Laura Cangrejo Perafan |
 | **Rol en HAB** | Usuario clínico — perfil operativo principal | Asistente administrativo — rol coordinación |
 | **Nivel TI** | Avanzado | Intermedio |
 | **Representa** | 80% de los usuarios del sistema | 20% del sistema, pero crítica para supervisión |
@@ -19,21 +19,21 @@
 
 ---
 
-# �‍⚕️ PERSONA 1 — Dra. Amparo Medina Salazar
+# �‍⚕️ PERSONA 1 — Dra. Emilly Maria Celis Barreto
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  [Foto: psicóloga, bata institucional, consultorio rural, Huila]    │
 │                                                                     │
-│  Dra. Amparo Medina Salazar                                         │
-│  Profesional en Psicología · Programa PABS Discapacidad             │
-│  IPS — zona rural, Departamento del Huila                          │
+│  Dra. Emilly Maria Celis Barreto                                         │
+│  Profesional en Seguridad y Salud en el Trabajo · Programa PABS Discapacidad             │
+│  ICBF — Neiva, Huila                          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Biografía
 
-Amparo es profesional en psicología y trabaja en el programa PABS (Personas con discapacidad) en una IPS de zona rural del Huila. Atiende entre 8 y 12 pacientes con discapacidad por semana, con enfoque en la evaluación funcional y el seguimiento ICF. Es usuaria frecuente del sistema HIS institucional y de Excel. Fuera del trabajo, usa WhatsApp, YouTube y navegadores web con fluidez. Asiste a jornadas de actualización en salud mental y salud digital.
+Emilly es Profesional en Seguridad y Salud en el Trabajo
 
 ---
 
@@ -83,10 +83,10 @@ Amparo es profesional en psicología y trabaja en el programa PABS (Personas con
 ## Escenario de uso
 
 **7:30 am — Consultorio, zona rural, Huila.**  
-Amparo llega a la IPS. Abre HAB desde su portátil. Ve en el Dashboard que tiene 3 pacientes sin predicción actualizada en los últimos 30 días. Hace clic en el primero, actualiza los campos D3 y D5 que cambiaron en la última evaluación, ejecuta la predicción y obtiene "Perfil 1 — Barreras Moderadas". Lee la descripción en lenguaje natural, concuerda con su criterio, e imprime el PDF para incluirlo en el expediente físico.
+Emilly llega a la IPS. Abre HAB desde su portátil. Ve en el Dashboard que tiene 3 pacientes sin predicción actualizada en los últimos 30 días. Hace clic en el primero, actualiza los campos D3 y D5 que cambiaron en la última evaluación, ejecuta la predicción y obtiene "Perfil 1 — Barreras Moderadas". Lee la descripción en lenguaje natural, concuerda con su criterio, e imprime el PDF para incluirlo en el expediente físico.
 
 **11:00 am — Visita domiciliaria (sin señal).**  
-Amparo intenta abrir HAB en su teléfono pero no hay internet. Necesita que la app funcione offline y sincronice al volver a la IPS.
+Emilly intenta abrir HAB en su teléfono pero no hay internet. Necesita que la app funcione offline y sincronice al volver a la IPS.
 
 ---
 
@@ -121,21 +121,21 @@ Amparo intenta abrir HAB en su teléfono pero no hay internet. Necesita que la a
 
 ---
 
-# �‍� PERSONA 2 — Willians Aguilar Rodriguez
+# �‍� PERSONA 2 — Laura Cangrejo Perafan
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  [Foto: asistente administrativo, escritorio con computador, oficina pública]  │
 │                                                                     │
-│  Willians Aguilar Rodriguez                                         │
-│  Asistente de Información · Programa PABS Discapacidad              │
+│  Laura Cangrejo Perafan                                         │
+│  Profesional · Programa PABS Discapacidad              │
 │  Secretaría de Salud · Garzón, Huila                               │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Biografía
 
-Willians trabaja en la Secretaría de Salud de Garzón como asistente de información del programa PABS. Su labor es garantizar que los registros de los profesionales de municipios rurales estén actualizados, consolidar la información y generar reportes para el Ministerio de Salud. No tiene formación técnica en informática pero usa Excel, correo electrónico y SISPRO con soltura. Prefiere llamar por WhatsApp antes que navegar por menús de un sistema nuevo.
+Laura trabaja en la Alcaldía de Garzón, Huila como Profesional del programa PABS. Su labor es garantizar que los registros de los profesionales de municipios rurales estén actualizados, consolidar la información y generar reportes para el Ministerio de Salud. No tiene formación técnica en informática pero usa Excel, correo electrónico y SISPRO con soltura. Prefiere llamar por WhatsApp antes que navegar por menús de un sistema nuevo.
 
 ---
 
@@ -180,14 +180,14 @@ Willians trabaja en la Secretaría de Salud de Garzón como asistente de informa
 
 > *"Mi mayor problema es que no tengo visibilidad de lo que pasa en los municipios. Si el sistema me mostrara en una sola pantalla: municipio, cuántos pacientes, cuándo fue el último registro y si hay predicciones sin hacer, eso cambiaría mi trabajo completamente."*
 
-> *— Willians Aguilar Rodriguez, Asistente de información, Secretaría de Salud de Garzón*
+> *— Laura Cangrejo Perafan, Profesional, Alcaldía de Garzón, Huila*
 
 ---
 
 ## Escenario de uso
 
-**Lunes 8:00 am — Oficina, Secretaría de Salud de Garzón.**  
-Willians llega y abre HAB. Va al módulo de Analytics. Ve que 3 municipios no tienen registros actualizados desde hace más de 15 días. El sistema le muestra una alerta visual. Hace clic en "Ver detalle" y puede identificar qué profesionales están atrasados. Les envía un correo desde el sistema con un solo clic. A las 10 am descarga el reporte consolidado en Excel para enviarlo a la coordinación departamental.
+**Lunes 8:00 am — Oficina, Alcaldía de Garzón, Huila.**  
+Laura llega y abre HAB. Va al módulo de Analytics. Ve que 3 municipios no tienen registros actualizados desde hace más de 15 días. El sistema le muestra una alerta visual. Hace clic en "Ver detalle" y puede identificar qué profesionales están atrasados. Les envía un correo desde el sistema con un solo clic. A las 10 am descarga el reporte consolidado en Excel para enviarlo a la coordinación departamental.
 
 **Martes — Incorporación de nuevo profesional.**  
 Ingresa al Panel de Administración, crea la cuenta con rol "Médico", asigna el municipio y envía las credenciales por correo. Todo en menos de 5 minutos, sin ayuda técnica.
@@ -227,7 +227,7 @@ Ingresa al Panel de Administración, crea la cuenta con rol "Médico", asigna el
 
 ## Comparativa de Personas
 
-| Dimensión | Dra. Amparo Medina Salazar | Willians Aguilar Rodriguez |
+| Dimensión | Dra. Emilly Maria Celis Barreto | Laura Cangrejo Perafan |
 |-----------|---------------------------|----------------------------|
 | **Rol** | Psicóloga clínica (operativa) | Asistente información (coordinación) |
 | **Nivel TI** | Avanzado | Intermedio |
@@ -244,9 +244,9 @@ Ingresa al Panel de Administración, crea la cuenta con rol "Médico", asigna el
 
 | Insight de persona | Decisión de diseño en HAB |
 |-------------------|--------------------------|
-| Amparo necesita modo offline | **PWA con Service Worker** para formularios de pacientes |
-| Amparo quiere validación del modelo | **Ficha técnica del modelo** en Guía Predictiva |
-| Willians necesita panel por municipio | **Dashboard de coordinación** (backlog futuro) |
-| Willians no entiende D1–D6 | **Tooltips ICF** en todos los campos del formulario |
+| Emilly necesita modo offline | **PWA con Service Worker** para formularios de pacientes |
+| Emilly quiere validación del modelo | **Ficha técnica del modelo** en Guía Predictiva |
+| Laura necesita panel por municipio | **Dashboard de coordinación** (backlog futuro) |
+| Laura no entiende D1–D6 | **Tooltips ICF** en todos los campos del formulario |
 | Ambos necesitan exportación | **Excel y PDF** ya implementados en módulo Pacientes |
 | Familiar/Cuidador (E3) pide notificaciones | **Notificaciones al cuidador** (backlog futuro) |

@@ -1,7 +1,7 @@
-# User Story Mapping — Health Access Bridge (HAB)
+﻿# User Story Mapping — Health Access Bridge (HAB)
 
 > **Método:** User Story Mapping (Jeff Patton, 2014)  
-> **Personas:** Dra. Amparo Medina Salazar (Psicóloga/Usuario clínico) + Willians Aguilar Rodriguez (Asistente información/Coordinación)  
+> **Personas:** Dra. Emilly Maria Celis Barreto (SST — ICBF / Usuario institucional) + Laura Cangrejo Perafan (Profesional Alcaldía / Coordinación)  
 > **Insumos:** 3 entrevistas + Diagrama de Afinidad Método KJ (6 temas, 21 notas) + Backlog SCRUM existente  
 > **Fecha:** Mayo 2026
 
@@ -66,7 +66,7 @@ NIVEL 3 — HISTORIAS DE USUARIO    →  Funcionalidades específicas del sistem
 
 ## 🗂️ ACTIVIDAD 2 — Gestionar pacientes con discapacidad
 
-> **Persona:** Dra. Amparo Medina Salazar | **Tema de afinidad:** Flujo Clínico + Curva de Aprendizaje
+> **Persona:** Dra. Emilly Maria Celis Barreto | **Tema de afinidad:** Flujo Clínico + Curva de Aprendizaje
 
 ### Tareas del usuario
 
@@ -114,7 +114,7 @@ NIVEL 3 — HISTORIAS DE USUARIO    →  Funcionalidades específicas del sistem
 
 ## 🤖 ACTIVIDAD 3 — Ejecutar predicciones ML de perfil de barreras
 
-> **Persona:** Dra. Amparo Medina Salazar | **Tema de afinidad:** Interpretación del Modelo ML
+> **Persona:** Dra. Emilly Maria Celis Barreto | **Tema de afinidad:** Interpretación del Modelo ML
 
 ### Tareas del usuario
 
@@ -157,7 +157,7 @@ NIVEL 3 — HISTORIAS DE USUARIO    →  Funcionalidades específicas del sistem
 
 ## 📊 ACTIVIDAD 4 — Analizar estadísticas de la población clínica
 
-> **Persona:** Dra. Amparo Medina Salazar + Willians Aguilar Rodriguez | **Tema de afinidad:** Visibilidad y Comunicación
+> **Persona:** Dra. Emilly Maria Celis Barreto + Laura Cangrejo Perafan | **Tema de afinidad:** Visibilidad y Comunicación
 
 ### Tareas del usuario
 
@@ -183,15 +183,15 @@ NIVEL 3 — HISTORIAS DE USUARIO    →  Funcionalidades específicas del sistem
 | ID | Historia | Criterio de aceptación |
 |----|----------|----------------------|
 | HU-32 | **Como médico**, quiero exportar el reporte de análisis a PDF con las gráficas incluidas. | Botón "Exportar PDF" en Analytics genera documento con gráficas renderizadas |
-| HU-33 | **Como asistente de información**, quiero ver métricas agregadas por municipio en un panel de supervisión. | Dashboard de coordinación (rol Admin) con métricas por médico/municipio |
-| HU-34 | **Como asistente de información**, quiero recibir una alerta cuando un profesional no ha actualizado sus registros en más de 15 días. | Notificación in-app y email automático al admin si profesional inactivo > 15 días |
+| HU-33 | **Como Profesional**, quiero ver métricas agregadas por municipio en un panel de supervisión. | Dashboard de coordinación (rol Admin) con métricas por médico/municipio |
+| HU-34 | **Como Profesional**, quiero recibir una alerta cuando un profesional no ha actualizado sus registros en más de 15 días. | Notificación in-app y email automático al admin si profesional inactivo > 15 días |
 
 #### 🟡 Release 3 — Futuro
 
 | ID | Historia | Criterio de aceptación |
 |----|----------|----------------------|
-| HU-35 | **Como asistente de información**, quiero recibir un reporte semanal automático por correo con el estado de cada municipio. | Tarea programada en backend; email con resumen en HTML cada lunes a las 8am |
-| HU-36 | **Como asistente de información**, quiero ver la evolución temporal de los perfiles de un municipio en los últimos 12 meses. | Gráfica de líneas con datos históricos mensuales |
+| HU-35 | **Como Profesional**, quiero recibir un reporte semanal automático por correo con el estado de cada municipio. | Tarea programada en backend; email con resumen en HTML cada lunes a las 8am |
+| HU-36 | **Como Profesional**, quiero ver la evolución temporal de los perfiles de un municipio en los últimos 12 meses. | Gráfica de líneas con datos históricos mensuales |
 
 ---
 
@@ -199,7 +199,7 @@ NIVEL 3 — HISTORIAS DE USUARIO    →  Funcionalidades específicas del sistem
 
 ## 🛡️ ACTIVIDAD 5 — Administrar usuarios del sistema
 
-> **Persona:** Willians Aguilar Rodriguez (Admin) | **Tema de afinidad:** Confianza y Privacidad + Visibilidad
+> **Persona:** Laura Cangrejo Perafan (Admin) | **Tema de afinidad:** Confianza y Privacidad + Visibilidad
 
 ### Tareas del usuario
 
@@ -261,14 +261,14 @@ TOTAL            │     20 HU ✅    │   13 HU   │   12 HU   │ 45 HU
 
 | Historia | Persona beneficiada | Tema de afinidad | Prioridad |
 |----------|--------------------|-----------------|-----------| 
-| HU-08 — Modo offline | Dra. Amparo Medina Salazar | Accesibilidad | 🔴 Alta |
-| HU-15 — Tooltips ICF | Willians Aguilar Rodriguez (E2) | Curva aprendizaje | 🔴 Alta |
-| HU-24 — Factores ML | Dra. Amparo Medina Salazar | Interpretación ML | 🟠 Media |
-| HU-33 — Panel coordinación | Willians Aguilar Rodriguez | Visibilidad | 🟠 Media |
-| HU-34 — Alerta inactividad | Willians Aguilar Rodriguez | Comunicación | 🟠 Media |
+| HU-08 — Modo offline | Dra. Emilly Maria Celis Barreto | Accesibilidad | 🔴 Alta |
+| HU-15 — Tooltips ICF | Laura Cangrejo Perafan (E2) | Curva aprendizaje | 🔴 Alta |
+| HU-24 — Factores ML | Dra. Emilly Maria Celis Barreto | Interpretación ML | 🟠 Media |
+| HU-33 — Panel coordinación | Laura Cangrejo Perafan | Visibilidad | 🟠 Media |
+| HU-34 — Alerta inactividad | Laura Cangrejo Perafan | Comunicación | 🟠 Media |
 | HU-26 — Enlace guía ICF | Familiar/Cuidador (E3) | Curva aprendizaje | 🟡 Media-baja |
-| HU-35 — Reporte automático | Willians Aguilar Rodriguez | Visibilidad | 🟡 Media-baja |
-| HU-44 — Carga masiva | Willians Aguilar Rodriguez | Eficiencia admin | 🟢 Baja |
+| HU-35 — Reporte automático | Laura Cangrejo Perafan | Visibilidad | 🟡 Media-baja |
+| HU-44 — Carga masiva | Laura Cangrejo Perafan | Eficiencia admin | 🟢 Baja |
 
 ---
 

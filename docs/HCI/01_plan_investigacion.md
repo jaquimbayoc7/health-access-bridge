@@ -1,4 +1,4 @@
-# Plan de Investigación de Usuarios — HAB
+﻿# Plan de Investigación de Usuarios — HAB
 
 > **Proyecto:** Health Access Bridge (HAB)  
 > **Fase:** Investigación UX — Actividad HCI  
@@ -49,8 +49,8 @@ Comprender las necesidades, comportamientos, frustraciones y expectativas de los
 
 | ID | Participante | Perfil | Nivel tecnológico | Justificación |
 |----|-------------|--------|-------------------|---------------|
-| E1 | Dra. Amparo Medina Salazar | Profesional en Psicología | **Avanzado** | Usuaria clínica principal; aporta requerimientos funcionales profundos y perspectiva de salud mental en discapacidad |
-| E2 | Willians Aguilar Rodriguez | Asistente de información · Secretaría de Salud de Garzón | **Intermedio** | Perfil administrativo; prioriza visibilidad de municipios, reportes y alertas |
+| E1 | Dra. Emilly Maria Celis Barreto | Profesional en Seguridad y Salud en el Trabajo | **Avanzado** | Usuaria clínica principal; aporta requerimientos funcionales profundos y perspectiva de salud mental en discapacidad |
+| E2 | Laura Cangrejo Perafan | Profesional · Alcaldía de Garzón, Huila | **Intermedio** | Perfil administrativo; prioriza visibilidad de municipios, reportes y alertas |
 | E3 | Familiar / Cuidador *(identidad protegida — HABEAS DATA)* | Cuidador principal de paciente con discapacidad motora | **Novato absoluto** | Stakeholder externo; revela necesidades de comunicación, continuidad asistencial y accesibilidad |
 
 ---
@@ -98,7 +98,7 @@ Fase 4 — Cierre (5 min)
 | Semana | Actividad | Entregable |
 |--------|-----------|------------|
 | S1 | Preparación: guía, consentimiento, contacto participantes | Documentos listos |
-| S2 | Entrevistas E1 y E2 (Dra. Amparo Medina · Willians Aguilar) | Videos + fichas diligenciadas |
+| S2 | Entrevistas E1 y E2 (Dra. Emilly Maria Celis · Laura Cangrejo) | Videos + fichas diligenciadas |
 | S2 | Entrevista E3 (Familiar / Cuidador anónimo) | Video + ficha diligenciada |
 | S3 | Transcripción y elaboración de notas de afinidad | Notas brutas |
 | S3 | Taller de afinidad (agrupación y categorización) | Diagrama de afinidad |

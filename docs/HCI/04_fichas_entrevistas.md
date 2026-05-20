@@ -1,4 +1,4 @@
-# Fichas de Entrevistas Diligenciadas — HAB
+﻿# Fichas de Entrevistas Diligenciadas — HAB
 
 > **Total entrevistas:** 3  
 > **Periodo:** Mayo 2026  
@@ -9,14 +9,14 @@
 
 ---
 
-## ENTREVISTA E1 — Dra. Amparo Medina Salazar
+## ENTREVISTA E1 — Dra. Emilly Maria Celis Barreto
 
 | Campo | Datos |
 |-------|-------|
 | **ID entrevista** | E1 |
-| **Participante** | Dra. Amparo Medina Salazar |
-| **Perfil** | Profesional en Psicología |
-| **Institución** | IPS — zona rural, Departamento del Huila |
+| **Participante** | Dra. Emilly Maria Celis Barreto |
+| **Perfil** | Profesional en Seguridad y Salud en el Trabajo |
+| **Institución** | ICBF — Neiva, Huila |
 | **Nivel tecnológico** | **Avanzado** — usa HIS, RIPS, SICAP diariamente |
 | **Dispositivos** | Computador portátil (trabajo), smartphone (campo) |
 | **Duración entrevista** | 42 minutos |
@@ -26,7 +26,7 @@
 ### Respuestas destacadas
 
 **A1 — Rol y experiencia:**  
-"Llevo varios años como profesional en psicología en zona rural. Me he especializado en atención a personas con discapacidad a través del programa PABS. Manejo una base de aproximadamente 120 pacientes activos."
+"Llevo varios años como Profesional en Seguridad y Salud en el Trabajo
 
 **A3 — Herramientas actuales:**  
 "Usamos el sistema HIS del hospital para notas médicas, pero para el seguimiento de discapacidad tenemos una hoja de cálculo en Excel que yo mismo diseñé hace 4 años. Es incómodo tener dos sistemas pero no ha habido presupuesto para algo mejor."
@@ -62,14 +62,14 @@
 
 ---
 
-## ENTREVISTA E2 — Willians Aguilar Rodriguez
+## ENTREVISTA E2 — Laura Cangrejo Perafan
 
 | Campo | Datos |
 |-------|-------|
 | **ID entrevista** | E2 |
-| **Participante** | Willians Aguilar Rodriguez |
-| **Perfil** | Asistente de información — Secretaría de Salud de Garzón |
-| **Institución** | Secretaría de Salud — Garzón, Huila |
+| **Participante** | Laura Cangrejo Perafan |
+| **Perfil** | Profesional — Alcaldía de Garzón, Huila |
+| **Institución** | Alcaldía de Garzón, Huila |
 | **Nivel tecnológico** | **Intermedio** — usa Office, correo, sistemas de reportes gubernamentales |
 | **Dispositivos** | Computador de escritorio (trabajo), smartphone personal |
 | **Duración entrevista** | 38 minutos |
@@ -79,7 +79,7 @@
 ### Respuestas destacadas
 
 **A1 — Rol y experiencia:**  
-"Trabajo en la Secretaría de Salud de Garzón apoyando la gestión de información del programa PABS. Mi labor es garantizar que los profesionales registren correctamente, consolidar la información y generar reportes para el Ministerio de Salud. Tenemos a cargo varios profesionales de municipios rurales."
+"Trabajo en la Alcaldía de Garzón, Huila apoyando la gestión de información del programa PABS. Mi labor es garantizar que los profesionales registren correctamente, consolidar la información y generar reportes para el Ministerio de Salud. Tenemos a cargo varios profesionales de municipios rurales."
 
 **A3 — Herramientas actuales:**  
 "Manejamos Excel, SISPRO para reportes al Ministerio y un sistema propio de la Secretaría que ya tiene 10 años y es muy lento. Para comunicarme con los médicos uso WhatsApp porque es lo más práctico."
@@ -182,7 +182,7 @@
 
 ## Síntesis comparativa
 
-| Dimensión | E1 — Dra. Amparo Medina (Avanzado) | E2 — Willians Aguilar (Intermedio) | E3 — Familiar/Cuidador (Novato abs.) |
+| Dimensión | E1 — Dra. Emilly Maria Celis (Avanzado) | E2 — Laura Cangrejo (Intermedio) | E3 — Familiar/Cuidador (Novato abs.) |
 |-----------|--------------------------------------|--------------------------------------|--------------------------------------|
 | **SUS Score** | 82.5 ✅ | 75.0 ✅ | 42.5 ❌ |
 | **Frustr. principal** | Datos fragmentados entre sistemas | Sin visibilidad en tiempo real | Historia clínica desconectada |
