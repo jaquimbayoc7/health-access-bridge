@@ -278,7 +278,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg);
 
   <div class="nav-section">Artefactos HCI</div>
   <div class="nav-item" onclick="show('p01')"><span class="num">01</span> Plan de Investigación</div>
-  <div class="nav-item" onclick="show('p02')"><span class="num">02</span> Guía de Entrevista</div>
+  <div class="nav-item" onclick="show('p02')"><span class="num">02</span> Guía de Entrevista — Salud</div>
+  <div class="nav-item" onclick="show('p02b')"><span class="num">02b</span> Guía — Perfil No Clínico</div>
   <div class="nav-item" onclick="show('p03')"><span class="num">03</span> Consentimiento Informado</div>
   <div class="nav-item" onclick="show('p04')"><span class="num">04</span> Fichas de Entrevistas</div>
   <div class="nav-item" onclick="show('p05')"><span class="num">05</span> Diagrama de Afinidad</div>
@@ -319,14 +320,14 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg);
         <div class="p-card">
           <div class="p-role">E1 · Usuario clínico</div>
           <div class="p-name">Dra. Emilly Maria Celis Barreto</div>
-          <div>Profesional en Seguridad y Salud en el Trabajo · IPS zona rural Huila</div>
+          <div>Profesional en SST · ICBF — Neiva, Huila</div>
           <div style="margin-top:8px"><span class="p-level avanzado">★★★★★ Avanzado</span></div>
           <div style="font-size:.78rem;color:var(--muted-fg);margin-top:6px">SUS 82.5 ✅ · NPS 9/10</div>
         </div>
         <div class="p-card">
           <div class="p-role">E2 · Coordinación / Admin</div>
           <div class="p-name">Laura Cangrejo Perafan</div>
-          <div>Profesional · Secretaría de Salud Garzón</div>
+          <div>Profesional · Alcaldía de Neiva, Huila</div>
           <div style="margin-top:8px"><span class="p-level intermedio">★★★☆☆ Intermedio</span></div>
           <div style="font-size:.78rem;color:var(--muted-fg);margin-top:6px">SUS 75.0 ✅ · NPS 8/10</div>
         </div>
@@ -497,6 +498,96 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg);
       <h2>Notas del entrevistador</h2>
       <div class="tbl-wrap"><table><thead><tr><th>Campo</th><th>Observación</th></tr></thead><tbody>
         <tr><td>Fecha y hora</td><td></td></tr><tr><td>Lugar / plataforma</td><td></td></tr><tr><td>Duración real</td><td></td></tr><tr><td>Observaciones de lenguaje no verbal</td><td></td></tr><tr><td>Citas destacadas (textual)</td><td></td></tr><tr><td>Comportamiento ante la demo</td><td></td></tr><tr><td>Emociones percibidas</td><td></td></tr><tr><td>Temas emergentes no previstos</td><td></td></tr>
+      </tbody></table></div>
+    </div></div>
+  </section>
+
+  <!-- ── GUÍA NO CLÍNICA (02b) ──────────────────────────────────── -->
+  <section id="p02b" class="doc-section">
+    <div class="sec-header">
+      <h1>🏛️ Guía de Entrevista — Perfil No Clínico</h1>
+      <p>Adaptada para profesionales fuera del sector salud con conocimiento contextual de discapacidad</p>
+      <div class="badges"><span class="badge">30–40 min</span><span class="badge">SST · Alcaldía · ICBF · ONG</span><span class="badge">4 bloques</span><span class="badge">Escala SUS</span></div>
+    </div>
+    <div class="card"><div class="md-body">
+      <blockquote><p><strong>Uso:</strong> Guía para entrevistar personas <strong>fuera del gremio de la salud</strong> con conocimiento leve o contextual de discapacidad.<br>
+      <strong>Aplicación:</strong> Health Access Bridge (HAB) — <code>https://hab-frontend-qa.onrender.com</code></p></blockquote>
+
+      <h2>Perfiles objetivo</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Perfil tipo</th><th>Ejemplo</th></tr></thead><tbody>
+        <tr><td><strong>E-NC1</strong></td><td>Profesional SST / bienestar laboral</td><td>ICBF, ARL, empresa privada</td></tr>
+        <tr><td><strong>E-NC2</strong></td><td>Funcionario de gobierno local</td><td>Alcaldía, secretaría de planeación</td></tr>
+        <tr><td><strong>E-NC3</strong></td><td>Trabajador social / ONG</td><td>Fundaciones, entidades sin ánimo de lucro</td></tr>
+        <tr><td><strong>E-NC4</strong></td><td>Coordinador de programas sociales</td><td>SENA, UARIV, Prosperidad Social</td></tr>
+      </tbody></table></div>
+
+      <div class="highlight-box blue"><strong>📌 Nota metodológica:</strong> Estos participantes conocen el <strong>contexto</strong> de la discapacidad (Ley 1618/2012, PABS, ICF) pero no tienen formación clínica ni gestionan pacientes directamente. Sus respuestas informan la usabilidad institucional y la comunicación inter-sectorial del sistema.</div>
+
+      <h2>Instrucciones para el entrevistador</h2>
+      <ul>
+        <li>Presentarse y aclarar que la sesión busca <strong>entender cómo su institución se relaciona con la discapacidad</strong>, no evaluar al participante.</li>
+        <li><strong>No usar términos clínicos</strong> (diagnóstico diferencial, HIS, RIPS) a menos que el participante los mencione primero.</li>
+        <li>Adaptar la terminología al contexto: SST → «riesgo laboral y discapacidad», Alcaldía → «políticas de inclusión», ICBF → «protección y bienestar familiar».</li>
+        <li>Registrar: nivel de familiaridad con plataformas digitales, vocabulario espontáneo sobre discapacidad, reacciones a la demo.</li>
+      </ul>
+
+      <h2>BLOQUE 0 — Presentación y contexto (5 min)</h2>
+      <div class="highlight-box blue"><em>«Buenos días/tardes. Mi nombre es [NOMBRE]. Estoy realizando una investigación para mejorar una plataforma digital llamada Health Access Bridge, que apoya la gestión de información sobre personas con discapacidad en zonas rurales. Me interesa cómo instituciones como la suya se involucran con este tema, qué información manejan y qué dificultades encuentran. No hay respuestas correctas ni incorrectas.»</em></div>
+
+      <h2>BLOQUE A — Contexto institucional y rol (8 min)</h2>
+      <p><strong>A1.</strong> ¿Podría contarme cuál es su cargo y cuál es el rol de su institución en relación con las personas con discapacidad?</p>
+      <p><strong>A2.</strong> ¿Con qué frecuencia su trabajo le exige interactuar con o tomar decisiones relacionadas con personas con discapacidad?</p>
+      <p><strong>A3.</strong> ¿Qué herramientas digitales usa actualmente para gestionar, consultar o reportar información relacionada con discapacidad? <em>(Excel, SISPRO, RLCPD, correo electrónico…)</em></p>
+      <p><strong>A4.</strong> ¿Desde qué dispositivo accede principalmente a estas herramientas?</p>
+      <p><strong>A5.</strong> En una escala del 1 al 5, ¿qué tan cómodo/a se siente usando aplicaciones web para consultar o reportar información?</p>
+
+      <h2>BLOQUE B — Flujo de trabajo y puntos de dolor institucional (12 min)</h2>
+      <p><strong>B1.</strong> Cuando en su institución necesitan conocer el estado de una persona con discapacidad, ¿cómo obtienen esa información?</p>
+      <p><strong>B2.</strong> ¿Ha tenido dificultades para acceder a información sobre el historial de personas con discapacidad? ¿Qué impacto tiene eso?</p>
+      <p><strong>B3.</strong> ¿Cómo coordina su institución con los servicios de salud para el seguimiento de personas con discapacidad?</p>
+      <p><strong>B4.</strong> ¿Cuánto tiempo demoran en generar un informe sobre población con discapacidad para una entidad externa?</p>
+      <p><strong>B5.</strong> ¿Qué es lo que más dificulta o frustra a su equipo cuando trabaja con información de personas con discapacidad?</p>
+      <p><strong>B6.</strong> ¿Ha tenido casos en los que la falta de información oportuna afectó una decisión o la atención a una persona con discapacidad?</p>
+      <div class="highlight-box amber"><strong>⏱️ Para perfil SST / ICBF (E-NC1):</strong><br><strong>B7-SST.</strong> ¿Su institución genera registros de incapacidad o valoración funcional? ¿Cómo los gestionan?</div>
+      <div class="highlight-box amber"><strong>⏱️ Para perfil gobierno local / Alcaldía (E-NC2):</strong><br><strong>B7-GOV.</strong> ¿Cómo recibe la alcaldía la información del PABS o del RLCPD? ¿Qué hacen con esos datos?</div>
+
+      <h2>BLOQUE C — Demo de HAB y expectativas (10 min)</h2>
+      <div class="highlight-box blue"><em>Mostrar: Login → Dashboard (métricas) → Listado de Pacientes → Módulo de Análisis. Enmarcar: «Esta app es usada por profesionales de salud para registrar pacientes con discapacidad y predecir su perfil de barreras de acceso.»</em></div>
+      <p><strong>C1.</strong> ¿Qué información de la que muestra el sistema podría serle útil a su institución?</p>
+      <p><strong>C2.</strong> ¿Hay algún módulo que le resultó especialmente relevante para el trabajo de su área?</p>
+      <p><strong>C3.</strong> ¿Hay algo confuso, intimidante o que no está seguro/a de entender desde su perspectiva no clínica?</p>
+      <p><strong>C4.</strong> El sistema clasifica pacientes según perfil de barreras de acceso (1: bajas · 2: moderadas · 3: altas). Como funcionario/a de su institución, ¿qué haría con esa información si la tuviera disponible?</p>
+      <p><strong>C5.</strong> Si su institución pudiera usar una herramienta así para coordinar con el sector salud, ¿qué información sería indispensable?</p>
+      <p><strong>C6.</strong> ¿Qué tan probable es que recomendara esta plataforma a otras instituciones que trabajan con discapacidad? <em>(Escala 0–10, tipo NPS)</em></p>
+
+      <h2>BLOQUE D — Escala SUS Simplificada (5 min)</h2>
+      <blockquote><p><em>«A continuación voy a leerle 5 afirmaciones sobre la aplicación. Por favor responda qué tan de acuerdo está, en una escala de 1 (totalmente en desacuerdo) a 5 (totalmente de acuerdo).»</em></p></blockquote>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>Afirmación</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead><tbody>
+        <tr><td>SUS1</td><td>Me sentiría cómodo/a consultando información de esta aplicación con frecuencia</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>SUS2</td><td>Encontré la aplicación innecesariamente compleja para alguien fuera del sector salud</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>SUS3</td><td>Creo que un funcionario de mi área podría aprender a consultar esta aplicación sin mucha dificultad</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>SUS4</td><td>Me sentí seguro/a con respecto a la privacidad de los datos</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>SUS5</td><td>Necesitaría una capacitación específica antes de usar esta aplicación con confianza</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+      </tbody></table></div>
+      <div class="highlight-box green"><strong>✅ Puntuación SUS:</strong> (SUS1+SUS3+SUS4−3) × 12.5 + (15 − SUS2×2.5 − SUS5×2.5)<br>
+      Puntaje ≥ 68 → Aceptable · ≥ 80 → Buena · ≥ 90 → Excelente<br>
+      <em>Referencia: en perfiles no clínicos se espera un puntaje entre 50–75; el foco está en identificar barreras de comprensión, no solo de usabilidad.</em></div>
+
+      <h2>Cierre (2 min)</h2>
+      <p><em>«¿Tiene algún comentario adicional o algo que no hayamos preguntado y que considere importante? Muchas gracias por su tiempo. Sus respuestas ayudarán a que esta herramienta sea útil no solo para el sector salud sino para instituciones como la suya.»</em></p>
+
+      <h2>Notas del entrevistador</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Campo</th><th>Observación</th></tr></thead><tbody>
+        <tr><td>Fecha y hora</td><td></td></tr>
+        <tr><td>Institución y cargo del participante</td><td></td></tr>
+        <tr><td>Lugar / modalidad</td><td></td></tr>
+        <tr><td>Duración real</td><td></td></tr>
+        <tr><td>Nivel de familiaridad con discapacidad (1–5)</td><td></td></tr>
+        <tr><td>Vocabulario espontáneo sobre discapacidad</td><td></td></tr>
+        <tr><td>Reacción ante la demo (confusión / interés / indiferencia)</td><td></td></tr>
+        <tr><td>Términos clínicos que no entendió</td><td></td></tr>
+        <tr><td>Citas textuales destacadas</td><td></td></tr>
+        <tr><td>Necesidades institucionales no previstas</td><td></td></tr>
       </tbody></table></div>
     </div></div>
   </section>
@@ -886,7 +977,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg);
 <script>
 const INDEX = [
   {id:'p01',num:'01',label:'Plan de Investigación',    desc:'Objetivo, método, criterios y cronograma'},
-  {id:'p02',num:'02',label:'Guía de Entrevista',       desc:'Guía semiestructurada · 4 bloques · SUS'},
+  {id:'p02',num:'02',label:'Guía de Entrevista — Salud',  desc:'Guía semiestructurada para profesionales del sector salud'},
+  {id:'p02b',num:'02b',label:'Guía — Perfil No Clínico', desc:'SST · Alcaldía · ICBF · ONG · 4 bloques · SUS adaptado'},
   {id:'p03',num:'03',label:'Consentimiento Informado', desc:'HABEAS DATA · firmable · CORHUILA'},
   {id:'p04',num:'04',label:'Fichas de Entrevistas',    desc:'3 fichas: avanzado · intermedio · novato'},
   {id:'p05',num:'05',label:'Diagrama de Afinidad',     desc:'Método KJ · 7 pasos · 21 notas · 6 temas'},
