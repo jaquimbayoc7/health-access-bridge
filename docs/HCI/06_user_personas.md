@@ -11,7 +11,7 @@
 | Criterio | Persona 1 | Persona 2 |
 |----------|-----------|-----------|
 | **Origen** | Entrevista E1 — Dra. Emilly Maria Celis Barreto | Entrevista E2 — Laura Cangrejo Perafan |
-| **Rol en HAB** | Usuario clínico — perfil operativo principal | Asistente administrativo — rol coordinación |
+| **Rol en HAB** | Usuario institucional — perfil operativo principal | Profesional coordinación — supervisión y reportes |
 | **Nivel TI** | Avanzado | Intermedio |
 | **Representa** | 80% de los usuarios del sistema | 20% del sistema, pero crítica para supervisión |
 
@@ -22,18 +22,18 @@
 # �‍⚕️ PERSONA 1 — Dra. Emilly Maria Celis Barreto
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│  [Foto: psicóloga, bata institucional, consultorio rural, Huila]    │
+┌───────────────────────────────────────────────────────────────────────────────────────┐
+│  [Foto: profesional SST, vestimenta institucional, oficina ICBF, Neiva]  │
 │                                                                     │
-│  Dra. Emilly Maria Celis Barreto                                         │
-│  Profesional en Seguridad y Salud en el Trabajo · Programa PABS Discapacidad             │
-│  ICBF — Neiva, Huila                          │
-└─────────────────────────────────────────────────────────────────────┘
+│  Dra. Emilly Maria Celis Barreto                                    │
+│  Profesional en SST · Programa PABS Discapacidad                     │
+│  ICBF — Neiva, Huila                                                │
+└───────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Biografía
 
-Emilly es Profesional en Seguridad y Salud en el Trabajo
+Emilly es Profesional en Seguridad y Salud en el Trabajo en el ICBF de Neiva. Trabaja en el programa PABS (Personas con discapacidad y sus familias) valorando condiciones de salud funcional, riesgo y bienestar de beneficiarios. Atiende entre 8 y 10 casos activos por semana, coordina con IPS de municipios rurales del Huila y genera informes para la coordinación departamental. Maneja con soltura las plataformas institucionales del ICBF y herramientas ofimáticas; conoce la clasificación ICF por su trabajo de articulación con el sector salud.
 
 ---
 
@@ -42,8 +42,8 @@ Emilly es Profesional en Seguridad y Salud en el Trabajo
 | Aspecto | Detalle |
 |---------|---------|
 | **Dispositivos** | Portátil HP (trabajo), iPhone 13 (personal) |
-| **Sistemas que usa** | HIS institucional, Excel, Drive, SISPRO, RIPS |
-| **Conectividad** | Buena en el hospital; intermitente en visitas domiciliarias (2G/3G) |
+| **Sistemas que usa** | SIRBE (ICBF), Excel, Drive, SISPRO, correo institucional |
+| **Conectividad** | Buena en la oficina ICBF; intermitente en visitas domiciliarias (2G/3G) |
 | **Comodidad con apps web** | ★★★★★ (5/5) |
 | **Experiencia con ML** | Conoce el concepto; nunca ha usado un modelo predictivo clínico |
 
@@ -51,15 +51,15 @@ Emilly es Profesional en Seguridad y Salud en el Trabajo
 
 ## Metas
 
-1. **Registrar y actualizar** la historia clínica ICF de sus pacientes en el menor tiempo posible, idealmente desde el mismo consultorio o en campo.
-2. **Ejecutar predicciones ML** para clasificar el perfil de barreras de acceso de sus pacientes y priorizar intervenciones.
-3. **Acceder al historial completo** de un paciente sin depender de registros paralelos en Excel o cuadernos físicos.
+1. **Registrar y actualizar** la valoración funcional ICF de sus beneficiarios en el menor tiempo posible, idealmente desde la oficina o en visita de campo.
+2. **Ejecutar predicciones ML** para clasificar el perfil de barreras de acceso de sus beneficiarios y priorizar intervenciones del ICBF.
+3. **Acceder al historial completo** de un beneficiario sin depender de registros paralelos en Excel o de la coordinación manual con la IPS.
 
 ---
 
 ## Frustraciones
 
-1. **Sistemas fragmentados:** sus datos ICF están en Excel, los clínicos en el HIS; cruzarlos para generar reportes le consume horas al mes.
+1. **Sistemas fragmentados:** los datos de bienestar ICBF están en SIRBE, la valoración funcional en Excel y la historia clínica en la IPS; cruzarlos para reportes le consume horas al mes.
 2. **Sin acceso offline:** cuando está en visita domiciliaria sin internet, no puede registrar en el sistema y debe hacerlo doble al regresar.
 3. **Confianza limitada en el ML:** quiere saber si el modelo fue validado con datos de pacientes de su región antes de integrar los resultados en su criterio clínico.
 
@@ -70,7 +70,7 @@ Emilly es Profesional en Seguridad y Salud en el Trabajo
 - **Primera visita:** navega directamente a la pantalla de Pacientes, le llama la atención el buscador y la tabla paginada.
 - **Flujo favorito:** Dashboard → Pacientes → formulario → Predicciones → resultado en badge de color.
 - **Comportamiento de poder:** usa atajos de teclado, revisa la URL, abre la consola del navegador si algo falla.
-- **Punto de fricción:** los nombres de los campos ICF (D1–D6) no tienen tooltips; aunque él los conoce, nota que un colega nuevo no los entendería.
+- **Punto de fricción:** los nombres de los campos ICF (D1–D6) no tienen tooltips; aunque ella los conoce por su formación SST, nota que un colega nuevo no los entendería.
 
 ---
 
@@ -82,11 +82,11 @@ Emilly es Profesional en Seguridad y Salud en el Trabajo
 
 ## Escenario de uso
 
-**7:30 am — Consultorio, zona rural, Huila.**  
-Emilly llega a la IPS. Abre HAB desde su portátil. Ve en el Dashboard que tiene 3 pacientes sin predicción actualizada en los últimos 30 días. Hace clic en el primero, actualiza los campos D3 y D5 que cambiaron en la última evaluación, ejecuta la predicción y obtiene "Perfil 1 — Barreras Moderadas". Lee la descripción en lenguaje natural, concuerda con su criterio, e imprime el PDF para incluirlo en el expediente físico.
+**7:30 am — Oficina ICBF, Neiva.**  
+Emilly abre HAB desde su portátil. Ve en el Dashboard que tiene 3 beneficiarios sin predicción actualizada en los últimos 30 días. Hace clic en el primero, actualiza los campos D3 y D5 que cambiaron en la última valoración, ejecuta la predicción y obtiene "Perfil 1 — Barreras Moderadas". Lee la descripción en lenguaje natural, concuerda con su criterio SST, e imprime el PDF para incluirlo en el expediente del beneficiario.
 
-**11:00 am — Visita domiciliaria (sin señal).**  
-Emilly intenta abrir HAB en su teléfono pero no hay internet. Necesita que la app funcione offline y sincronice al volver a la IPS.
+**11:00 am — Visita domiciliaria a municipio rural (sin señal).**  
+Emilly intenta abrir HAB en su teléfono pero no hay internet. Necesita que la app funcione offline y sincronice al volver a la oficina.
 
 ---
 
@@ -124,13 +124,13 @@ Emilly intenta abrir HAB en su teléfono pero no hay internet. Necesita que la a
 # �‍� PERSONA 2 — Laura Cangrejo Perafan
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│  [Foto: asistente administrativo, escritorio con computador, oficina pública]  │
+┌───────────────────────────────────────────────────────────────────────────────────────┐
+│  [Foto: profesional administrativa, escritorio, Alcaldía de Neiva]    │
 │                                                                     │
-│  Laura Cangrejo Perafan                                         │
-│  Profesional · Programa PABS Discapacidad              │
-│  Secretaría de Salud · Garzón, Huila                               │
-└─────────────────────────────────────────────────────────────────────┘
+│  Laura Cangrejo Perafan                                             │
+│  Profesional · Programa PABS Discapacidad                           │
+│  Alcaldía de Neiva, Huila                                           │
+└───────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Biografía
@@ -144,7 +144,7 @@ Laura trabaja en la Alcaldía de Neiva como Profesional del programa PABS. Su la
 | Aspecto | Detalle |
 |---------|---------|
 | **Dispositivos** | PC de escritorio (oficina), smartphone Samsung (personal) |
-| **Sistemas que usa** | Excel, Outlook, SISPRO, plataforma Secretaría de Salud (legacy) |
+| **Sistemas que usa** | Excel, Outlook, SISPRO, plataforma Alcaldía de Neiva (legacy) |
 | **Conectividad** | Buena en la oficina; usa datos móviles en campo |
 | **Comodidad con apps web** | ★★★☆☆ (3/5) — cómoda con lo conocido, aprehensiva ante lo nuevo |
 | **Experiencia con ML** | Ninguna — entiende el concepto como "el sistema que clasifica" |
@@ -229,7 +229,7 @@ Ingresa al Panel de Administración, crea la cuenta con rol "Médico", asigna el
 
 | Dimensión | Dra. Emilly Maria Celis Barreto | Laura Cangrejo Perafan |
 |-----------|---------------------------|----------------------------|
-| **Rol** | Psicóloga clínica (operativa) | Asistente información (coordinación) |
+| **Rol** | Profesional SST — ICBF (operativa) | Profesional Alcaldía (coordinación) |
 | **Nivel TI** | Avanzado | Intermedio |
 | **Motivación HAB** | Registro integrado + predicción ML | Visibilidad en tiempo real por municipio |
 | **Mayor barrera** | Modo offline / validación del ML | Terminología clínica confusa / curva aprendizaje |

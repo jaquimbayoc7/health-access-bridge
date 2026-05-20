@@ -17,7 +17,7 @@
 | **Participante** | Dra. Emilly Maria Celis Barreto |
 | **Perfil** | Profesional en Seguridad y Salud en el Trabajo |
 | **Institución** | ICBF — Neiva, Huila |
-| **Nivel tecnológico** | **Avanzado** — usa HIS, RIPS, SICAP diariamente |
+| **Nivel tecnológico** | **Avanzado** — usa SIRBE, SISPRO, Excel y plataformas del ICBF diariamente |
 | **Dispositivos** | Computador portátil (trabajo), smartphone (campo) |
 | **Duración entrevista** | 42 minutos |
 | **Fecha** | Mayo 2026 |
@@ -26,16 +26,16 @@
 ### Respuestas destacadas
 
 **A1 — Rol y experiencia:**  
-"Llevo varios años como Profesional en Seguridad y Salud en el Trabajo
+"Llevo varios años como Profesional en Seguridad y Salud en el Trabajo en el ICBF. Mi labor está enfocada en la valoración de condiciones de salud y riesgo de personas con discapacidad que son beneficiarias de nuestros programas, principalmente en el programa de discapacidad del PABS. También hago acompañamiento a familias y articulación con el sector salud cuando se requiere remisión o seguimiento clínico."
 
 **A3 — Herramientas actuales:**  
-"Usamos el sistema HIS del hospital para notas médicas, pero para el seguimiento de discapacidad tenemos una hoja de cálculo en Excel que yo mismo diseñé hace 4 años. Es incómodo tener dos sistemas pero no ha habido presupuesto para algo mejor."
+"En el ICBF usamos SIRBE para el registro de beneficiarios y sus características. Para el componente de SST y valoración funcional usamos Excel porque SIRBE no tiene módulos para eso. Cuando necesito cruzar información con el sector salud tengo que pedir el historial clínico por correo o en físico — no hay integración entre sistemas."
 
 **B1 — Proceso de registro:**  
-"Cuando entra un paciente nuevo, primero lo registro en HIS (10 min), luego abro el Excel y lleno los campos de las escalas ICF manualmente. Si tengo conectividad, también subo una foto del documento a una carpeta de Drive. Todo me toma entre 20 y 30 minutos."
+"Cuando se vincula un nuevo beneficiario con discapacidad, lo registro en SIRBE con sus datos básicos. Luego, en mi Excel propio, agrego la valoración SST y los aspectos funcionales relevantes. Si el caso requiere seguimiento clínico, debo coordinarlo por teléfono o correo con la IPS de su municipio. No hay un sistema que integre la información del ICBF con la historia clínica."
 
 **B5 — Frustración principal:**  
-*[Cita destacada]* **"Lo que más me molesta es que los datos de discapacidad están en Excel y los datos clínicos en el HIS. Nunca están juntos. Cuando necesito hacer un reporte para la secretaría de salud, paso horas cruzando información."**
+*[Cita destacada]* **"Lo que más me dificulta el trabajo es que la información de bienestar del ICBF y la información clínica del sector salud viven en sistemas completamente separados. Cuando necesito hacer un reporte para la coordinación departamental o articular con una IPS, tengo que cruzar manualmente archivos de distintas fuentes. Eso me consume horas que podría dedicar a los beneficiarios."**
 
 **C4 — Confianza en ML:**  
 "Me parece interesante pero necesito entender cómo funciona el modelo. ¿Con cuántos datos fue entrenado? ¿Qué tan válido es para nuestra población del Huila? Si veo que el modelo está validado clínicamente, lo usaría como apoyo a mi criterio. Nunca como reemplazo."
