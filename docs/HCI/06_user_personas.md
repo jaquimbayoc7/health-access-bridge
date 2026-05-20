@@ -135,7 +135,7 @@ Emilly intenta abrir HAB en su teléfono pero no hay internet. Necesita que la a
 
 ## Biografía
 
-Laura trabaja en la Alcaldía de Garzón, Huila como Profesional del programa PABS. Su labor es garantizar que los registros de los profesionales de municipios rurales estén actualizados, consolidar la información y generar reportes para el Ministerio de Salud. No tiene formación técnica en informática pero usa Excel, correo electrónico y SISPRO con soltura. Prefiere llamar por WhatsApp antes que navegar por menús de un sistema nuevo.
+Laura trabaja en la Alcaldía de Neiva como Profesional del programa PABS. Su labor es garantizar que los registros de los profesionales de municipios rurales estén actualizados, consolidar la información y generar reportes para el Ministerio de Salud. No tiene formación técnica en informática pero usa Excel, correo electrónico y SISPRO con soltura. Prefiere llamar por WhatsApp antes que navegar por menús de un sistema nuevo.
 
 ---
 
@@ -180,13 +180,13 @@ Laura trabaja en la Alcaldía de Garzón, Huila como Profesional del programa PA
 
 > *"Mi mayor problema es que no tengo visibilidad de lo que pasa en los municipios. Si el sistema me mostrara en una sola pantalla: municipio, cuántos pacientes, cuándo fue el último registro y si hay predicciones sin hacer, eso cambiaría mi trabajo completamente."*
 
-> *— Laura Cangrejo Perafan, Profesional, Alcaldía de Garzón, Huila*
+> *— Laura Cangrejo Perafan, Profesional, Alcaldía de Neiva*
 
 ---
 
 ## Escenario de uso
 
-**Lunes 8:00 am — Oficina, Alcaldía de Garzón, Huila.**  
+**Lunes 8:00 am — Oficina, Alcaldía de Neiva.**  
 Laura llega y abre HAB. Va al módulo de Analytics. Ve que 3 municipios no tienen registros actualizados desde hace más de 15 días. El sistema le muestra una alerta visual. Hace clic en "Ver detalle" y puede identificar qué profesionales están atrasados. Les envía un correo desde el sistema con un solo clic. A las 10 am descarga el reporte consolidado en Excel para enviarlo a la coordinación departamental.
 
 **Martes — Incorporación de nuevo profesional.**  

@@ -68,8 +68,8 @@
 |-------|-------|
 | **ID entrevista** | E2 |
 | **Participante** | Laura Cangrejo Perafan |
-| **Perfil** | Profesional — Alcaldía de Garzón, Huila |
-| **Institución** | Alcaldía de Garzón, Huila |
+| **Perfil** | Profesional — Alcaldía de Neiva |
+| **Institución** | Alcaldía de Neiva |
 | **Nivel tecnológico** | **Intermedio** — usa Office, correo, sistemas de reportes gubernamentales |
 | **Dispositivos** | Computador de escritorio (trabajo), smartphone personal |
 | **Duración entrevista** | 38 minutos |
@@ -79,7 +79,7 @@
 ### Respuestas destacadas
 
 **A1 — Rol y experiencia:**  
-"Trabajo en la Alcaldía de Garzón, Huila apoyando la gestión de información del programa PABS. Mi labor es garantizar que los profesionales registren correctamente, consolidar la información y generar reportes para el Ministerio de Salud. Tenemos a cargo varios profesionales de municipios rurales."
+"Trabajo en la Alcaldía de Neiva apoyando la gestión de información del programa PABS. Mi labor es garantizar que los profesionales registren correctamente, consolidar la información y generar reportes para el Ministerio de Salud. Tenemos a cargo varios profesionales de municipios rurales."
 
 **A3 — Herramientas actuales:**  
 "Manejamos Excel, SISPRO para reportes al Ministerio y un sistema propio de la Secretaría que ya tiene 10 años y es muy lento. Para comunicarme con los médicos uso WhatsApp porque es lo más práctico."

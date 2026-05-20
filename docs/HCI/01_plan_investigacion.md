@@ -50,7 +50,7 @@ Comprender las necesidades, comportamientos, frustraciones y expectativas de los
 | ID | Participante | Perfil | Nivel tecnológico | Justificación |
 |----|-------------|--------|-------------------|---------------|
 | E1 | Dra. Emilly Maria Celis Barreto | Profesional en Seguridad y Salud en el Trabajo | **Avanzado** | Usuaria clínica principal; aporta requerimientos funcionales profundos y perspectiva de salud mental en discapacidad |
-| E2 | Laura Cangrejo Perafan | Profesional · Alcaldía de Garzón, Huila | **Intermedio** | Perfil administrativo; prioriza visibilidad de municipios, reportes y alertas |
+| E2 | Laura Cangrejo Perafan | Profesional · Alcaldía de Neiva | **Intermedio** | Perfil administrativo; prioriza visibilidad de municipios, reportes y alertas |
 | E3 | Familiar / Cuidador *(identidad protegida — HABEAS DATA)* | Cuidador principal de paciente con discapacidad motora | **Novato absoluto** | Stakeholder externo; revela necesidades de comunicación, continuidad asistencial y accesibilidad |
 
 ---

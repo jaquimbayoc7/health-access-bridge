@@ -26,7 +26,7 @@
 | ID | Participante | Perfil | Rol en HAB | Nivel tecnológico |
 |----|-------------|--------|------------|-------------------|
 | E1 | Dra. Emilly Maria Celis Barreto | Profesional en Seguridad y Salud en el Trabajo | Usuario clínico | **Avanzado** |
-| E2 | Laura Cangrejo Perafan | Profesional · Alcaldía de Garzón, Huila | Administrador | Intermedio |
+| E2 | Laura Cangrejo Perafan | Profesional · Alcaldía de Neiva | Administrador | Intermedio |
 | E3 | Familiar / Cuidador *(anónimo)* | Cuidador principal de paciente con discapacidad | Stakeholder externo | **Novato absoluto** |
 
 ---
@@ -47,4 +47,4 @@
 | Persona | Perfil | Necesidad central |
 |---------|--------|-------------------|
 | **Dra. Emilly Maria Celis Barreto** | Profesional SST — ICBF | Registro rápido, predicción ML confiable, modo offline |
-| **Laura Cangrejo Perafan** | Profesional — Alcaldía de Garzón | Panel de municipios, alertas automáticas, lenguaje claro |
+| **Laura Cangrejo Perafan** | Profesional — Alcaldía de Neiva | Panel de municipios, alertas automáticas, lenguaje claro |
