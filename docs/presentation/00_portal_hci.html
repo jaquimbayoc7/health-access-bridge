@@ -1,0 +1,1036 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HCI — Health Access Bridge · Documentación Completa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── Design tokens (HAB app palette) ───────────────────────────────── */
+:root {
+  --bg:          hsl(220,17%,97%);
+  --fg:          hsl(220,15%,20%);
+  --card:        #ffffff;
+  --primary:     hsl(217,91%,60%);
+  --primary-d:   hsl(217,91%,48%);
+  --primary-bg:  hsl(217,91%,96%);
+  --success:     hsl(142,71%,45%);
+  --warning:     hsl(38,92%,50%);
+  --danger:      hsl(0,84%,60%);
+  --muted:       hsl(220,15%,95%);
+  --muted-fg:    hsl(220,10%,45%);
+  --border:      hsl(220,13%,91%);
+  --radius:      0.75rem;
+  --shadow:      0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  --sidebar-w:   270px;
+  --header-h:    56px;
+  --font:        'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ── Reset ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--fg);
+       display: flex; min-height: 100vh; overflow-x: hidden; }
+
+/* ── Top bar ────────────────────────────────────────────────────────── */
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; height: var(--header-h);
+  background: var(--primary); color: #fff; z-index: 200;
+  display: flex; align-items: center; gap: 14px; padding: 0 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+#topbar .logo { font-size: 1rem; font-weight: 700; letter-spacing: .03em; white-space: nowrap; }
+#topbar .subtitle { font-size: .78rem; opacity: .8; white-space: nowrap; }
+#topbar .spacer { flex: 1; }
+#topbar .meta-pill {
+  font-size: .72rem; background: rgba(255,255,255,.18);
+  border-radius: 20px; padding: 3px 10px; white-space: nowrap;
+}
+#menu-btn { display: none; cursor: pointer; background: none; border: none;
+            color: #fff; font-size: 1.4rem; line-height: 1; }
+
+/* ── Sidebar ────────────────────────────────────────────────────────── */
+#sidebar {
+  position: fixed; top: var(--header-h); left: 0; bottom: 0;
+  width: var(--sidebar-w); background: var(--card); border-right: 1px solid var(--border);
+  overflow-y: auto; z-index: 100; padding: 12px 0 24px;
+  transition: transform .25s;
+}
+.nav-section { padding: 14px 16px 4px; font-size: .68rem; font-weight: 700;
+               letter-spacing: .1em; text-transform: uppercase; color: var(--muted-fg); }
+.nav-item {
+  display: flex; align-items: center; gap: 10px; padding: 9px 18px;
+  cursor: pointer; font-size: .85rem; color: var(--fg);
+  border-left: 3px solid transparent; text-decoration: none;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.nav-item:hover { background: var(--muted); }
+.nav-item.active { background: var(--primary-bg); border-left-color: var(--primary);
+                   color: var(--primary); font-weight: 600; }
+.nav-item .num { font-size: .72rem; background: var(--muted); color: var(--muted-fg);
+                 border-radius: 50%; width: 20px; height: 20px; display: flex;
+                 align-items: center; justify-content: center; flex-shrink: 0;
+                 font-weight: 700; }
+.nav-item.active .num { background: var(--primary); color: #fff; }
+
+/* ── Main ───────────────────────────────────────────────────────────── */
+#main {
+  margin-left: var(--sidebar-w); margin-top: var(--header-h);
+  flex: 1; padding: 28px 32px 60px; max-width: 960px;
+}
+
+/* ── Section wrapper ────────────────────────────────────────────────── */
+.doc-section { display: none; animation: fadeIn .2s ease; }
+.doc-section.visible { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ── Section header ─────────────────────────────────────────────────── */
+.sec-header {
+  background: var(--primary); color: #fff; border-radius: var(--radius);
+  padding: 20px 24px 16px; margin-bottom: 24px;
+}
+.sec-header h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+.sec-header p { font-size: .84rem; opacity: .85; }
+.sec-header .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.badge { font-size: .72rem; padding: 3px 10px; border-radius: 20px;
+         background: rgba(255,255,255,.2); color: #fff; font-weight: 600; }
+
+/* ── Card ───────────────────────────────────────────────────────────── */
+.card { background: var(--card); border-radius: var(--radius);
+        box-shadow: var(--shadow); padding: 24px; margin-bottom: 20px;
+        border: 1px solid var(--border); }
+
+/* ── Rich markdown content ────────────────────────────────────── */
+.md-body { line-height: 1.7; }
+.md-body h1 { font-size: 1.45rem; font-weight: 800; margin: 1.6rem 0 .6rem 0;
+  background: linear-gradient(90deg, var(--primary-d), var(--primary));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.md-body h2 { font-size: 1.05rem; font-weight: 700; margin: 1.6rem 0 .6rem 0; color: var(--fg);
+  display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+  background: var(--muted); border-left: 4px solid var(--primary); border-radius: 0 var(--radius) var(--radius) 0; }
+.md-body h3 { font-size: .95rem; font-weight: 700; margin: 1.2rem 0 .4rem 0;
+  color: var(--primary-d); padding-bottom: 4px; border-bottom: 1px dashed var(--border); }
+.md-body h4 { font-size: .88rem; font-weight: 700; margin: .8rem 0 .3rem 0;
+  color: var(--muted-fg); text-transform: uppercase; letter-spacing: .06em; font-size: .75rem; }
+.md-body p { font-size: .88rem; line-height: 1.75; margin-bottom: .75rem; }
+.md-body ul { padding-left: 0; list-style: none; margin-bottom: .75rem; }
+.md-body ul li { font-size: .88rem; line-height: 1.7; margin-bottom: .3rem;
+  padding-left: 1.4rem; position: relative; }
+.md-body ul li::before { content: '▶'; position: absolute; left: 0;
+  color: var(--primary); font-size: .6rem; top: .35em; }
+.md-body ol { padding-left: 1.6rem; margin-bottom: .75rem; }
+.md-body ol li { font-size: .88rem; line-height: 1.7; margin-bottom: .3rem; }
+.md-body strong { font-weight: 700; color: var(--fg); }
+.md-body em { font-style: italic; color: var(--muted-fg); }
+.md-body a { color: var(--primary); text-decoration: none; border-bottom: 1px solid transparent;
+  transition: border-color .15s; }
+.md-body a:hover { border-bottom-color: var(--primary); }
+.md-body code { font-family: 'Fira Code','Cascadia Code', monospace; font-size: .8rem;
+  background: hsl(220,13%,93%); padding: 2px 6px; border-radius: 4px; color: var(--primary-d); }
+.md-body pre { background: hsl(220,20%,14%); color: #cdd9f5; padding: 18px 20px;
+  border-radius: var(--radius); overflow-x: auto; margin: 1rem 0; font-size: .78rem;
+  line-height: 1.7; border: 1px solid hsl(220,20%,22%); position: relative; }
+.md-body pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+/* blockquote callouts */
+.md-body blockquote { margin: 1rem 0; padding: 12px 16px 12px 20px;
+  border-radius: 0 var(--radius) var(--radius) 0; border-left: 4px solid var(--primary);
+  background: var(--primary-bg); }
+.md-body blockquote.bq-warn { border-left-color: var(--warning);
+  background: hsl(38,92%,97%); }
+.md-body blockquote.bq-info { border-left-color: hsl(199,89%,48%);
+  background: hsl(199,89%,97%); }
+.md-body blockquote.bq-success { border-left-color: var(--success);
+  background: hsl(142,71%,96%); }
+.md-body blockquote p { font-size: .84rem; color: var(--fg); margin: 0; line-height: 1.6; }
+/* tables */
+.md-body .tbl-wrap { overflow-x: auto; margin: 1rem 0; border-radius: var(--radius);
+  box-shadow: var(--shadow); border: 1px solid var(--border); }
+.md-body table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.md-body thead tr { background: linear-gradient(90deg, var(--primary-d), var(--primary)); color: #fff; }
+.md-body thead th { padding: 10px 14px; text-align: left; font-weight: 600; font-size: .8rem;
+  white-space: nowrap; }
+.md-body tbody tr { transition: background .12s; }
+.md-body tbody tr:nth-child(even) { background: var(--muted); }
+.md-body tbody tr:hover { background: var(--primary-bg); }
+.md-body td { padding: 8px 14px; border-bottom: 1px solid var(--border); vertical-align: top;
+  font-size: .84rem; }
+.md-body hr { border: none; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 1.6rem 0; }
+/* SUS bar */
+.sus-bar-wrap { margin: 10px 0 16px; }
+.sus-bar-label { font-size: .78rem; font-weight: 700; margin-bottom: 5px;
+  display: flex; justify-content: space-between; }
+.sus-bar-track { height: 12px; background: var(--muted); border-radius: 6px; overflow: hidden; }
+.sus-bar-fill { height: 100%; border-radius: 6px; width: 0;
+  transition: width 1s cubic-bezier(.4,0,.2,1);
+  background: linear-gradient(90deg, var(--primary-d), var(--primary)); }
+.sus-bar-fill.red   { background: linear-gradient(90deg,#c62828,#e53935); }
+.sus-bar-fill.amber { background: linear-gradient(90deg,#e65100,#fb8c00); }
+.sus-bar-fill.green { background: linear-gradient(90deg,#1b5e20,#43a047); }
+/* interview tabs */
+.itab-nav { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 0; }
+.itab-btn { padding: 9px 18px; font-size: .82rem; font-weight: 600; cursor: pointer;
+  border: none; background: none; color: var(--muted-fg); border-bottom: 2px solid transparent;
+  margin-bottom: -2px; transition: color .15s, border-color .15s; }
+.itab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+.itab-panel { display: none; padding: 16px 0 4px; }
+.itab-panel.active { display: block; }
+/* timeline (protocol steps) */
+.timeline { position: relative; padding-left: 28px; margin: 12px 0; }
+.timeline::before { content: ''; position: absolute; left: 9px; top: 6px; bottom: 6px;
+  width: 2px; background: var(--border); }
+.tl-item { position: relative; margin-bottom: 18px; }
+.tl-dot { position: absolute; left: -24px; width: 18px; height: 18px;
+  background: var(--primary); border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; top: 2px; }
+.tl-dot span { font-size: .6rem; font-weight: 800; color: #fff; }
+.tl-title { font-size: .9rem; font-weight: 700; color: var(--primary-d); margin-bottom: 4px; }
+.tl-body  { font-size: .82rem; color: var(--muted-fg); line-height: 1.6; }
+/* persona card */
+.persona-split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0; }
+@media(max-width:640px){ .persona-split{grid-template-columns:1fr;} }
+.info-chip { display: inline-flex; align-items: center; gap: 4px; font-size: .76rem;
+  padding: 3px 10px; border-radius: 20px; background: var(--muted); color: var(--fg);
+  font-weight: 600; margin: 3px 2px; }
+/* highlight box */
+.highlight-box { border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px 16px; margin: 10px 0; background: var(--card);
+  box-shadow: 0 1px 6px rgba(0,0,0,.05); }
+.highlight-box.blue   { border-left: 4px solid var(--primary); background: var(--primary-bg); }
+.highlight-box.green  { border-left: 4px solid var(--success); background: hsl(142,71%,97%); }
+.highlight-box.amber  { border-left: 4px solid var(--warning); background: hsl(38,92%,97%); }
+.highlight-box.red    { border-left: 4px solid var(--danger);  background: hsl(0,84%,97%); }
+
+/* ── Affinity iframe ────────────────────────────────────────────────── */
+#affinity-frame { width: 100%; height: 85vh; border: none; border-radius: var(--radius);
+                  box-shadow: var(--shadow); }
+
+/* ── Participants grid ──────────────────────────────────────── */
+.participants-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                     gap: 14px; margin: 16px 0; }
+.p-card { background: var(--card); border: 1px solid var(--border);
+          border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+.p-card .p-role { font-size: .72rem; font-weight: 700; text-transform: uppercase;
+                  letter-spacing: .08em; color: var(--muted-fg); margin-bottom: 6px; }
+.p-card .p-name { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
+.p-card .p-level { font-size: .78rem; padding: 2px 8px; border-radius: 12px;
+                   display: inline-block; font-weight: 600; }
+.p-level.avanzado  { background: #e8f5e9; color: #1b5e20; }
+.p-level.intermedio{ background: #e3f2fd; color: #0d47a1; }
+.p-level.novato    { background: #ffebee; color: #b71c1c; }
+
+/* ── Stats row ──────────────────────────────────────────────────────── */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+             gap: 12px; margin: 16px 0; }
+.stat-card { background: var(--card); border: 1px solid var(--border);
+             border-radius: var(--radius); padding: 14px 12px; text-align: center;
+             box-shadow: var(--shadow); }
+.stat-card .sv { font-size: 1.6rem; font-weight: 800; color: var(--primary); }
+.stat-card .sl { font-size: .72rem; color: var(--muted-fg); margin-top: 2px; }
+
+/* ── Theme badges ───────────────────────────────────────────────────── */
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 12px; }
+.theme-card { padding: 14px 16px; border-radius: var(--radius); color: #fff; font-size: .85rem; }
+.theme-card strong { display: block; font-size: .95rem; margin-bottom: 4px; }
+
+/* ── Loading ────────────────────────────────────────────────────────── */
+.loading { display: flex; align-items: center; gap: 10px; padding: 24px;
+           color: var(--muted-fg); font-size: .9rem; }
+.spinner { width: 20px; height: 20px; border: 2px solid var(--border);
+           border-top-color: var(--primary); border-radius: 50%;
+           animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Footer ─────────────────────────────────────────────────────────── */
+.page-footer { margin-top: 40px; padding: 20px 24px; background: var(--card);
+               border-top: 1px solid var(--border); border-radius: var(--radius);
+               font-size: .78rem; color: var(--muted-fg); text-align: center; }
+
+/* ── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); }
+  #main { margin-left: 0; padding: 20px 16px 48px; }
+  #menu-btn { display: block; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Top bar ───────────────────────────────────────────────────────── -->
+<header id="topbar">
+  <button id="menu-btn" onclick="toggleSidebar()" aria-label="Menú">☰</button>
+  <div>
+    <div class="logo">🏥 Health Access Bridge</div>
+    <div class="subtitle">Documentación HCI · Investigación de Usuarios</div>
+  </div>
+  <div class="spacer"></div>
+  <span class="meta-pill">ISO 9241-210 · Mayo 2026 · CORHUILA</span>
+</header>
+
+<!-- ── Sidebar ───────────────────────────────────────────────────────── -->
+<nav id="sidebar">
+  <div class="nav-section">Resumen</div>
+  <div class="nav-item active" onclick="show('home')"><span class="num">🏠</span> Portada · Índice</div>
+
+  <div class="nav-section">Artefactos HCI</div>
+  <div class="nav-item" onclick="show('p01')"><span class="num">01</span> Plan de Investigación</div>
+  <div class="nav-item" onclick="show('p02')"><span class="num">02</span> Guía de Entrevista — Salud</div>
+  <div class="nav-item" onclick="show('p02b')"><span class="num">02b</span> Guía — Perfil No Clínico</div>
+  <div class="nav-item" onclick="show('p03')"><span class="num">03</span> Consentimiento Informado</div>
+  <div class="nav-item" onclick="show('p04')"><span class="num">04</span> Fichas de Entrevistas</div>
+  <div class="nav-item" onclick="show('p05')"><span class="num">05</span> Diagrama de Afinidad</div>
+  <div class="nav-item" onclick="show('p06')"><span class="num">06</span> User Personas</div>
+  <div class="nav-item" onclick="show('p07')"><span class="num">07</span> User Story Mapping</div>
+</nav>
+
+<!-- ── Main content ──────────────────────────────────────────────────── -->
+<main id="main">
+
+  <!-- ── HOME ─────────────────────────────────────────────────────── -->
+  <section id="home" class="doc-section visible">
+    <div class="sec-header">
+      <h1>📋 Investigación de Usuarios — HAB</h1>
+      <p>Documentación completa del proceso HCI para Health Access Bridge</p>
+      <div class="badges">
+        <span class="badge">ISO 9241-210:2019</span>
+        <span class="badge">3 Entrevistas</span>
+        <span class="badge">Método KJ · 21 notas · 6 temas</span>
+        <span class="badge">2 User Personas</span>
+        <span class="badge">45 Historias de Usuario</span>
+        <span class="badge">CORHUILA · Mayo 2026</span>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="sv">3</div><div class="sl">Entrevistas</div></div>
+      <div class="stat-card"><div class="sv">21</div><div class="sl">Notas brutas</div></div>
+      <div class="stat-card"><div class="sv">6</div><div class="sl">Temas afinidad</div></div>
+      <div class="stat-card"><div class="sv">2</div><div class="sl">User Personas</div></div>
+      <div class="stat-card"><div class="sv">45</div><div class="sl">Historias usuario</div></div>
+      <div class="stat-card"><div class="sv">66.7</div><div class="sl">SUS promedio</div></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom:12px; color:var(--primary-d)">Participantes entrevistados</h3>
+      <div class="participants-grid">
+        <div class="p-card">
+          <div class="p-role">E1 · Usuario clínico</div>
+          <div class="p-name">Dra. Emilly Maria Celis Barreto</div>
+          <div>Profesional en SST · ICBF — Neiva, Huila</div>
+          <div style="margin-top:8px"><span class="p-level avanzado">★★★★★ Avanzado</span></div>
+          <div style="font-size:.78rem;color:var(--muted-fg);margin-top:6px">SUS 82.5 ✅ · NPS 9/10</div>
+        </div>
+        <div class="p-card">
+          <div class="p-role">E2 · Coordinación / Admin</div>
+          <div class="p-name">Laura Cangrejo Perafan</div>
+          <div>Profesional · Alcaldía de Neiva, Huila</div>
+          <div style="margin-top:8px"><span class="p-level intermedio">★★★☆☆ Intermedio</span></div>
+          <div style="font-size:.78rem;color:var(--muted-fg);margin-top:6px">SUS 75.0 ✅ · NPS 8/10</div>
+        </div>
+        <div class="p-card">
+          <div class="p-role">E3 · Stakeholder externo</div>
+          <div class="p-name">Familiar / Cuidador <em style="font-size:.78rem">(anónimo)</em></div>
+          <div>Cuidador principal · paciente con discapacidad motora</div>
+          <div style="margin-top:8px"><span class="p-level novato">★☆☆☆☆ Novato absoluto</span></div>
+          <div style="font-size:.78rem;color:var(--muted-fg);margin-top:6px">SUS 42.5 · NPS 7/10</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom:12px; color:var(--primary-d)">Temas del Diagrama de Afinidad</h3>
+      <div class="theme-grid">
+        <div class="theme-card" style="background:#1565c0">
+          <strong>🔵 TEMA 1 — Accesibilidad Tecnológica</strong>
+          Conectividad, dispositivos, modo offline
+        </div>
+        <div class="theme-card" style="background:#2e7d32">
+          <strong>🟢 TEMA 2 — Flujo Clínico y Fragmentación</strong>
+          Registro ICF, integración HIS, reportes
+        </div>
+        <div class="theme-card" style="background:#e65100">
+          <strong>🟡 TEMA 3 — Confianza y Privacidad</strong>
+          RBAC, HABEAS DATA, segregación de datos
+        </div>
+        <div class="theme-card" style="background:#6a1b9a">
+          <strong>🟣 TEMA 4 — Confianza en ML</strong>
+          Interpretabilidad, validación, explicabilidad
+        </div>
+        <div class="theme-card" style="background:#b71c1c">
+          <strong>🔴 TEMA 5 — Curva de Aprendizaje</strong>
+          Tooltips ICF, onboarding, terminología
+        </div>
+        <div class="theme-card" style="background:#00695c">
+          <strong>🟩 TEMA 6 — Visibilidad y Comunicación</strong>
+          Alertas, panel municipios, notificaciones
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom:14px; color:var(--primary-d)">Índice de artefactos</h3>
+      <table style="width:100%; border-collapse:collapse; font-size:.85rem;">
+        <thead><tr style="background:var(--primary);color:#fff">
+          <th style="padding:8px 12px;text-align:left">#</th>
+          <th style="padding:8px 12px;text-align:left">Documento</th>
+          <th style="padding:8px 12px;text-align:left">Descripción</th>
+          <th style="padding:8px 12px;text-align:center">Estado</th>
+        </tr></thead>
+        <tbody id="index-table"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── DOCS 01-04, 06-07 (markdown) ─────────────────────────────── -->
+  <section id="p01" class="doc-section">
+    <div class="sec-header">
+      <h1>🎯 Plan de Investigación de Usuarios</h1>
+      <p>Objetivo, método, criterios de selección de participantes y cronograma</p>
+      <div class="badges"><span class="badge">ISO 9241-210</span><span class="badge">3 participantes</span><span class="badge">5 semanas</span></div>
+    </div>
+    <div class="card"><div class="md-body">
+      <blockquote><p><strong>Proyecto:</strong> Health Access Bridge (HAB) &nbsp;·&nbsp; <strong>Fase:</strong> Investigación UX — Actividad HCI<br>
+      <strong>Método:</strong> Entrevistas semiestructuradas + Diagrama de Afinidad + User Personas + USM<br>
+      <strong>Estándar:</strong> ISO 9241-210:2019 (Diseño centrado en el ser humano)</p></blockquote>
+      <h2>1. Objetivo general</h2>
+      <p>Comprender las necesidades, comportamientos, frustraciones y expectativas de los usuarios potenciales de la plataforma HAB para informar decisiones de diseño de la interfaz, la arquitectura de información y las historias de usuario del sistema.</p>
+      <h2>2. Preguntas de investigación</h2>
+      <ol>
+        <li>¿Cómo realizan actualmente el seguimiento clínico de pacientes con discapacidad los profesionales de salud en zonas rurales?</li>
+        <li>¿Qué barreras tecnológicas enfrentan los usuarios al adoptar nuevas herramientas digitales de salud?</li>
+        <li>¿Qué información consideran crítica para el registro y la predicción de perfiles funcionales ICF?</li>
+        <li>¿Cuánta confianza depositan los profesionales en los resultados de modelos de machine learning para decisiones clínicas?</li>
+        <li>¿Qué funcionalidades son imprescindibles (must-have) vs. deseables (nice-to-have)?</li>
+      </ol>
+      <h2>3. Método de investigación</h2>
+      <h3>3.1 Tipo de entrevista</h3>
+      <p><strong>Entrevista semiestructurada</strong> — permite explorar temas predefinidos con flexibilidad para profundizar en respuestas relevantes.</p>
+      <ul><li><strong>Duración estimada:</strong> 30–45 minutos por entrevista</li><li><strong>Modalidad:</strong> Presencial o videollamada (Zoom / Google Meet)</li><li><strong>Registro:</strong> Video con consentimiento firmado + notas del entrevistador</li><li><strong>Análisis:</strong> Transcripción → notas de afinidad → agrupación temática</li></ul>
+      <h3>3.2 Criterios de selección</h3>
+      <div class="tbl-wrap"><table><thead><tr><th>Criterio</th><th>Descripción</th></tr></thead><tbody>
+        <tr><td><strong>Rol</strong></td><td>Profesional de salud, coordinador administrativo, stakeholder externo (cuidador/familiar)</td></tr>
+        <tr><td><strong>Experiencia TI</strong></td><td>Combinación de niveles: avanzado, intermedio, novato, novato absoluto</td></tr>
+        <tr><td><strong>Contexto geográfico</strong></td><td>Preferiblemente zonas rurales o semi-rurales de Huila, Colombia</td></tr>
+        <tr><td><strong>Diversidad</strong></td><td>Combinación de sectores: salud clínica, administración pública y comunidad</td></tr>
+        <tr><td><strong>Disponibilidad</strong></td><td>Consentimiento explícito para grabación de video</td></tr>
+      </tbody></table></div>
+      <h3>3.3 Tamaño de muestra — 3 participantes</h3>
+      <div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Participante</th><th>Perfil</th><th>Nivel TI</th><th>Justificación</th></tr></thead><tbody>
+        <tr><td><strong>E1</strong></td><td>Dra. Emilly Maria Celis Barreto</td><td>Profesional en Seguridad y Salud en el Trabajo</td><td><span class="p-level avanzado">Avanzado</span></td><td>Usuaria clínica principal; aporta requerimientos funcionales profundos</td></tr>
+        <tr><td><strong>E2</strong></td><td>Laura Cangrejo Perafan</td><td>Profesional · Alcaldía de Neiva</td><td><span class="p-level intermedio">Intermedio</span></td><td>Perfil administrativo; prioriza visibilidad de municipios, reportes y alertas</td></tr>
+        <tr><td><strong>E3</strong></td><td>Familiar / Cuidador <em>(identidad protegida)</em></td><td>Cuidador principal paciente con discapacidad motora</td><td><span class="p-level novato">Novato absoluto</span></td><td>Stakeholder externo; revela necesidades de comunicación y accesibilidad</td></tr>
+      </tbody></table></div>
+      <h2>4. Protocolo de entrevista</h2>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot"><span>1</span></div><div class="tl-title">Fase 1 — Apertura (5 min)</div><div class="tl-body">Presentación del investigador y del proyecto · Explicación del propósito: mejorar la interfaz, no evaluar al usuario · Firma del consentimiento informado · Solicitud de permiso para grabar</div></div>
+        <div class="tl-item"><div class="tl-dot"><span>2</span></div><div class="tl-title">Fase 2 — Calentamiento (5 min)</div><div class="tl-body">Preguntas de contexto: rol, años de experiencia, dispositivos usados</div></div>
+        <div class="tl-item"><div class="tl-dot"><span>3</span></div><div class="tl-title">Fase 3 — Exploración (20–30 min)</div><div class="tl-body">Bloque A: Flujo de trabajo actual · Bloque B: Necesidades y puntos de dolor · Bloque C: Expectativas hacia HAB (demo rápida 5 min)</div></div>
+        <div class="tl-item"><div class="tl-dot"><span>4</span></div><div class="tl-title">Fase 4 — Cierre (5 min)</div><div class="tl-body">Escala SUS simplificada (5 ítems) · Espacio para preguntas del participante · Agradecimiento</div></div>
+      </div>
+      <h2>5. Variables a medir</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Variable</th><th>Indicador</th><th>Método de captura</th></tr></thead><tbody>
+        <tr><td>Alfabetización digital</td><td>Dispositivos usados, frecuencia de uso de apps</td><td>Pregunta directa</td></tr>
+        <tr><td>Flujo de trabajo actual</td><td>Pasos descritos en la gestión de un paciente</td><td>Narrativa libre</td></tr>
+        <tr><td>Puntos de dolor</td><td>Menciones espontáneas de frustración</td><td>Notas de observación</td></tr>
+        <tr><td>Necesidades funcionales</td><td>Funcionalidades solicitadas / esperadas</td><td>Preguntas directas</td></tr>
+        <tr><td>Confianza en ML</td><td>Reacción ante demo de predicción</td><td>Escala Likert 1-5</td></tr>
+        <tr><td>Usabilidad percibida</td><td>Escala SUS simplificada</td><td>Cuestionario post-demo</td></tr>
+      </tbody></table></div>
+      <h2>6. Cronograma</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Semana</th><th>Actividad</th><th>Entregable</th></tr></thead><tbody>
+        <tr><td><strong>S1</strong></td><td>Preparación: guía, consentimiento, contacto participantes</td><td>Documentos listos</td></tr>
+        <tr><td><strong>S2</strong></td><td>Entrevistas E1 y E2 (Dra. Emilly Maria Celis · Laura Cangrejo)</td><td>Videos + fichas diligenciadas</td></tr>
+        <tr><td><strong>S2</strong></td><td>Entrevista E3 (Familiar / Cuidador anónimo)</td><td>Video + ficha diligenciada</td></tr>
+        <tr><td><strong>S3</strong></td><td>Transcripción y elaboración de notas de afinidad</td><td>Notas brutas</td></tr>
+        <tr><td><strong>S3</strong></td><td>Taller de afinidad (agrupación y categorización)</td><td>Diagrama de afinidad</td></tr>
+        <tr><td><strong>S4</strong></td><td>Elaboración de user personas</td><td>2 personas documentadas</td></tr>
+        <tr><td><strong>S4</strong></td><td>User Story Mapping</td><td>Mapa de historias por release</td></tr>
+        <tr><td><strong>S5</strong></td><td>Revisión, validación y entrega</td><td>Paquete HCI completo</td></tr>
+      </tbody></table></div>
+      <h2>7. Consideraciones éticas</h2>
+      <ul><li>Participación <strong>voluntaria</strong> con consentimiento escrito (HABEAS DATA — Ley 1581 de 2012)</li><li>Los nombres y datos identificables serán <strong>seudoanonimizados</strong> en los documentos</li><li>Los videos se almacenan en repositorio <strong>privado</strong> y se comparten solo con el equipo de investigación</li><li>Los datos no serán usados para entrenar modelos de ML ni con fines comerciales</li><li>Derecho de retiro en cualquier momento sin consecuencias</li></ul>
+      <h2>8. Herramientas utilizadas</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Herramienta</th><th>Uso</th></tr></thead><tbody>
+        <tr><td>Google Meet / Zoom</td><td>Videollamadas y grabación</td></tr>
+        <tr><td>Markdown / GitHub</td><td>Documentación del proceso</td></tr>
+        <tr><td>HTML/CSS (custom)</td><td>Diagrama de afinidad visual</td></tr>
+        <tr><td>HAB (demo QA)</td><td>Demo durante entrevista: <code>https://hab-frontend-qa.onrender.com</code></td></tr>
+      </tbody></table></div>
+    </div></div>
+  </section>
+
+  <section id="p02" class="doc-section">
+    <div class="sec-header">
+      <h1>🗣️ Guía de Entrevista Semiestructurada</h1>
+      <p>Guía de apoyo para el entrevistador con 3 bloques temáticos y escala SUS</p>
+      <div class="badges"><span class="badge">35–45 min</span><span class="badge">4 bloques</span><span class="badge">Escala SUS</span></div>
+    </div>
+    <div class="card"><div class="md-body">
+      <blockquote class="bq-warn"><p><strong>Uso:</strong> Documento de apoyo para el entrevistador. No leer literalmente; seguir el hilo natural de la conversación.<br><strong>Duración estimada:</strong> 35–45 minutos &nbsp;·&nbsp; <strong>App:</strong> <code>https://hab-frontend-qa.onrender.com</code></p></blockquote>
+      <h2>Instrucciones para el entrevistador</h2>
+      <ul><li>Presentarse brevemente y explicar que la sesión busca <strong>mejorar la aplicación</strong>, no evaluar al usuario.</li><li>Aclarar que <strong>no hay respuestas correctas o incorrectas</strong>.</li><li>Solicitar consentimiento verbal para grabar, además del consentimiento firmado.</li><li>Usar <strong>sondas de profundización</strong>: <em>"¿Puedes contarme más?"</em> / <em>"¿Qué pasó después?"</em> / <em>"¿Por qué es importante?"</em></li><li>Evitar preguntas leading como <em>"¿No crees que sería mejor si...?"</em></li></ul>
+      <h2>BLOQUE 0 — Presentación y contexto (5 min)</h2>
+      <blockquote class="bq-info"><p><em>"Buenos días/tardes. Mi nombre es [NOMBRE]. Estoy realizando una investigación de usuarios para mejorar una plataforma de gestión clínica llamada Health Access Bridge. Quiero entender cómo trabajan profesionales como usted en su día a día. No hay respuestas buenas ni malas. ¿Tiene alguna duda antes de empezar?"</em></p></blockquote>
+      <h2>BLOQUE A — Contexto y perfil del usuario (8 min)</h2>
+      <h3>Preguntas de apertura (todos los perfiles)</h3>
+      <ol><li><strong>A1.</strong> ¿Podría contarme brevemente cuál es su rol en la institución y cuántos años lleva ejerciéndolo?</li><li><strong>A2.</strong> En un día típico, ¿cuáles son las principales actividades que realiza con pacientes con discapacidad?</li><li><strong>A3.</strong> ¿Qué herramientas digitales utiliza actualmente para gestionar información de pacientes?</li><li><strong>A4.</strong> ¿Con qué frecuencia usa estas herramientas y desde qué dispositivo?</li><li><strong>A5.</strong> En una escala del 1 al 5, ¿cómo calificaría su comodidad con el uso de aplicaciones web?</li></ol>
+      <h2>BLOQUE B — Flujo de trabajo actual y puntos de dolor (15 min)</h2>
+      <ol><li><strong>B1.</strong> Cuando recibe un paciente nuevo con discapacidad, ¿cómo es el proceso de registro? ¿Podría describir paso a paso lo que hace?</li><li><strong>B2.</strong> ¿Qué información clínica considera <strong>imprescindible</strong> registrar? ¿Hay algún dato que actualmente no puede capturar?</li><li><strong>B3.</strong> ¿Cuánto tiempo le toma registrar a un paciente nuevo de inicio a fin?</li><li><strong>B4.</strong> ¿Ha tenido que buscar información de un paciente anterior? ¿Fue fácil encontrarla?</li><li><strong>B5.</strong> ¿Qué es lo que más le <strong>frustra</strong> de las herramientas digitales actuales?</li><li><strong>B6.</strong> ¿Ha experimentado problemas de conectividad? ¿Cómo afecta su trabajo?</li></ol>
+      <blockquote class="bq-warn"><p><strong>Para perfil administrativo (E2):</strong> B7-ADM. ¿Cómo gestiona accesos y permisos del personal de salud?</p></blockquote>
+      <blockquote class="bq-warn"><p><strong>Para familiar/cuidador (E3):</strong> B7-FAM. ¿Cómo recibe información sobre el seguimiento del familiar que cuida?</p></blockquote>
+      <h2>BLOQUE C — Demo de HAB y expectativas (12 min)</h2>
+      <blockquote class="bq-info"><p>Mostrar brevemente las pantallas en el ambiente QA (5 min). Flujo: Login → Dashboard → Pacientes → Predicciones.</p></blockquote>
+      <ol><li><strong>C1.</strong> Después de ver esta primera vista, ¿cuál es su impresión inicial?</li><li><strong>C2.</strong> ¿Hay alguna función que le parezca especialmente <strong>útil</strong> para su trabajo?</li><li><strong>C3.</strong> ¿Hay algo que le haya parecido <strong>confuso</strong> o que no entendió a primera vista?</li><li><strong>C4.</strong> El sistema predice automáticamente el perfil de barreras del paciente. ¿Utilizaría ese resultado en sus decisiones? ¿Por qué?</li><li><strong>C5.</strong> Si pudiera <strong>cambiar una sola cosa</strong> de esta aplicación, ¿qué sería?</li><li><strong>C6.</strong> ¿Qué tan probable es que recomiende esta herramienta a un colega? <em>(Escala NPS 0–10)</em></li></ol>
+      <h2>BLOQUE D — Escala SUS Simplificada (5 min)</h2>
+      <blockquote><p>Instrucción: <em>"Voy a leerle 5 afirmaciones. Por favor responda qué tan de acuerdo está en una escala de 1 (totalmente en desacuerdo) a 5 (totalmente de acuerdo)."</em></p></blockquote>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>Afirmación</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead><tbody>
+        <tr><td>SUS1</td><td>Me sentiría cómodo/a usando esta aplicación con frecuencia</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>SUS2</td><td>Encontré la aplicación innecesariamente compleja</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>SUS3</td><td>Creo que la mayoría de profesionales podrían aprenderla rápidamente</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>SUS4</td><td>Me sentí seguro/a con respecto a la privacidad de los datos</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>SUS5</td><td>Necesitaría capacitación antes de usar esta aplicación con confianza</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+      </tbody></table></div>
+      <blockquote class="bq-success"><p><strong>Fórmula SUS:</strong> (SUS1+SUS3+SUS4−3)×12.5 + (15 − SUS2×2.5 − SUS5×2.5)<br>Puntaje ≥ 68 → Aceptable &nbsp;|&nbsp; ≥ 80 → Buena &nbsp;|&nbsp; ≥ 90 → Excelente</p></blockquote>
+      <h2>Notas del entrevistador</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Campo</th><th>Observación</th></tr></thead><tbody>
+        <tr><td>Fecha y hora</td><td></td></tr><tr><td>Lugar / plataforma</td><td></td></tr><tr><td>Duración real</td><td></td></tr><tr><td>Observaciones de lenguaje no verbal</td><td></td></tr><tr><td>Citas destacadas (textual)</td><td></td></tr><tr><td>Comportamiento ante la demo</td><td></td></tr><tr><td>Emociones percibidas</td><td></td></tr><tr><td>Temas emergentes no previstos</td><td></td></tr>
+      </tbody></table></div>
+    </div></div>
+  </section>
+
+  <!-- ── GUÍA NO CLÍNICA (02b) ──────────────────────────────────── -->
+  <section id="p02b" class="doc-section">
+    <div class="sec-header">
+      <h1>🏛️ Guía de Entrevista — Perfil No Clínico</h1>
+      <p>Adaptada para profesionales fuera del sector salud con conocimiento contextual de discapacidad</p>
+      <div class="badges"><span class="badge">30–40 min</span><span class="badge">SST · Alcaldía · ICBF · ONG</span><span class="badge">4 bloques</span><span class="badge">Escala SUS</span></div>
+    </div>
+    <div class="card"><div class="md-body">
+      <blockquote><p><strong>Uso:</strong> Guía para entrevistar personas <strong>fuera del gremio de la salud</strong> con conocimiento leve o contextual de discapacidad.<br>
+      <strong>Aplicación:</strong> Health Access Bridge (HAB) — <code>https://hab-frontend-qa.onrender.com</code></p></blockquote>
+
+      <h2>Perfiles objetivo</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Perfil tipo</th><th>Ejemplo</th></tr></thead><tbody>
+        <tr><td><strong>E-NC1</strong></td><td>Profesional SST / bienestar laboral</td><td>ICBF, ARL, empresa privada</td></tr>
+        <tr><td><strong>E-NC2</strong></td><td>Funcionario de gobierno local</td><td>Alcaldía, secretaría de planeación</td></tr>
+        <tr><td><strong>E-NC3</strong></td><td>Trabajador social / ONG</td><td>Fundaciones, entidades sin ánimo de lucro</td></tr>
+        <tr><td><strong>E-NC4</strong></td><td>Coordinador de programas sociales</td><td>SENA, UARIV, Prosperidad Social</td></tr>
+      </tbody></table></div>
+
+      <div class="highlight-box blue"><strong>📌 Nota metodológica:</strong> Estos participantes conocen el <strong>contexto</strong> de la discapacidad (Ley 1618/2012, PABS, ICF) pero no tienen formación clínica ni gestionan pacientes directamente. Sus respuestas informan la usabilidad institucional y la comunicación inter-sectorial del sistema.</div>
+
+      <h2>Instrucciones para el entrevistador</h2>
+      <ul>
+        <li>Presentarse y aclarar que la sesión busca <strong>entender cómo su institución se relaciona con la discapacidad</strong>, no evaluar al participante.</li>
+        <li><strong>No usar términos clínicos</strong> (diagnóstico diferencial, HIS, RIPS) a menos que el participante los mencione primero.</li>
+        <li>Adaptar la terminología al contexto: SST → «riesgo laboral y discapacidad», Alcaldía → «políticas de inclusión», ICBF → «protección y bienestar familiar».</li>
+        <li>Registrar: nivel de familiaridad con plataformas digitales, vocabulario espontáneo sobre discapacidad, reacciones a la demo.</li>
+      </ul>
+
+      <h2>BLOQUE 0 — Presentación y contexto (5 min)</h2>
+      <div class="highlight-box blue"><em>«Buenos días/tardes. Mi nombre es [NOMBRE]. Estoy realizando una investigación para mejorar una plataforma digital llamada Health Access Bridge, que apoya la gestión de información sobre personas con discapacidad en zonas rurales. Me interesa cómo instituciones como la suya se involucran con este tema, qué información manejan y qué dificultades encuentran. No hay respuestas correctas ni incorrectas.»</em></div>
+
+      <h2>BLOQUE A — Contexto institucional y rol (8 min)</h2>
+      <p><strong>A1.</strong> ¿Podría contarme cuál es su cargo y cuál es el rol de su institución en relación con las personas con discapacidad?</p>
+      <p><strong>A2.</strong> ¿Con qué frecuencia su trabajo le exige interactuar con o tomar decisiones relacionadas con personas con discapacidad?</p>
+      <p><strong>A3.</strong> ¿Qué herramientas digitales usa actualmente para gestionar, consultar o reportar información relacionada con discapacidad? <em>(Excel, SISPRO, RLCPD, correo electrónico…)</em></p>
+      <p><strong>A4.</strong> ¿Desde qué dispositivo accede principalmente a estas herramientas?</p>
+      <p><strong>A5.</strong> En una escala del 1 al 5, ¿qué tan cómodo/a se siente usando aplicaciones web para consultar o reportar información?</p>
+
+      <h2>BLOQUE B — Flujo de trabajo y puntos de dolor institucional (12 min)</h2>
+      <p><strong>B1.</strong> Cuando en su institución necesitan conocer el estado de una persona con discapacidad, ¿cómo obtienen esa información?</p>
+      <p><strong>B2.</strong> ¿Ha tenido dificultades para acceder a información sobre el historial de personas con discapacidad? ¿Qué impacto tiene eso?</p>
+      <p><strong>B3.</strong> ¿Cómo coordina su institución con los servicios de salud para el seguimiento de personas con discapacidad?</p>
+      <p><strong>B4.</strong> ¿Cuánto tiempo demoran en generar un informe sobre población con discapacidad para una entidad externa?</p>
+      <p><strong>B5.</strong> ¿Qué es lo que más dificulta o frustra a su equipo cuando trabaja con información de personas con discapacidad?</p>
+      <p><strong>B6.</strong> ¿Ha tenido casos en los que la falta de información oportuna afectó una decisión o la atención a una persona con discapacidad?</p>
+      <div class="highlight-box amber"><strong>⏱️ Para perfil SST / ICBF (E-NC1):</strong><br><strong>B7-SST.</strong> ¿Su institución genera registros de incapacidad o valoración funcional? ¿Cómo los gestionan?</div>
+      <div class="highlight-box amber"><strong>⏱️ Para perfil gobierno local / Alcaldía (E-NC2):</strong><br><strong>B7-GOV.</strong> ¿Cómo recibe la alcaldía la información del PABS o del RLCPD? ¿Qué hacen con esos datos?</div>
+
+      <h2>BLOQUE C — Demo de HAB y expectativas (10 min)</h2>
+      <div class="highlight-box blue"><em>Mostrar: Login → Dashboard (métricas) → Listado de Pacientes → Módulo de Análisis. Enmarcar: «Esta app es usada por profesionales de salud para registrar pacientes con discapacidad y predecir su perfil de barreras de acceso.»</em></div>
+      <p><strong>C1.</strong> ¿Qué información de la que muestra el sistema podría serle útil a su institución?</p>
+      <p><strong>C2.</strong> ¿Hay algún módulo que le resultó especialmente relevante para el trabajo de su área?</p>
+      <p><strong>C3.</strong> ¿Hay algo confuso, intimidante o que no está seguro/a de entender desde su perspectiva no clínica?</p>
+      <p><strong>C4.</strong> El sistema clasifica pacientes según perfil de barreras de acceso (1: bajas · 2: moderadas · 3: altas). Como funcionario/a de su institución, ¿qué haría con esa información si la tuviera disponible?</p>
+      <p><strong>C5.</strong> Si su institución pudiera usar una herramienta así para coordinar con el sector salud, ¿qué información sería indispensable?</p>
+      <p><strong>C6.</strong> ¿Qué tan probable es que recomendara esta plataforma a otras instituciones que trabajan con discapacidad? <em>(Escala 0–10, tipo NPS)</em></p>
+
+      <h2>BLOQUE D — Escala SUS Simplificada (5 min)</h2>
+      <blockquote><p><em>«A continuación voy a leerle 5 afirmaciones sobre la aplicación. Por favor responda qué tan de acuerdo está, en una escala de 1 (totalmente en desacuerdo) a 5 (totalmente de acuerdo).»</em></p></blockquote>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>Afirmación</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead><tbody>
+        <tr><td>SUS1</td><td>Me sentiría cómodo/a consultando información de esta aplicación con frecuencia</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>SUS2</td><td>Encontré la aplicación innecesariamente compleja para alguien fuera del sector salud</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>SUS3</td><td>Creo que un funcionario de mi área podría aprender a consultar esta aplicación sin mucha dificultad</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>SUS4</td><td>Me sentí seguro/a con respecto a la privacidad de los datos</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>SUS5</td><td>Necesitaría una capacitación específica antes de usar esta aplicación con confianza</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+      </tbody></table></div>
+      <div class="highlight-box green"><strong>✅ Puntuación SUS:</strong> (SUS1+SUS3+SUS4−3) × 12.5 + (15 − SUS2×2.5 − SUS5×2.5)<br>
+      Puntaje ≥ 68 → Aceptable · ≥ 80 → Buena · ≥ 90 → Excelente<br>
+      <em>Referencia: en perfiles no clínicos se espera un puntaje entre 50–75; el foco está en identificar barreras de comprensión, no solo de usabilidad.</em></div>
+
+      <h2>Cierre (2 min)</h2>
+      <p><em>«¿Tiene algún comentario adicional o algo que no hayamos preguntado y que considere importante? Muchas gracias por su tiempo. Sus respuestas ayudarán a que esta herramienta sea útil no solo para el sector salud sino para instituciones como la suya.»</em></p>
+
+      <h2>Notas del entrevistador</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Campo</th><th>Observación</th></tr></thead><tbody>
+        <tr><td>Fecha y hora</td><td></td></tr>
+        <tr><td>Institución y cargo del participante</td><td></td></tr>
+        <tr><td>Lugar / modalidad</td><td></td></tr>
+        <tr><td>Duración real</td><td></td></tr>
+        <tr><td>Nivel de familiaridad con discapacidad (1–5)</td><td></td></tr>
+        <tr><td>Vocabulario espontáneo sobre discapacidad</td><td></td></tr>
+        <tr><td>Reacción ante la demo (confusión / interés / indiferencia)</td><td></td></tr>
+        <tr><td>Términos clínicos que no entendió</td><td></td></tr>
+        <tr><td>Citas textuales destacadas</td><td></td></tr>
+        <tr><td>Necesidades institucionales no previstas</td><td></td></tr>
+      </tbody></table></div>
+    </div></div>
+  </section>
+
+  <section id="p03" class="doc-section">
+    <div class="sec-header">
+      <h1>✍️ Consentimiento Informado</h1>
+      <p>Formulario firmable · HABEAS DATA (Ley 1581/2012) · Ley 1266/2008</p>
+      <div class="badges"><span class="badge">HABEAS DATA</span><span class="badge">CORHUILA</span><span class="badge">Ley 1581/2012</span></div>
+    </div>
+    <div class="card"><div class="md-body">
+      <blockquote><p><strong>Proyecto:</strong> Health Access Bridge (HAB) &nbsp;·&nbsp; <strong>Institución:</strong> CORHUILA — Ingeniería de Sistemas<br><strong>Marco legal:</strong> Ley 1581/2012 (HABEAS DATA) · Ley 1266/2008 · Decreto 1377/2013</p></blockquote>
+      <h2>FORMULARIO DE CONSENTIMIENTO INFORMADO</h2>
+      <p>Yo, <span style="border-bottom:1px solid var(--border);display:inline-block;width:280px">&nbsp;</span>, identificado/a con<br>
+      [&nbsp;&nbsp;] Cédula de ciudadanía &nbsp; [&nbsp;&nbsp;] Tarjeta de identidad &nbsp; [&nbsp;&nbsp;] Pasaporte<br>
+      N°. <span style="border-bottom:1px solid var(--border);display:inline-block;width:200px">&nbsp;</span>, manifiesto de manera libre, voluntaria e informada:</p>
+      <h3>1. Propósito del estudio</h3>
+      <p>Declaro que fui informado/a de que esta investigación tiene como objetivo <strong>comprender las necesidades y expectativas de los usuarios de la plataforma Health Access Bridge (HAB)</strong>, una aplicación web para la gestión clínica de pacientes con discapacidad en zonas rurales de Colombia.</p>
+      <h3>2. Procedimientos</h3>
+      <ul><li>Participaré en una <strong>entrevista individual</strong> de aproximadamente 35–45 minutos.</li><li>La sesión será <strong>grabada en video</strong> con el único fin de documentar el proceso investigativo.</li><li>Se me mostrará brevemente la aplicación HAB en un ambiente de demostración.</li><li>Se me pedirá completar una breve encuesta de usabilidad al final.</li></ul>
+      <h3>3. Beneficios</h3>
+      <ul><li>Mejorar la interfaz y usabilidad de una herramienta real de salud.</li><li>Informar el diseño de funcionalidades orientadas a profesionales.</li><li>Aportar al proceso formativo de estudiantes de ingeniería.</li></ul>
+      <p>No recibiré ningún beneficio económico por mi participación.</p>
+      <h3>4. Riesgos y confidencialidad</h3>
+      <ul><li><strong>No existen riesgos físicos, psicológicos ni económicos</strong> asociados a mi participación.</li><li>Mis datos personales serán <strong>seudoanonimizados</strong>: en los documentos se usará un nombre ficticio o inicial.</li><li>El video será almacenado en repositorio de acceso restringido y <strong>no será publicado</strong> en plataformas públicas.</li><li>Los datos recolectados serán usados <strong>exclusivamente con fines académicos</strong>.</li><li>Tengo derecho a <strong>retirar mi participación en cualquier momento</strong> sin ninguna consecuencia.</li></ul>
+      <h3>5. Tratamiento de datos personales (HABEAS DATA)</h3>
+      <p>De conformidad con la Ley 1581 de 2012 y el Decreto 1377 de 2013, autorizo a CORHUILA para:</p>
+      <ul><li>[&nbsp;&nbsp;] <strong>Recolectar</strong> mis datos personales de contacto para coordinación de la entrevista.</li><li>[&nbsp;&nbsp;] <strong>Tratar</strong> mi voz e imagen (video) durante el período de la investigación (máximo 24 meses).</li><li>[&nbsp;&nbsp;] <strong>Compartir</strong> los registros únicamente con el equipo docente evaluador.</li></ul>
+      <h3>6. Declaración de participación voluntaria</h3>
+      <ul><li>[ ] He leído y entendido la información anterior.</li><li>[ ] Se me dio la oportunidad de hacer preguntas antes de firmar.</li><li>[ ] Acepto participar en esta investigación de forma libre y voluntaria.</li><li>[ ] Autorizo la grabación en video de la sesión de entrevista.</li></ul>
+      <h3>Firmas</h3>
+      <div class="tbl-wrap"><table><thead><tr><th>Participante</th><th>Investigador</th></tr></thead><tbody>
+        <tr><td>Nombre: <span style="border-bottom:1px solid var(--border);display:inline-block;width:200px">&nbsp;</span></td><td>Nombre: <span style="border-bottom:1px solid var(--border);display:inline-block;width:200px">&nbsp;</span></td></tr>
+        <tr><td>Firma: <span style="border-bottom:1px solid var(--border);display:inline-block;width:210px">&nbsp;</span></td><td>Firma: <span style="border-bottom:1px solid var(--border);display:inline-block;width:210px">&nbsp;</span></td></tr>
+        <tr><td>Fecha: <span style="border-bottom:1px solid var(--border);display:inline-block;width:200px">&nbsp;</span></td><td>Institución: CORHUILA</td></tr>
+        <tr><td>C.C.: <span style="border-bottom:1px solid var(--border);display:inline-block;width:210px">&nbsp;</span></td><td>Programa: Ingeniería de Sistemas</td></tr>
+      </tbody></table></div>
+      <blockquote class="bq-info"><p>Este documento se firma en dos ejemplares: uno para el participante y otro para el archivo de la investigación.<br>Contacto HABEAS DATA: CORHUILA — Área de Sistemas — Neiva, Huila, Colombia.</p></blockquote>
+    </div></div>
+  </section>
+
+  <section id="p04" class="doc-section">
+    <div class="sec-header">
+      <h1>👥 Fichas de Entrevistas Diligenciadas</h1>
+      <p>3 fichas con respuestas clave, escala SUS y notas del entrevistador</p>
+      <div class="badges"><span class="badge">E1 Avanzado</span><span class="badge">E2 Intermedio</span><span class="badge">E3 Novato abs.</span></div>
+    </div>
+    <div class="card"><div class="md-body">
+      <blockquote><p><strong>Total entrevistas:</strong> 3 &nbsp;·&nbsp; <strong>Periodo:</strong> Mayo 2026 &nbsp;·&nbsp; <strong>Herramienta:</strong> HAB — ambiente QA<br><em>Los nombres son ficticios para proteger la identidad de los participantes (seudoanonimización).</em></p></blockquote>
+      <div class="itab-nav" id="fichas-nav">
+        <button class="itab-btn active" style="color:#c8960c;border-bottom-color:#c8960c" onclick="switchTab('fichas',0,this)">👩‍⚕️ E1 — Dra. Emilly Maria Celis</button>
+        <button class="itab-btn" onclick="switchTab('fichas',1,this)">👨‍💻 E2 — Laura Cangrejo</button>
+        <button class="itab-btn" onclick="switchTab('fichas',2,this)">👤 E3 — Familiar/Cuidador</button>
+        <button class="itab-btn" onclick="switchTab('fichas',3,this)">📊 Síntesis</button>
+      </div>
+      <!-- E1 -->
+      <div class="itab-panel active" id="fichas-0">
+        <div class="tbl-wrap" style="margin-top:16px"><table><thead><tr><th>Campo</th><th>Datos</th></tr></thead><tbody>
+          <tr><td><strong>ID entrevista</strong></td><td>E1</td></tr>
+          <tr><td><strong>Participante</strong></td><td>Dra. Emilly Maria Celis Barreto</td></tr>
+          <tr><td><strong>Perfil</strong></td><td>Profesional en Seguridad y Salud en el Trabajo</td></tr>
+          <tr><td><strong>Institución</strong></td><td>ICBF — Neiva, Huila</td></tr>
+          <tr><td><strong>Nivel tecnológico</strong></td><td><span class="p-level avanzado">Avanzado</span> — usa HIS, RIPS, SICAP diariamente</td></tr>
+          <tr><td><strong>Dispositivos</strong></td><td>Computador portátil (trabajo), smartphone (campo)</td></tr>
+          <tr><td><strong>Duración</strong></td><td>42 minutos · Videollamada Google Meet · Mayo 2026</td></tr>
+        </tbody></table></div>
+        <h3 style="color:#c8960c">Respuestas destacadas</h3>
+        <p><strong>A1 — Rol y experiencia:</strong> "Llevo varios años como Profesional en Seguridad y Salud en el Trabajo</p>
+        <p><strong>A3 — Herramientas actuales:</strong> "Usamos el sistema HIS del hospital para notas médicas, pero para el seguimiento de discapacidad tenemos una hoja de cálculo en Excel que yo mismo diseñé hace 4 años. Es incómodo tener dos sistemas."</p>
+        <p><strong>B5 — Frustración principal:</strong></p>
+        <blockquote class="bq-warn"><p><strong>"Lo que más me molesta es que los datos de discapacidad están en Excel y los datos clínicos en el HIS. Nunca están juntos. Cuando necesito hacer un reporte para la secretaría de salud, paso horas cruzando información."</strong></p></blockquote>
+        <p><strong>C4 — Confianza en ML:</strong> "Me parece interesante pero necesito entender cómo funciona el modelo. Si veo que el modelo está validado clínicamente, lo usaría como apoyo a mi criterio. Nunca como reemplazo."</p>
+        <p><strong>C5 — Una cosa que cambiaría:</strong> "Que funcione offline o con conexión lenta. Aquí en el campo a veces solo tenemos 2G."</p>
+        <h3 style="color:#c8960c">Escala SUS</h3>
+        <div class="tbl-wrap"><table><thead><tr><th>SUS1</th><th>SUS2</th><th>SUS3</th><th>SUS4</th><th>SUS5</th></tr></thead><tbody><tr><td>4</td><td>2</td><td>5</td><td>4</td><td>2</td></tr></tbody></table></div>
+        <div class="sus-bar-wrap"><div class="sus-bar-label"><span>SUS Score E1</span><strong>82.5 / 100 — ✅ Buena usabilidad percibida</strong></div><div class="sus-bar-track"><div class="sus-bar-fill green" style="width:82.5%"></div></div></div>
+        <h3 style="color:#c8960c">Notas del entrevistador</h3>
+        <ul><li>Muy articulado, hizo preguntas técnicas sobre el modelo ML</li><li>Se mostró entusiasmado al ver la pantalla de Análisis</li><li>Preguntó si habría integración con el HIS del SGSSS</li><li>Lenguaje no verbal: inclinado hacia la pantalla durante la demo, activo y comprometido</li></ul>
+      </div>
+      <!-- E2 -->
+      <div class="itab-panel" id="fichas-1">
+        <div class="tbl-wrap" style="margin-top:16px"><table><thead><tr><th>Campo</th><th>Datos</th></tr></thead><tbody>
+          <tr><td><strong>ID entrevista</strong></td><td>E2</td></tr>
+          <tr><td><strong>Participante</strong></td><td>Laura Cangrejo Perafan</td></tr>
+          <tr><td><strong>Perfil</strong></td><td>Profesional — Alcaldía de Neiva</td></tr>
+          <tr><td><strong>Institución</strong></td><td>Alcaldía de Neiva</td></tr>
+          <tr><td><strong>Nivel tecnológico</strong></td><td><span class="p-level intermedio">Intermedio</span> — usa Office, correo, sistemas de reportes gubernamentales</td></tr>
+          <tr><td><strong>Dispositivos</strong></td><td>Computador de escritorio (trabajo), smartphone personal</td></tr>
+          <tr><td><strong>Duración</strong></td><td>38 minutos · Presencial · Mayo 2026</td></tr>
+        </tbody></table></div>
+        <h3 style="color:#2e7d32">Respuestas destacadas</h3>
+        <p><strong>A1 — Rol:</strong> "Trabajo en la Alcaldía de Neiva apoyando la gestión de información del programa PABS. Mi labor es garantizar que los profesionales registren correctamente y generar reportes para el Ministerio de Salud."</p>
+        <p><strong>B5 — Frustración principal:</strong></p>
+        <blockquote class="bq-warn"><p><strong>"Mi mayor problema es que no tengo visibilidad de lo que pasa en los municipios. Dependo de que los médicos me manden sus Excel o me llamen. Cuando voy a hacer el reporte mensual, la mitad de la información está desactualizada."</strong></p></blockquote>
+        <p><strong>C4 — Confianza en ML:</strong> "Para mí lo importante es que el sistema me ayude a priorizar. Si el modelo me dice cuáles municipios tienen más pacientes con barreras altas, puedo asignar mejor los recursos."</p>
+        <p><strong>C5 — Una cosa que cambiaría:</strong> "Un panel de resumen para coordinadores. Quiero ver por municipio: cuántos pacientes, cuántas predicciones hechas, si el médico ha actualizado recientemente."</p>
+        <h3 style="color:#2e7d32">Escala SUS</h3>
+        <div class="tbl-wrap"><table><thead><tr><th>SUS1</th><th>SUS2</th><th>SUS3</th><th>SUS4</th><th>SUS5</th></tr></thead><tbody><tr><td>4</td><td>2</td><td>4</td><td>3</td><td>3</td></tr></tbody></table></div>
+        <div class="sus-bar-wrap"><div class="sus-bar-label"><span>SUS Score E2</span><strong>75.0 / 100 — ✅ Usabilidad aceptable</strong></div><div class="sus-bar-track"><div class="sus-bar-fill green" style="width:75%"></div></div></div>
+        <h3 style="color:#2e7d32">Notas del entrevistador</h3>
+        <ul><li>Preguntó insistentemente por la función de reportes exportables</li><li>Se preocupó por los permisos: quería asegurarse de que un médico no vea los pacientes de otro</li><li>Tomó notas en papel durante la demo</li><li>Sugirió alertas automáticas cuando un médico no actualice en más de 15 días</li></ul>
+      </div>
+      <!-- E3 -->
+      <div class="itab-panel" id="fichas-2">
+        <div class="tbl-wrap" style="margin-top:16px"><table><thead><tr><th>Campo</th><th>Datos</th></tr></thead><tbody>
+          <tr><td><strong>ID entrevista</strong></td><td>E3</td></tr>
+          <tr><td><strong>Participante</strong></td><td>Datos anonimizados — cuidador/a principal</td></tr>
+          <tr><td><strong>Perfil</strong></td><td>Familiar y cuidador principal de paciente con discapacidad motora</td></tr>
+          <tr><td><strong>Contexto</strong></td><td>Cuida a un familiar con discapacidad motora post-ACV</td></tr>
+          <tr><td><strong>Nivel tecnológico</strong></td><td><span class="p-level novato">Novato absoluto</span> — usa WhatsApp y llamadas; nunca ha usado una app web de salud</td></tr>
+          <tr><td><strong>Dispositivos</strong></td><td>Smartphone Android básico; sin computador en casa</td></tr>
+          <tr><td><strong>Duración</strong></td><td>33 minutos · Presencial · Mayo 2026 · <em>Identidad protegida — HABEAS DATA Ley 1581/2012</em></td></tr>
+        </tbody></table></div>
+        <h3 style="color:#1565c0">Respuestas destacadas</h3>
+        <p><strong>A3 — Herramientas actuales:</strong> "Yo guardo todo en un cuaderno. Las recetas, las citas, los diagnósticos. También me tomo fotos a los papeles del médico para tenerlos en el celular. No tengo computador."</p>
+        <p><strong>B5 — Frustración principal:</strong></p>
+        <blockquote class="bq-warn"><p><strong>"Lo más duro es ir de médico en médico y que ninguno sabe lo que el otro hizo. El familiar se cansa y yo también. Si pudiera haber un sistema donde todos vieran lo mismo, eso sería un alivio enorme."</strong></p></blockquote>
+        <p><strong>C3 — Algo confuso:</strong> "Todo. No soy profesional de salud, así que no entiendo los términos. Pero si el médico lo entiende, está bien. Lo que quisiera es que me enviaran un resumen en WhatsApp o por correo después de cada cita."</p>
+        <p><strong>C5 — Una cosa que cambiaría:</strong> "Que el sistema le avise al cuidador cuando hay un cambio en el estado del paciente. Como una notificación al celular."</p>
+        <h3 style="color:#1565c0">Escala SUS <small style="font-size:.75rem;color:var(--muted-fg)">(aplicada verbalmente)</small></h3>
+        <div class="tbl-wrap"><table><thead><tr><th>SUS1</th><th>SUS2</th><th>SUS3</th><th>SUS4</th><th>SUS5</th></tr></thead><tbody><tr><td>2</td><td>4</td><td>2</td><td>4</td><td>5</td></tr></tbody></table></div>
+        <div class="sus-bar-wrap"><div class="sus-bar-label"><span>SUS Score E3</span><strong>42.5 / 100 — ❌ Esperado (no es usuario objetivo)</strong></div><div class="sus-bar-track"><div class="sus-bar-fill red" style="width:42.5%"></div></div></div>
+        <h3 style="color:#1565c0">Notas del entrevistador</h3>
+        <ul><li>Stakeholder indirecto — sus respuestas revelan necesidades de comunicación y continuidad asistencial</li><li>La baja puntuación SUS es esperada dado que no es el usuario objetivo del sistema</li><li>Sus comentarios sobre notificaciones al familiar son un insight clave para futuras iteraciones</li><li>Identidad completamente protegida conforme a HABEAS DATA (Ley 1581/2012)</li><li>Cita espontánea: <em>"Si esto ayuda a que los médicos se entiendan mejor entre ellos, ya eso vale la pena"</em></li></ul>
+      </div>
+      <!-- Síntesis -->
+      <div class="itab-panel" id="fichas-3">
+        <h3 style="margin-top:16px">Síntesis comparativa</h3>
+        <div class="tbl-wrap"><table><thead><tr><th>Dimensión</th><th>E1 — Dra. Emilly (Avanzado)</th><th>E2 — Laura (Intermedio)</th><th>E3 — Familiar (Novato abs.)</th></tr></thead><tbody>
+          <tr><td><strong>SUS Score</strong></td><td><span style="color:#1b5e20;font-weight:700">82.5 ✅</span></td><td><span style="color:#1b5e20;font-weight:700">75.0 ✅</span></td><td><span style="color:#b71c1c;font-weight:700">42.5 ❌</span></td></tr>
+          <tr><td><strong>Frustr. principal</strong></td><td>Datos fragmentados entre sistemas</td><td>Sin visibilidad en tiempo real</td><td>Historia clínica desconectada</td></tr>
+          <tr><td><strong>Valor percibido ML</strong></td><td>Alto (con validación clínica)</td><td>Alto (gestión de recursos)</td><td>Medio (confía en el médico)</td></tr>
+          <tr><td><strong>Mayor necesidad</strong></td><td>Offline / integración HIS</td><td>Panel municipios + terminología clara</td><td>Notificaciones y resumen post-cita</td></tr>
+          <tr><td><strong>NPS (0–10)</strong></td><td>9</td><td>8</td><td>7</td></tr>
+        </tbody></table></div>
+        <div class="stats-row" style="margin-top:20px">
+          <div class="stat-card"><div class="sv" style="color:#1b5e20">82.5</div><div class="sl">SUS E1</div></div>
+          <div class="stat-card"><div class="sv" style="color:#1b5e20">75.0</div><div class="sl">SUS E2</div></div>
+          <div class="stat-card"><div class="sv" style="color:#b71c1c">42.5</div><div class="sl">SUS E3</div></div>
+          <div class="stat-card"><div class="sv">66.7</div><div class="sl">SUS Promedio</div></div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- ── DIAGRAMA (iframe) ─────────────────────────────────────────── -->
+  <section id="p05" class="doc-section">
+    <div class="sec-header">
+      <h1>🗂️ Diagrama de Afinidad — Método KJ</h1>
+      <p>7 pasos interactivos · 21 notas brutas · 6 temas de afinidad</p>
+      <div class="badges"><span class="badge">Método KJ</span><span class="badge">21 notas</span><span class="badge">6 temas</span><span class="badge">Paso a paso</span></div>
+    </div>
+    <iframe id="affinity-frame" src="./05_diagrama_afinidad.html" title="Diagrama de Afinidad"></iframe>
+  </section>
+
+  <section id="p06" class="doc-section">
+    <div class="sec-header">
+      <h1>🧑‍💼 User Personas</h1>
+      <p>Dra. Emilly Maria Celis Barreto · Laura Cangrejo Perafan · con empathy maps</p>
+      <div class="badges"><span class="badge">2 personas</span><span class="badge">Empathy map</span><span class="badge">Escenarios de uso</span></div>
+    </div>
+    <div class="card"><div class="md-body">
+      <blockquote><p><strong>Método:</strong> Derivadas del Diagrama de Afinidad — Método KJ (6 temas, 21 notas, 3 entrevistas)<br><strong>Herramienta:</strong> Síntesis cualitativa de entrevistas E1, E2, E3 · Mayo 2026</p></blockquote>
+      <div class="itab-nav" id="personas-nav">
+        <button class="itab-btn active" style="color:#c8960c;border-bottom-color:#c8960c" onclick="switchTab('personas',0,this)">👩‍⚕️ Persona 1 — Dra. Emilly</button>
+        <button class="itab-btn" onclick="switchTab('personas',1,this)">👨‍💻 Persona 2 — Laura</button>
+        <button class="itab-btn" onclick="switchTab('personas',2,this)">📊 Comparativa</button>
+      </div>
+      <!-- Persona 1 -->
+      <div class="itab-panel active" id="personas-0">
+        <div style="background:linear-gradient(135deg,#c8960c,#e6b84a);color:#fff;border-radius:var(--radius);padding:20px;margin:16px 0;">
+          <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.8;margin-bottom:6px">PERSONA 1 — Usuario clínico principal</div>
+          <div style="font-size:1.4rem;font-weight:800">Dra. Emilly Maria Celis Barreto</div>
+          <div style="opacity:.9;margin-top:4px">Profesional en Seguridad y Salud en el Trabajo · Programa PABS Discapacidad</div>
+          <div style="opacity:.8;font-size:.84rem;margin-top:2px">ICBF — Neiva, Huila</div>
+          <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px">
+            <span style="background:rgba(0,0,0,.15);padding:3px 10px;border-radius:20px;font-size:.72rem">★★★★★ Avanzado</span>
+            <span style="background:rgba(0,0,0,.15);padding:3px 10px;border-radius:20px;font-size:.72rem">SUS esperado 80–90</span>
+            <span style="background:rgba(0,0,0,.15);padding:3px 10px;border-radius:20px;font-size:.72rem">NPS 9/10</span>
+          </div>
+        </div>
+        <div class="persona-split">
+          <div>
+            <h3>Biografía</h3>
+            <p>Emilly es Profesional en Seguridad y Salud en el Trabajo</p>
+            <h3>Contexto tecnológico</h3>
+            <div class="tbl-wrap"><table><tbody>
+              <tr><td><strong>Dispositivos</strong></td><td>Portátil HP + iPhone 13</td></tr>
+              <tr><td><strong>Sistemas</strong></td><td>HIS, Excel, Drive, SISPRO, RIPS</td></tr>
+              <tr><td><strong>Conectividad</strong></td><td>Buena en hospital; intermitente en campo (2G/3G)</td></tr>
+              <tr><td><strong>Comodidad web</strong></td><td>★★★★★ (5/5)</td></tr>
+            </tbody></table></div>
+          </div>
+          <div>
+            <h3>Metas</h3>
+            <ol><li>Registrar y actualizar historia clínica ICF en el menor tiempo posible</li><li>Ejecutar predicciones ML para clasificar el perfil de barreras de acceso</li><li>Acceder al historial completo sin depender de Excel o cuadernos físicos</li></ol>
+            <h3>Frustraciones</h3>
+            <ol><li><strong>Sistemas fragmentados:</strong> datos ICF en Excel, clínicos en HIS</li><li><strong>Sin acceso offline:</strong> no puede registrar en visita domiciliaria</li><li><strong>Confianza limitada en ML:</strong> necesita validación clínica del modelo</li></ol>
+          </div>
+        </div>
+        <h3>Cita representativa</h3>
+        <blockquote class="bq-info"><p><em>"…Si HAB me permite tener todo en un solo lugar y ejecutar la predicción sin salir de la plataforma, ya habrá valido la pena. Solo necesito que funcione cuando no hay señal."</em></p></blockquote>
+        <h3>Empathy Map</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden;margin:12px 0">
+          <div style="background:#e3f2fd;padding:16px"><div style="font-size:.7rem;font-weight:800;text-transform:uppercase;color:#1565c0;margin-bottom:8px">🗨️ PIENSA</div><p style="font-size:.82rem;margin:0">“Si el modelo falla soy yo quien responde ante el paciente”</p></div>
+          <div style="background:#f3e5f5;padding:16px"><div style="font-size:.7rem;font-weight:800;text-transform:uppercase;color:#6a1b9a;margin-bottom:8px">❤️ SIENTE</div><p style="font-size:.82rem;margin:0">Frustración con la duplicidad de trabajo. Orgullo al ver las métricas de su población.</p></div>
+          <div style="background:#fff9c4;padding:16px"><div style="font-size:.7rem;font-weight:800;text-transform:uppercase;color:#f57f17;margin-bottom:8px">🗣️ DICE</div><p style="font-size:.82rem;margin:0">“Necesito que funcione offline” · “¿El modelo está validado aquí?”</p></div>
+          <div style="background:#e8f5e9;padding:16px"><div style="font-size:.7rem;font-weight:800;text-transform:uppercase;color:#1b5e20;margin-bottom:8px">✍️ HACE</div><p style="font-size:.82rem;margin:0">Lleva dos registros paralelos (HIS+Excel). Genera reportes manualmente cada mes.</p></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+          <div class="highlight-box red"><strong>PAINS</strong><br><small>Sistema fragmentado · Sin modo offline · Reportes manuales · Confianza en ML dudosa</small></div>
+          <div class="highlight-box green"><strong>GAINS</strong><br><small>Historia clínica unificada · Predicción ML integrada · Exportación automática</small></div>
+        </div>
+      </div>
+      <!-- Persona 2 -->
+      <div class="itab-panel" id="personas-1">
+        <div style="background:linear-gradient(135deg,#1565c0,#1976d2);color:#fff;border-radius:var(--radius);padding:20px;margin:16px 0;">
+          <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.8;margin-bottom:6px">PERSONA 2 — Coordinación / Administración</div>
+          <div style="font-size:1.4rem;font-weight:800">Laura Cangrejo Perafan</div>
+          <div style="opacity:.9;margin-top:4px">Profesional · Programa PABS Discapacidad</div>
+          <div style="opacity:.8;font-size:.84rem;margin-top:2px">Secretaría de Salud · Garzón, Huila</div>
+          <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px">
+            <span style="background:rgba(0,0,0,.2);padding:3px 10px;border-radius:20px;font-size:.72rem">★★★☆☆ Intermedio</span>
+            <span style="background:rgba(0,0,0,.2);padding:3px 10px;border-radius:20px;font-size:.72rem">SUS esperado 65–75</span>
+            <span style="background:rgba(0,0,0,.2);padding:3px 10px;border-radius:20px;font-size:.72rem">NPS 8/10</span>
+          </div>
+        </div>
+        <div class="persona-split">
+          <div>
+            <h3>Biografía</h3>
+            <p>Laura trabaja en la Alcaldía de Neiva como Profesional del programa PABS. Garantiza que los registros de profesionales de municipios rurales estén actualizados y genera reportes para el Ministerio de Salud. Prefiere llamar por WhatsApp antes que navegar por menús nuevos.</p>
+            <h3>Contexto tecnológico</h3>
+            <div class="tbl-wrap"><table><tbody>
+              <tr><td><strong>Dispositivos</strong></td><td>PC escritorio (oficina), Samsung smartphone</td></tr>
+              <tr><td><strong>Sistemas</strong></td><td>Excel, Outlook, SISPRO, plataforma legacy</td></tr>
+              <tr><td><strong>Conectividad</strong></td><td>Buena en oficina; datos móviles en campo</td></tr>
+              <tr><td><strong>Comodidad web</strong></td><td>★★★☆☆ (3/5) — aprensivo ante lo nuevo</td></tr>
+            </tbody></table></div>
+          </div>
+          <div>
+            <h3>Metas</h3>
+            <ol><li>Ver en tiempo real el estado de registros de los 12 médicos a su cargo</li><li>Generar reportes consolidados por municipio para el Ministerio</li><li>Gestionar accesos de nuevos médicos sin conocimientos técnicos</li></ol>
+            <h3>Frustraciones</h3>
+            <ol><li><strong>Sin visibilidad en tiempo real:</strong> depende de los Excel de cada médico</li><li><strong>Sin alertas automáticas:</strong> dedica tiempo a recordar actualizaciones manualmente</li><li><strong>Resistencia al aprendizaje:</strong> le tomó 6 meses el sistema legacy actual</li></ol>
+          </div>
+        </div>
+        <h3>Cita representativa</h3>
+        <blockquote class="bq-info"><p><em>“Mi mayor problema es que no tengo visibilidad de lo que pasa en los municipios. Si el sistema me mostrara en una sola pantalla: municipio, cuántos pacientes, cuándo fue el último registro… eso cambiaría mi trabajo completamente.”</em></p></blockquote>
+        <h3>Empathy Map</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden;margin:12px 0">
+          <div style="background:#e3f2fd;padding:16px"><div style="font-size:.7rem;font-weight:800;text-transform:uppercase;color:#1565c0;margin-bottom:8px">🗨️ PIENSA</div><p style="font-size:.82rem;margin:0">“¿Y si me equivoco y desactivo al médico equivocado?” · “¿Cómo sé que todos están al día?”</p></div>
+          <div style="background:#f3e5f5;padding:16px"><div style="font-size:.7rem;font-weight:800;text-transform:uppercase;color:#6a1b9a;margin-bottom:8px">❤️ SIENTE</div><p style="font-size:.82rem;margin:0">Ansiedad ante herramientas nuevas. Alivio cuando el sistema hace lo que espera.</p></div>
+          <div style="background:#fff9c4;padding:16px"><div style="font-size:.7rem;font-weight:800;text-transform:uppercase;color:#f57f17;margin-bottom:8px">🗣️ DICE</div><p style="font-size:.82rem;margin:0">“Necesito verlo todo de un vistazo” · “¿Hay deshacer en este botón?”</p></div>
+          <div style="background:#e8f5e9;padding:16px"><div style="font-size:.7rem;font-weight:800;text-transform:uppercase;color:#1b5e20;margin-bottom:8px">✍️ HACE</div><p style="font-size:.82rem;margin:0">Llama por WhatsApp para recordar updates. Copia datos a Excel “por si las dudas”.</p></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+          <div class="highlight-box red"><strong>PAINS</strong><br><small>Sin visibilidad en tiempo real · Coordinación manual por WA · Miedo a errores irreversibles</small></div>
+          <div class="highlight-box green"><strong>GAINS</strong><br><small>Panel coordinador por municipio · Alertas automáticas · Exportación programada</small></div>
+        </div>
+      </div>
+      <!-- Comparativa -->
+      <div class="itab-panel" id="personas-2">
+        <h3 style="margin-top:16px">Comparativa de personas</h3>
+        <div class="tbl-wrap"><table><thead><tr><th>Dimensión</th><th>Dra. Emilly Maria Celis Barreto</th><th>Laura Cangrejo Perafan</th></tr></thead><tbody>
+          <tr><td><strong>Rol</strong></td><td>Psicóloga clínica (operativa)</td><td>Asistente información (coordinación)</td></tr>
+          <tr><td><strong>Nivel TI</strong></td><td><span class="p-level avanzado">Avanzado</span></td><td><span class="p-level intermedio">Intermedio</span></td></tr>
+          <tr><td><strong>Motivación HAB</strong></td><td>Registro integrado + predicción ML</td><td>Visibilidad en tiempo real por municipio</td></tr>
+          <tr><td><strong>Mayor barrera</strong></td><td>Modo offline / validación del ML</td><td>Terminología clínica confusa</td></tr>
+          <tr><td><strong>Valor del ML</strong></td><td>Apoyo clínico con validación</td><td>Priorización de recursos por municipio</td></tr>
+          <tr><td><strong>Dispositivo</strong></td><td>Portátil + smartphone</td><td>PC escritorio</td></tr>
+          <tr><td><strong>SUS esperado</strong></td><td>80–90</td><td>65–75</td></tr>
+          <tr><td><strong>NPS estimado</strong></td><td>9/10</td><td>8/10</td></tr>
+        </tbody></table></div>
+        <h3>Cómo informan el diseño</h3>
+        <div class="tbl-wrap"><table><thead><tr><th>Insight de persona</th><th>Decisión de diseño en HAB</th></tr></thead><tbody>
+          <tr><td>Emilly necesita modo offline</td><td><strong>PWA con Service Worker</strong> para formularios de pacientes</td></tr>
+          <tr><td>Emilly quiere validación del modelo</td><td><strong>Ficha técnica del modelo</strong> en Guía Predictiva</td></tr>
+          <tr><td>Laura necesita panel por municipio</td><td><strong>Dashboard de coordinación</strong> (backlog futuro)</td></tr>
+          <tr><td>Laura no entiende D1–D6</td><td><strong>Tooltips ICF</strong> en todos los campos del formulario</td></tr>
+          <tr><td>Ambos necesitan exportación</td><td><strong>Excel y PDF</strong> ya implementados en módulo Pacientes</td></tr>
+          <tr><td>Familiar/Cuidador (E3) pide notificaciones</td><td><strong>Notificaciones al cuidador</strong> (backlog futuro)</td></tr>
+        </tbody></table></div>
+      </div>
+    </div></div>
+  </section>
+
+  <section id="p07" class="doc-section">
+    <div class="sec-header">
+      <h1>🗺️ User Story Mapping</h1>
+      <p>Backbone · 5 actividades · 45 HU · organizadas en 3 releases</p>
+      <div class="badges"><span class="badge">Jeff Patton 2014</span><span class="badge">5 actividades</span><span class="badge">45 HU</span><span class="badge">3 releases</span></div>
+    </div>
+    <div class="card"><div class="md-body">
+      <blockquote><p><strong>Método:</strong> User Story Mapping (Jeff Patton, 2014)<br>
+      <strong>Personas:</strong> Dra. Emilly Maria Celis Barreto (Psicóloga/Usuario clínico) + Laura Cangrejo Perafan (Asistente información/Coordinación)<br>
+      <strong>Insumos:</strong> 3 entrevistas + Diagrama de Afinidad Método KJ (6 temas, 21 notas) + Backlog SCRUM existente</p></blockquote>
+      <div style="background:var(--muted);border-radius:var(--radius);padding:14px 18px;font-family:monospace;font-size:.8rem;margin-bottom:20px;line-height:1.8">
+        NIVEL 1 — ACTIVIDADES (backbone) &nbsp;→&nbsp; Lo que el usuario quiere LOGRAR<br>
+        NIVEL 2 — TAREAS &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;→&nbsp; Pasos que realiza para lograrlo<br>
+        NIVEL 3 — HISTORIAS DE USUARIO &nbsp;→&nbsp; Funcionalidades específicas del sistema<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌── <span style="color:#1b5e20">Release 1 (MVP)</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span style="color:#1565c0">Release 2 (Iteración)</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span style="color:#c8960c">Release 3 (Futuro)</span>
+      </div>
+      <!-- Actividad 1 -->
+      <h2>🔑 ACTIVIDAD 1 — Autenticarse y acceder al sistema</h2>
+      <blockquote><p><strong>Persona:</strong> Ambas &nbsp;·&nbsp; <strong>Tema:</strong> Accesibilidad Tecnológica + Confianza y Privacidad</p></blockquote>
+      <div class="tbl-wrap"><table><thead><tr><th colspan="2">Tareas del usuario</th></tr></thead><tbody>
+        <tr><td>T1.1</td><td>Ingresar al sistema con credenciales</td></tr><tr><td>T1.2</td><td>Recuperar contraseña olvidada</td></tr>
+        <tr><td>T1.3</td><td>Ser redirigido automáticamente según el rol</td></tr><tr><td>T1.4</td><td>Cerrar sesión de forma segura</td></tr>
+      </tbody></table></div>
+      <div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Historia</th><th>Release</th><th>Criterio de aceptación</th></tr></thead><tbody>
+        <tr><td>HU-01</td><td><strong>Como médico</strong>, quiero ingresar con mi correo y contraseña</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td><td>Login exitoso redirige a /dashboard</td></tr>
+        <tr><td>HU-02</td><td><strong>Como usuario</strong>, quiero ser redirigido según mi rol (admin/médico)</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td><td>Redirección en &lt; 1 seg después del login</td></tr>
+        <tr><td>HU-03</td><td><strong>Como usuario</strong>, quiero cerrar sesión y que mi token quede invalidado</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td><td>Logout limpia localStorage y redirige a /login</td></tr>
+        <tr><td>HU-05</td><td><strong>Como usuario</strong>, quiero recuperar mi contraseña por correo</td><td><span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:12px;font-size:.75rem">İterac.</span></td><td>Flujo de reset con token temporal por email</td></tr>
+        <tr><td>HU-08</td><td><strong>Como médico</strong>, quiero acceder al sistema sin internet (modo offline)</td><td><span style="background:#fff9c4;color:#c8960c;padding:2px 8px;border-radius:12px;font-size:.75rem">Futuro</span></td><td>PWA con Service Worker; sincronización al reconectar</td></tr>
+      </tbody></table></div>
+      <!-- Actividad 2 -->
+      <h2>🗂️ ACTIVIDAD 2 — Gestionar pacientes con discapacidad</h2>
+      <blockquote><p><strong>Persona:</strong> Dra. Emilly Maria Celis Barreto &nbsp;·&nbsp; <strong>Tema:</strong> Flujo Clínico + Curva de Aprendizaje</p></blockquote>
+      <div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Historia</th><th>Release</th><th>Criterio de aceptación</th></tr></thead><tbody>
+        <tr><td>HU-09</td><td><strong>Como médico</strong>, quiero registrar un nuevo paciente con campos ICF (D1–D6)</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td><td>Formulario con validación inline; POST persiste el registro</td></tr>
+        <tr><td>HU-10</td><td><strong>Como médico</strong>, quiero buscar pacientes por nombre o documento en tiempo real</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td><td>Búsqueda con debounce 300ms</td></tr>
+        <tr><td>HU-11</td><td><strong>Como médico</strong>, quiero editar la historia clínica de un paciente</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td><td>Modal pre-poblado; PUT actualiza el registro</td></tr>
+        <tr><td>HU-14</td><td><strong>Como médico</strong>, quiero exportar mi listado de pacientes a Excel</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td><td>Botón genera .xlsx con SheetJS</td></tr>
+        <tr><td>HU-15</td><td><strong>Como médico</strong>, quiero tooltips en cada campo ICF del formulario</td><td><span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:12px;font-size:.75rem">İterac.</span></td><td>Icóno ⓘ con descripción ICF al hacer hover</td></tr>
+        <tr><td>HU-16</td><td><strong>Como médico</strong>, quiero exportar el perfil completo de un paciente en PDF</td><td><span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:12px;font-size:.75rem">İterac.</span></td><td>jsPDF genera documento desde el cliente</td></tr>
+        <tr><td>HU-19</td><td><strong>Como médico</strong>, quiero registrar pacientes sin internet y sincronizar después</td><td><span style="background:#fff9c4;color:#c8960c;padding:2px 8px;border-radius:12px;font-size:.75rem">Futuro</span></td><td>Service Worker almacena el formulario offline</td></tr>
+      </tbody></table></div>
+      <!-- Actividad 3 -->
+      <h2>🤖 ACTIVIDAD 3 — Ejecutar predicciones ML de perfil de barreras</h2>
+      <blockquote><p><strong>Persona:</strong> Dra. Emilly Maria Celis Barreto &nbsp;·&nbsp; <strong>Tema:</strong> Interpretación del Modelo ML</p></blockquote>
+      <div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Historia</th><th>Release</th><th>Criterio de aceptación</th></tr></thead><tbody>
+        <tr><td>HU-21</td><td><strong>Como médico</strong>, quiero ejecutar el modelo ML para obtener el perfil de barreras</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td><td>POST /predict retorna perfil en &lt; 3 seg</td></tr>
+        <tr><td>HU-22</td><td><strong>Como médico</strong>, quiero ver el resultado con un badge codificado por color</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td><td>Verde=Bajas, Amarillo=Moderadas, Rojo=Altas</td></tr>
+        <tr><td>HU-23</td><td><strong>Como médico</strong>, quiero ver la descripción del perfil en lenguaje clínico</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td><td>prediction_description visible en resultado</td></tr>
+        <tr><td>HU-24</td><td><strong>Como médico</strong>, quiero ver qué factores ICF influyeron más en la predicción</td><td><span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:12px;font-size:.75rem">İterac.</span></td><td>Panel con los 3 campos de mayor peso en el resultado</td></tr>
+        <tr><td>HU-25</td><td><strong>Como médico</strong>, quiero ver el historial de predicciones a lo largo del tiempo</td><td><span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:12px;font-size:.75rem">İterac.</span></td><td>Timeline de predicciones con fecha y variación</td></tr>
+      </tbody></table></div>
+      <!-- Actividades 4 y 5 condensadas -->
+      <h2>📊 ACTIVIDAD 4 — Analizar estadísticas de la población clínica</h2>
+      <blockquote><p><strong>Personas:</strong> Dra. Emilly + Laura &nbsp;·&nbsp; <strong>Tema:</strong> Visibilidad y Comunicación</p></blockquote>
+      <div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Historia</th><th>Release</th></tr></thead><tbody>
+        <tr><td>HU-29</td><td><strong>Como médico</strong>, quiero ver una gráfica de torta con distribución de perfiles predictivos</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td></tr>
+        <tr><td>HU-30</td><td><strong>Como médico</strong>, quiero ver métricas de resumen en el Dashboard</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td></tr>
+        <tr><td>HU-33</td><td><strong>Como Profesional</strong>, quiero ver métricas agregadas por municipio</td><td><span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:12px;font-size:.75rem">İterac.</span></td></tr>
+        <tr><td>HU-34</td><td><strong>Como Profesional</strong>, quiero una alerta cuando un profesional no actualiza en 15 días</td><td><span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:12px;font-size:.75rem">İterac.</span></td></tr>
+        <tr><td>HU-35</td><td><strong>Como Profesional</strong>, quiero reporte semanal automático por correo</td><td><span style="background:#fff9c4;color:#c8960c;padding:2px 8px;border-radius:12px;font-size:.75rem">Futuro</span></td></tr>
+      </tbody></table></div>
+      <h2>🛡️ ACTIVIDAD 5 — Administrar usuarios del sistema</h2>
+      <blockquote><p><strong>Persona:</strong> Laura Cangrejo Perafan (Admin) &nbsp;·&nbsp; <strong>Tema:</strong> Confianza y Privacidad + Visibilidad</p></blockquote>
+      <div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Historia</th><th>Release</th></tr></thead><tbody>
+        <tr><td>HU-37</td><td><strong>Como administradora</strong>, quiero ver la lista de usuarios con rol y estado</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td></tr>
+        <tr><td>HU-38</td><td><strong>Como administradora</strong>, quiero crear cuentas de médico o administrador</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td></tr>
+        <tr><td>HU-39</td><td><strong>Como administradora</strong>, quiero activar o desactivar la cuenta de un médico</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">MVP</span></td></tr>
+        <tr><td>HU-41</td><td><strong>Como administradora</strong>, quiero ver la fecha del último acceso de cada médico</td><td><span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:12px;font-size:.75rem">İterac.</span></td></tr>
+        <tr><td>HU-44</td><td><strong>Como administradora</strong>, quiero importar médicos desde un archivo Excel</td><td><span style="background:#fff9c4;color:#c8960c;padding:2px 8px;border-radius:12px;font-size:.75rem">Futuro</span></td></tr>
+        <tr><td>HU-45</td><td><strong>Como administradora</strong>, quiero ver un log de auditoría con todas las acciones</td><td><span style="background:#fff9c4;color:#c8960c;padding:2px 8px;border-radius:12px;font-size:.75rem">Futuro</span></td></tr>
+      </tbody></table></div>
+      <h2>Resumen del User Story Map</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Actividad</th><th>Release 1 (MVP)</th><th>Release 2</th><th>Release 3</th><th>Total</th></tr></thead><tbody>
+        <tr><td>1. Autenticación</td><td>HU-01 a HU-04</td><td>HU-05-06</td><td>HU-07-08</td><td>8 HU</td></tr>
+        <tr><td>2. Pacientes</td><td>HU-09 a HU-14</td><td>HU-15-18</td><td>HU-19-20</td><td>12 HU</td></tr>
+        <tr><td>3. Predicciones</td><td>HU-21 a HU-23</td><td>HU-24-26</td><td>HU-27-28</td><td>8 HU</td></tr>
+        <tr><td>4. Analytics</td><td>HU-29 a HU-31</td><td>HU-32-34</td><td>HU-35-36</td><td>8 HU</td></tr>
+        <tr><td>5. Admin usuarios</td><td>HU-37 a HU-40</td><td>HU-41-43</td><td>HU-44-45</td><td>9 HU</td></tr>
+        <tr style="font-weight:700;background:var(--primary-bg)"><td>TOTAL</td><td><span style="color:#1b5e20">✅ 20 HU</span></td><td>13 HU</td><td>12 HU</td><td>45 HU</td></tr>
+      </tbody></table></div>
+      <h2>Trazabilidad con el Diagrama de Afinidad</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Tema de Afinidad</th><th>HUs relacionadas</th></tr></thead><tbody>
+        <tr><td>🔵 Accesibilidad Tecnológica</td><td>HU-07, HU-08, HU-15, HU-19, HU-20</td></tr>
+        <tr><td>🟢 Flujo Clínico y Fragmentación</td><td>HU-09, HU-11, HU-16, HU-17, HU-18, HU-20</td></tr>
+        <tr><td>🟡 Confianza y Privacidad</td><td>HU-03, HU-04, HU-13, HU-40, HU-45</td></tr>
+        <tr><td>🟠 Interpretación del ML</td><td>HU-21, HU-22, HU-23, HU-24, HU-25, HU-26, HU-27</td></tr>
+        <tr><td>🔴 Curva de Aprendizaje</td><td>HU-15, HU-12, HU-26, HU-42</td></tr>
+        <tr><td>🟣 Visibilidad y Comunicación</td><td>HU-28, HU-33, HU-34, HU-35, HU-36, HU-41</td></tr>
+      </tbody></table></div>
+    </div></div>
+  </section>
+
+  <div class="page-footer">
+    Health Access Bridge · Investigación HCI · CORHUILA 2026 · ISO 9241-210:2019
+  </div>
+</main>
+
+<script>
+const INDEX = [
+  {id:'p01',num:'01',label:'Plan de Investigación',    desc:'Objetivo, método, criterios y cronograma'},
+  {id:'p02',num:'02',label:'Guía de Entrevista — Salud',  desc:'Guía semiestructurada para profesionales del sector salud'},
+  {id:'p02b',num:'02b',label:'Guía — Perfil No Clínico', desc:'SST · Alcaldía · ICBF · ONG · 4 bloques · SUS adaptado'},
+  {id:'p03',num:'03',label:'Consentimiento Informado', desc:'HABEAS DATA · firmable · CORHUILA'},
+  {id:'p04',num:'04',label:'Fichas de Entrevistas',    desc:'3 fichas: avanzado · intermedio · novato'},
+  {id:'p05',num:'05',label:'Diagrama de Afinidad',     desc:'Método KJ · 7 pasos · 21 notas · 6 temas'},
+  {id:'p06',num:'06',label:'User Personas',            desc:'Emilly Maria Celis + Laura Cangrejo · empathy'},
+  {id:'p07',num:'07',label:'User Story Mapping',       desc:'5 actividades · 45 HU · 3 releases'},
+];
+
+const tbody = document.getElementById('index-table');
+INDEX.forEach(it => {
+  tbody.innerHTML += `<tr style="cursor:pointer" onclick="show('${it.id}')">
+    <td style="padding:8px 14px;font-weight:800;color:var(--primary);font-size:1rem">${it.num}</td>
+    <td style="padding:8px 14px;font-weight:600">${it.label}</td>
+    <td style="padding:8px 14px;color:var(--muted-fg);font-size:.82rem">${it.desc}</td>
+    <td style="padding:8px 14px;text-align:center"><span style="background:#e8f5e9;color:#1b5e20;padding:2px 10px;border-radius:20px;font-size:.75rem;font-weight:700">✅ Listo</span></td>
+  </tr>`;
+});
+
+function show(id) {
+  document.querySelectorAll('.doc-section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('visible');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick') === `show('${id}')`) n.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+}
+
+function switchTab(group, idx, btn) {
+  const colors = {'fichas':['#c8960c','#2e7d32','#1565c0','var(--primary)'],
+                  'personas':['#c8960c','#1565c0','var(--primary)']};
+  const palette = colors[group] || [];
+  const nav = document.getElementById(group + '-nav');
+  nav.querySelectorAll('.itab-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
+    b.style.color = i === idx ? (palette[i]||'var(--primary)') : '';
+    b.style.borderBottomColor = i === idx ? (palette[i]||'var(--primary)') : '';
+  });
+  let i = 0;
+  while (document.getElementById(group + '-' + i)) {
+    document.getElementById(group + '-' + i).classList.toggle('active', i === idx);
+    i++;
+  }
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('sidebar').classList.remove('open');
+});
+</script>
+</body>
+</html>

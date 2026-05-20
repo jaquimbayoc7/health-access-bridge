@@ -1,0 +1,992 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagrama de Afinidad — Método KJ · Health Access Bridge</title>
+<style>
+/* ── Reset & Base ─────────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#eef1f7;color:#1a1a2e;min-height:100vh}
+
+/* ── Header ──────────────────────────────────────────────────────── */
+.site-header{
+  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+  color:#fff;padding:22px 40px 18px;display:flex;flex-direction:column;gap:6px;
+}
+.site-header h1{font-size:1.45rem;font-weight:700;letter-spacing:.3px}
+.site-header .sub{font-size:.83rem;opacity:.75;display:flex;gap:20px;flex-wrap:wrap}
+.pill{background:rgba(255,255,255,.15);padding:2px 10px;border-radius:20px;font-size:.75rem}
+
+/* ── Progress bar ────────────────────────────────────────────────── */
+.progress-wrap{background:#0f3460;padding:0 40px 14px;display:flex;flex-direction:column;gap:8px}
+.progress-bar-outer{background:rgba(255,255,255,.2);border-radius:10px;height:6px;overflow:hidden}
+.progress-bar-inner{background:linear-gradient(90deg,#e94560,#f5a623);height:100%;border-radius:10px;transition:width .5s ease}
+.step-counter{color:rgba(255,255,255,.6);font-size:.75rem;text-align:right}
+
+/* ── Stepper ─────────────────────────────────────────────────────── */
+.stepper{
+  background:#fff;border-bottom:2px solid #e0e4ef;
+  padding:0 30px;display:flex;overflow-x:auto;gap:0;
+  scrollbar-width:none;
+}
+.stepper::-webkit-scrollbar{display:none}
+.step-btn{
+  flex-shrink:0;display:flex;flex-direction:column;align-items:center;
+  padding:14px 18px 10px;cursor:pointer;border:none;background:none;
+  position:relative;transition:all .25s;min-width:110px;
+}
+.step-btn::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:transparent;border-radius:3px 3px 0 0;transition:background .25s;
+}
+.step-btn.active::after{background:#e94560}
+.step-num{
+  width:34px;height:34px;border-radius:50%;border:2px solid #d0d5e8;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;font-weight:700;color:#8892b0;
+  transition:all .25s;margin-bottom:6px;
+}
+.step-btn.active .step-num{background:#e94560;border-color:#e94560;color:#fff;box-shadow:0 0 0 4px rgba(233,69,96,.2)}
+.step-btn.done .step-num{background:#2ecc71;border-color:#2ecc71;color:#fff}
+.step-btn.done .step-num::before{content:'✓'}
+.step-btn.done .step-num span{display:none}
+.step-label{font-size:.7rem;color:#8892b0;text-align:center;line-height:1.3;font-weight:600;max-width:90px}
+.step-btn.active .step-label{color:#e94560}
+
+/* ── Main content ────────────────────────────────────────────────── */
+.main{padding:30px 40px;max-width:1200px;margin:0 auto}
+
+/* ── Step panel ──────────────────────────────────────────────────── */
+.step-panel{display:none;animation:fadeIn .4s ease}
+.step-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Step header ─────────────────────────────────────────────────── */
+.step-header{
+  display:flex;align-items:flex-start;gap:18px;
+  background:#fff;border-radius:12px;padding:20px 24px;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:24px;
+  border-left:5px solid #e94560;
+}
+.step-header .icon{font-size:2.2rem;flex-shrink:0}
+.step-header h2{font-size:1.15rem;font-weight:700;color:#1a1a2e;margin-bottom:4px}
+.step-header p{font-size:.85rem;color:#5a6478;line-height:1.55}
+.step-header .method-note{
+  margin-top:8px;background:#fff5f7;border:1px solid #fcc;
+  border-radius:6px;padding:6px 10px;font-size:.78rem;color:#c0392b;
+  display:inline-block;
+}
+
+/* ── Corkboard ───────────────────────────────────────────────────── */
+.corkboard{
+  background:#c8a96e url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3h1v1H1V3zm2-2h1v1H3V1z' fill='%23b8966a' fill-opacity='0.4'/%3E%3C/svg%3E");
+  border-radius:12px;padding:28px;
+  box-shadow:inset 0 2px 10px rgba(0,0,0,.2),0 4px 20px rgba(0,0,0,.15);
+  border:3px solid #a07850;
+}
+
+/* ── Post-it notes ───────────────────────────────────────────────── */
+.postits{display:flex;flex-wrap:wrap;gap:16px;justify-content:flex-start}
+.postit{
+  width:180px;min-height:110px;
+  padding:12px 14px 14px;border-radius:2px;
+  font-size:.78rem;line-height:1.5;
+  box-shadow:3px 3px 8px rgba(0,0,0,.25);
+  position:relative;cursor:default;
+  animation:popIn .3s ease forwards;
+  opacity:0;
+}
+@keyframes popIn{
+  from{opacity:0;transform:scale(.85) rotate(var(--rot,0deg))}
+  to{opacity:1;transform:scale(1) rotate(var(--rot,0deg))}
+}
+.postit::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:6px;
+  background:rgba(0,0,0,.12);border-radius:2px 2px 0 0;
+}
+.postit .src{font-size:.68rem;font-weight:700;display:block;margin-bottom:5px;opacity:.65;text-transform:uppercase;letter-spacing:.5px}
+/* colors */
+.pi-e1{background:#fff9c4}
+.pi-e2{background:#e8f5e9}
+.pi-e3{background:#fce4ec}
+.pi-e4{background:#e3f2fd}
+.pi-group{font-weight:700;font-size:.8rem}
+/* random rotations via nth-child */
+.postit:nth-child(3n+1){--rot:-1.5deg}
+.postit:nth-child(3n+2){--rot:1deg}
+.postit:nth-child(3n){--rot:-0.5deg}
+
+/* delays */
+.postit:nth-child(1){animation-delay:.05s}
+.postit:nth-child(2){animation-delay:.1s}
+.postit:nth-child(3){animation-delay:.15s}
+.postit:nth-child(4){animation-delay:.2s}
+.postit:nth-child(5){animation-delay:.25s}
+.postit:nth-child(6){animation-delay:.3s}
+.postit:nth-child(7){animation-delay:.35s}
+.postit:nth-child(8){animation-delay:.4s}
+.postit:nth-child(9){animation-delay:.45s}
+.postit:nth-child(10){animation-delay:.5s}
+.postit:nth-child(11){animation-delay:.55s}
+.postit:nth-child(12){animation-delay:.6s}
+.postit:nth-child(13){animation-delay:.65s}
+.postit:nth-child(14){animation-delay:.7s}
+.postit:nth-child(15){animation-delay:.75s}
+.postit:nth-child(16){animation-delay:.8s}
+.postit:nth-child(17){animation-delay:.85s}
+.postit:nth-child(18){animation-delay:.9s}
+.postit:nth-child(19){animation-delay:.95s}
+.postit:nth-child(20){animation-delay:1.0s}
+.postit:nth-child(21){animation-delay:1.05s}
+.postit:nth-child(22){animation-delay:1.1s}
+.postit:nth-child(23){animation-delay:1.15s}
+.postit:nth-child(24){animation-delay:1.2s}
+.postit:nth-child(25){animation-delay:1.25s}
+.postit:nth-child(26){animation-delay:1.3s}
+.postit:nth-child(27){animation-delay:1.35s}
+.postit:nth-child(28){animation-delay:1.4s}
+
+/* ── Legend strip ────────────────────────────────────────────────── */
+.legend-strip{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:.78rem;color:#444;
+  background:#fff;padding:5px 12px;border-radius:20px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.leg-dot{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+
+/* ── Affinity groups grid ────────────────────────────────────────── */
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.aff-group{border-radius:10px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.1)}
+.aff-head{
+  padding:12px 18px;color:#fff;display:flex;align-items:center;
+  justify-content:space-between;font-weight:700;font-size:.9rem;
+}
+.aff-count{background:rgba(255,255,255,.25);padding:2px 10px;border-radius:12px;font-size:.75rem}
+.aff-notes{background:#fff;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.aff-note{
+  border-radius:5px;padding:8px 11px;font-size:.79rem;line-height:1.45;
+  border-left:3px solid transparent;
+}
+.aff-note .lbl{font-size:.67rem;font-weight:700;display:block;margin-bottom:3px;opacity:.6;text-transform:uppercase}
+
+/* ── Discussion cards ────────────────────────────────────────────── */
+.discussion-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.disc-card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.disc-card h4{font-size:.88rem;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.disc-card p{font-size:.8rem;color:#555;line-height:1.5}
+.disc-move{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#fff3cd;border:1px solid #f5c200;
+  border-radius:4px;padding:3px 8px;font-size:.73rem;
+  color:#856404;margin-top:8px;
+}
+
+/* ── Final themes ────────────────────────────────────────────────── */
+.themes-final{display:flex;flex-direction:column;gap:22px}
+.theme-card{border-radius:12px;overflow:hidden;box-shadow:0 3px 15px rgba(0,0,0,.1)}
+.theme-head{
+  padding:16px 22px;color:#fff;display:flex;
+  justify-content:space-between;align-items:center;
+}
+.theme-head-left h3{font-size:1rem;font-weight:700}
+.theme-head-left p{font-size:.78rem;opacity:.85;margin-top:2px}
+.theme-badge{background:rgba(255,255,255,.22);padding:3px 13px;border-radius:15px;font-size:.76rem;font-weight:600}
+.theme-body{background:#fff;padding:18px 22px}
+.theme-notes-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.th-note{border-radius:5px;padding:9px 13px;font-size:.78rem;line-height:1.45;max-width:220px}
+.th-note .s{font-size:.65rem;font-weight:700;display:block;margin-bottom:3px;opacity:.6;text-transform:uppercase}
+.implications{padding-top:12px;border-top:1px solid #eef}
+.implications h4{font-size:.78rem;font-weight:700;color:#e94560;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.implications ul{padding-left:16px}
+.implications li{font-size:.77rem;color:#444;margin-bottom:4px}
+
+/* ── Conclusions (step 7) ─────────────────────────────────────────── */
+.concl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-bottom:28px}
+.concl-card{
+  background:#fff;border-radius:10px;padding:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.07);border-top:4px solid #e94560;
+}
+.concl-card h4{font-size:.88rem;font-weight:700;color:#1a1a2e;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.concl-card ul{padding-left:16px}
+.concl-card li{font-size:.8rem;color:#555;margin-bottom:6px;line-height:1.45}
+.next-tools{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.next-tools h3{font-size:.95rem;font-weight:700;color:#1a1a2e;margin-bottom:14px}
+.tools-row{display:flex;gap:14px;flex-wrap:wrap}
+.tool-chip{
+  background:#f0f4ff;border:1px solid #c0caff;border-radius:8px;
+  padding:10px 16px;font-size:.8rem;text-align:center;
+  display:flex;flex-direction:column;gap:4px;min-width:130px;
+}
+.tool-chip .ti{font-size:1.3rem}
+.tool-chip .tn{font-weight:700;color:#1a1a2e;font-size:.78rem}
+.tool-chip .td{font-size:.7rem;color:#6674a8}
+
+/* ── Nav buttons ──────────────────────────────────────────────────── */
+.nav-row{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:28px;padding-top:20px;border-top:1px solid #dde2ee;
+}
+.nav-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 24px;border-radius:8px;border:none;cursor:pointer;
+  font-size:.85rem;font-weight:600;transition:all .2s;
+}
+.nav-prev{background:#f0f4ff;color:#1a1a2e}
+.nav-prev:hover{background:#e0e8ff}
+.nav-next{background:#e94560;color:#fff;box-shadow:0 3px 10px rgba(233,69,96,.35)}
+.nav-next:hover{background:#c73652;transform:translateY(-1px)}
+.nav-btn:disabled{opacity:.35;cursor:default;transform:none!important}
+
+/* ── Problem box ──────────────────────────────────────────────────── */
+.problem-box{
+  background:#fff;border-radius:12px;border:2px dashed #e94560;
+  padding:24px 28px;margin-bottom:22px;text-align:center;
+}
+.problem-box .q{font-size:1.1rem;font-weight:700;color:#e94560;line-height:1.5;margin-bottom:8px}
+.problem-box .obj{font-size:.84rem;color:#555}
+
+.objective-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:20px}
+.obj-card{background:#fff;border-radius:8px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.06);border-left:3px solid #e94560}
+.obj-card .oi{font-size:1.3rem;margin-bottom:6px}
+.obj-card .ot{font-size:.82rem;font-weight:700;color:#1a1a2e;margin-bottom:3px}
+.obj-card .od{font-size:.77rem;color:#666;line-height:1.4}
+
+/* ── Participant cards ────────────────────────────────────────────── */
+.participants{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:24px}
+.part-card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.part-head{padding:12px 16px;color:#fff;font-weight:700;font-size:.88rem;display:flex;align-items:center;gap:8px}
+.part-body{padding:12px 16px}
+.part-body p{font-size:.8rem;color:#555;margin-bottom:4px}
+.part-notes-mini{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pnm{padding:4px 8px;border-radius:3px;font-size:.7rem;font-weight:500;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.level-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:600;margin-top:4px}
+
+/* ── Silent mode banner ───────────────────────────────────────────── */
+.silence-banner{
+  background:linear-gradient(135deg,#2c3e50,#34495e);
+  color:#fff;border-radius:10px;padding:14px 20px;
+  display:flex;align-items:center;gap:14px;margin-bottom:20px;
+  font-size:.85rem;
+}
+.silence-banner .si{font-size:1.8rem}
+
+/* scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#f0f2f5}
+::-webkit-scrollbar-thumb{background:#c0cadd;border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ HEADER ════════════════════════════════════ -->
+<div class="site-header">
+  <h1>📌 Diagrama de Afinidad — Método KJ</h1>
+  <div class="sub">
+    <span class="pill">Health Access Bridge (HAB)</span>
+    <span class="pill">3 Entrevistas · 21 Notas · 6 Temas</span>
+    <span class="pill">Mayo 2026 · CORHUILA</span>
+    <span class="pill">ISO 9241-210</span>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar-outer">
+    <div class="progress-bar-inner" id="pbar" style="width:14.28%"></div>
+  </div>
+  <div class="step-counter" id="scounter">Paso 1 de 7</div>
+</div>
+
+<!-- ═══════════════════ STEPPER ══════════════════════════════════ -->
+<div class="stepper" id="stepper">
+  <button class="step-btn active" onclick="goTo(0)">
+    <div class="step-num"><span>1</span></div>
+    <div class="step-label">Definir<br>problema</div>
+  </button>
+  <button class="step-btn" onclick="goTo(1)">
+    <div class="step-num"><span>2</span></div>
+    <div class="step-label">Generar<br>elementos</div>
+  </button>
+  <button class="step-btn" onclick="goTo(2)">
+    <div class="step-num"><span>3</span></div>
+    <div class="step-label">Visualizar<br>al azar</div>
+  </button>
+  <button class="step-btn" onclick="goTo(3)">
+    <div class="step-num"><span>4</span></div>
+    <div class="step-label">Agrupar<br>en silencio</div>
+  </button>
+  <button class="step-btn" onclick="goTo(4)">
+    <div class="step-num"><span>5</span></div>
+    <div class="step-label">Socializar<br>y discutir</div>
+  </button>
+  <button class="step-btn" onclick="goTo(5)">
+    <div class="step-num"><span>6</span></div>
+    <div class="step-label">Nombrar<br>agrupaciones</div>
+  </button>
+  <button class="step-btn" onclick="goTo(6)">
+    <div class="step-num"><span>7</span></div>
+    <div class="step-label">Conclusiones<br>y acciones</div>
+  </button>
+</div>
+
+<div class="main">
+
+<!-- ══════════════════════════════════════════════════════════
+     PASO 1 — DEFINICIÓN DEL PROBLEMA Y OBJETIVO
+══════════════════════════════════════════════════════════ -->
+<div class="step-panel active" id="sp-0">
+  <div class="step-header">
+    <div class="icon">🎯</div>
+    <div>
+      <h2>Paso 1 — Definición del problema y el objetivo</h2>
+      <p>Antes de comenzar, se declara claramente la situación o problema a analizar en forma de pregunta. Esto da foco a todas las etapas siguientes del método KJ.</p>
+      <span class="method-note">📖 Método KJ: "¿Cuál es la situación o problema que se va a analizar? Haz una declaración en forma de pregunta."</span>
+    </div>
+  </div>
+
+  <div class="problem-box">
+    <div class="q">❝ ¿Qué necesidades, barreras y expectativas tienen los usuarios potenciales de la plataforma HAB que deben informar el diseño de su interfaz y sus funcionalidades? ❞</div>
+    <div class="obj">Pregunta central del estudio de usuarios — Health Access Bridge · Mayo 2026</div>
+  </div>
+
+  <div class="objective-list">
+    <div class="obj-card">
+      <div class="oi">🏥</div>
+      <div class="ot">Contexto</div>
+      <div class="od">Plataforma web para gestión clínica de pacientes con discapacidad en zonas rurales del Huila, Colombia</div>
+    </div>
+    <div class="obj-card">
+      <div class="oi">👥</div>
+      <div class="ot">Participantes</div>
+      <div class="od">3 entrevistas semiestructuradas: médica avanzada (Dra. Emilly Maria Celis Barreto), coordinador intermedio (Laura Cangrejo Perafan), familiar/cuidador anónimo</div>
+    </div>
+    <div class="obj-card">
+      <div class="oi">📋</div>
+      <div class="ot">Método</div>
+      <div class="od">Diagrama de Afinidad — Método KJ (Jiro Kawakita). 7 pasos: definición → generación → visualización → agrupación → socialización → nombramiento → conclusiones</div>
+    </div>
+    <div class="obj-card">
+      <div class="oi">🎯</div>
+      <div class="ot">Objetivo</div>
+      <div class="od">Identificar los 6 temas de afinidad que agrupan las necesidades y frustraciones de los usuarios para informar las decisiones de diseño de HAB</div>
+    </div>
+    <div class="obj-card">
+      <div class="oi">👤</div>
+      <div class="ot">Facilitador</div>
+      <div class="od">Investigador principal del equipo HCI — CORHUILA. Dirige la sesión, escribe las notas y mantiene el enfoque sobre el problema</div>
+    </div>
+    <div class="obj-card">
+      <div class="oi">🛠️</div>
+      <div class="ot">Materiales</div>
+      <div class="od">21 notas adhesivas (post-its) con citas textuales de entrevistas · Pizarrón virtual (este documento) · Guía de entrevista semiestructurada</div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn nav-prev" disabled>← Anterior</button>
+    <button class="nav-btn nav-next" onclick="goTo(1)">Siguiente: Generar elementos →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     PASO 2 — GENERANDO LOS ELEMENTOS
+══════════════════════════════════════════════════════════ -->
+<div class="step-panel" id="sp-1">
+  <div class="step-header">
+    <div class="icon">✍️</div>
+    <div>
+      <h2>Paso 2 — Generando los elementos</h2>
+      <p>Cada participante genera las ideas, observaciones y citas que considera relevantes según la pregunta central. Se escribe una idea por post-it para facilitar la movilidad en la agrupación.</p>
+      <span class="method-note">📖 Método KJ: "Cada asistente comenzará a generar ideas. Es preferible que cada quien tenga con qué escribir y un post-it donde hacerlo."</span>
+    </div>
+  </div>
+
+  <div class="participants">
+    <div class="part-card">
+      <div class="part-head" style="background:#c8960c">👩‍⚕️ E1 — Dra. Emilly Maria Celis Barreto</div>
+      <div class="part-body">
+        <p><strong>Perfil:</strong> Profesional en Seguridad y Salud en el Trabajo</p>
+        <p><strong>Nivel TI:</strong> <span class="level-badge" style="background:#e8f5e9;color:#1b5e20">★★★★★ Avanzado</span></p>
+        <p><strong>Notas generadas: 7</strong></p>
+        <div class="part-notes-mini">
+          <span class="pnm" style="background:#fff9c4">"HIS y Excel: datos nunca juntos"</span>
+          <span class="pnm" style="background:#fff9c4">"Necesito offline / 2G"</span>
+          <span class="pnm" style="background:#fff9c4">"20–30 min por paciente"</span>
+          <span class="pnm" style="background:#fff9c4">"ML como apoyo, no reemplazo"</span>
+          <span class="pnm" style="background:#fff9c4">"¿Validado para Huila?"</span>
+          <span class="pnm" style="background:#fff9c4">"Integración con HIS SGSSS"</span>
+          <span class="pnm" style="background:#fff9c4">"Pantalla de Análisis: me entusiasmó"</span>
+        </div>
+      </div>
+    </div>
+    <div class="part-card">
+      <div class="part-head" style="background:#2e7d32">�‍💼 E2 — Laura Cangrejo Perafan</div>
+      <div class="part-body">
+        <p><strong>Perfil:</strong> Profesional · Alcaldía de Neiva</p>
+        <p><strong>Nivel TI:</strong> <span class="level-badge" style="background:#e8f5e9;color:#1b5e20">★★★☆☆ Intermedio</span></p>
+        <p><strong>Notas generadas: 7</strong></p>
+        <div class="part-notes-mini">
+          <span class="pnm" style="background:#e8f5e9">"Sin visibilidad de municipios"</span>
+          <span class="pnm" style="background:#e8f5e9">"Llamo 15 días a recordar"</span>
+          <span class="pnm" style="background:#e8f5e9">"Alerta si médico no actualiza"</span>
+          <span class="pnm" style="background:#e8f5e9">"Panel por municipio"</span>
+          <span class="pnm" style="background:#e8f5e9">"¿Médico ve pacientes de colega?"</span>
+          <span class="pnm" style="background:#e8f5e9">"ML para priorizar municipios"</span>
+          <span class="pnm" style="background:#e8f5e9">"Los campos del formulario no son claros: ¿qué es D1, D2?"</span>
+        </div>
+      </div>
+    </div>
+    <div class="part-card">
+      <div class="part-head" style="background:#1565c0">🧑 E3 — Familiar / Cuidador (anónimo)</div>
+      <div class="part-body">
+        <p><strong>Perfil:</strong> Cuidador principal · identidad protegida</p>
+        <p><strong>Nivel TI:</strong> <span class="level-badge" style="background:#ffebee;color:#b71c1c">★☆☆☆☆ Novato abs.</span></p>
+        <p><strong>Notas generadas: 7</strong></p>
+        <div class="part-notes-mini">
+          <span class="pnm" style="background:#e3f2fd">"Cambio de médico = empezar desde cero"</span>
+          <span class="pnm" style="background:#e3f2fd">"¿La información está segura aquí?"</span>
+          <span class="pnm" style="background:#e3f2fd">"Notificación al celular si cambia el estado"</span>
+          <span class="pnm" style="background:#e3f2fd">"Confío más en el médico que en la máquina"</span>
+          <span class="pnm" style="background:#e3f2fd">"Cuaderno + fotos a los papeles del médico"</span>
+          <span class="pnm" style="background:#e3f2fd">"¿Los resultados son para el médico o también para mí?"</span>
+          <span class="pnm" style="background:#e3f2fd">"Resumen post-cita por WhatsApp o correo"</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn nav-prev" onclick="goTo(0)">← Anterior</button>
+    <button class="nav-btn nav-next" onclick="goTo(2)">Siguiente: Visualizar al azar →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     PASO 3 — VISUALIZANDO LOS ELEMENTOS (al azar)
+══════════════════════════════════════════════════════════ -->
+<div class="step-panel" id="sp-2">
+  <div class="step-header">
+    <div class="icon">🗂️</div>
+    <div>
+      <h2>Paso 3 — Visualizando los elementos</h2>
+      <p>Todas las notas se colocan <strong>al azar</strong> sobre la superficie de trabajo para que todos los participantes puedan verlas simultáneamente antes de comenzar la agrupación.</p>
+      <span class="method-note">📖 Método KJ: "Recibe las ideas y colócalas al azar en una superficie. Asigna un ID a cada nota — esto es vital para el paso siguiente."</span>
+    </div>
+  </div>
+
+  <div class="legend-strip">
+    <div class="leg-item"><div class="leg-dot" style="background:#c8960c"></div> E1 — Dra. Emilly Maria Celis Barreto (Avanzado)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#2e7d32"></div> E2 — Laura Cangrejo Perafan (Intermedio)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#1565c0"></div> E3 — Familiar / Cuidador anónimo (Novato abs.)</div>
+  </div>
+
+  <div class="corkboard">
+    <div class="postits">
+      <div class="postit pi-e1"><span class="src">E1-01</span>"Los datos de discapacidad en Excel y los clínicos en el HIS. Nunca juntos."</div>
+      <div class="postit pi-e3"><span class="src">E3-01</span>"Cada cambio de médico es empezar desde cero. Mi familiar se cansa y yo también."</div>
+      <div class="postit pi-e2"><span class="src">E2-01</span>"No tengo visibilidad de lo que pasa en los municipios. Dependo de los Excel."</div>
+      <div class="postit pi-e1"><span class="src">E1-02</span>"Necesito que funcione offline o con conexión lenta. Aquí a veces solo hay 2G."</div>
+      <div class="postit pi-e2"><span class="src">E2-02</span>"Cada 15 días los llamo para recordarles que actualicen. Es muy manual."</div>
+      <div class="postit pi-e3"><span class="src">E3-02</span>"¿La información del paciente está segura aquí?"</div>
+      <div class="postit pi-e1"><span class="src">E1-03</span>"Si el modelo está validado clínicamente, lo usaría como apoyo. Nunca como reemplazo."</div>
+      <div class="postit pi-e3"><span class="src">E3-03</span>"Quisiera notificación al celular cuando cambie el estado del paciente."</div>
+      <div class="postit pi-e2"><span class="src">E2-03</span>"¿Un médico puede ver los pacientes de otro? Eso no puede ser."</div>
+      <div class="postit pi-e1"><span class="src">E1-04</span>"¿Habrá integración con el HIS del SGSSS?"</div>
+      <div class="postit pi-e3"><span class="src">E3-04</span>"Confío más en el médico que en la máquina, pero si le ayuda, bienvenido."</div>
+      <div class="postit pi-e2"><span class="src">E2-04</span>"Alerta automática si médico no actualiza en 15 días."</div>
+      <div class="postit pi-e1"><span class="src">E1-05</span>"Registro un paciente en 20–30 min entre el HIS y el Excel."</div>
+      <div class="postit pi-e3"><span class="src">E3-05</span>"Guardo todo en un cuaderno y me tomo fotos a los papeles del médico."</div>
+      <div class="postit pi-e2"><span class="src">E2-05</span>"Necesito un panel por municipio: cuántos pacientes, predicciones, si el médico actualizó."</div>
+      <div class="postit pi-e1"><span class="src">E1-06</span>"Me entusiasmó la pantalla de Análisis. Por fin ver tendencias de mi población."</div>
+      <div class="postit pi-e3"><span class="src">E3-06</span>"¿Los resultados del modelo son para el médico o también los puedo entender yo?"</div>
+      <div class="postit pi-e2"><span class="src">E2-06</span>"El ML me sirve para priorizar qué municipios necesitan más recursos."</div>
+      <div class="postit pi-e1"><span class="src">E1-07</span>"Horas cruzando información entre sistemas para el reporte mensual."</div>
+      <div class="postit pi-e3"><span class="src">E3-07</span>"Quisiera recibir un resumen por WhatsApp o correo después de cada cita."</div>
+      <div class="postit pi-e2"><span class="src">E2-07</span>"Los nombres de los campos no son claros: ¿qué es D1, D2? No estudié medicina."</div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn nav-prev" onclick="goTo(1)">← Anterior</button>
+    <button class="nav-btn nav-next" onclick="goTo(3)">Siguiente: Agrupar en silencio →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     PASO 4 — HACIENDO LA AGRUPACIÓN (en silencio)
+══════════════════════════════════════════════════════════ -->
+<div class="step-panel" id="sp-3">
+  <div class="step-header">
+    <div class="icon">🤫</div>
+    <div>
+      <h2>Paso 4 — Haciendo la agrupación</h2>
+      <p>En silencio, cada participante mueve las notas agrupando aquellas que comparten características o semejanzas comunes. No se discute en esta fase — se actúa intuitivamente.</p>
+      <span class="method-note">📖 Método KJ: "En silencio, cada asistente comenzará a ordenar las notas como le parezca. Si un elemento encaja en dos grupos, escribe una copia. Si no encaja en ninguno, déjalo solo."</span>
+    </div>
+  </div>
+
+  <div class="silence-banner">
+    <span class="si">🔇</span>
+    <span>Esta etapa se realiza <strong>en silencio</strong>. Los participantes mueven las notas de forma individual e intuitiva. No hay debate — solo movimiento de post-its.</span>
+  </div>
+
+  <div class="legend-strip">
+    <div class="leg-item"><div class="leg-dot" style="background:#1565c0;border-radius:50%"></div> Grupo A</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#2e7d32;border-radius:50%"></div> Grupo B</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#f57f17;border-radius:50%"></div> Grupo C</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#6a1b9a;border-radius:50%"></div> Grupo D</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#b71c1c;border-radius:50%"></div> Grupo E</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#00695c;border-radius:50%"></div> Grupo F</div>
+  </div>
+
+  <div class="groups-grid">
+    <div class="aff-group">
+      <div class="aff-head" style="background:#1565c0">🔵 Grupo A — Tecnología y Acceso <span class="aff-count">3 notas</span></div>
+      <div class="aff-notes">
+        <div class="aff-note" style="background:#e3f2fd;border-color:#1565c0"><span class="lbl">E1-02</span>"Necesito que funcione offline o con 2G"</div>
+        <div class="aff-note" style="background:#e3f2fd;border-color:#1565c0"><span class="lbl">E3-05</span>"Cuaderno + fotos: gestión no digital (Familiar)"</div>
+        <div class="aff-note" style="background:#e3f2fd;border-color:#1565c0"><span class="lbl">E1-04</span>"¿Integración con HIS del SGSSS?"</div>
+      </div>
+    </div>
+    <div class="aff-group">
+      <div class="aff-head" style="background:#2e7d32">🟢 Grupo B — Fragmentación de Datos <span class="aff-count">5 notas</span></div>
+      <div class="aff-notes">
+        <div class="aff-note" style="background:#e8f5e9;border-color:#2e7d32"><span class="lbl">E1-01</span>"HIS y Excel: datos nunca juntos"</div>
+        <div class="aff-note" style="background:#e8f5e9;border-color:#2e7d32"><span class="lbl">E1-05</span>"20–30 min por paciente"</div>
+        <div class="aff-note" style="background:#e8f5e9;border-color:#2e7d32"><span class="lbl">E1-07</span>"Horas cruzando datos para el reporte"</div>
+        <div class="aff-note" style="background:#e8f5e9;border-color:#2e7d32"><span class="lbl">E3-01</span>"Cambio de médico = empezar desde cero (Familiar)"</div>
+        <div class="aff-note" style="background:#e8f5e9;border-color:#2e7d32"><span class="lbl">E2-01</span>"Dependo de que me manden sus Excel"</div>
+      </div>
+    </div>
+    <div class="aff-group">
+      <div class="aff-head" style="background:#f57f17">🟡 Grupo C — Privacidad y Roles <span class="aff-count">2 notas</span></div>
+      <div class="aff-notes">
+        <div class="aff-note" style="background:#fff8e1;border-color:#f57f17"><span class="lbl">E2-03</span>"¿Un médico puede ver los pacientes de otro?"</div>
+        <div class="aff-note" style="background:#fff8e1;border-color:#f57f17"><span class="lbl">E3-02</span>"¿La información del paciente está segura? (Familiar)"</div>
+      </div>
+    </div>
+    <div class="aff-group">
+      <div class="aff-head" style="background:#6a1b9a">🟣 Grupo D — Confianza en ML <span class="aff-count">4 notas</span></div>
+      <div class="aff-notes">
+        <div class="aff-note" style="background:#f3e5f5;border-color:#6a1b9a"><span class="lbl">E1-03</span>"ML como apoyo, nunca reemplazo clínico"</div>
+        <div class="aff-note" style="background:#f3e5f5;border-color:#6a1b9a"><span class="lbl">E2-06</span>"ML sirve para priorizar municipios"</div>
+        <div class="aff-note" style="background:#f3e5f5;border-color:#6a1b9a"><span class="lbl">E3-04</span>"Confío más en el médico que en la máquina (Familiar)"</div>
+        <div class="aff-note" style="background:#f3e5f5;border-color:#6a1b9a"><span class="lbl">E3-06</span>"¿Los resultados son para el médico o también para mí? (Familiar)"</div>
+      </div>
+    </div>
+    <div class="aff-group">
+      <div class="aff-head" style="background:#b71c1c">🔴 Grupo E — Curva de Aprendizaje <span class="aff-count">2 notas</span></div>
+      <div class="aff-notes">
+        <div class="aff-note" style="background:#ffebee;border-color:#b71c1c"><span class="lbl">E2-07</span>"Los campos del formulario no son claros: ¿qué es D1, D2?"</div>
+        <div class="aff-note" style="background:#ffebee;border-color:#b71c1c"><span class="lbl">E3-06</span>"¿Los resultados del modelo son para el médico o también para mí?"</div>
+      </div>
+    </div>
+    <div class="aff-group">
+      <div class="aff-head" style="background:#00695c">🟩 Grupo F — Visibilidad y Comunicación <span class="aff-count">6 notas</span></div>
+      <div class="aff-notes">
+        <div class="aff-note" style="background:#e0f2f1;border-color:#00695c"><span class="lbl">E2-02</span>"Sin visibilidad en tiempo real de municipios"</div>
+        <div class="aff-note" style="background:#e0f2f1;border-color:#00695c"><span class="lbl">E2-04</span>"Alerta si médico no actualiza en 15 días"</div>
+        <div class="aff-note" style="background:#e0f2f1;border-color:#00695c"><span class="lbl">E2-05</span>"Panel de métricas por municipio"</div>
+        <div class="aff-note" style="background:#e0f2f1;border-color:#00695c"><span class="lbl">E3-03</span>"Notificación al celular cuando cambie el estado (Familiar)"</div>
+        <div class="aff-note" style="background:#e0f2f1;border-color:#00695c"><span class="lbl">E3-07</span>"Resumen post-cita por WhatsApp/correo (Familiar)"</div>
+        <div class="aff-note" style="background:#e0f2f1;border-color:#00695c"><span class="lbl">E1-06</span>"Pantalla de Análisis: por fin ver tendencias de la población"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn nav-prev" onclick="goTo(2)">← Anterior</button>
+    <button class="nav-btn nav-next" onclick="goTo(4)">Siguiente: Socializar y discutir →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     PASO 5 — SOCIALIZANDO Y DISCUTIENDO
+══════════════════════════════════════════════════════════ -->
+<div class="step-panel" id="sp-4">
+  <div class="step-header">
+    <div class="icon">💬</div>
+    <div>
+      <h2>Paso 5 — Socializando: el momento de discutir</h2>
+      <p>El equipo discute en grupo los patrones encontrados. Se explican los criterios de agrupación, se debaten reclasificaciones y se eliminan duplicados. El facilitador modera el consenso.</p>
+      <span class="method-note">📖 Método KJ: "En grupo y con moderación, discute el orden. ¿Cuáles son los patrones y características encontradas? Se hacen cambios por decisión del grupo — una tarjeta puede pasarse de un grupo a otro."</span>
+    </div>
+  </div>
+
+  <div class="discussion-grid">
+    <div class="disc-card">
+      <h4>🔄 Movimiento 1 — Reclasificación</h4>
+      <p>La nota <strong>E3-06</strong> "¿Los resultados son para el médico o también para mí?" aparecía tanto en Grupo D (Confianza ML) como en Grupo E (Curva). El grupo acordó asignarla a <strong>Grupo D</strong> por tener relación directa con la <em>interpretabilidad del modelo</em>.</p>
+      <span class="disc-move">E → D</span>
+    </div>
+    <div class="disc-card">
+      <h4>🔄 Movimiento 2 — Traslado</h4>
+      <p>La nota <strong>E1-06</strong> "Me entusiasmó la pantalla de Análisis" fue movida del Grupo B (Fragmentación) al Grupo F (Visibilidad). Expresa el <em>valor percibido</em> de consolidar métricas, no la frustración por los datos dispersos.</p>
+      <span class="disc-move">B → F</span>
+    </div>
+    <div class="disc-card">
+      <h4>🔄 Movimiento 3 — Refuerzo</h4>
+      <p>La nota <strong>E2-07</strong> "Los campos del formulario no son claros" fue añadida al Grupo E (Curva de Aprendizaje) en lugar del Grupo A, porque refleja una barrera de <em>compresión conceptual</em> más que un problema tecnológico.</p>
+      <span class="disc-move">A → E</span>
+    </div>
+    <div class="disc-card">
+      <h4>🔄 Movimiento 4 — Anonimización</h4>
+      <p>Todas las notas del <strong>Familiar / Cuidador (E3)</strong> se validan con identidad protegida. Se eliminan detalles personales para cumplir HABEAS DATA (Ley 1581/2012). Los insights se mantienen inalterados.</p>
+      <span class="disc-move">Identidad anonimizada</span>
+    </div>
+    <div class="disc-card">
+      <h4>✅ Consenso alcanzado</h4>
+      <p>El grupo acuerda <strong>6 agrupaciones definitivas</strong> con nombres descriptivos. Todos los participantes están de acuerdo con la distribución. No hay notas huérfanas.</p>
+    </div>
+    <div class="disc-card">
+      <h4>📌 Decisión de criterio</h4>
+      <p>El criterio de agrupación prioriza la <em>intención del usuario</em> por encima del <em>tema clínico</em>. Por ejemplo, notas sobre "ML" se agrupan por <em>tipo de actitud hacia el modelo</em>, no por el componente técnico del sistema.</p>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn nav-prev" onclick="goTo(3)">← Anterior</button>
+    <button class="nav-btn nav-next" onclick="goTo(5)">Siguiente: Nombrar agrupaciones →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     PASO 6 — NOMBRANDO LOS GRUPOS (Diagrama final)
+══════════════════════════════════════════════════════════ -->
+<div class="step-panel" id="sp-5">
+  <div class="step-header">
+    <div class="icon">🏷️</div>
+    <div>
+      <h2>Paso 6 — Colocando nombre a cada agrupación</h2>
+      <p>Se asigna un título que describa el tema central de cada grupo. Los títulos son revisados y aprobados por todos los participantes. Este es el <strong>Diagrama de Afinidad final</strong>.</p>
+      <span class="method-note">📖 Método KJ: "Asigna un título que describa cada uno de los elementos agrupados. Usa una nota adhesiva de color diferente. ¿Todos están de acuerdo?"</span>
+    </div>
+  </div>
+
+  <div class="themes-final">
+
+    <div class="theme-card">
+      <div class="theme-head" style="background:linear-gradient(135deg,#1565c0,#1976d2)">
+        <div class="theme-head-left">
+          <h3>🔵 TEMA 1 — Accesibilidad Tecnológica</h3>
+          <p>Los usuarios operan en contextos de baja conectividad y heterogénea competencia digital</p>
+        </div>
+        <span class="theme-badge">4 notas</span>
+      </div>
+      <div class="theme-body">
+        <div class="theme-notes-row">
+          <div class="th-note" style="background:#e3f2fd"><span class="s">E1</span>Necesita modo offline / soporte 2G en campo</div>
+          <div class="th-note" style="background:#e3f2fd"><span class="s">E3 (Familiar)</span>Cuaderno + fotos: sin registro digital estructurado</div>
+          <div class="th-note" style="background:#e3f2fd"><span class="s">E1</span>Necesidad de integración con HIS del SGSSS</div>
+          <div class="th-note" style="background:#e3f2fd"><span class="s">E2</span>WhatsApp = canal de coordinación de facto</div>
+        </div>
+        <div class="implications">
+          <h4>→ Implicaciones de diseño</h4>
+          <ul>
+            <li>Implementar PWA con Service Worker para registro offline de pacientes</li>
+            <li>Diseño mobile-first; garantizar usabilidad en pantallas de 5"</li>
+            <li>Incluir onboarding interactivo y guía contextual en primer acceso</li>
+            <li>Documentar API pública para futura integración con HIS del SGSSS</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="theme-card">
+      <div class="theme-head" style="background:linear-gradient(135deg,#2e7d32,#388e3c)">
+        <div class="theme-head-left">
+          <h3>🟢 TEMA 2 — Flujo Clínico y Fragmentación de Datos</h3>
+          <p>La dispersión de datos entre herramientas genera fricción, errores y pérdida de tiempo clínico</p>
+        </div>
+        <span class="theme-badge">6 notas</span>
+      </div>
+      <div class="theme-body">
+        <div class="theme-notes-row">
+          <div class="th-note" style="background:#e8f5e9"><span class="s">E1</span>HIS + Excel: datos ICF y clínicos nunca consolidados</div>
+          <div class="th-note" style="background:#e8f5e9"><span class="s">E1</span>20–30 min por paciente nuevo = barrera a la adopción</div>
+          <div class="th-note" style="background:#e8f5e9"><span class="s">E1</span>Reportes mensuales: horas cruzando fuentes de datos</div>
+          <div class="th-note" style="background:#e8f5e9"><span class="s">E3 (Familiar)</span>Continuidad asistencial rota en cada cambio de médico</div>
+          <div class="th-note" style="background:#e8f5e9"><span class="s">E3 (Familiar)</span>Cuaderno + fotos: registro informal no estructurado</div>
+          <div class="th-note" style="background:#e8f5e9"><span class="s">E2</span>Excel manuales dispersos = datos siempre desactualizados</div>
+        </div>
+        <div class="implications">
+          <h4>→ Implicaciones de diseño</h4>
+          <ul>
+            <li>HAB debe ser la única fuente de verdad para datos ICF (single source of truth)</li>
+            <li>Reducir el tiempo de registro a ≤ 10 min con formularios inteligentes y validación inline</li>
+            <li>Exportación automática de reportes periódicos (Excel / PDF programado)</li>
+            <li>El historial del paciente persiste independientemente del médico asignado</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="theme-card">
+      <div class="theme-head" style="background:linear-gradient(135deg,#e65100,#f57c00)">
+        <div class="theme-head-left">
+          <h3>🟡 TEMA 3 — Confianza y Privacidad de Datos</h3>
+          <p>El aislamiento de datos y la transparencia son condiciones no negociables para la adopción del sistema</p>
+        </div>
+        <span class="theme-badge">4 notas</span>
+      </div>
+      <div class="theme-body">
+        <div class="theme-notes-row">
+          <div class="th-note" style="background:#fff8e1"><span class="s">E2</span>Segregación estricta: médico no ve pacientes de colega</div>
+          <div class="th-note" style="background:#fff8e1"><span class="s">E3 (Familiar)</span>Pregunta explícita sobre seguridad de datos del familiar</div>
+          <div class="th-note" style="background:#fff8e1"><span class="s">E3 (Familiar)</span>Confianza condicionada a que el médico confirme el acceso</div>
+          <div class="th-note" style="background:#fff8e1"><span class="s">E2</span>Necesita trazabilidad de quién accede a qué datos</div>
+        </div>
+        <div class="implications">
+          <h4>→ Implicaciones de diseño</h4>
+          <ul>
+            <li>Comunicar claramente el RBAC: médico ve solo sus pacientes, admin ve todos</li>
+            <li>Indicador visual "Sus datos están protegidos" en pantallas con información sensible</li>
+            <li>Sección de política de privacidad (HABEAS DATA) accesible desde el login</li>
+            <li>Log de auditoría de accesos para el rol administrador (Backlog futuro)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="theme-card">
+      <div class="theme-head" style="background:linear-gradient(135deg,#6a1b9a,#7b1fa2)">
+        <div class="theme-head-left">
+          <h3>🟣 TEMA 4 — Interpretación y Confianza en el Modelo ML</h3>
+          <p>El modelo ML es valorado como herramienta de apoyo, pero requiere explicabilidad clínica y validación estadística</p>
+        </div>
+        <span class="theme-badge">5 notas</span>
+      </div>
+      <div class="theme-body">
+        <div class="theme-notes-row">
+          <div class="th-note" style="background:#f3e5f5"><span class="s">E1</span>ML como apoyo, nunca reemplazo del criterio médico</div>
+          <div class="th-note" style="background:#f3e5f5"><span class="s">E1</span>Exige validación estadística para la población rural del Huila</div>
+          <div class="th-note" style="background:#f3e5f5"><span class="s">E2</span>Valor percibido: priorización de recursos por municipio</div>
+          <div class="th-note" style="background:#f3e5f5"><span class="s">E3 (Familiar)</span>¿Los resultados del modelo son para el médico o también para mí?</div>
+          <div class="th-note" style="background:#f3e5f5"><span class="s">E3 (Familiar)</span>Confianza delegada: "si ayuda al médico, bienvenido"</div>
+        </div>
+        <div class="implications">
+          <h4>→ Implicaciones de diseño</h4>
+          <ul>
+            <li>Agregar descripción en lenguaje natural del resultado: "Barreras Altas: este paciente enfrenta…"</li>
+            <li>Enlace a la Guía ICF desde el resultado de predicción</li>
+            <li>Mostrar factores de mayor peso en la predicción (feature importance simplificada)</li>
+            <li>Publicar ficha de validación del modelo en la sección Guía Predictiva</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="theme-card">
+      <div class="theme-head" style="background:linear-gradient(135deg,#b71c1c,#c62828)">
+        <div class="theme-head-left">
+          <h3>🔴 TEMA 5 — Curva de Aprendizaje y Onboarding</h3>
+          <p>Los usuarios novatos necesitan guía contextual para no sentirse perdidos ni temer cometer errores irreversibles</p>
+        </div>
+        <span class="theme-badge">2 notas</span>
+      </div>
+      <div class="theme-body">
+        <div class="theme-notes-row">
+          <div class="th-note" style="background:#ffebee"><span class="s">E2</span>Campos del formulario no son claros: ¿qué es D1, D2?</div>
+          <div class="th-note" style="background:#ffebee"><span class="s">E3 (Familiar)</span>¿Los resultados son para el médico o también los puedo entender yo?</div>
+        </div>
+        <div class="implications">
+          <h4>→ Implicaciones de diseño</h4>
+          <ul>
+            <li>Tooltips informativos en todos los campos ICF del formulario de paciente</li>
+            <li>Tour guiado (onboarding) al primer ingreso del usuario</li>
+            <li>Mensajes de confirmación claros antes de acciones destructivas (eliminar, sobreescribir)</li>
+            <li>Mantener diseño visual limpio y moderno como ventaja de adopción percibida</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="theme-card">
+      <div class="theme-head" style="background:linear-gradient(135deg,#00695c,#00796b)">
+        <div class="theme-head-left">
+          <h3>🟩 TEMA 6 — Visibilidad y Comunicación entre Actores</h3>
+          <p>La coordinación entre médicos, coordinadores y familias exige canales activos y paneles de supervisión en tiempo real</p>
+        </div>
+        <span class="theme-badge">6 notas</span>
+      </div>
+      <div class="theme-body">
+        <div class="theme-notes-row">
+          <div class="th-note" style="background:#e0f2f1"><span class="s">E2</span>Coordinadora sin visibilidad en tiempo real de municipios</div>
+          <div class="th-note" style="background:#e0f2f1"><span class="s">E2</span>Alerta automática si médico no actualiza en 15 días</div>
+          <div class="th-note" style="background:#e0f2f1"><span class="s">E2</span>Panel de métricas agregadas por municipio / región</div>
+          <div class="th-note" style="background:#e0f2f1"><span class="s">E3 (Familiar)</span>Notificación push / WhatsApp al familiar sobre cambios</div>
+          <div class="th-note" style="background:#e0f2f1"><span class="s">E3 (Familiar)</span>Resumen post-cita enviado al cuidador del paciente</div>
+          <div class="th-note" style="background:#e0f2f1"><span class="s">E1</span>Pantalla de Análisis: valor en ver tendencias de población</div>
+        </div>
+        <div class="implications">
+          <h4>→ Implicaciones de diseño</h4>
+          <ul>
+            <li>Panel de coordinación (Backlog): vista por municipio con métricas de actividad</li>
+            <li>Sistema de notificaciones internas por inactividad del médico (email / in-app)</li>
+            <li>Evaluar integración con WhatsApp Business API para resúmenes al cuidador</li>
+            <li>Exportación de informe de seguimiento en PDF shareable (ya existe parcialmente)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn nav-prev" onclick="goTo(4)">← Anterior</button>
+    <button class="nav-btn nav-next" onclick="goTo(6)">Siguiente: Conclusiones →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     PASO 7 — POSTERIOR AL DIAGRAMA
+══════════════════════════════════════════════════════════ -->
+<div class="step-panel" id="sp-6">
+  <div class="step-header">
+    <div class="icon">🚀</div>
+    <div>
+      <h2>Paso 7 — Posterior al diagrama de afinidad</h2>
+      <p>Con los 6 temas definidos, el equipo tiene una comprensión profunda del problema. Este es el insumo principal para tomar decisiones de diseño y definir las etapas siguientes del proceso HCI.</p>
+      <span class="method-note">📖 Método KJ: "El diagrama de afinidad abre la puerta a un análisis más detallado. Si el grupo tiene confusión en torno a las causas y consecuencias, el diagrama de relaciones o la matriz de Vester permitirán profundizar."</span>
+    </div>
+  </div>
+
+  <div class="concl-grid">
+    <div class="concl-card">
+      <h4>📊 Resumen cuantitativo</h4>
+      <ul>
+        <li><strong>21 notas brutas</strong> extraídas de 3 entrevistas</li>
+        <li><strong>6 temas de afinidad</strong> identificados por consenso</li>
+        <li><strong>4 movimientos</strong> de reclasificación en paso 5</li>
+        <li><strong>SUS promedio:</strong> 66.7 / 100 (rango: 42.5 – 82.5)</li>
+        <li><strong>NPS promedio:</strong> 7.5 / 10</li>
+      </ul>
+    </div>
+    <div class="concl-card" style="border-color:#1565c0">
+      <h4>🔵 Hallazgo 1</h4>
+      <ul>
+        <li>La brecha de accesibilidad tecnológica entre perfiles es crítica</li>
+        <li>El mismo sistema debe funcionar para un médico avanzado y para un familiar novato</li>
+        <li>El offline es un requisito funcional, no un nice-to-have</li>
+      </ul>
+    </div>
+    <div class="concl-card" style="border-color:#2e7d32">
+      <h4>🟢 Hallazgo 2</h4>
+      <ul>
+        <li>La fragmentación de datos es la principal fuente de frustración</li>
+        <li>HAB ya resuelve esto al unificar ICF + clínico en una sola plataforma</li>
+        <li>El tiempo de registro actual (20–30 min) es la barrera de adopción más alta</li>
+      </ul>
+    </div>
+    <div class="concl-card" style="border-color:#6a1b9a">
+      <h4>🟣 Hallazgo 3</h4>
+      <ul>
+        <li>El modelo ML es bien recibido como apoyo clínico, NO como sustituto</li>
+        <li>La explicabilidad del resultado es tan importante como la precisión</li>
+        <li>El lenguaje clínico del resultado debe ser comprensible para todos los niveles</li>
+      </ul>
+    </div>
+    <div class="concl-card" style="border-color:#b71c1c">
+      <h4>🔴 Hallazgo 4</h4>
+      <ul>
+        <li>Los usuarios novatos necesitan onboarding, tooltips y confirmaciones antes de actuar</li>
+        <li>El aspecto visual positivo de HAB es una ventaja de adopción — debe mantenerse</li>
+        <li>El miedo al error irreversible es la barrera psicológica principal</li>
+      </ul>
+    </div>
+    <div class="concl-card" style="border-color:#00695c">
+      <h4>🟩 Hallazgo 5</h4>
+      <ul>
+        <li>Existen necesidades de comunicación no cubiertas: familia, coordinadores, entre médicos</li>
+        <li>Un panel de coordinación por municipio tiene alto valor percibido para Yolanda (Admin)</li>
+        <li>Las notificaciones al familiar (WhatsApp) son deseables pero fuera del alcance MVP</li>
+      </ul>
+    </div>
+    <div class="concl-card" style="border-color:#f57f17">
+      <h4>🟡 Hallazgo 6</h4>
+      <ul>
+        <li>La privacidad y el aislamiento de datos generan confianza en el sistema</li>
+        <li>El RBAC ya implementado en HAB responde directamente a esta necesidad</li>
+        <li>Comunicar la seguridad visualmente reduce la resistencia inicial al sistema</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="next-tools">
+    <h3>🔗 Herramientas complementarias recomendadas (análisis posterior)</h3>
+    <div class="tools-row">
+      <div class="tool-chip">
+        <span class="ti">👤</span>
+        <span class="tn">User Personas</span>
+        <span class="td">2 personas derivadas de los 6 temas de afinidad</span>
+      </div>
+      <div class="tool-chip">
+        <span class="ti">🗺️</span>
+        <span class="tn">User Story Map</span>
+        <span class="td">45 HU organizadas en 5 actividades y 3 releases</span>
+      </div>
+      <div class="tool-chip">
+        <span class="ti">🐟</span>
+        <span class="tn">Diagrama Ishikawa</span>
+        <span class="td">Para profundizar en el Tema 2 (Fragmentación)</span>
+      </div>
+      <div class="tool-chip">
+        <span class="ti">🔗</span>
+        <span class="tn">Diagrama de Relaciones</span>
+        <span class="td">Para priorizar causas entre los 6 temas identificados</span>
+      </div>
+      <div class="tool-chip">
+        <span class="ti">📐</span>
+        <span class="tn">Prototipo de Baja</span>
+        <span class="td">Validar tooltips ICF y flujo de onboarding con Tema 5</span>
+      </div>
+      <div class="tool-chip">
+        <span class="ti">🧪</span>
+        <span class="tn">Test de Usabilidad</span>
+        <span class="td">SUS completo con los 10 ítems estándar en siguiente iteración</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn nav-prev" onclick="goTo(5)">← Anterior</button>
+    <button class="nav-btn nav-next" disabled>✅ Diagrama completado</button>
+  </div>
+</div>
+
+</div><!-- .main -->
+
+<footer style="text-align:center;padding:20px;font-size:.73rem;color:#8892b0;border-top:1px solid #dde2ee;margin-top:20px">
+  Health Access Bridge (HAB) · Diagrama de Afinidad — Método KJ · 7 Pasos · CORHUILA 2026
+</footer>
+
+<script>
+const TOTAL = 7;
+let current = 0;
+
+function goTo(idx) {
+  // hide all
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+
+  // mark done
+  document.querySelectorAll('.step-btn').forEach((b, i) => {
+    if (i < idx) b.classList.add('done');
+    else b.classList.remove('done');
+  });
+
+  // show target
+  document.getElementById('sp-' + idx).classList.add('active');
+  document.querySelectorAll('.step-btn')[idx].classList.add('active');
+
+  // progress bar
+  const pct = ((idx + 1) / TOTAL * 100).toFixed(1);
+  document.getElementById('pbar').style.width = pct + '%';
+  document.getElementById('scounter').textContent = 'Paso ' + (idx+1) + ' de ' + TOTAL;
+
+  current = idx;
+
+  // scroll to top of main
+  document.querySelector('.stepper').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+</script>
+</body>
+</html>
