@@ -183,6 +183,23 @@ services:
         value: gpt-4
 
   # ─────────────────────────────────────────
+  # DOCS SITE — presentación + portal HCI
+  # (rama: master)  → health-access-bridge.onrender.com
+  # ─────────────────────────────────────────
+  - type: web
+    name: health-access-bridge
+    runtime: static
+    branch: master
+    staticPublishPath: docs
+    routes:
+      - type: rewrite
+        source: /presentation
+        destination: /presentation/index.html
+      - type: rewrite
+        source: /presentation/
+        destination: /presentation/index.html
+
+  # ─────────────────────────────────────────
   # FRONTEND - PRODUCTION (rama: master)
   # ─────────────────────────────────────────
   - type: web
