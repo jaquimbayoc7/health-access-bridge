@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Informe HCI — Health Access Bridge · CORHUILA 2026</title>
+<style>
+  :root{--blue:#1a56db;--gold:#c8960c;--green:#2e7d32;--gray:#555;--light:#f8f9fa;--border:#dde1e7}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;font-size:11pt;color:#222;background:#fff;line-height:1.55}
+  .no-print{background:#1a56db;color:#fff;padding:14px 28px;text-align:center;position:sticky;top:0;z-index:100;display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap}
+  .no-print a{color:#fff;text-decoration:none;border:1.5px solid rgba(255,255,255,.6);padding:6px 18px;border-radius:6px;font-size:.9rem}
+  .no-print a:hover{background:rgba(255,255,255,.15)}
+  .btn-print{background:#fff;color:#1a56db;font-weight:700;padding:8px 24px;border:none;border-radius:6px;cursor:pointer;font-size:.95rem}
+  .btn-print:hover{background:#e8f0fe}
+  .page{width:210mm;min-height:297mm;margin:0 auto;padding:20mm 18mm;background:#fff}
+  .page+.page{border-top:3px dashed #dde1e7;margin-top:16px}
+  h1{font-size:20pt;font-weight:800;color:var(--blue);margin-bottom:8px}
+  h2{font-size:14pt;font-weight:700;color:var(--blue);margin:24px 0 10px;padding-bottom:4px;border-bottom:2px solid var(--blue)}
+  h3{font-size:11.5pt;font-weight:700;color:#333;margin:16px 0 8px}
+  h4{font-size:10.5pt;font-weight:700;color:#444;margin:12px 0 6px}
+  p{margin-bottom:8px}
+  ul,ol{padding-left:22px;margin-bottom:8px}
+  li{margin-bottom:3px}
+  table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:.95em}
+  th{background:var(--blue);color:#fff;padding:7px 10px;text-align:left;font-size:.88em}
+  td{padding:6px 10px;border-bottom:1px solid #e0e0e0;vertical-align:top}
+  tr:nth-child(even) td{background:#f5f7fa}
+  .badge{display:inline-block;font-size:.72em;font-weight:700;padding:2px 8px;border-radius:12px;background:#e8f0fe;color:var(--blue);margin:2px 2px 2px 0;letter-spacing:.04em;text-transform:uppercase}
+  .badge-gold{background:#fdf3d8;color:var(--gold)}
+  .badge-green{background:#e8f5e9;color:var(--green)}
+  .badge-red{background:#fde8e8;color:#b71c1c}
+  .cover{text-align:center;padding:30mm 15mm}
+  .cover .logo{font-size:48pt;margin-bottom:8px}
+  .cover .institution{font-size:11pt;color:var(--gray);margin-bottom:4px}
+  .cover .title{font-size:26pt;font-weight:900;color:var(--blue);line-height:1.2;margin:20px 0 8px}
+  .cover .subtitle{font-size:13pt;color:var(--gray);margin-bottom:30px}
+  .cover .meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;background:var(--light);border:1px solid var(--border);border-radius:8px;padding:18px 22px;margin:24px 0}
+  .cover .meta-item{font-size:.9em}
+  .cover .meta-item strong{display:block;color:var(--blue);font-size:.8em;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+  .cover .laws{font-size:.78em;color:var(--gray);margin-top:24px;line-height:2}
+  .section-header{background:var(--blue);color:#fff;padding:10px 16px;border-radius:6px 6px 0 0;margin-bottom:0}
+  .section-header h2{color:#fff;border:none;margin:0;font-size:13pt}
+  .section-header p{color:rgba(255,255,255,.8);font-size:.82em;margin:2px 0 0}
+  .card{border:1px solid var(--border);border-radius:0 0 8px 8px;padding:16px;margin-bottom:20px}
+  .sig-block{display:flex;gap:36px;align-items:flex-start;flex-wrap:wrap;margin-top:18px}
+  .sig-col{min-width:180px}
+  .sig-label{font-size:.7em;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+  .sig-name{font-size:.82em;font-weight:600;color:#444;margin-bottom:4px}
+  .sig-img{height:52px;display:block;margin-bottom:6px;filter:contrast(1.3)}
+  .sig-info{border-top:1.5px solid #333;padding-top:6px;font-size:.82em;line-height:1.7}
+  .sig-footer{margin-top:10px;padding-top:8px;border-top:1px dashed #ccc;font-size:.72em;color:#888}
+  .sus-bar{height:14px;background:#e0e0e0;border-radius:7px;overflow:hidden;margin:4px 0}
+  .sus-fill{height:100%;border-radius:7px}
+  .sus-fill.green{background:linear-gradient(90deg,#2e7d32,#66bb6a)}
+  .sus-fill.amber{background:linear-gradient(90deg,#c8960c,#ffd54f)}
+  .sus-fill.red{background:linear-gradient(90deg,#b71c1c,#ef5350)}
+  blockquote{background:#fdf8f2;border-left:4px solid var(--gold);padding:10px 14px;margin:10px 0;border-radius:0 6px 6px 0;font-size:.95em}
+  blockquote.info{background:#e8f4fd;border-left-color:var(--blue)}
+  blockquote.warn{background:#fff8e1;border-left-color:var(--gold)}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+  .kpi{background:var(--light);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+  .kpi .num{font-size:22pt;font-weight:900;color:var(--blue);line-height:1}
+  .kpi .lbl{font-size:.72em;color:var(--gray);margin-top:4px}
+  .insight{background:#f0fdf4;border:1px solid #a7f3d0;border-radius:6px;padding:10px 14px;margin:6px 0;font-size:.92em}
+  .insight strong{color:var(--green)}
+  @media print{
+    .no-print{display:none!important}
+    body{background:#fff}
+    .page{width:100%;margin:0;padding:15mm 14mm;page-break-after:always;min-height:auto}
+    .page:last-child{page-break-after:auto}
+    @page{size:A4;margin:0}
+    h2{color:#000}
+    .section-header{background:#1a56db!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .two-col{grid-template-columns:1fr 1fr}
+    .kpi-grid{grid-template-columns:repeat(4,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<div class="no-print">
+  <span style="font-weight:600;font-size:.95rem">📋 Informe HCI — Health Access Bridge</span>
+  <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+  <a href="./00_portal_hci.html" target="_blank">Abrir Portal Interactivo →</a>
+  <a href="../index.html" target="_blank">← Presentación</a>
+</div>
+
+<!-- ═══════════════════════════ PORTADA ═══════════════════════════ -->
+<div class="page">
+  <div class="cover">
+    <div class="logo">🏥</div>
+    <div class="institution">CORHUILA — Corporación Universitaria del Huila<br>Programa de Ingeniería de Sistemas · Neiva, Huila, Colombia</div>
+    <div class="title">Health Access Bridge</div>
+    <div class="subtitle">Informe de Investigación HCI<br>Human–Computer Interaction · Diseño Centrado en el Usuario</div>
+    <div class="meta">
+      <div class="meta-item"><strong>Investigador</strong>Julian Andres Quimbayo Castro<br>Ingeniería de Sistemas · CORHUILA</div>
+      <div class="meta-item"><strong>Proyecto</strong>Health Access Bridge (HAB)<br>Gestión clínica — discapacidad rural</div>
+      <div class="meta-item"><strong>Período</strong>Mayo 2026</div>
+      <div class="meta-item"><strong>Participantes</strong>3 entrevistas (E1, E2, E3)</div>
+      <div class="meta-item"><strong>Métodos</strong>Entrevista semiestructurada, SUS, KJ, Personas, USM</div>
+      <div class="meta-item"><strong>SUS Promedio</strong>76.9 / 100 — Buena usabilidad</div>
+    </div>
+    <div class="laws">
+      Marco legal: Ley 1581/2012 (HABEAS DATA) &nbsp;·&nbsp; Ley 1273/2009 (Prot. datos informáticos)
+      &nbsp;·&nbsp; Ley 1712/2014 (Transparencia ent. públicas) &nbsp;·&nbsp; Art. 15 Constitución Política de Colombia
+    </div>
+  </div>
+
+  <div class="kpi-grid" style="margin-top:16px">
+    <div class="kpi"><div class="num">3</div><div class="lbl">Entrevistas realizadas</div></div>
+    <div class="kpi"><div class="num">76.9</div><div class="lbl">SUS promedio / 100</div></div>
+    <div class="kpi"><div class="num">21</div><div class="lbl">Notas KJ analizadas</div></div>
+    <div class="kpi"><div class="num">6</div><div class="lbl">Temas de afinidad</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ PLAN DE INVESTIGACIÓN ═══════════════════════════ -->
+<div class="page">
+  <div class="section-header"><h2>1. Plan de Investigación</h2><p>Objetivo, metodología y perfiles de participantes</p></div>
+  <div class="card">
+    <h3>Objetivo general</h3>
+    <p>Comprender las <strong>necesidades, expectativas y barreras de usabilidad</strong> de los usuarios potenciales de la plataforma Health Access Bridge (HAB), para informar el diseño centrado en el usuario de sus funcionalidades principales.</p>
+
+    <h3>Preguntas de investigación</h3>
+    <ol>
+      <li>¿Qué flujos de trabajo digitales usan actualmente los profesionales que interactúan con datos de discapacidad?</li>
+      <li>¿Cuáles son las principales barreras y frustraciones con las herramientas actuales?</li>
+      <li>¿Qué nivel de confianza tienen en los modelos de ML para apoyar decisiones clínicas?</li>
+      <li>¿Cómo perciben la usabilidad de HAB en una primera exposición (SUS)?</li>
+    </ol>
+
+    <h3>Metodología</h3>
+    <table>
+      <thead><tr><th>Método</th><th>Descripción</th><th>Participantes</th></tr></thead>
+      <tbody>
+        <tr><td>Entrevista semiestructurada</td><td>35–45 min · Guía con secciones A–D · Notas escritas (sin grabación por restricción institucional)</td><td>E1, E2, E3</td></tr>
+        <tr><td>Escala SUS (adaptada)</td><td>5 ítems escala Likert 1–5 · Puntaje 0–100</td><td>E1, E2, E3</td></tr>
+        <tr><td>Análisis KJ / Afinidad</td><td>21 notas → 6 temas</td><td>Datos combinados</td></tr>
+        <tr><td>User Personas</td><td>2 arquetipos principales (E1, E2)</td><td>—</td></tr>
+        <tr><td>User Story Mapping</td><td>45 historias de usuario · 3 épicas</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Perfiles de participantes</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Perfil</th><th>Institución</th><th>Nivel tecnológico</th><th>Modalidad</th></tr></thead>
+      <tbody>
+        <tr><td><strong>E1</strong></td><td>Dra. Emilly Maria Celis Barreto — Profesional SST</td><td>ICBF Neiva</td><td><span class="badge">Avanzado</span></td><td>Videollamada · 42 min</td></tr>
+        <tr><td><strong>E2</strong></td><td>Laura Cangrejo Perafan — Coordinadora PABS</td><td>Alcaldía de Neiva</td><td><span class="badge badge-gold">Intermedio</span></td><td>Presencial · 38 min</td></tr>
+        <tr><td><strong>E3</strong></td><td>Cuidador/a — Identidad protegida (HABEAS DATA)</td><td>N/A</td><td><span class="badge badge-red">Novato abs.</span></td><td>Presencial · 33 min</td></tr>
+      </tbody>
+    </table>
+
+    <blockquote class="info"><strong>Nota metodológica:</strong> Ninguna sesión fue grabada en video ni audio. Los participantes E1 y E2 no autorizaron la grabación por restricciones de seguridad de la información de sus respectivas organizaciones (Ley 1273/2009 · Ley 1712/2014). Sus apreciaciones fueron ofrecidas a título profesional individual con fines exclusivamente académicos.</blockquote>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ CONSENTIMIENTO E1 ═══════════════════════════ -->
+<div class="page">
+  <div class="section-header"><h2>2. Consentimiento Informado — E1</h2><p>Emilly Maria Celis Barreto · ICBF Neiva · C.C. 1 075 277 864</p></div>
+  <div class="card">
+    <blockquote><strong>Marco legal:</strong> Ley 1581/2012 (HABEAS DATA) · Ley 1266/2008 · Decreto 1377/2013 · Ley 1273/2009 · Ley 1712/2014 · Art. 15 Constitución Política</blockquote>
+
+    <p style="margin-top:12px">Yo, <strong>Emilly Maria Celis Barreto</strong>, identificada con [✅] Cédula de ciudadanía N°. <strong>1 075 277 864</strong>, manifiesto de manera libre, voluntaria e informada:</p>
+
+    <h4>1. Propósito</h4>
+    <p>Fui informada de que esta investigación tiene como objetivo comprender las necesidades y expectativas de los usuarios de Health Access Bridge (HAB).</p>
+
+    <h4>2. Procedimientos realizados</h4>
+    <ul>
+      <li>Entrevista de <strong>42 minutos</strong> · Videollamada Google Meet · Mayo 2026.</li>
+      <li><strong>Sin grabación de video/audio</strong> — restricción de seguridad institucional ICBF (Ley 1273/2009).</li>
+      <li>Demo de la aplicación HAB en ambiente QA · Escala SUS: <strong>82.5 / 100</strong>.</li>
+    </ul>
+
+    <h4>5. Autorización HABEAS DATA</h4>
+    <ul>
+      <li>[✅] Recolectar mis datos personales de contacto para coordinación.</li>
+      <li>[✅] Tratar únicamente los datos textuales derivados de mis respuestas (sin grabación de voz ni imagen — Ley 1273/2009).</li>
+      <li>[✅] Compartir registros únicamente con el equipo docente evaluador.</li>
+    </ul>
+
+    <h4>6. Declaración</h4>
+    <ul>
+      <li>[✅] He leído y entendido la información anterior.</li>
+      <li>[✅] Acepto participar de forma libre y voluntaria.</li>
+      <li>[❌] <strong>No autorizo</strong> grabación en video/audio — restricción institucional (Ley 1273/2009 · Ley 1712/2014).</li>
+      <li>[✅] Apreciaciones emitidas a <strong>título profesional individual</strong> para este ejercicio académico.</li>
+    </ul>
+
+    <h4>7. Naturaleza profesional</h4>
+    <p>Sus opiniones no comprometen la posición oficial del ICBF. La no grabación obedece a políticas de seguridad institucional (Ley 1273/2009), lo cual no afecta la validez académica del ejercicio.</p>
+
+    <div class="sig-block">
+      <div class="sig-col">
+        <div class="sig-label">Participante</div>
+        <img src="./firmas/emilly_firma.png" alt="Firma Emilly" class="sig-img">
+        <div class="sig-info">
+          <strong>Emilly Maria Celis Barreto</strong><br>
+          C.C. 1 075 277 864 · Cel: 317 766 8158<br>
+          Mayo 2026 · ICBF Neiva, Huila
+        </div>
+      </div>
+      <div class="sig-col">
+        <div class="sig-label">Investigador · CORHUILA</div>
+        <div class="sig-name">Julian Andres Quimbayo Castro</div>
+        <img src="./firmas/investigador_firma.jpg" alt="Firma Investigador" class="sig-img">
+        <div class="sig-info">
+          <strong>Julian Andres Quimbayo Castro</strong><br>
+          Ingeniería de Sistemas · CORHUILA<br>
+          Neiva, Huila, Colombia
+        </div>
+      </div>
+    </div>
+    <div class="sig-footer">✅ Datos de contacto &nbsp;·&nbsp; ❌ Grabación (no autorizada — restricción institucional) &nbsp;·&nbsp; ✅ Apreciaciones a título profesional &nbsp;·&nbsp; Leyes: 1581/2012 · 1273/2009 · 1712/2014</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ CONSENTIMIENTO E2 ═══════════════════════════ -->
+<div class="page">
+  <div class="section-header"><h2>3. Consentimiento Informado — E2</h2><p>Laura Sofia Cangrejo Perafan · Alcaldía de Neiva · C.C. 1 076 500 723</p></div>
+  <div class="card">
+    <blockquote><strong>Marco legal:</strong> Ley 1581/2012 (HABEAS DATA) · Ley 1266/2008 · Decreto 1377/2013 · Ley 1273/2009 · Ley 1712/2014 · Art. 15 Constitución Política</blockquote>
+
+    <p style="margin-top:12px">Yo, <strong>Laura Sofia Cangrejo Perafan</strong>, identificada con [✅] Cédula de ciudadanía N°. <strong>1 076 500 723</strong>, manifiesto de manera libre, voluntaria e informada:</p>
+
+    <h4>1. Propósito</h4>
+    <p>Fui informada de que esta investigación tiene como objetivo comprender las necesidades y expectativas de los usuarios de Health Access Bridge (HAB).</p>
+
+    <h4>2. Procedimientos realizados</h4>
+    <ul>
+      <li>Entrevista <strong>presencial</strong> de 38 minutos · Mayo 2026.</li>
+      <li><strong>Sin grabación de video/audio</strong> — restricción de seguridad institucional Alcaldía (Ley 1273/2009).</li>
+      <li>Demo de la aplicación HAB en ambiente QA · Escala SUS: <strong>75.0 / 100</strong>.</li>
+    </ul>
+
+    <h4>5. Autorización HABEAS DATA</h4>
+    <ul>
+      <li>[✅] Recolectar mis datos personales de contacto para coordinación.</li>
+      <li>[✅] Tratar únicamente los datos textuales derivados de mis respuestas (sin grabación de voz ni imagen — Ley 1273/2009).</li>
+      <li>[✅] Compartir registros únicamente con el equipo docente evaluador.</li>
+    </ul>
+
+    <h4>6. Declaración</h4>
+    <ul>
+      <li>[✅] He leído y entendido la información anterior.</li>
+      <li>[✅] Acepto participar de forma libre y voluntaria.</li>
+      <li>[❌] <strong>No autorizo</strong> grabación en video/audio — restricción institucional (Ley 1273/2009 · Ley 1712/2014).</li>
+      <li>[✅] Apreciaciones emitidas a <strong>título profesional individual</strong> para este ejercicio académico.</li>
+    </ul>
+
+    <h4>7. Naturaleza profesional</h4>
+    <p>Sus opiniones no comprometen la posición oficial de la Alcaldía de Neiva. La no grabación obedece a políticas de seguridad institucional (Ley 1273/2009), lo cual no afecta la validez académica del ejercicio.</p>
+
+    <div class="sig-block">
+      <div class="sig-col">
+        <div class="sig-label">Participante</div>
+        <img src="./firmas/laura_firma.png" alt="Firma Laura" class="sig-img" style="height:62px">
+        <div class="sig-info">
+          <strong>Laura Sofia Cangrejo Perafan</strong><br>
+          C.C. 1 076 500 723 · Cel: 315 037 1247<br>
+          Mayo 2026 · Alcaldía de Neiva, Huila
+        </div>
+      </div>
+      <div class="sig-col">
+        <div class="sig-label">Investigador · CORHUILA</div>
+        <div class="sig-name">Julian Andres Quimbayo Castro</div>
+        <img src="./firmas/investigador_firma.jpg" alt="Firma Investigador" class="sig-img" style="height:62px">
+        <div class="sig-info">
+          <strong>Julian Andres Quimbayo Castro</strong><br>
+          Ingeniería de Sistemas · CORHUILA<br>
+          Neiva, Huila, Colombia
+        </div>
+      </div>
+    </div>
+    <div class="sig-footer">✅ Datos de contacto &nbsp;·&nbsp; ❌ Grabación (no autorizada — restricción institucional) &nbsp;·&nbsp; ✅ Apreciaciones a título profesional &nbsp;·&nbsp; Leyes: 1581/2012 · 1273/2009 · 1712/2014</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ FICHAS E1 / E2 ═══════════════════════════ -->
+<div class="page">
+  <div class="section-header"><h2>4. Fichas de Entrevistas</h2><p>Respuestas clave, Escala SUS y notas del entrevistador</p></div>
+  <div class="card">
+    <h3 style="color:var(--gold)">E1 — Dra. Emilly Maria Celis Barreto</h3>
+    <table>
+      <thead><tr><th>Campo</th><th>Datos</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Institución</strong></td><td>ICBF — Neiva, Huila</td></tr>
+        <tr><td><strong>Nivel tecnológico</strong></td><td><span class="badge">Avanzado</span> — usa HIS, RIPS, SICAP diariamente</td></tr>
+        <tr><td><strong>Duración</strong></td><td>42 min · Videollamada Google Meet · Sin grabación (Ley 1273/2009)</td></tr>
+        <tr><td><strong>SUS Score</strong></td><td><strong>82.5 / 100</strong> — ✅ Buena usabilidad percibida</td></tr>
+      </tbody>
+    </table>
+    <div class="sus-bar"><div class="sus-fill green" style="width:82.5%"></div></div>
+    <p style="font-size:.8em;color:#888;margin-top:2px">SUS E1: 82.5 / 100</p>
+
+    <h4>Respuestas destacadas</h4>
+    <blockquote class="warn"><strong>Frustración principal:</strong> "Los datos de discapacidad están en Excel y los clínicos en el HIS. Nunca están juntos. Paso horas cruzando información para hacer reportes a la secretaría de salud."</blockquote>
+    <ul>
+      <li><strong>A3:</strong> Usa HIS + Excel paralelo para seguimiento discapacidad.</li>
+      <li><strong>C4:</strong> Confianza en ML si está validado clínicamente — "apoyo, nunca reemplazo".</li>
+      <li><strong>C5:</strong> Prioridad: modo offline / conexión lenta (2G en campo).</li>
+    </ul>
+    <p><strong>Notas:</strong> Articulado, preguntas técnicas sobre ML, entusiasmado con pantalla de Análisis, preguntó por integración HIS-SGSSS.</p>
+
+    <h3 style="color:var(--green);margin-top:20px">E2 — Laura Sofia Cangrejo Perafan</h3>
+    <table>
+      <thead><tr><th>Campo</th><th>Datos</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Institución</strong></td><td>Alcaldía de Neiva — Programa PABS</td></tr>
+        <tr><td><strong>Nivel tecnológico</strong></td><td><span class="badge badge-gold">Intermedio</span> — Office, correo, sistemas reportes gubernamentales</td></tr>
+        <tr><td><strong>Duración</strong></td><td>38 min · Presencial · Sin grabación (Ley 1273/2009)</td></tr>
+        <tr><td><strong>SUS Score</strong></td><td><strong>75.0 / 100</strong> — ✅ Usabilidad aceptable</td></tr>
+      </tbody>
+    </table>
+    <div class="sus-bar"><div class="sus-fill green" style="width:75%"></div></div>
+    <p style="font-size:.8em;color:#888;margin-top:2px">SUS E2: 75.0 / 100</p>
+
+    <h4>Respuestas destacadas</h4>
+    <blockquote class="warn"><strong>Frustración principal:</strong> "No tengo visibilidad de lo que pasa en los municipios. Cuando hago el reporte mensual, la mitad de la información está desactualizada."</blockquote>
+    <ul>
+      <li><strong>C4:</strong> Quiere ML para priorizar asignación de recursos por municipio.</li>
+      <li><strong>C5:</strong> Panel de resumen por municipio: pacientes, predicciones, actividad médico.</li>
+    </ul>
+    <p><strong>Notas:</strong> Preguntó por reportes exportables, permisos por médico, tomó notas en papel.</p>
+
+    <h3 style="color:#888;margin-top:20px">E3 — Cuidador/a (Identidad protegida)</h3>
+    <table>
+      <thead><tr><th>Campo</th><th>Datos</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Contexto</strong></td><td>Cuidador/a de familiar con discapacidad motora post-ACV</td></tr>
+        <tr><td><strong>Nivel tecnológico</strong></td><td><span class="badge badge-red">Novato abs.</span> — WhatsApp y llamadas únicamente</td></tr>
+        <tr><td><strong>Duración</strong></td><td>33 min · Presencial · Identidad protegida HABEAS DATA</td></tr>
+        <tr><td><strong>SUS Score</strong></td><td><strong>73.0 / 100</strong> — ✅ Aceptable (SUS verbal)</td></tr>
+      </tbody>
+    </table>
+    <div class="sus-bar"><div class="sus-fill amber" style="width:73%"></div></div>
+    <p style="font-size:.8em;color:#888;margin-top:2px">SUS E3: 73.0 / 100</p>
+    <ul>
+      <li>Dificultad navegando menús anidados en smartphone básico.</li>
+      <li>Valor principal: recibir alertas vía WhatsApp sobre citas y tratamientos del familiar.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ SUS Y RESULTADOS ═══════════════════════════ -->
+<div class="page">
+  <div class="section-header"><h2>5. Resultados SUS y Hallazgos</h2><p>System Usability Scale · Análisis comparativo · Insights de diseño</p></div>
+  <div class="card">
+    <h3>Resumen SUS</h3>
+    <table>
+      <thead><tr><th>Participante</th><th>Puntaje SUS</th><th>Calificación</th><th>Perfil</th></tr></thead>
+      <tbody>
+        <tr><td><strong>E1 — Emilly</strong></td><td><strong>82.5</strong></td><td>✅ Buena usabilidad</td><td>Avanzado · ICBF</td></tr>
+        <tr><td><strong>E2 — Laura</strong></td><td><strong>75.0</strong></td><td>✅ Aceptable</td><td>Intermedio · Alcaldía</td></tr>
+        <tr><td><strong>E3 — Cuidador/a</strong></td><td><strong>73.0</strong></td><td>✅ Aceptable</td><td>Novato · Familiar</td></tr>
+        <tr style="background:#e8f5e9"><td><strong>Promedio</strong></td><td><strong>76.8</strong></td><td>✅ Buena usabilidad general</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Barras SUS comparativas</h3>
+    <p style="font-size:.85em;margin-bottom:6px">E1 — 82.5 / 100</p><div class="sus-bar"><div class="sus-fill green" style="width:82.5%"></div></div>
+    <p style="font-size:.85em;margin-bottom:6px;margin-top:10px">E2 — 75.0 / 100</p><div class="sus-bar"><div class="sus-fill green" style="width:75%"></div></div>
+    <p style="font-size:.85em;margin-bottom:6px;margin-top:10px">E3 — 73.0 / 100</p><div class="sus-bar"><div class="sus-fill amber" style="width:73%"></div></div>
+
+    <h3 style="margin-top:20px">Temas del Diagrama de Afinidad (KJ — 21 notas)</h3>
+    <table>
+      <thead><tr><th>Tema</th><th>Notas</th><th>Insight clave</th></tr></thead>
+      <tbody>
+        <tr><td>Fragmentación de datos</td><td>5</td><td>Excel + HIS desconectados generan doble trabajo</td></tr>
+        <tr><td>Visibilidad territorial</td><td>4</td><td>Coordinadores sin visión en tiempo real de municipios</td></tr>
+        <tr><td>Confianza en ML</td><td>4</td><td>Apoyo a decisión sí, reemplazo clínico no</td></tr>
+        <tr><td>Conectividad rural</td><td>3</td><td>Modo offline crítico para trabajo de campo</td></tr>
+        <tr><td>Acceso para no-clínicos</td><td>3</td><td>Paneles diferenciados por rol (coordinador vs médico)</td></tr>
+        <tr><td>Interfaz para cuidadores</td><td>2</td><td>Alertas WhatsApp, lenguaje simple, móvil primero</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:16px">Insights de diseño prioritarios</h3>
+    <div class="insight"><strong>1. Integración de datos:</strong> Unificar HIS + registro de discapacidad en una sola vista elimina la mayor frustración de E1.</div>
+    <div class="insight"><strong>2. Panel por rol:</strong> Vista diferenciada coordinador/médico/cuidador según contexto de uso (Alcaldía vs ICBF vs hogar).</div>
+    <div class="insight"><strong>3. Modo offline:</strong> Sincronización diferida para zonas con conectividad 2G o nula en trabajo de campo.</div>
+    <div class="insight"><strong>4. ML explicable:</strong> Mostrar confianza y fuente del modelo en predicciones para ganar adopción de usuarios avanzados.</div>
+    <div class="insight"><strong>5. Alertas WhatsApp:</strong> Canal de notificación preferido por cuidadores con bajo nivel tecnológico.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ PERSONAS ═══════════════════════════ -->
+<div class="page">
+  <div class="section-header"><h2>6. User Personas</h2><p>Arquetipos derivados de E1 y E2</p></div>
+  <div class="card">
+    <div class="two-col">
+      <div>
+        <h3 style="color:var(--gold)">👩‍💼 Emilly · Profesional SST</h3>
+        <p><strong>Organización:</strong> ICBF — Neiva, Huila<br>
+        <strong>Edad:</strong> 32 años · <strong>Nivel TIC:</strong> <span class="badge">Avanzado</span></p>
+        <h4>Objetivos</h4>
+        <ul><li>Centralizar datos de beneficiarios con discapacidad</li><li>Generar reportes para entes reguladores en minutos</li><li>Usar ML como apoyo, con transparencia del modelo</li></ul>
+        <h4>Frustraciones</h4>
+        <ul><li>Excel + HIS desconectados</li><li>Sin conectividad estable en campo</li><li>Reportes manuales que consumen horas</li></ul>
+        <h4>Cita representativa</h4>
+        <blockquote>"Necesito una herramienta que funcione donde yo trabajo, no donde hay wifi perfecta."</blockquote>
+      </div>
+      <div>
+        <h3 style="color:var(--green)">👩‍💻 Laura · Coordinadora Municipal</h3>
+        <p><strong>Organización:</strong> Alcaldía de Neiva — PABS<br>
+        <strong>Edad:</strong> 28 años · <strong>Nivel TIC:</strong> <span class="badge badge-gold">Intermedio</span></p>
+        <h4>Objetivos</h4>
+        <ul><li>Visibilidad en tiempo real por municipio</li><li>Reportes al Ministerio de Salud sin retrasos</li><li>Asignar recursos según prioridad predictiva</li></ul>
+        <h4>Frustraciones</h4>
+        <ul><li>Depende de llamadas y correos para saber qué pasa</li><li>Información desactualizada al cierre mensual</li><li>Sin panel de resumen diferenciado por rol</li></ul>
+        <h4>Cita representativa</h4>
+        <blockquote>"Quiero ver en un mapa cuáles municipios tienen más casos críticos sin llamar a cada médico."</blockquote>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header" style="margin-top:20px"><h2>7. User Story Mapping — Resumen</h2><p>45 historias · 3 épicas · Sprint 0 definido</p></div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Épica</th><th>Historias clave</th><th>Prioridad</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Gestión de pacientes</strong></td><td>Registro, búsqueda, historial, actualización desde campo (offline)</td><td><span class="badge">Alta</span></td></tr>
+        <tr><td><strong>Análisis y predicción</strong></td><td>Dashboard ML, explicabilidad del modelo, alertas automáticas</td><td><span class="badge badge-gold">Media-Alta</span></td></tr>
+        <tr><td><strong>Reportes y coordinación</strong></td><td>Exportar PDF/Excel, panel coordinador por municipio, notificaciones WhatsApp</td><td><span class="badge badge-gold">Media</span></td></tr>
+      </tbody>
+    </table>
+    <blockquote class="info">El Sprint 0 prioriza: autenticación por rol, registro básico de paciente con discapacidad, y modo offline para profesionales de campo.</blockquote>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ REFERENCIAS ═══════════════════════════ -->
+<div class="page">
+  <div class="section-header"><h2>8. Referencias Legales y Metodológicas</h2></div>
+  <div class="card">
+    <h3>Marco legal aplicado</h3>
+    <table>
+      <thead><tr><th>Norma</th><th>Aplicación en este estudio</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Ley 1581/2012</strong><br>HABEAS DATA</td><td>Autorización de tratamiento de datos personales de contacto. Seudoanonimización de E3.</td></tr>
+        <tr><td><strong>Decreto 1377/2013</strong></td><td>Reglamentación del tratamiento de datos. Periodo máximo de uso: 24 meses.</td></tr>
+        <tr><td><strong>Ley 1266/2008</strong></td><td>Régimen general de protección de datos financieros, crediticios e información personal.</td></tr>
+        <tr><td><strong>Ley 1273/2009</strong><br>Delitos informáticos</td><td>Soporte legal para la NO grabación de sesiones por restricciones de seguridad de la información institucional de los participantes (ICBF, Alcaldía).</td></tr>
+        <tr><td><strong>Ley 1712/2014</strong><br>Transparencia pública</td><td>Marco para participantes de entidades públicas (Alcaldía, ICBF): sus apreciaciones son a título profesional individual y no comprometen posición oficial.</td></tr>
+        <tr><td><strong>Art. 15 — Constitución Política</strong></td><td>Derecho a la intimidad e informática. Fundamento del consentimiento informado y la restricción de grabación.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Referencias metodológicas</h3>
+    <ul>
+      <li>Brooke, J. (1996). <em>SUS: A quick and dirty usability scale.</em> Usability Evaluation in Industry, 189(194), 4–7.</li>
+      <li>Cooper, A. (2004). <em>The Inmates Are Running the Asylum.</em> Sams Publishing.</li>
+      <li>Patton, J. &amp; Economy, P. (2014). <em>User Story Mapping.</em> O'Reilly Media.</li>
+      <li>Nielsen, J. (1994). <em>Usability Engineering.</em> Morgan Kaufmann.</li>
+    </ul>
+
+    <blockquote class="info">
+      <strong>Documento generado:</strong> Mayo 2026 &nbsp;·&nbsp; <strong>Investigador:</strong> Julian Andres Quimbayo Castro &nbsp;·&nbsp; <strong>Institución:</strong> CORHUILA — Ingeniería de Sistemas, Neiva, Huila, Colombia<br>
+      Para imprimir como PDF: usar el botón "Imprimir / Guardar PDF" o Ctrl+P desde el navegador → seleccionar "Guardar como PDF".
+    </blockquote>
+  </div>
+</div>
+
+</body>
+</html>
