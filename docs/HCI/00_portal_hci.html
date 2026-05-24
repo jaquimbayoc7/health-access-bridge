@@ -6,6 +6,7 @@
 <title>HCI — Health Access Bridge · Documentación Completa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <style>
 /* ── Design tokens (HAB app palette) ───────────────────────────────── */
 :root {
@@ -285,6 +286,12 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg);
   <div class="nav-item" onclick="show('p05')"><span class="num">05</span> Diagrama de Afinidad</div>
   <div class="nav-item" onclick="show('p06')"><span class="num">06</span> User Personas</div>
   <div class="nav-item" onclick="show('p07')"><span class="num">07</span> User Story Mapping</div>
+
+  <div class="nav-section">Fase 2 — Arquitectura de Información</div>
+  <div class="nav-item" onclick="show('p09')"><span class="num">09</span> Mapa del Sitio</div>
+  <div class="nav-item" onclick="show('p10')"><span class="num">10</span> Taxonomías y Metadatos</div>
+  <div class="nav-item" onclick="show('p11')"><span class="num">11</span> Navegabilidad</div>
+  <div class="nav-item" onclick="show('p12')"><span class="num">12</span> Mecanismos de Búsqueda</div>
 </nav>
 
 <!-- ── Main content ──────────────────────────────────────────────────── -->
@@ -1062,8 +1069,239 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg);
     </div></div>
   </section>
 
+
+  <!-- FASE 2 — ARQUITECTURA DE INFORMACIÓN -->
+
+  <section id="p09" class="doc-section">
+    <div class="sec-header">
+      <h1>🗺️ Mapa del Sitio</h1>
+      <p>Estructura de todas las rutas de HAB · 2 roles · 3 releases · Fase 2 — Arquitectura de Información</p>
+      <div class="badges"><span class="badge">Fase 2 · IA</span><span class="badge">5 módulos</span><span class="badge">11 rutas</span><span class="badge">3 releases</span><span class="badge">2 roles</span></div>
+    </div>
+    <div class="card"><div class="md-body">
+      <blockquote><p><strong>Justificación:</strong> La estructura plana de máximo 3 niveles de profundidad garantiza que cualquier funcionalidad sea alcanzable en ≤ 3 clics desde el login, minimizando la carga cognitiva (Rosenfeld &amp; Morville, 2002). La separación de subárboles por rol asegura aislamiento de permisos sin rutas compartidas ambiguas.</p></blockquote>
+      <h2>Leyenda de releases</h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
+        <span style="background:#e8f5e9;color:#1b5e20;padding:4px 14px;border-radius:20px;font-size:.82rem;font-weight:700">🟢 R1 — MVP implementado</span>
+        <span style="background:#e3f2fd;color:#1565c0;padding:4px 14px;border-radius:20px;font-size:.82rem;font-weight:700">🔵 R2 — Iteración planificada</span>
+        <span style="background:#fff9c4;color:#c8960c;padding:4px 14px;border-radius:20px;font-size:.82rem;font-weight:700">🟡 R3 — Backlog futuro</span>
+      </div>
+      <div class="mermaid">
+flowchart TD
+  Root["🌐 raíz"] --> Login["/login\n🔐 Autenticación · R1"]
+  Login -->|"rol médico"| Dash["/dashboard\n📊 Panel principal · R1"]
+  Login -->|"rol admin"| Adm["/admin\n🛡️ Panel admin · R1"]
+  subgraph MEDICO ["👩‍⚕️ Médico / Profesional SST"]
+    Dash --> Pat["/patients\n👥 Gestión pacientes · R1"]
+    Dash --> Ana["/analytics\n📈 Estadísticas · R1"]
+    Dash --> Guide["/predict-guide\n📖 Guía ICF · R2"]
+    Pat --> PC["Modal Crear paciente · R1"]
+    Pat --> PE["Modal Editar paciente · R1"]
+    Pat --> PID["/patients/:id\n👤 Detalle · R2"]
+    PID --> Pred["/patients/:id/predict\n🤖 Predicción ML · R1"]
+    PID --> PHist["Historial predicciones · R2"]
+    Ana --> ACoord["Panel coordinación\npor municipio · R2"]
+    Ana --> ATmp["Evolución temporal · R3"]
+  end
+  subgraph ADMIN ["👩‍💼 Admin / Coordinador"]
+    Adm --> UsersL["/admin/users\n👥 Usuarios · R1"]
+    Adm --> Munis["/admin/municipalities\n🗺️ Municipios · R2"]
+    Adm --> AuditL["/admin/audit\n📋 Auditoría · R3"]
+    UsersL --> UC["Modal Crear usuario · R1"]
+    UsersL --> UBulk["Carga masiva Excel · R3"]
+  end
+  style Login fill:#43a047,color:#fff
+  style Dash fill:#1565c0,color:#fff
+  style Adm fill:#6a1b9a,color:#fff
+  style PC fill:#c8e6c9,color:#1b5e20
+  style PE fill:#c8e6c9,color:#1b5e20
+  style Pred fill:#c8e6c9,color:#1b5e20
+  style UC fill:#c8e6c9,color:#1b5e20
+  style PID fill:#bbdefb,color:#0d47a1
+  style PHist fill:#bbdefb,color:#0d47a1
+  style Guide fill:#bbdefb,color:#0d47a1
+  style ACoord fill:#bbdefb,color:#0d47a1
+  style Munis fill:#bbdefb,color:#0d47a1
+  style ATmp fill:#fff9c4,color:#7f6000
+  style AuditL fill:#fff9c4,color:#7f6000
+  style UBulk fill:#fff9c4,color:#7f6000
+      </div>
+      <h2>Inventario de rutas</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Ruta</th><th>Descripción</th><th>Rol</th><th>Release</th><th>HUs</th></tr></thead><tbody>
+        <tr><td><code>/login</code></td><td>Autenticación email + contraseña · redirección automática por rol</td><td>Todos</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">R1</span></td><td>HU-01–04</td></tr>
+        <tr><td><code>/dashboard</code></td><td>Panel principal con métricas de resumen y accesos rápidos</td><td>Médico</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">R1</span></td><td>HU-29, HU-30</td></tr>
+        <tr><td><code>/patients</code></td><td>Lista paginada · búsqueda debounce · CRUD completo</td><td>Médico</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">R1</span></td><td>HU-09–14</td></tr>
+        <tr><td><code>/patients/:id</code></td><td>Perfil completo del paciente · historial · exportar PDF</td><td>Médico</td><td><span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:12px;font-size:.75rem">R2</span></td><td>HU-16, HU-18, HU-25</td></tr>
+        <tr><td><code>/patients/:id/predict</code></td><td>Ejecutar modelo ML · badge de perfil · factores ICF determinantes</td><td>Médico</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">R1</span></td><td>HU-21–23</td></tr>
+        <tr><td><code>/analytics</code></td><td>Gráficas torta/barras de la población · métricas demográficas</td><td>Médico / Admin</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">R1</span></td><td>HU-29–31</td></tr>
+        <tr><td><code>/predict-guide</code></td><td>Guía clínica ICF filtrada por perfil predictivo asignado</td><td>Médico</td><td><span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:12px;font-size:.75rem">R2</span></td><td>HU-26</td></tr>
+        <tr><td><code>/admin</code></td><td>Panel administración · redirige a /admin/users</td><td>Admin</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">R1</span></td><td>HU-40</td></tr>
+        <tr><td><code>/admin/users</code></td><td>Listado de usuarios · crear · toggle activo/inactivo</td><td>Admin</td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:12px;font-size:.75rem">R1</span></td><td>HU-37–39</td></tr>
+        <tr><td><code>/admin/municipalities</code></td><td>Asignación médico → municipio para filtros de analytics</td><td>Admin</td><td><span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:12px;font-size:.75rem">R2</span></td><td>HU-43</td></tr>
+        <tr><td><code>/admin/audit</code></td><td>Log de auditoría completo con filtros por usuario y acción</td><td>Admin</td><td><span style="background:#fff9c4;color:#c8960c;padding:2px 8px;border-radius:12px;font-size:.75rem">R3</span></td><td>HU-45</td></tr>
+      </tbody></table></div>
+      <h2>Principios de diseño del mapa del sitio</h2>
+      <ul>
+        <li><strong>Profundidad máxima 3 niveles:</strong> Ningún nodo requiere más de 3 clics desde /login. Los modales no añaden nivel de profundidad (Rosenfeld &amp; Morville, 2002).</li>
+        <li><strong>Separación de subárboles por rol:</strong> <code>/dashboard/*</code> y <code>/admin/*</code> son disjuntos; route guards en React Router + validación en FastAPI.</li>
+        <li><strong>Modales para contexto local:</strong> Crear/editar usa modales en lugar de rutas independientes, preservando el estado de la lista activa.</li>
+        <li><strong>Escalabilidad progresiva:</strong> Los nodos R2 y R3 se integran sin romper la navegación del MVP.</li>
+      </ul>
+    </div></div>
+  </section>
+
+  <section id="p10" class="doc-section">
+    <div class="sec-header">
+      <h1>🏷️ Taxonomías y Metadatos</h1>
+      <p>Tipos de contenido · Clasificación ICF OMS · Roles · Geografía · Schema de metadatos · Fase 2 — Arquitectura de Información</p>
+      <div class="badges"><span class="badge">Fase 2 · IA</span><span class="badge">4 entidades</span><span class="badge">ICF OMS 2001</span><span class="badge">2 roles</span><span class="badge">3 niveles geográficos</span></div>
+    </div>
+    <div class="card"><div class="md-body">
+      <blockquote><p><strong>Justificación:</strong> Una taxonomía explícita permite la búsqueda facetada, la coherencia de la interfaz y la trazabilidad de los datos clínicos. La clasificación ICF (OMS, 2001) es el estándar internacional adoptado para la caracterización funcional de la discapacidad y es el núcleo del modelo de datos de HAB.</p></blockquote>
+      <h2>Taxonomía 1 — Tipos de contenido</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Entidad</th><th>Atributos clave</th><th>Tipo</th><th>Relaciones</th></tr></thead><tbody>
+        <tr><td><strong>Paciente</strong></td><td><code>id · nombre_completo · numero_documento · genero · municipio_residencia · causa_deficiencia · D1–D6 · nivel_global · perfil_prediccion · owner_id · created_at</code></td><td>Entidad principal</td><td>→ Predicciones (1:N) · → Usuario (N:1)</td></tr>
+        <tr><td><strong>Predicción</strong></td><td><code>id · paciente_id · perfil (0/1/2) · descripcion · factores_determinantes (JSON) · modelo_version · created_at</code></td><td>Registro inmutable</td><td>→ Paciente (N:1)</td></tr>
+        <tr><td><strong>Usuario</strong></td><td><code>id · nombre_completo · correo · rol · municipio_asignado · estado · ultimo_acceso · created_at</code></td><td>Actor del sistema</td><td>→ Pacientes (1:N)</td></tr>
+        <tr><td><strong>Reporte</strong></td><td><code>id · tipo (Excel/PDF) · periodo · generado_por · ruta_archivo · created_at</code></td><td>Artefacto generado</td><td>→ Usuario (N:1)</td></tr>
+      </tbody></table></div>
+      <h2>Taxonomía 2 — Clasificación ICF (OMS 2001)</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Campo</th><th>Dimensión ICF</th><th>Descripción clínica</th><th>Rango</th></tr></thead><tbody>
+        <tr><td><strong>D1</strong></td><td>Aprendizaje y aplicación del conocimiento</td><td>Capacidad para aprender, razonar y resolver problemas cotidianos</td><td>0 – 4</td></tr>
+        <tr><td><strong>D2</strong></td><td>Tareas y demandas generales</td><td>Rutinas diarias, manejo del estrés, toma de decisiones</td><td>0 – 4</td></tr>
+        <tr><td><strong>D3</strong></td><td>Comunicación</td><td>Recibir y producir mensajes, conversación, uso de dispositivos</td><td>0 – 4</td></tr>
+        <tr><td><strong>D4</strong></td><td>Movilidad</td><td>Cambio de posturas, desplazamiento, transporte de objetos</td><td>0 – 4</td></tr>
+        <tr><td><strong>D5</strong></td><td>Autocuidado</td><td>Higiene personal, vestirse, comer, cuidado de la salud</td><td>0 – 4</td></tr>
+        <tr><td><strong>D6</strong></td><td>Vida doméstica</td><td>Adquisición de bienes, tareas del hogar, ayuda a otros</td><td>0 – 4</td></tr>
+        <tr><td><strong>nivel_global</strong></td><td>Nivel de barreras global</td><td>Promedio ponderado D1–D6; determina el perfil predictivo ML</td><td>0.0 – 4.0</td></tr>
+      </tbody></table></div>
+      <div style="background:#e8f5e9;border-left:4px solid #2e7d32;padding:10px 14px;border-radius:0 6px 6px 0;font-size:.85rem;margin-bottom:16px">
+        <strong>Perfiles ML:</strong> &nbsp; 🟢 <strong>0 — Bajas barreras</strong> (0–1.3) &nbsp;·&nbsp; 🟡 <strong>1 — Moderadas</strong> (1.3–2.6) &nbsp;·&nbsp; 🔴 <strong>2 — Altas barreras</strong> (2.6–4.0)
+      </div>
+      <h2>Taxonomía 3 — Roles del sistema</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Rol</th><th>Descripción</th><th>Acceso a rutas</th><th>Persona HCI</th></tr></thead><tbody>
+        <tr><td><strong>medico</strong></td><td>Profesional de salud / SST que registra pacientes y ejecuta predicciones ML</td><td><code>/dashboard · /patients · /analytics · /predict-guide</code></td><td>Dra. Emilly Maria Celis Barreto</td></tr>
+        <tr><td><strong>admin</strong></td><td>Coordinador institucional que supervisa usuarios, métricas y asignaciones territoriales</td><td>Todo lo de médico + <code>/admin/*</code></td><td>Laura Cangrejo Perafan</td></tr>
+      </tbody></table></div>
+      <h2>Taxonomía 4 — Geografía (jerarquía territorial)</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Nivel</th><th>Entidad</th><th>Ejemplos en HAB</th><th>Uso en el sistema</th></tr></thead><tbody>
+        <tr><td>1</td><td>Departamento</td><td>Huila</td><td>Contexto regional — metadato informativo en reportes</td></tr>
+        <tr><td>2</td><td>Municipio</td><td>Neiva, Pitalito, Garzón, La Plata, Campoalegre</td><td>Filtro en analytics · asignación médico → municipio (R2 · HU-43)</td></tr>
+        <tr><td>3</td><td>IPS / Institución</td><td>ICBF Neiva, Alcaldía de Neiva, Hospital Departamental</td><td>Contexto del usuario · metadato del participante HCI</td></tr>
+      </tbody></table></div>
+      <h2>Schema de metadatos — Open Graph / SEO</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Metatag</th><th>Valor en HAB</th><th>Propósito</th></tr></thead><tbody>
+        <tr><td><code>&lt;title&gt;</code></td><td>Health Access Bridge — Gestión de Discapacidad Rural</td><td>Identificación en pestañas y resultados de búsqueda</td></tr>
+        <tr><td><code>og:title</code></td><td>Health Access Bridge (HAB)</td><td>Preview al compartir en redes sociales</td></tr>
+        <tr><td><code>og:description</code></td><td>Plataforma para gestión clínica de pacientes con discapacidad en zonas rurales de Colombia</td><td>Descripción pública del proyecto</td></tr>
+        <tr><td><code>lang</code></td><td>es-CO</td><td>Internacionalización — español Colombia · accesibilidad lectores de pantalla</td></tr>
+        <tr><td><code>robots</code></td><td>noindex, nofollow (app clínica privada)</td><td>Protección de datos: la aplicación NO debe indexarse públicamente (Ley 1581/2012)</td></tr>
+      </tbody></table></div>
+    </div></div>
+  </section>
+
+  <section id="p11" class="doc-section">
+    <div class="sec-header">
+      <h1>🧭 Navegabilidad</h1>
+      <p>Flujos de navegación por rol · Route guards · Patrones UX · Fase 2 — Arquitectura de Información</p>
+      <div class="badges"><span class="badge">Fase 2 · IA</span><span class="badge">2 flujos por rol</span><span class="badge">8 route guards</span><span class="badge">6 patrones UX</span><span class="badge">React Router</span></div>
+    </div>
+    <div class="card"><div class="md-body">
+      <blockquote><p><strong>Justificación:</strong> La navegabilidad diseñada siguiendo el principio de <em>Recognition over Recall</em> (Nielsen, 1994) garantiza que los usuarios siempre sepan dónde están, a dónde pueden ir y cómo volver. Los route guards automáticos y los flujos diferenciados por rol minimizan errores de navegación y brechas de seguridad.</p></blockquote>
+      <h2>Flujos de navegación por rol (diagrama)</h2>
+      <div class="mermaid">
+flowchart LR
+  L["/login\n🔐"] -->|"rol=médico"| D["/dashboard\n📊 R1"]
+  L -->|"rol=admin"| A["/admin\n🛡️ R1"]
+  D --> P["/patients\n👥 R1"]
+  D --> AN["/analytics\n📈 R1"]
+  D --> G["/predict-guide\n📖 R2"]
+  P -->|"abrir detalle"| PD["/patients/:id\n👤 R2"]
+  PD -->|"ejecutar ML"| PR["/patients/:id/predict\n🤖 R1"]
+  A --> U["/admin/users\n👥 R1"]
+  A --> M["/admin/municipalities\n🗺️ R2"]
+  A --> AU["/admin/audit\n📋 R3"]
+  style L fill:#43a047,color:#fff
+  style D fill:#1565c0,color:#fff
+  style A fill:#6a1b9a,color:#fff
+  style G fill:#bbdefb,color:#0d47a1
+  style PD fill:#bbdefb,color:#0d47a1
+  style M fill:#bbdefb,color:#0d47a1
+  style AU fill:#fff9c4,color:#7f6000
+      </div>
+      <h2>Route guards — Protección de rutas</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Ruta</th><th>Rol requerido</th><th>Guard (frontend)</th><th>Validación (backend)</th><th>Redirección si falla</th></tr></thead><tbody>
+        <tr><td><code>/dashboard</code></td><td>medico · admin</td><td>PrivateRoute (token JWT)</td><td>Dependency: get_current_user</td><td>/login</td></tr>
+        <tr><td><code>/patients</code></td><td>medico · admin</td><td>PrivateRoute</td><td>owner_id filter en GET /patients/</td><td>/login</td></tr>
+        <tr><td><code>/patients/:id</code></td><td>médico propietario</td><td>PrivateRoute + owner check</td><td>HTTP 403 si owner_id ≠ user_id</td><td>/patients</td></tr>
+        <tr><td><code>/analytics</code></td><td>medico · admin</td><td>PrivateRoute</td><td>Datos filtrados por user_id</td><td>/login</td></tr>
+        <tr><td><code>/admin</code></td><td>admin</td><td>AdminRoute (rol=admin)</td><td>Dependency: require_admin_role</td><td>/dashboard</td></tr>
+        <tr><td><code>/admin/users</code></td><td>admin</td><td>AdminRoute</td><td>Dependency: require_admin_role</td><td>/dashboard</td></tr>
+        <tr><td><code>/admin/audit</code></td><td>admin</td><td>AdminRoute (R3)</td><td>Dependency: require_admin_role</td><td>/dashboard</td></tr>
+        <tr><td>Cualquier ruta sin token</td><td>—</td><td>PrivateRoute detecta 401</td><td>HTTP 401 · token expirado</td><td>/login (automático)</td></tr>
+      </tbody></table></div>
+      <h2>Patrones de navegación implementados</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Patrón</th><th>Descripción</th><th>Dónde en HAB</th><th>Justificación HCI</th></tr></thead><tbody>
+        <tr><td><strong>Sidebar fija</strong></td><td>Menú lateral siempre visible con ítems del módulo activo</td><td>/dashboard, /patients, /analytics, /admin</td><td>Recognition over Recall: el usuario siempre ve qué secciones existen (Nielsen, 1994)</td></tr>
+        <tr><td><strong>Navegación por modal</strong></td><td>Crear/editar sin abandonar la lista actual</td><td>Modal crear/editar paciente · Modal crear usuario</td><td>Preserva el contexto y estado de la lista (HU-09, HU-11, HU-38)</td></tr>
+        <tr><td><strong>Redirección automática por rol</strong></td><td>Post-login redirige según el rol JWT</td><td>/login → /dashboard o /admin</td><td>Flujo de menor resistencia; elimina una decisión del usuario (HU-02)</td></tr>
+        <tr><td><strong>Breadcrumbs contextuales</strong></td><td>Ruta visible en vistas de detalle</td><td>/patients/:id (R2)</td><td>El usuario siempre sabe dónde está; navegación hacia atrás sin botón del navegador</td></tr>
+        <tr><td><strong>Feedback inmediato</strong></td><td>Badge de color en resultado ML · toast de éxito/error tras CRUD</td><td>Badge perfil: 🟢🟡🔴 · Toasts de confirmación</td><td>Visibilidad del estado del sistema (Nielsen heurística #1)</td></tr>
+        <tr><td><strong>Modo offline (PWA)</strong></td><td>Service Worker permite formularios sin conectividad</td><td>Formulario pacientes en campo (R3 · HU-08, HU-19)</td><td>Necesidad crítica de E1 (ICBF, campo 2G): <em>"Necesito que funcione cuando no hay señal"</em></td></tr>
+      </tbody></table></div>
+    </div></div>
+  </section>
+
+  <section id="p12" class="doc-section">
+    <div class="sec-header">
+      <h1>🔍 Mecanismos de Búsqueda</h1>
+      <p>Búsqueda full-text · Filtros facetados · Campos indexados · Parámetros UX · Fase 2 — Arquitectura de Información</p>
+      <div class="badges"><span class="badge">Fase 2 · IA</span><span class="badge">Full-text R1</span><span class="badge">Filtros facetados R2</span><span class="badge">FTS PostgreSQL R3</span><span class="badge">Debounce 300ms</span></div>
+    </div>
+    <div class="card"><div class="md-body">
+      <blockquote><p><strong>Justificación:</strong> Los mecanismos de búsqueda responden al hallazgo HCI de E1: <em>"Paso horas cruzando información entre sistemas."</em> Una búsqueda eficiente con debounce y filtros por perfil ML reduce el tiempo de recuperación de información de minutos a segundos (<em>Efficiency of Use</em> — Nielsen, 1994).</p></blockquote>
+      <h2>Mecanismos de búsqueda por release</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Mecanismo</th><th>Descripción</th><th>R1</th><th>R2</th><th>R3</th><th>HUs</th></tr></thead><tbody>
+        <tr><td><strong>Búsqueda full-text</strong></td><td>Por nombre completo o N° de documento · debounce 300ms · sin recarga</td><td>✅</td><td>✅</td><td>✅</td><td>HU-10</td></tr>
+        <tr><td><strong>Filtro por perfil ML</strong></td><td>Selector: Bajas · Moderadas · Altas · tiempo real</td><td>—</td><td>✅</td><td>✅</td><td>HU-17</td></tr>
+        <tr><td><strong>Filtro por municipio</strong></td><td>Dropdown con municipios asignados al usuario o todos (admin)</td><td>—</td><td>✅</td><td>✅</td><td>HU-43</td></tr>
+        <tr><td><strong>Filtro por rango de fechas</strong></td><td>Creación del registro o última predicción · date-picker</td><td>—</td><td>✅</td><td>✅</td><td>HU-32</td></tr>
+        <tr><td><strong>Filtro por género</strong></td><td>Selector: Masculino · Femenino · Otro · en Analytics</td><td>—</td><td>✅</td><td>✅</td><td>HU-31</td></tr>
+        <tr><td><strong>Búsqueda en panel admin</strong></td><td>Buscar usuarios por nombre o correo electrónico</td><td>—</td><td>✅</td><td>✅</td><td>HU-41</td></tr>
+        <tr><td><strong>FTS backend (PostgreSQL)</strong></td><td>Índice tsvector · búsqueda semántica · tolerancia a acentos</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
+      </tbody></table></div>
+      <h2>Campos indexados en la base de datos</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Tabla</th><th>Campo</th><th>Tipo de índice</th><th>Justificación</th></tr></thead><tbody>
+        <tr><td>pacientes</td><td>nombre_completo</td><td>B-tree (ILIKE · R1) · tsvector (R3)</td><td>Búsqueda más frecuente del sistema (HU-10)</td></tr>
+        <tr><td>pacientes</td><td>numero_documento</td><td>B-tree (exact match)</td><td>Búsqueda exacta por documento de identidad</td></tr>
+        <tr><td>pacientes</td><td>owner_id</td><td>B-tree (FK)</td><td>Filtro por médico propietario en todas las queries</td></tr>
+        <tr><td>pacientes</td><td>perfil_prediccion</td><td>B-tree (enum 0/1/2)</td><td>Filtro por perfil ML en tiempo real (HU-17 · R2)</td></tr>
+        <tr><td>pacientes</td><td>municipio_residencia</td><td>B-tree (varchar)</td><td>Filtro territorial y panel coordinación (HU-43 · R2)</td></tr>
+        <tr><td>predicciones</td><td>paciente_id</td><td>B-tree (FK)</td><td>Historial de predicciones por paciente (HU-25)</td></tr>
+        <tr><td>usuarios</td><td>correo</td><td>B-tree unique</td><td>Login y búsqueda en panel admin (HU-41)</td></tr>
+      </tbody></table></div>
+      <h2>Parámetros UX de búsqueda</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Parámetro</th><th>Valor</th><th>Justificación</th></tr></thead><tbody>
+        <tr><td>Debounce</td><td>300 ms</td><td>Balance óptimo entre reactividad y carga al servidor (HU-10 · MVP implementado)</td></tr>
+        <tr><td>Caracteres mínimos</td><td>1 (nombre) · exacto (documento)</td><td>Facilita búsquedas de nombres cortos comunes en Colombia</td></tr>
+        <tr><td>Query param URL</td><td><code>?q=&amp;perfil=&amp;municipio=</code></td><td>Permite compartir y guardar búsquedas; soporta botón Atrás (R2)</td></tr>
+        <tr><td>Paginación</td><td>10 registros por página · configurable 25/50</td><td>Tabla paginada en MVP; limita carga del DOM en listados grandes</td></tr>
+        <tr><td>Ordenamiento</td><td>Nombre A–Z · Fecha creación · Perfil ML</td><td>Eficiencia al localizar pacientes prioritarios por perfil de riesgo (R2)</td></tr>
+        <tr><td>Estado vacío</td><td>Mensaje "No se encontraron resultados" + sugerencias</td><td>Visibilidad del estado del sistema (Nielsen heurística #1)</td></tr>
+        <tr><td>Tolerancia a tildes</td><td>Normalización Unicode antes del query (R3 FTS)</td><td>Usuarios colombianos mezclan formas con/sin tilde en nombres propios</td></tr>
+      </tbody></table></div>
+      <h2>Trazabilidad con hallazgos HCI — Fase 1</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Hallazgo (Fase 1)</th><th>Mecanismo de búsqueda que responde</th></tr></thead><tbody>
+        <tr><td>E1: "Paso horas cruzando información entre sistemas" (KJ: Fragmentación)</td><td>Búsqueda unificada + filtros combinados por perfil y municipio (R2)</td></tr>
+        <tr><td>E2: "No tengo visibilidad de lo que pasa en los municipios"</td><td>Filtro por municipio en /analytics · panel coordinación (R2 · HU-43)</td></tr>
+        <tr><td>E1: "Necesito priorizar cuáles pacientes atender primero"</td><td>Filtro por perfil ML — Altas barreras primero (R2 · HU-17)</td></tr>
+        <tr><td>E3: Bajo nivel tecnológico · no usa búsquedas activas</td><td>Notificaciones push como alternativa pasiva (R3)</td></tr>
+      </tbody></table></div>
+    </div></div>
+  </section>
+
   <div class="page-footer">
-    Health Access Bridge · Investigación HCI · CORHUILA 2026 · ISO 9241-210:2019
+    Health Access Bridge · Investigación HCI · Fase 1 &amp; Fase 2 · CORHUILA 2026 · ISO 9241-210:2019
   </div>
 </main>
 
@@ -1077,6 +1315,10 @@ const INDEX = [
   {id:'p05',num:'05',label:'Diagrama de Afinidad',     desc:'Método KJ · 7 pasos · 21 notas · 6 temas'},
   {id:'p06',num:'06',label:'User Personas',            desc:'Emilly Maria Celis + Laura Cangrejo · empathy'},
   {id:'p07',num:'07',label:'User Story Mapping',       desc:'5 actividades · 45 HU · 3 releases'},
+  {id:'p09',num:'09',label:'Mapa del Sitio',            desc:'Fase 2 · AI · 11 rutas · 2 roles · 3 releases · Mermaid'},
+  {id:'p10',num:'10',label:'Taxonomías y Metadatos',    desc:'Fase 2 · AI · 4 entidades · ICF D1–D6 · roles · geografía'},
+  {id:'p11',num:'11',label:'Navegabilidad',              desc:'Fase 2 · AI · flujos por rol · route guards · 6 patrones'},
+  {id:'p12',num:'12',label:'Mecanismos de Búsqueda',    desc:'Fase 2 · AI · full-text · filtros facetados · campos indexados'},
 ];
 
 const tbody = document.getElementById('index-table');
@@ -1124,6 +1366,7 @@ function toggleSidebar() {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') document.getElementById('sidebar').classList.remove('open');
 });
+mermaid.initialize({startOnLoad:true,theme:'neutral',flowchart:{curve:'basis',useMaxWidth:true}});
 </script>
 </body>
 </html>
