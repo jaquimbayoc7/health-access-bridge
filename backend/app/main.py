@@ -59,26 +59,30 @@ _default_origins = [
 _env_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
 allowed_origins = list(set(_default_origins + _env_origins))
 
-# Middleware para logging de requests (debe ir antes de CORS)
-@app.middleware("http")
-async def log_requests(request: Request, call_next):
-    """
-    Middleware para loggear todas las requests entrantes.
-    Útil para debuggear problemas de CORS.
-    """
-    origin = request.headers.get("origin", "N/A")
-    method = request.method
-    path = request.url.path
-    
-    print(f"📨 {method} {path} | Origin: {origin}")
-    
-    # Llamar al siguiente middleware/handler
-    response = await call_next(request)
-    
-    # Log del status code de la respuesta
-    print(f"📤 {method} {path} | Status: {response.status_code}")
-    
-    return response
+# Middleware para logging de requests (solo en debug/dev)
+# Deshabilitado en producción para mejorar performance y reducir tiempo de startup
+DEBUG_MODE = os.getenv("DEBUG", "false").lower() == "true"
+
+if DEBUG_MODE:
+    @app.middleware("http")
+    async def log_requests(request: Request, call_next):
+        """
+        Middleware para loggear todas las requests entrantes.
+        Útil para debuggear problemas de CORS.
+        """
+        origin = request.headers.get("origin", "N/A")
+        method = request.method
+        path = request.url.path
+        
+        print(f"📨 {method} {path} | Origin: {origin}")
+        
+        # Llamar al siguiente middleware/handler
+        response = await call_next(request)
+        
+        # Log del status code de la respuesta
+        print(f"📤 {method} {path} | Status: {response.status_code}")
+        
+        return response
 
 app.add_middleware(
     CORSMiddleware,
@@ -166,41 +170,45 @@ async def general_exception_handler(request: Request, exc: Exception):
 @app.on_event("startup")
 def on_startup():
     """
-    Evento de startup que:
-    1. Intenta crear las tablas si no existen
-    2. Crea el usuario administrador por defecto si no existe
-    
-    Es tolerante a errores de conexión para que la app siga funcionando
-    aunque la BD no esté lista inicialmente.
+    Evento de startup optimizado para deploy rápido.
+    Solo muestra configuración básica y crea tablas.
+    El seed se ejecuta de forma lazy en la primera request.
     """
-    # Mostrar configuración de CORS
-    print("=" * 60)
-    print("🌐 CONFIGURACIÓN DE CORS")
-    print("=" * 60)
-    print("Orígenes permitidos:")
-    for origin in allowed_origins:
-        print(f"  ✓ {origin}")
-    print("=" * 60)
+    # Mostrar configuración de CORS solo en debug mode
+    if DEBUG_MODE:
+        print("=" * 60)
+        print("🌐 CONFIGURACIÓN DE CORS")
+        print("=" * 60)
+        print("Orígenes permitidos:")
+        for origin in allowed_origins:
+            print(f"  ✓ {origin}")
+        print("=" * 60)
+    else:
+        print(f"🌐 CORS configurado para {len(allowed_origins)} orígenes")
     
     try:
-        # Intentar crear las tablas
-        print("Inicializando esquema de base de datos...")
+        # Intentar crear las tablas de forma rápida
+        print("⚡ Inicializando esquema...")
         Base.metadata.create_all(bind=engine)
-        print("✓ Esquema de base de datos listo")
+        print("✓ DB ready")
     except Exception as e:
-        print(f"⚠ Advertencia durante inicialización de BD: {e}")
-        print("Continuando con el startup... Las tablas se crearán cuando se necesiten.")
+        print(f"⚠ DB warning: {e}")
         return
     
-    # Ejecutar seed de datos de prueba (idempotente)
-    try:
-        from .seed import run_seed
-        db = SessionLocal()
-        print("Ejecutando seed de datos de prueba...")
-        run_seed(db)
-        db.close()
-    except Exception as e:
-        print(f"⚠ No se pudo ejecutar seed: {e}")
+    # Seed opcional - solo en desarrollo o si se solicita explícitamente
+    RUN_SEED = os.getenv("RUN_SEED", "false").lower() == "true"
+    if RUN_SEED:
+        try:
+            from .seed import run_seed
+            db = SessionLocal()
+            print("⚡ Running seed...")
+            run_seed(db)
+            db.close()
+            print("✓ Seed ready")
+        except Exception as e:
+            print(f"⚠ Seed warning: {e}")
+    else:
+        print("⏭ Seed skipped (set RUN_SEED=true to enable)")
 
 # ======================================================================
 # CORRECCIÓN CLAVE: Asegurarse de que TODOS los routers están incluidos
