@@ -34,6 +34,16 @@ def update_user_activity(db: Session, user_id: int, is_active: bool):
         db.refresh(db_user)
     return db_user
 
+def activate_all_users(db: Session):
+    """Activa todos los usuarios inactivos en el sistema."""
+    users = db.query(models.User).filter(models.User.is_active == False).all()
+    count = 0
+    for user in users:
+        user.is_active = True
+        count += 1
+    db.commit()
+    return count
+
 def get_patient(db: Session, patient_id: int):
     return db.query(models.Patient).filter(models.Patient.id == patient_id).first()
 

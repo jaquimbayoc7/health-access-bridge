@@ -52,6 +52,30 @@ def toggle_user_activation(
     return updated_user
 
 
+@router.post("/users/activate-all", status_code=status.HTTP_200_OK)
+def activate_all_users_endpoint(
+    db: Session = Depends(dependencies.get_db),
+    current_user: models.User = Depends(dependencies.get_current_active_admin)
+):
+    """
+    Activa todos los usuarios que estén desactivados.
+    Útil para resetear el estado de usuarios bloqueados.
+    Solo para administradores.
+    """
+    try:
+        count = crud.activate_all_users(db)
+        return {
+            "message": f"Se activaron {count} usuario(s)",
+            "users_activated": count
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error al activar usuarios: {str(e)}"
+        )
+
+
 @router.post("/reset-seed", status_code=status.HTTP_200_OK)
 def reset_and_reseed(
     db: Session = Depends(dependencies.get_db),
@@ -76,4 +100,42 @@ def reset_and_reseed(
         raise HTTPException(
             status_code=500,
             detail=f"{type(e).__name__}: {str(e)}\n{traceback.format_exc()}"
+        )
+
+
+@router.post("/emergency-reset", status_code=status.HTTP_200_OK)
+def emergency_user_reset(db: Session = Depends(dependencies.get_db)):
+    """
+    🚨 ENDPOINT DE EMERGENCIA - Sin autenticación
+    
+    Activa TODOS los usuarios del sistema y ejecuta el seed si no hay usuarios.
+    
+    ⚠️ SOLO USAR EN EMERGENCIAS cuando todos los usuarios estén bloqueados.
+    Este endpoint NO requiere autenticación para permitir recuperación de acceso.
+    
+    IMPORTANTE: Este endpoint debería ser eliminado o protegido en producción.
+    """
+    try:
+        # Activar todos los usuarios
+        activated = crud.activate_all_users(db)
+        
+        # Verificar si hay usuarios, si no, ejecutar seed
+        users = crud.get_users(db, skip=0, limit=1)
+        seeded = False
+        if len(users) == 0:
+            seed_module.run_seed(db)
+            seeded = True
+        
+        return {
+            "status": "success",
+            "message": "Sistema reseteado",
+            "users_activated": activated,
+            "seed_executed": seeded,
+            "warning": "Cambia las contraseñas por defecto inmediatamente"
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error en reset de emergencia: {str(e)}"
         )
