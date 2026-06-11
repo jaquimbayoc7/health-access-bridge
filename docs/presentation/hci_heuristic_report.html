@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Informe de Evaluación Heurística — HAB · Fase 3 · HCI CORHUILA 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;font-size:10pt;color:#1a1a1a;background:#fff;line-height:1.5}
+  .page{width:100%;padding:18mm 18mm 14mm;min-height:297mm;page-break-before:always}
+  .page:first-child{page-break-before:auto}
+  h1{font-size:18pt;font-weight:800;color:#1565c0;margin-bottom:6px}
+  h2{font-size:12pt;font-weight:700;color:#1565c0;margin:14px 0 6px;border-bottom:1.5px solid #e3f2fd;padding-bottom:3px}
+  h3{font-size:10.5pt;font-weight:700;color:#1565c0;margin:10px 0 4px;background:#e3f2fd;padding:4px 8px;border-radius:4px}
+  p{margin-bottom:6px}
+  blockquote{background:#e3f2fd;border-left:4px solid #1565c0;padding:8px 12px;border-radius:0 6px 6px 0;margin:10px 0;font-size:9.5pt}
+  table{width:100%;border-collapse:collapse;margin:8px 0;font-size:8.5pt}
+  th{background:#1565c0;color:#fff;padding:5px 8px;text-align:left;font-weight:700}
+  td{padding:4px 8px;border-bottom:1px solid #e0e0e0;vertical-align:top}
+  tr:nth-child(even) td{background:#f9fbff}
+  .badge{display:inline-block;background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:12px;font-size:8pt;font-weight:700;margin:2px}
+  .s0{background:#e8f5e9;color:#1b5e20;padding:1px 5px;border-radius:8px;font-size:7.5pt;font-weight:700}
+  .s1{background:#fffde7;color:#f9a825;padding:1px 5px;border-radius:8px;font-size:7.5pt;font-weight:700}
+  .s2{background:#fff3e0;color:#e65100;padding:1px 5px;border-radius:8px;font-size:7.5pt;font-weight:700}
+  .s3{background:#ffebee;color:#c62828;padding:1px 5px;border-radius:8px;font-size:7.5pt;font-weight:700}
+  .s4{background:#b71c1c;color:#fff;padding:1px 5px;border-radius:8px;font-size:7.5pt;font-weight:700}
+  .ok{color:#2e7d32;font-weight:700}
+  .parcial{color:#e65100;font-weight:700}
+  .nok{color:#c62828;font-weight:700}
+  .cover-logo{font-size:36pt;text-align:center;margin-bottom:6px}
+  .cover-title{font-size:22pt;font-weight:800;color:#1565c0;text-align:center;line-height:1.2;margin-bottom:10px}
+  .cover-sub{font-size:12pt;text-align:center;color:#555;margin-bottom:20px}
+  .cover-meta{background:#e3f2fd;border-radius:10px;padding:14px 20px;max-width:480px;margin:0 auto}
+  .cover-meta p{font-size:9.5pt;margin:3px 0}
+  .stat-row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+  .stat-box{background:#e3f2fd;border-radius:8px;padding:10px 14px;min-width:90px;text-align:center}
+  .stat-num{font-size:16pt;font-weight:800;color:#1565c0}
+  .stat-lbl{font-size:7.5pt;color:#1565c0;font-weight:600}
+  .h-group{background:#e3f2fd;font-weight:700;color:#1565c0;padding:5px 8px}
+  .pri-crit{background:#b71c1c;color:#fff;padding:2px 8px;border-radius:10px;font-size:7.5pt;font-weight:700}
+  .pri-alta{background:#ffebee;color:#c62828;padding:2px 8px;border-radius:10px;font-size:7.5pt;font-weight:700}
+  .pri-med{background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:10px;font-size:7.5pt;font-weight:700}
+  .pri-baja{background:#e8f5e9;color:#1b5e20;padding:2px 8px;border-radius:10px;font-size:7.5pt;font-weight:700}
+  .footer{border-top:1px solid #ccc;margin-top:14px;padding-top:6px;font-size:8pt;color:#888;text-align:center}
+  .print-btn{position:fixed;bottom:20px;right:20px;background:#1565c0;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+  ol{padding-left:20px;margin:8px 0}
+  ol li{margin-bottom:4px;font-size:9.5pt}
+  @media print{
+    .print-btn{display:none}
+    body{font-size:9pt}
+    .page{padding:12mm 14mm;min-height:auto}
+    h1{font-size:15pt}
+    h2{font-size:11pt}
+    h3{font-size:10pt}
+    table{font-size:7.5pt}
+    td,th{padding:3px 6px}
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">🖨️ Guardar como PDF</button>
+
+<!-- ── PORTADA ──────────────────────────────────────────────────────────── -->
+<div class="page" style="display:flex;flex-direction:column;justify-content:center;min-height:260mm">
+  <div class="cover-logo">🩺</div>
+  <div class="cover-title">Informe de Evaluación Heurística<br>Health Access Bridge (HAB)</div>
+  <div class="cover-sub">Actividad 17 · HCI · Fase 3 — Evaluación Heurística · CORHUILA 2026</div>
+  <div class="cover-meta">
+    <p><strong>Aplicación evaluada:</strong> HAB MVP — Release 1</p>
+    <p><strong>URL:</strong> https://health-access-bridge.onrender.com</p>
+    <p><strong>Método:</strong> Evaluación Heurística — 10 heurísticas de Nielsen (1994)</p>
+    <p><strong>Evaluador:</strong> Rol dual evaluador-diseñador (estudio de curso)</p>
+    <p><strong>Fecha:</strong> Junio 2026</p>
+    <p><strong>Total ítems evaluados:</strong> 39 · <strong>Problemas detectados:</strong> 19</p>
+    <p><strong>Marco normativo:</strong> Nielsen &amp; Molich (1990) · ISO 9241-210:2019</p>
+  </div>
+  <div style="margin-top:24px;text-align:center">
+    <span class="badge">4 perfiles de usuario</span>
+    <span class="badge">6 tareas</span>
+    <span class="badge">10 heurísticas</span>
+    <span class="badge">39 ítems</span>
+    <span class="badge">14 recomendaciones</span>
+  </div>
+  <div class="footer" style="margin-top:40px">Health Access Bridge · Informe Heurístico · Fase 3 · HCI CORHUILA 2026</div>
+</div>
+
+<!-- ── SECCIÓN 1: CONTEXTO Y METODOLOGÍA ──────────────────────────────── -->
+<div class="page">
+  <h1>1. Contexto de la Evaluación</h1>
+  <blockquote><strong>Marco metodológico:</strong> La evaluación heurística (Nielsen &amp; Molich, 1990; Nielsen, 1994) es un método de inspección de usabilidad en el que expertos examinan la interfaz y juzgan su conformidad con principios reconocidos. Se aplican las <strong>10 heurísticas de Nielsen</strong> adaptadas al contexto clínico de HAB. Evaluación realizada por un único evaluador en rol dual evaluador-diseñador.</blockquote>
+
+  <h2>1.1 Aplicación seleccionada y justificación</h2>
+  <table><thead><tr><th>Atributo</th><th>Detalle</th></tr></thead><tbody>
+    <tr><td><strong>Nombre</strong></td><td>Health Access Bridge (HAB) — Release 1 (MVP)</td></tr>
+    <tr><td><strong>URL evaluada</strong></td><td>https://health-access-bridge.onrender.com</td></tr>
+    <tr><td><strong>Stack</strong></td><td>React 18 · FastAPI 0.110 · PostgreSQL · JWT · scikit-learn (ML)</td></tr>
+    <tr><td><strong>Propósito</strong></td><td>Gestión clínica de pacientes con discapacidad en zonas rurales del Huila (Colombia); predice perfil de barreras funcionales ICF D1–D6 (OMS, 2001) mediante modelo ML</td></tr>
+    <tr><td><strong>Justificación</strong></td><td>HAB es la aplicación del proyecto del curso. Evaluarla permite generar recomendaciones directamente aplicables a R2, validar las decisiones de arquitectura de Fase 2, y cumplir el requisito de evaluar una app con gestión de usuarios, formularios médicos, roles diferenciados y contexto institucional de salud</td></tr>
+    <tr><td><strong>Módulos evaluados</strong></td><td>/login · /dashboard · /patients (lista, modal) · /patients/:id/predict · /analytics · /admin/users</td></tr>
+    <tr><td><strong>Fecha de evaluación</strong></td><td>Junio 2026 · Release 1 (MVP)</td></tr>
+  </tbody></table>
+
+  <h2>1.2 Clasificación y categorización de usuarios</h2>
+  <table><thead><tr><th>Tipo</th><th>Perfil</th><th>Nivel TIC</th><th>Objetivo en HAB</th><th>Persona HCI</th></tr></thead><tbody>
+    <tr><td><strong>U1 — Médico experto</strong></td><td>Médico/profesional de salud ≥3 años con sistemas clínicos digitales</td><td><span class="pri-baja">Alto</span></td><td>Registro ágil, predicciones ML frecuentes, Analytics</td><td>Dra. Emilly M. Celis</td></tr>
+    <tr><td><strong>U2 — Médico novel</strong></td><td>Médico recién graduado, primer contacto con HAB y la clasificación ICF</td><td><span class="pri-med">Medio</span></td><td>Aprender a registrar pacientes ICF correctamente</td><td>Perfil U2 (nuevo)</td></tr>
+    <tr><td><strong>U3 — Coordinador/Admin</strong></td><td>Funcionario institucional (ICBF, Alcaldía) con visión gerencial</td><td><span class="pri-baja">Medio-alto</span></td><td>Gestión de usuarios, reportes territoriales, auditoría</td><td>Laura Cangrejo</td></tr>
+    <tr><td><strong>U4 — Profesional SST</strong></td><td>Técnico SST sin formación médica; zona rural, conectividad 2G</td><td><span class="pri-alta">Bajo</span></td><td>Registrar pacientes en campo; depende de la claridad del formulario</td><td>Entrevistado E1</td></tr>
+  </tbody></table>
+
+  <h2>1.3 Guión de tareas</h2>
+  <table><thead><tr><th>T#</th><th>Tarea</th><th>Pasos resumidos</th><th>Criterio de éxito</th><th>Rol</th></tr></thead><tbody>
+    <tr><td><strong>T1</strong></td><td>Inicio de sesión y orientación</td><td>Abrir URL · Ingresar credenciales · Identificar módulos del menú</td><td>Llega al dashboard e identifica todos los módulos</td><td>U1/U2</td></tr>
+    <tr><td><strong>T2</strong></td><td>Registro de paciente con ICF completo</td><td>Ir a /patients · Modal "Crear" · Completar datos + D1–D6 · Guardar</td><td>Paciente creado sin errores; comprende qué valor (0–4) ingresar</td><td>U1/U2/U4</td></tr>
+    <tr><td><strong>T3</strong></td><td>Búsqueda y filtrado de paciente</td><td>Escribir nombre en buscador · Observar resultados · Abrir perfil</td><td>Paciente encontrado en ≤ 5 s</td><td>U1/U2</td></tr>
+    <tr><td><strong>T4</strong></td><td>Predicción ML e interpretación</td><td>Abrir detalle · Ejecutar predicción · Leer badge y descripción</td><td>Predicción ejecutada; usuario explica el perfil obtenido</td><td>U1/U2</td></tr>
+    <tr><td><strong>T5</strong></td><td>Consulta de estadísticas en Analytics</td><td>Navegar a /analytics · Leer gráficas · Identificar municipio con más pacientes</td><td>Responde preguntas sobre la población sin ayuda externa</td><td>U1/U3</td></tr>
+    <tr><td><strong>T6</strong></td><td>Gestión de usuarios (admin)</td><td>Iniciar sesión admin · /admin/users · Crear usuario médico · Cambiar estado</td><td>Usuario creado y estado cambiado; comprende el impacto del toggle</td><td>U3</td></tr>
+  </tbody></table>
+  <div class="footer">Health Access Bridge · Informe Heurístico · Fase 3 · HCI CORHUILA 2026 · Sección 1</div>
+</div>
+
+<!-- ── SECCIÓN 2: LISTA DE CHEQUEO ──────────────────────────────────────── -->
+<div class="page">
+  <h1>2. Lista de Chequeo Heurística</h1>
+  <blockquote><strong>Escala de severidad (Nielsen, 1994):</strong> <span class="s0">S0</span> No es un problema &nbsp; <span class="s1">S1</span> Cosmético &nbsp; <span class="s2">S2</span> Menor &nbsp; <span class="s3">S3</span> Mayor (alta prioridad) &nbsp; <span class="s4">S4</span> Catástrofe (corrección imperativa). &nbsp; <strong>Cumplimiento:</strong> <span class="ok">✅ Cumple</span> &nbsp; <span class="parcial">⚠️ Parcial</span> &nbsp; <span class="nok">❌ No cumple</span></blockquote>
+
+  <table><thead><tr><th style="width:7%">Código</th><th style="width:42%">Ítem evaluado</th><th style="width:8%">Cumple</th><th style="width:5%">Sev</th><th>Evidencia / Observación</th></tr></thead><tbody>
+    <tr class="h-group"><td colspan="5">H1 · Visibilidad del estado del sistema</td></tr>
+    <tr><td>H1.1</td><td>El menú lateral indica claramente la sección activa</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Ítem activo: fondo azul + peso 600 en toda la app</td></tr>
+    <tr><td>H1.2</td><td>Hay indicador de carga durante la predicción ML</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Spinner animado visible mientras responde POST /predict</td></tr>
+    <tr><td>H1.3</td><td>El badge de perfil ML comunica visualmente el resultado</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Badge con color semántico + texto del perfil en tarjeta de resultado</td></tr>
+    <tr><td>H1.4</td><td>Se muestra confirmación visual persistente tras crear/editar paciente</td><td class="parcial">⚠️</td><td><span class="s1">S1</span></td><td>Toast de éxito dura 2 s; puede desaparecer antes de ser leído</td></tr>
+    <tr class="h-group"><td colspan="5">H2 · Correspondencia entre el sistema y el mundo real</td></tr>
+    <tr><td>H2.1</td><td>Los campos D1–D6 incluyen el nombre completo de la dimensión ICF</td><td class="parcial">⚠️</td><td><span class="s2">S2</span></td><td>El modal muestra solo "D1, D2…"; U2/U4 no puede asociar el código al constructo ICF</td></tr>
+    <tr><td>H2.2</td><td>Los íconos del menú son reconocibles para personal de salud</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Íconos estándar de paciente, gráfica, escudo (admin)</td></tr>
+    <tr><td>H2.3</td><td>Todos los mensajes y errores están en español colombiano</td><td class="parcial">⚠️</td><td><span class="s2">S2</span></td><td>Errores FastAPI aparecen en inglés ("Unprocessable Entity", "Internal Server Error")</td></tr>
+    <tr><td>H2.4</td><td>El flujo del formulario de paciente sigue lógica clínica natural</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Datos personales → ICF → guardar; coherente con fichas clínicas físicas</td></tr>
+    <tr class="h-group"><td colspan="5">H3 · Control y libertad del usuario</td></tr>
+    <tr><td>H3.1</td><td>El usuario puede cancelar la creación de un paciente en cualquier momento</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Botón "Cancelar" cierra el modal sin guardar</td></tr>
+    <tr><td>H3.2</td><td>Se puede editar un paciente existente sin recrearlo</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Ícono lápiz abre modal con datos precargados</td></tr>
+    <tr><td>H3.3</td><td>Existe confirmación o posibilidad de deshacer al eliminar un paciente</td><td class="nok">❌</td><td><span class="s3">S3</span></td><td>Botón eliminar ejecuta inmediatamente sin diálogo; sin opción de deshacer</td></tr>
+    <tr><td>H3.4</td><td>El usuario puede volver fácilmente a la lista desde el detalle</td><td class="parcial">⚠️</td><td><span class="s2">S2</span></td><td>Solo botón Atrás del navegador; sin breadcrumbs ni botón "← Volver" (R1)</td></tr>
+    <tr class="h-group"><td colspan="5">H4 · Consistencia y estándares</td></tr>
+    <tr><td>H4.1</td><td>Los botones de acción primaria usan colores consistentes</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Azul primario (#1565c0) en todos los CTA de la app</td></tr>
+    <tr><td>H4.2</td><td>El vocabulario de botones de confirmación es uniforme</td><td class="parcial">⚠️</td><td><span class="s1">S1</span></td><td>Algunos modales usan "Guardar", otros "Registrar" para la misma acción</td></tr>
+    <tr><td>H4.3</td><td>La posición de botones de confirmación es constante</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Siempre esquina inferior derecha del modal</td></tr>
+    <tr><td>H4.4</td><td>Los íconos se usan consistentemente para las mismas acciones</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Lápiz=editar, basura=eliminar, ojo=ver; uso consistente en toda la app</td></tr>
+    <tr class="h-group"><td colspan="5">H5 · Prevención de errores</td></tr>
+    <tr><td>H5.1</td><td>Los campos obligatorios están marcados con asterisco (*)</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Asterisco rojo visible en todos los campos requeridos</td></tr>
+    <tr><td>H5.2</td><td>Hay validación antes del envío del formulario (client-side)</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>React Hook Form: error en rojo bajo cada campo al hacer submit</td></tr>
+    <tr><td>H5.3</td><td>Se solicita confirmación antes de eliminar un paciente</td><td class="nok">❌</td><td><span class="s3">S3</span></td><td>No existe diálogo de confirmación; el registro se elimina con un clic</td></tr>
+    <tr><td>H5.4</td><td>Los rangos válidos para D1–D6 (0–4) están indicados</td><td class="nok">❌</td><td><span class="s3">S3</span></td><td>Sin indicación de rango ni significado; U4 puede ingresar valores erróneos</td></tr>
+  </tbody></table>
+  <div class="footer">Health Access Bridge · Informe Heurístico · Fase 3 · HCI CORHUILA 2026 · Sección 2 (parte 1)</div>
+</div>
+
+<!-- ── SECCIÓN 2 (continuación H6-H10) ─────────────────────────────────── -->
+<div class="page">
+  <h1>2. Lista de Chequeo Heurística <span style="font-size:12pt;font-weight:600;color:#555">(continuación H6–H10)</span></h1>
+
+  <table><thead><tr><th style="width:7%">Código</th><th style="width:42%">Ítem evaluado</th><th style="width:8%">Cumple</th><th style="width:5%">Sev</th><th>Evidencia / Observación</th></tr></thead><tbody>
+    <tr class="h-group"><td colspan="5">H6 · Reconocimiento antes que recuerdo</td></tr>
+    <tr><td>H6.1</td><td>Todas las secciones disponibles son visibles en el menú lateral</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Menú lateral fijo siempre visible con todos los módulos del rol</td></tr>
+    <tr><td>H6.2</td><td>Los campos tienen labels visibles (no solo placeholders)</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Labels fijos encima de cada campo en todos los formularios</td></tr>
+    <tr><td>H6.3</td><td>El resultado de predicción incluye descripción del perfil en texto</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Badge + texto "Bajas/Moderadas/Altas barreras" + descripción clínica</td></tr>
+    <tr><td>H6.4</td><td>Los filtros activos en búsqueda son visibles permanentemente</td><td class="nok">❌</td><td><span class="s2">S2</span></td><td>Sin indicador de filtro activo; URL no refleja el estado de búsqueda</td></tr>
+    <tr class="h-group"><td colspan="5">H7 · Flexibilidad y eficiencia de uso</td></tr>
+    <tr><td>H7.1</td><td>La búsqueda responde con debounce ≤ 300 ms</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Debounce de 300 ms implementado; resultados sin recarga de página</td></tr>
+    <tr><td>H7.2</td><td>Existen atajos de teclado para acciones frecuentes</td><td class="nok">❌</td><td><span class="s2">S2</span></td><td>No hay atajos documentados ni visibles en la UI</td></tr>
+    <tr><td>H7.3</td><td>Hay modo de entrada rápida o duplicación de registros</td><td class="nok">❌</td><td><span class="s1">S1</span></td><td>Cada paciente debe crearse desde cero; sin plantillas</td></tr>
+    <tr><td>H7.4</td><td>El acceso a predicción ML es directo desde la lista de pacientes</td><td class="parcial">⚠️</td><td><span class="s1">S1</span></td><td>Requiere abrir detalle y luego ejecutar predicción; 2 clics extra</td></tr>
+    <tr class="h-group"><td colspan="5">H8 · Estética y diseño minimalista</td></tr>
+    <tr><td>H8.1</td><td>La interfaz no muestra información irrelevante ni decorativa</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Diseño limpio; sin banners ni animaciones innecesarias</td></tr>
+    <tr><td>H8.2</td><td>La jerarquía visual es clara (títulos, subtítulos, acciones)</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Tipografía Inter con pesos 400/600/700 diferencia correctamente los niveles</td></tr>
+    <tr><td>H8.3</td><td>La paleta de colores es coherente con el propósito clínico</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>Azul institucional + verde/amarillo/rojo para perfiles ML; paleta sobria</td></tr>
+    <tr><td>H8.4</td><td>El espaciado y legibilidad son adecuados en tablet (768px)</td><td class="parcial">⚠️</td><td><span class="s1">S1</span></td><td>Tabla de pacientes requiere scroll horizontal en 768px</td></tr>
+    <tr class="h-group"><td colspan="5">H9 · Ayuda para reconocer, diagnosticar y recuperarse de errores</td></tr>
+    <tr><td>H9.1</td><td>Los errores de formulario son claros, en español y próximos al campo</td><td class="ok">✅</td><td><span class="s0">S0</span></td><td>React Hook Form: mensaje en rojo bajo el campo afectado</td></tr>
+    <tr><td>H9.2</td><td>Los errores del backend indican al usuario cómo corregir el problema</td><td class="nok">❌</td><td><span class="s3">S3</span></td><td>Errores 422 devuelven solo código HTTP; sin traducción ni guía al usuario</td></tr>
+    <tr><td>H9.3</td><td>Errores 500/401 muestran mensaje informativo en la UI</td><td class="nok">❌</td><td><span class="s3">S3</span></td><td>No generan toast; la interfaz queda en estado de carga indefinida</td></tr>
+    <tr><td>H9.4</td><td>El sistema avisa antes de que expire la sesión JWT</td><td class="parcial">⚠️</td><td><span class="s2">S2</span></td><td>Token expirado redirige a /login silenciosamente; posible pérdida de datos</td></tr>
+    <tr class="h-group"><td colspan="5">H10 · Ayuda y documentación</td></tr>
+    <tr><td>H10.1</td><td>Existen tooltips o ayuda contextual en los campos ICF D1–D6</td><td class="nok">❌</td><td><span class="s4">S4</span></td><td><strong>CATÁSTROFE:</strong> No hay tooltips, ícono ? ni descripción de dimensiones ICF. U2/U4 no puede calificar D1–D6 correctamente sin documentación externa</td></tr>
+    <tr><td>H10.2</td><td>Hay guía de bienvenida u onboarding para nuevos usuarios</td><td class="nok">❌</td><td><span class="s3">S3</span></td><td>No existe tour guiado ni modal de bienvenida; usuario entra al dashboard sin orientación</td></tr>
+    <tr><td>H10.3</td><td>Existe sección de ayuda, FAQ o documentación accesible desde la app</td><td class="nok">❌</td><td><span class="s3">S3</span></td><td>No hay Ayuda, FAQ ni manual in-app; roles y permisos no documentados</td></tr>
+  </tbody></table>
+  <div class="footer">Health Access Bridge · Informe Heurístico · Fase 3 · HCI CORHUILA 2026 · Sección 2 (parte 2)</div>
+</div>
+
+<!-- ── SECCIÓN 3: RESULTADOS ─────────────────────────────────────────────── -->
+<div class="page">
+  <h1>3. Resultados de la Evaluación</h1>
+
+  <h2>3.1 Resumen estadístico</h2>
+  <div class="stat-row">
+    <div class="stat-box"><div class="stat-num" style="color:#1b5e20">20</div><div class="stat-lbl" style="color:#2e7d32">✅ Sin problema (S0)</div></div>
+    <div class="stat-box" style="background:#fffde7"><div class="stat-num" style="color:#f9a825">5</div><div class="stat-lbl" style="color:#f57f17">⚠️ Cosmético (S1)</div></div>
+    <div class="stat-box" style="background:#fff3e0"><div class="stat-num" style="color:#e65100">6</div><div class="stat-lbl" style="color:#bf360c">⚠️ Menor (S2)</div></div>
+    <div class="stat-box" style="background:#ffebee"><div class="stat-num" style="color:#c62828">7</div><div class="stat-lbl" style="color:#b71c1c">❌ Mayor (S3)</div></div>
+    <div class="stat-box" style="background:#b71c1c"><div class="stat-num" style="color:#fff">1</div><div class="stat-lbl" style="color:#ffcdd2">❌ Catástrofe (S4)</div></div>
+    <div class="stat-box"><div class="stat-num">39</div><div class="stat-lbl">📋 Total ítems</div></div>
+  </div>
+
+  <h2>3.2 Top 10 — Problemas de mayor prioridad</h2>
+  <table><thead><tr><th>#</th><th>Código</th><th>Problema</th><th>Sev</th><th>Tarea</th><th>Ruta</th></tr></thead><tbody>
+    <tr><td><strong>1</strong></td><td>H10.1</td><td>Sin tooltips ni ayuda contextual en campos ICF D1–D6; U2/U4 no puede calificar correctamente</td><td><span class="s4">S4</span></td><td>T2</td><td>/patients (modal)</td></tr>
+    <tr><td><strong>2</strong></td><td>H3.3/H5.3</td><td>Sin confirmación al eliminar paciente; acción irreversible con un clic</td><td><span class="s3">S3</span></td><td>T2/T3</td><td>/patients</td></tr>
+    <tr><td><strong>3</strong></td><td>H5.4</td><td>Rango válido 0–4 no indicado en campos D1–D6; U4 puede ingresar valores erróneos</td><td><span class="s3">S3</span></td><td>T2</td><td>/patients (modal)</td></tr>
+    <tr><td><strong>4</strong></td><td>H9.2</td><td>Errores del backend (422) no orientativos; sin guía de corrección al usuario</td><td><span class="s3">S3</span></td><td>T2/T6</td><td>Formularios</td></tr>
+    <tr><td><strong>5</strong></td><td>H9.3</td><td>Errores 500/401 sin mensaje en UI; la interfaz queda en carga indefinida</td><td><span class="s3">S3</span></td><td>T1–T6</td><td>Toda la app</td></tr>
+    <tr><td><strong>6</strong></td><td>H10.2</td><td>Sin onboarding para nuevos usuarios: U2 entra al dashboard sin orientación</td><td><span class="s3">S3</span></td><td>T1</td><td>/dashboard</td></tr>
+    <tr><td><strong>7</strong></td><td>H10.3</td><td>Sin ayuda ni documentación de roles/funciones accesible desde la app</td><td><span class="s3">S3</span></td><td>T1/T6</td><td>/dashboard · /admin</td></tr>
+    <tr><td><strong>8</strong></td><td>H2.1</td><td>Labels D1–D6 sin nombre completo ICF; código solo insuficiente para U2/U4</td><td><span class="s2">S2</span></td><td>T2</td><td>/patients (modal)</td></tr>
+    <tr><td><strong>9</strong></td><td>H2.3</td><td>Mensajes de error del backend en inglés: incomprensibles para usuarios finales</td><td><span class="s2">S2</span></td><td>T2/T6</td><td>Toda la app</td></tr>
+    <tr><td><strong>10</strong></td><td>H3.4</td><td>Sin breadcrumbs; solo el botón del navegador para navegar hacia atrás</td><td><span class="s2">S2</span></td><td>T4</td><td>/patients/:id</td></tr>
+  </tbody></table>
+
+  <h2>3.3 Distribución de problemas por heurística</h2>
+  <table><thead><tr><th>Heurística</th><th>S0</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>Total</th></tr></thead><tbody>
+    <tr><td>H1 — Visibilidad del estado</td><td>3</td><td>1</td><td>0</td><td>0</td><td>0</td><td><span class="s1">1</span></td></tr>
+    <tr><td>H2 — Mundo real</td><td>2</td><td>0</td><td>2</td><td>0</td><td>0</td><td><span class="s2">2</span></td></tr>
+    <tr><td>H3 — Control y libertad</td><td>2</td><td>0</td><td>1</td><td>1</td><td>0</td><td><span class="s3">2</span></td></tr>
+    <tr><td>H4 — Consistencia</td><td>3</td><td>1</td><td>0</td><td>0</td><td>0</td><td><span class="s1">1</span></td></tr>
+    <tr><td>H5 — Prevención de errores</td><td>2</td><td>0</td><td>0</td><td>2</td><td>0</td><td><span class="s3">2</span></td></tr>
+    <tr><td>H6 — Reconocimiento</td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td><span class="s2">1</span></td></tr>
+    <tr><td>H7 — Flexibilidad</td><td>1</td><td>2</td><td>1</td><td>0</td><td>0</td><td><span class="s2">3</span></td></tr>
+    <tr><td>H8 — Estética minimalista</td><td>3</td><td>1</td><td>0</td><td>0</td><td>0</td><td><span class="s1">1</span></td></tr>
+    <tr><td>H9 — Ayuda para errores</td><td>1</td><td>0</td><td>1</td><td>2</td><td>0</td><td><span class="s3">3</span></td></tr>
+    <tr><td>H10 — Ayuda y documentación</td><td>0</td><td>0</td><td>0</td><td>2</td><td>1</td><td><span class="s4">3+S4</span></td></tr>
+    <tr style="font-weight:700;background:#e3f2fd"><td>TOTAL</td><td>20</td><td>5</td><td>6</td><td>7</td><td>1</td><td><strong>19 problemas</strong></td></tr>
+  </tbody></table>
+  <blockquote><strong>Hallazgo clave:</strong> H10 (Ayuda y documentación) y H9 (Ayuda para errores) concentran los problemas de mayor severidad. Esto se correlaciona directamente con los hallazgos KJ de Fase 1: fragmentación de datos, curva de aprendizaje ICF y necesidad de orientación para usuarios no expertos.</blockquote>
+  <div class="footer">Health Access Bridge · Informe Heurístico · Fase 3 · HCI CORHUILA 2026 · Sección 3</div>
+</div>
+
+<!-- ── SECCIÓN 4: CONCLUSIONES Y RECOMENDACIONES ─────────────────────────── -->
+<div class="page">
+  <h1>4. Conclusiones y Recomendaciones</h1>
+  <blockquote><strong>Conclusión general:</strong> HAB MVP R1 demuestra un diseño visual consistente y flujos bien estructurados (H4, H8 sin problemas mayores). Sin embargo, presenta deficiencias críticas en <strong>documentación y ayuda contextual</strong> (H10) y en el <strong>manejo de errores del backend</strong> (H9), que afectan especialmente a usuarios noveles (U2) y de campo (U4). Las correcciones de alta prioridad deben integrarse en Release 2 antes de expandir el sistema a nuevos municipios.</blockquote>
+
+  <h2>4.1 Recomendaciones priorizadas</h2>
+  <table><thead><tr><th>Prioridad</th><th>ID</th><th>Recomendación</th><th>Heurística</th><th>Release</th></tr></thead><tbody>
+    <tr><td><span class="pri-crit">🔴 CRÍTICA</span></td><td>R1</td><td>Agregar tooltip/ícono "?" con descripción y rango (0–4) de cada dimensión ICF D1–D6 en el formulario</td><td>H10.1 · H5.4 · H2.1</td><td>R2</td></tr>
+    <tr><td><span class="pri-alta">🔴 ALTA</span></td><td>R2</td><td>Implementar diálogo de confirmación antes de eliminar registros de pacientes</td><td>H3.3 · H5.3</td><td>R2</td></tr>
+    <tr><td><span class="pri-alta">🔴 ALTA</span></td><td>R3</td><td>Personalizar errores de backend (422, 500, 401) con textos en español y guía de corrección</td><td>H9.2 · H9.3 · H2.3</td><td>R2</td></tr>
+    <tr><td><span class="pri-alta">🔴 ALTA</span></td><td>R4</td><td>Agregar toasts informativos para errores HTTP 401 ("Sesión expirada") y 500 ("Error temporal")</td><td>H9.3 · H1.4</td><td>R2</td></tr>
+    <tr><td><span class="pri-alta">🔴 ALTA</span></td><td>R5</td><td>Crear flujo de onboarding: modal de bienvenida con 3–4 pasos para nuevos usuarios</td><td>H10.2</td><td>R2</td></tr>
+    <tr><td><span class="pri-alta">🔴 ALTA</span></td><td>R6</td><td>Agregar sección "Ayuda" con descripción de roles, atajos y guía rápida de registro ICF</td><td>H10.3 · H7.2</td><td>R2</td></tr>
+    <tr><td><span class="pri-med">🟠 MEDIA</span></td><td>R7</td><td>Mostrar nombre completo ICF en el formulario: "D1 — Aprendizaje (0=Sin barrera · 4=Barrera completa)"</td><td>H2.1</td><td>R2</td></tr>
+    <tr><td><span class="pri-med">🟠 MEDIA</span></td><td>R8</td><td>Agregar breadcrumbs en vistas de detalle y predicción para navegación sin depender del navegador</td><td>H3.4 · H6.4</td><td>R2</td></tr>
+    <tr><td><span class="pri-med">🟠 MEDIA</span></td><td>R9</td><td>Mostrar filtros activos y reflejar búsqueda en la URL (?q=nombre) para reproducibilidad</td><td>H6.4</td><td>R2</td></tr>
+    <tr><td><span class="pri-med">🟠 MEDIA</span></td><td>R10</td><td>Advertir 5 min antes de que expire la sesión JWT para evitar pérdida de datos</td><td>H9.4</td><td>R2</td></tr>
+    <tr><td><span class="pri-med">🟠 MEDIA</span></td><td>R11</td><td>Agregar acceso directo a "Ejecutar predicción" desde la lista de pacientes</td><td>H7.4</td><td>R2</td></tr>
+    <tr><td><span class="pri-baja">🟢 BAJA</span></td><td>R12</td><td>Unificar vocabulario de botones: usar siempre "Guardar" como acción de persistencia</td><td>H4.2</td><td>R2</td></tr>
+    <tr><td><span class="pri-baja">🟢 BAJA</span></td><td>R13</td><td>Optimizar tabla de pacientes para tablet (768px): columnas D1–D6 colapsables</td><td>H8.4</td><td>R2</td></tr>
+    <tr><td><span class="pri-baja">🟢 BAJA</span></td><td>R14</td><td>Implementar plantillas de registro rápido por tipo de condición (motora, cognitiva, sensorial)</td><td>H7.3</td><td>R3</td></tr>
+  </tbody></table>
+
+  <h2>4.2 Trazabilidad con hallazgos de Fase 1 (KJ)</h2>
+  <table><thead><tr><th>Tema KJ (Fase 1)</th><th>Problema heurístico</th><th>Recomendación</th></tr></thead><tbody>
+    <tr><td>🔵 Fragmentación de datos / Eficiencia</td><td>H10.1 — Sin ayuda en campos ICF</td><td>R1: Tooltips ICF en formulario</td></tr>
+    <tr><td>🔵 Fragmentación / Velocidad</td><td>H7.3/H7.4 — Baja eficiencia para expertos</td><td>R11/R14: Acceso directo ML + plantillas</td></tr>
+    <tr><td>🟣 Visibilidad y comunicación</td><td>H9.2/H9.3 — Errores sin comunicación clara</td><td>R3/R4: Mensajes en español + toasts</td></tr>
+    <tr><td>🔴 Curva de aprendizaje</td><td>H10.2/H10.3 — Sin onboarding ni documentación</td><td>R5/R6: Onboarding + sección Ayuda</td></tr>
+    <tr><td>🟡 Confianza y privacidad</td><td>H3.3/H5.3 — Eliminación sin confirmación</td><td>R2: Diálogo de confirmación</td></tr>
+  </tbody></table>
+
+  <h2>4.3 Próximos pasos para Release 2</h2>
+  <ol>
+    <li><strong>Sprint 1 (crítico):</strong> R1 (tooltips ICF) · R2 (confirmación eliminación) · R3/R4 (errores en español + toasts)</li>
+    <li><strong>Sprint 2 (alto):</strong> R5 (onboarding) · R6 (sección Ayuda) · R7 (labels ICF completos)</li>
+    <li><strong>Sprint 3 (medio):</strong> R8 (breadcrumbs) · R9 (filtros en URL) · R10 (alerta JWT) · R11 (acceso directo ML)</li>
+    <li><strong>Sprint 4 / R3 (bajo):</strong> R12 (vocabulario uniforme) · R13 (tabla responsive tablet) · R14 (plantillas de registro)</li>
+  </ol>
+
+  <div style="margin-top:14px;background:#e8f5e9;border-radius:8px;padding:12px 16px;font-size:9pt">
+    <strong>Referencias:</strong><br>
+    Nielsen, J. &amp; Molich, R. (1990). Heuristic evaluation of user interfaces. <em>CHI '90 Proceedings</em>, 249–256.<br>
+    Nielsen, J. (1994). <em>Usability Engineering</em>. Academic Press.<br>
+    OMS (2001). <em>Clasificación Internacional del Funcionamiento, de la Discapacidad y de la Salud (CIF/ICF)</em>.<br>
+    ISO 9241-210:2019. Ergonomics of human-system interaction — Human-centred design for interactive systems.
+  </div>
+  <div class="footer">Health Access Bridge · Informe de Evaluación Heurística · Actividad 17 · HCI Fase 3 · CORHUILA 2026 · ISO 9241-210:2019</div>
+</div>
+
+</body>
+</html>
