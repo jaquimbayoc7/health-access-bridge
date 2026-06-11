@@ -41,8 +41,48 @@ def get_model():
 
 # ... (Los endpoints GET, POST, PUT, DELETE se quedan exactamente igual) ...
 @router.post("/", response_model=schemas.Patient, status_code=status.HTTP_201_CREATED)
-def create_patient(patient: schemas.PatientCreate, db: Session = Depends(dependencies.get_db), current_user: models.User = Depends(dependencies.get_current_active_medico)):
-    return crud.create_user_patient(db=db, patient=patient, user_id=current_user.id)
+def create_patient(
+    patient: schemas.PatientCreate, 
+    db: Session = Depends(dependencies.get_db), 
+    current_user: models.User = Depends(dependencies.get_current_active_user)
+):
+    """
+    Crea un nuevo paciente. 
+    Médicos y administradores pueden crear pacientes.
+    El paciente se asigna automáticamente al usuario que lo crea.
+    """
+    try:
+        # Verificar que el usuario tenga permisos (médico o admin)
+        if current_user.role not in ["médico", "admin"]:
+            raise HTTPException(
+                status_code=403, 
+                detail="Solo médicos y administradores pueden crear pacientes"
+            )
+        
+        # Verificar si ya existe un paciente con ese número de documento
+        existing = db.query(models.Patient).filter(
+            models.Patient.numero_documento == patient.numero_documento
+        ).first()
+        
+        if existing:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Ya existe un paciente con el documento {patient.numero_documento}"
+            )
+        
+        # Crear el paciente
+        return crud.create_user_patient(db=db, patient=patient, user_id=current_user.id)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        # Log del error para debugging
+        print(f"❌ Error al crear paciente: {type(e).__name__}: {str(e)}")
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error al crear paciente: {str(e)}"
+        )
 
 @router.get("/", response_model=List[schemas.Patient])
 def read_patients(

@@ -71,11 +71,20 @@ def get_patients_by_owner(db: Session, owner_id: int, skip: int = 0, limit: int 
     return query.offset(skip).limit(limit).all()
 
 def create_user_patient(db: Session, patient: schemas.PatientCreate, user_id: int):
-    db_patient = models.Patient(**patient.model_dump(), owner_id=user_id)
-    db.add(db_patient)
-    db.commit()
-    db.refresh(db_patient)
-    return db_patient
+    """
+    Crea un nuevo paciente en la base de datos.
+    Maneja errores de integridad (duplicados, etc.)
+    """
+    try:
+        db_patient = models.Patient(**patient.model_dump(), owner_id=user_id)
+        db.add(db_patient)
+        db.commit()
+        db.refresh(db_patient)
+        return db_patient
+    except Exception as e:
+        db.rollback()
+        print(f"❌ Error en create_user_patient: {type(e).__name__}: {str(e)}")
+        raise
 
 def update_patient(db: Session, db_patient: models.Patient, patient_update: schemas.PatientUpdate):
     update_data = patient_update.model_dump(exclude_unset=True)
