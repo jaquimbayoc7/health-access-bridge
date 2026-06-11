@@ -1,6 +1,9 @@
 # app/main.py
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from .database import engine, Base, SessionLocal
 from .routers import users, patients, admin
 from . import crud, schemas
@@ -56,6 +59,27 @@ _default_origins = [
 _env_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
 allowed_origins = list(set(_default_origins + _env_origins))
 
+# Middleware para logging de requests (debe ir antes de CORS)
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    """
+    Middleware para loggear todas las requests entrantes.
+    Útil para debuggear problemas de CORS.
+    """
+    origin = request.headers.get("origin", "N/A")
+    method = request.method
+    path = request.url.path
+    
+    print(f"📨 {method} {path} | Origin: {origin}")
+    
+    # Llamar al siguiente middleware/handler
+    response = await call_next(request)
+    
+    # Log del status code de la respuesta
+    print(f"📤 {method} {path} | Status: {response.status_code}")
+    
+    return response
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
@@ -63,6 +87,81 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["*"],
 )
+
+# ======================================================================
+# Exception handlers para asegurar que los headers de CORS siempre 
+# estén presentes, incluso en respuestas de error
+# ======================================================================
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    """
+    Maneja excepciones HTTP y asegura que los headers de CORS estén presentes.
+    Esto es crucial para que el frontend reciba errores correctamente.
+    """
+    origin = request.headers.get("origin")
+    
+    # Crear la respuesta de error
+    response = JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail}
+    )
+    
+    # Agregar headers de CORS si el origen está permitido
+    if origin in allowed_origins:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+    
+    return response
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """
+    Maneja errores de validación de requests y asegura que los headers de CORS estén presentes.
+    """
+    origin = request.headers.get("origin")
+    
+    # Crear la respuesta de error de validación
+    response = JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": exc.errors(), "body": exc.body}
+    )
+    
+    # Agregar headers de CORS si el origen está permitido
+    if origin in allowed_origins:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+    
+    return response
+
+@app.exception_handler(Exception)
+async def general_exception_handler(request: Request, exc: Exception):
+    """
+    Maneja cualquier otra excepción no capturada y asegura que los headers de CORS estén presentes.
+    """
+    origin = request.headers.get("origin")
+    
+    # Log del error para debugging
+    print(f"❌ Error no manejado: {type(exc).__name__}: {str(exc)}")
+    
+    # Crear la respuesta de error general
+    response = JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": "Error interno del servidor"}
+    )
+    
+    # Agregar headers de CORS si el origen está permitido
+    if origin in allowed_origins:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+    
+    return response
 
 @app.on_event("startup")
 def on_startup():
@@ -74,6 +173,15 @@ def on_startup():
     Es tolerante a errores de conexión para que la app siga funcionando
     aunque la BD no esté lista inicialmente.
     """
+    # Mostrar configuración de CORS
+    print("=" * 60)
+    print("🌐 CONFIGURACIÓN DE CORS")
+    print("=" * 60)
+    print("Orígenes permitidos:")
+    for origin in allowed_origins:
+        print(f"  ✓ {origin}")
+    print("=" * 60)
+    
     try:
         # Intentar crear las tablas
         print("Inicializando esquema de base de datos...")
