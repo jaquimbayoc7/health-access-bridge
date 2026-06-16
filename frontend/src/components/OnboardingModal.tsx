@@ -35,8 +35,8 @@ const STEPS = [
     iconColor: 'text-blue-500',
     title: 'Módulo de Predicciones ML',
     description:
-      'Selecciona un paciente y ejecuta una predicción de perfil de riesgo. El modelo asigna un perfil del 1 (bajo riesgo) al 5 (barrera completa).',
-    hint: '💡 El color del badge indica la categoría: verde = bajo riesgo · amarillo = moderado · rojo = barrera severa.',
+      'Selecciona un paciente y ejecuta una predicción de perfil de riesgo. El modelo asigna uno de 3 perfiles: Perfil 0 (barreras bajas), Perfil 1 (barreras mixtas) o Perfil 2 (barreras altas y generalizadas).',
+    hint: '💡 El badge de color indica el perfil: gris = Perfil 0 (bajas) · verde = Perfil 1 (mixtas) · azul = Perfil 2 (altas). Consulta la Guía Predictiva para la interpretación clínica completa.',
   },
   {
     icon: HelpCircle,

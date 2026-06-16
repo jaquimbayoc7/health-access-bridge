@@ -43,11 +43,27 @@ const ICF_DIMENSIONS = [
 ];
 
 const PREDICTION_PROFILES = [
-  { profile: 1, label: 'Perfil 1 — Bajo riesgo', color: 'bg-green-500', description: 'El paciente presenta barreras mínimas. Alta autonomía funcional en las 6 dimensiones ICF.' },
-  { profile: 2, label: 'Perfil 2 — Riesgo leve', color: 'bg-blue-500', description: 'Barreras leves en una o más dimensiones. Requiere seguimiento periódico.' },
-  { profile: 3, label: 'Perfil 3 — Riesgo moderado', color: 'bg-yellow-500', description: 'Barreras moderadas que afectan la autonomía. Se recomienda intervención terapéutica.' },
-  { profile: 4, label: 'Perfil 4 — Riesgo alto', color: 'bg-orange-500', description: 'Barreras graves en múltiples dimensiones. Requiere plan de intervención prioritario.' },
-  { profile: 5, label: 'Perfil 5 — Barrera severa', color: 'bg-red-500', description: 'Barrera completa o severa en la mayoría de dimensiones. Atención inmediata recomendada.' },
+  {
+    profile: 0,
+    label: 'Perfil 0 — Barreras Bajas o Focalizadas',
+    color: 'bg-gray-500',
+    description:
+      'El paciente reporta niveles de dificultad bajos en la mayoría de dominios. Ha desarrollado estrategias de afrontamiento efectivas o cuenta con un entorno con pocas barreras significativas. Alta autonomía y funcionalidad general.',
+  },
+  {
+    profile: 1,
+    label: 'Perfil 1 — Barreras Moderadas o Mixtas',
+    color: 'bg-green-500',
+    description:
+      'El paciente presenta una experiencia heterogénea: niveles bajos en algunos dominios y significativamente altos en otros. Las barreras son contextuales y específicas, no generalizadas. Requiere intervenciones focalizadas.',
+  },
+  {
+    profile: 2,
+    label: 'Perfil 2 — Barreras Altas y Generalizadas',
+    color: 'bg-blue-500',
+    description:
+      'El paciente percibe niveles de dificultad altos en la mayoría o todos los dominios evaluados. Las barreras tienen un impacto transversal significativo en su vida, autonomía y participación social. Requiere intervención prioritaria y enfoque multidisciplinario.',
+  },
 ];
 
 const FAQ = [
@@ -61,7 +77,7 @@ const FAQ = [
   },
   {
     q: '¿Cómo interpreto el resultado de una predicción?',
-    a: 'El modelo ML asigna un perfil del 1 al 5 basado en los niveles ICF D1–D6. El badge de color indica la severidad: verde (Perfil 1) = bajo riesgo, rojo (Perfil 5) = barrera severa. El campo "description" explica el resultado en lenguaje natural.',
+    a: 'El modelo ML asigna un perfil del 0 al 2 basado en los niveles ICF D1–D6. Perfil 0 (gris) = barreras bajas o focalizadas · Perfil 1 (verde) = barreras moderadas o mixtas · Perfil 2 (azul) = barreras altas y generalizadas. El campo de descripción explica el resultado en lenguaje clínico natural.',
   },
   {
     q: '¿Cómo exporto la lista de pacientes?',
