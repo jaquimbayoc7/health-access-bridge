@@ -1780,6 +1780,10 @@ function show(id) {
   });
   window.scrollTo({top:0,behavior:'smooth'});
   if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+  try {
+    const nodes = document.getElementById(id).querySelectorAll('.mermaid:not([data-processed])');
+    if (nodes.length) mermaid.run({nodes: Array.from(nodes)});
+  } catch(e) {}
 }
 
 function switchTab(group, idx, btn) {
@@ -1806,7 +1810,12 @@ function toggleSidebar() {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') document.getElementById('sidebar').classList.remove('open');
 });
-mermaid.initialize({startOnLoad:true,theme:'neutral',flowchart:{curve:'basis',useMaxWidth:true}});
+try {
+  mermaid.initialize({startOnLoad:false,theme:'neutral',flowchart:{curve:'basis',useMaxWidth:true}});
+  document.querySelectorAll('.doc-section.visible .mermaid').forEach(el => {
+    mermaid.run({nodes:[el]});
+  });
+} catch(e) { console.warn('Mermaid no disponible:', e); }
 </script>
 </body>
 </html>
