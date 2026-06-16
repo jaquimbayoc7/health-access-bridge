@@ -298,6 +298,9 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg);
   <div class="nav-item" onclick="show('p14')"><span class="num">14</span> Lista de Chequeo</div>
   <div class="nav-item" onclick="show('p15')"><span class="num">15</span> Resultados</div>
   <div class="nav-item" onclick="show('p16')"><span class="num">16</span> Conclusiones</div>
+
+  <div class="nav-section">Fase 4 — Test de Usuario</div>
+  <div class="nav-item" onclick="show('p08')"><span class="num">08</span> Test de Usuario · Final</div>
 </nav>
 
 <!-- ── Main content ──────────────────────────────────────────────────── -->
@@ -1513,8 +1516,208 @@ flowchart LR
     </div></div>
   </section>
 
+  <!-- ── FASE 4 — TEST DE USUARIO ───────────────────────────────── -->
+  <section id="p08" class="doc-section">
+    <div class="sec-header">
+      <h1>🧪 Test de Usuario — Fase 4 Final</h1>
+      <p>Guión de tareas · Protocolo de sesión · Encuestas · Estilos de interacción (Kolb) · Heurísticas emocionales</p>
+      <div class="badges">
+        <span class="badge">Fase 4 · TU</span>
+        <span class="badge">3 Participantes</span>
+        <span class="badge">3 Tareas HAB</span>
+        <span class="badge">6 Instrumentos</span>
+        <span class="badge">Think-aloud · Observación</span>
+        <span class="badge">Demo QA · Junio 2026</span>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="sv">3</div><div class="sl">Participantes</div></div>
+      <div class="stat-card"><div class="sv">3</div><div class="sl">Tareas HAB</div></div>
+      <div class="stat-card"><div class="sv">8 min</div><div class="sl">Tiempo total</div></div>
+      <div class="stat-card"><div class="sv">25</div><div class="sl">Puntos máx. satisfacción</div></div>
+      <div class="stat-card"><div class="sv">10</div><div class="sl">Heurísticas emocionales</div></div>
+      <div class="stat-card"><div class="sv">4</div><div class="sl">Estilos Kolb</div></div>
+    </div>
+
+    <!-- Participantes -->
+    <div class="card">
+      <h3 style="margin-bottom:12px;color:var(--primary-d)">Participantes del test</h3>
+      <div class="participants-grid">
+        <div class="p-card">
+          <div class="p-role">P1 · Usuario institucional</div>
+          <div class="p-name">Dra. Emilly Maria Celis Barreto</div>
+          <div>Profesional en SST · ICBF — Neiva, Huila</div>
+          <div style="margin-top:8px"><span class="p-level avanzado">★★★★★ Avanzado</span></div>
+          <div style="font-size:.78rem;color:var(--muted-fg);margin-top:6px">Corresponde a E1</div>
+        </div>
+        <div class="p-card">
+          <div class="p-role">P2 · Coordinación / Admin</div>
+          <div class="p-name">Laura Cangrejo Perafan</div>
+          <div>Profesional · Alcaldía de Neiva, Huila</div>
+          <div style="margin-top:8px"><span class="p-level intermedio">★★★☆☆ Intermedio</span></div>
+          <div style="font-size:.78rem;color:var(--muted-fg);margin-top:6px">Corresponde a E2</div>
+        </div>
+        <div class="p-card">
+          <div class="p-role">P3 · Stakeholder externo</div>
+          <div class="p-name">Familiar / Cuidador <em style="font-size:.78rem">(anónimo)</em></div>
+          <div>Cuidador principal · paciente con discapacidad motora</div>
+          <div style="margin-top:8px"><span class="p-level novato">★☆☆☆☆ Novato absoluto</span></div>
+          <div style="font-size:.78rem;color:var(--muted-fg);margin-top:6px">Corresponde a E3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guión de Tareas -->
+    <div class="card"><div class="md-body">
+      <h2>📋 Sección 1 — Guión de Tareas</h2>
+      <blockquote><p>Las tareas están ordenadas de <strong>menor a mayor complejidad</strong>. El moderador entrega este guión al inicio de la sesión. No se revela el orden de dificultad al participante. Demo: <code>https://hab-frontend-qa.onrender.com</code></p></blockquote>
+      <div class="highlight-box blue">
+        <strong>Tarea 1 — Registrar un nuevo paciente</strong><br>
+        <span style="font-size:.84rem">Ingrese al sistema HAB y registre un nuevo paciente con los datos de la ficha de referencia. Complete al menos los campos obligatorios del formulario ICF.</span>
+        <div style="margin-top:8px"><span class="info-chip">⏱ 3 minutos</span><span class="info-chip">Complejidad baja</span><span class="info-chip">Actividad A2 — USM</span></div>
+      </div>
+      <div class="highlight-box blue">
+        <strong>Tarea 2 — Buscar un paciente y revisar su perfil</strong><br>
+        <span style="font-size:.84rem">Busque al paciente "Carlos Medina Ospina" y navegue hasta visualizar su perfil completo, incluyendo historial y dimensiones ICF registradas.</span>
+        <div style="margin-top:8px"><span class="info-chip">⏱ 2 minutos</span><span class="info-chip">Complejidad media</span><span class="info-chip">Actividad A2 — USM</span></div>
+      </div>
+      <div class="highlight-box blue">
+        <strong>Tarea 3 — Ejecutar predicción ML e interpretar resultado</strong><br>
+        <span style="font-size:.84rem">Seleccione un paciente existente, ejecute una predicción de perfil de riesgo desde la sección de Predicciones y describa en voz alta lo que indica el resultado (color del badge y categoría).</span>
+        <div style="margin-top:8px"><span class="info-chip">⏱ 3 minutos</span><span class="info-chip">Complejidad alta</span><span class="info-chip">Actividad A3 — USM</span></div>
+      </div>
+    </div></div>
+
+    <!-- Protocolo -->
+    <div class="card"><div class="md-body">
+      <h2>🗂 Sección 2 — Protocolo de Sesión</h2>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot"><span>1</span></div>
+          <div class="tl-title">Preparación del sitio</div>
+          <div class="tl-body">Adecuación del espacio · apertura de la demo HAB · credenciales de prueba <code>usuario@hab-demo.co / hab2026</code> · disposición de instrumentos impresos · activación del instrumento de observación</div>
+        </div>
+        <div class="tl-item"><div class="tl-dot"><span>2</span></div>
+          <div class="tl-title">Presentación del sistema</div>
+          <div class="tl-body">Familiarizar al participante con el entorno · explicar que se evalúa el <strong>sistema, no al usuario</strong> · pedir pensamiento en voz alta · solicitar consentimiento de grabación (ver documento 03)</div>
+        </div>
+        <div class="tl-item"><div class="tl-dot"><span>3</span></div>
+          <div class="tl-title">Explicación de la prueba</div>
+          <div class="tl-body">Presentar HAB brevemente (2 min máx.) · entregar guión de tareas · indicar tiempos · aclarar que el moderador no da pistas durante la ejecución</div>
+        </div>
+        <div class="tl-item"><div class="tl-dot"><span>4</span></div>
+          <div class="tl-title">Realización de las pruebas</div>
+          <div class="tl-body">Ejecutar T1 → T2 → T3 · observador registra tiempo, errores y heurísticas emocionales · anotar si cada tarea fue <em>completada / con ayuda / no completada</em></div>
+        </div>
+        <div class="tl-item"><div class="tl-dot"><span>5</span></div>
+          <div class="tl-title">Verificación y cierre</div>
+          <div class="tl-body">Aplicar encuesta sociodemográfica · encuesta post-test · test de estilos de interacción · organizar registros · agradecer y recordar confidencialidad</div>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- Encuesta Sociodemográfica -->
+    <div class="card"><div class="md-body">
+      <h2>👤 Sección 3 — Encuesta Sociodemográfica</h2>
+      <blockquote><p>La información será manejada de forma anónima y confidencial conforme a la <strong>Ley 1581 de 2012 (HABEAS DATA)</strong>.</p></blockquote>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>Pregunta</th><th>Opciones</th></tr></thead><tbody>
+        <tr><td><strong>1</strong></td><td>Su rol principal es</td><td>Profesional de salud · Administrativo · Familiar/cuidador · Otro</td></tr>
+        <tr><td><strong>2</strong></td><td>Su edad está entre</td><td>20-30 · 31-40 · 41-50 · 51-60 · Más de 60 años</td></tr>
+        <tr><td><strong>3</strong></td><td>Su último nivel de estudios es</td><td>Técnico · Pregrado · Especialización · Maestría · Doctorado · Otro</td></tr>
+        <tr><td><strong>4</strong></td><td>¿Con qué frecuencia usa plataformas digitales de salud?</td><td>Todos los días · Varias veces/semana · Semanalmente · Ocasionalmente · Nunca antes de hoy</td></tr>
+        <tr><td><strong>5</strong></td><td>¿Tiene sugerencias sobre la sesión de hoy?</td><td>Campo abierto</td></tr>
+      </tbody></table></div>
+    </div></div>
+
+    <!-- Encuesta Post-Test -->
+    <div class="card"><div class="md-body">
+      <h2>⭐ Sección 4 — Encuesta Post-Test de Satisfacción</h2>
+      <blockquote><p>Escala <strong>1 = Muy inadecuado · 5 = Muy adecuado</strong>. Puntuación máxima: 25 puntos.</p></blockquote>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>Dimensión evaluada</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead><tbody>
+        <tr><td><strong>1</strong></td><td>¿Cómo se sintió realizando las tareas en HAB?</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td><strong>2</strong></td><td>¿La explicación inicial fue suficiente para entender lo que debía hacer?</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td><strong>3</strong></td><td>¿El tiempo asignado fue suficiente para completar cada tarea?</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td><strong>4</strong></td><td>¿La ubicación de elementos en la interfaz le resultó clara?</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td><strong>5</strong></td><td>En general, ¿qué tan fácil le resultó usar HAB para completar las tareas?</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+      </tbody></table></div>
+      <div class="highlight-box green" style="margin-top:10px"><strong>Interpretación:</strong> 20–25 = Muy satisfactorio &nbsp;·&nbsp; 15–19 = Satisfactorio &nbsp;·&nbsp; 10–14 = Mejorable &nbsp;·&nbsp; &lt;10 = Crítico</div>
+    </div></div>
+
+    <!-- Test Estilos Interacción -->
+    <div class="card"><div class="md-body">
+      <h2>🎓 Sección 5 — Test de Estilos de Interacción (Kolb)</h2>
+      <blockquote><p>Asigne <strong>4</strong> a la situación que más lo representa, <strong>3</strong> a la segunda, <strong>2</strong> a la tercera, <strong>1</strong> a la que menos. No repita puntaje dentro de una fila.</p></blockquote>
+      <div class="tbl-wrap"><table><thead><tr><th>Situación</th><th>EC — Sentimientos</th><th>OR — Observación</th><th>CA — Razonamiento</th><th>EA — Acción</th></tr></thead><tbody>
+        <tr><td>Cuando aprendo:</td><td>Prefiero valerme de mis sensaciones y sentimientos</td><td>Prefiero mirar y atender</td><td>Prefiero pensar en las ideas</td><td>Prefiero hacer cosas</td></tr>
+        <tr><td>Aprendo mejor cuando:</td><td>Confío en mis corazonadas y sentimientos</td><td>Atiendo y observo cuidadosamente</td><td>Confío en mis pensamientos lógicos</td><td>Trabajo duramente para que las cosas queden realizadas</td></tr>
+        <tr><td>Cuando estoy aprendiendo:</td><td>Tengo sentimientos y reacciones fuertes</td><td>Soy reservado y tranquilo</td><td>Busco razonar sobre las cosas que están sucediendo</td><td>Me siento responsable de las cosas</td></tr>
+        <tr><td>Aprendo a través de:</td><td>Sentimientos</td><td>Observaciones</td><td>Razonamientos</td><td>Acciones</td></tr>
+        <tr><td>Cuando aprendo:</td><td>Estoy abierto a nuevas experiencias</td><td>Tomo en cuenta todos los aspectos relacionados</td><td>Prefiero analizar las cosas dividiéndolas en sus partes</td><td>Prefiero hacer las cosas directamente</td></tr>
+        <tr><td>Cuando estoy aprendiendo:</td><td>Soy una persona intuitiva</td><td>Soy una persona observadora</td><td>Soy una persona lógica</td><td>Soy una persona activa</td></tr>
+        <tr><td>Aprendo mejor a través de:</td><td>Las relaciones con mis compañeros</td><td>La observación</td><td>Teorías racionales</td><td>La práctica de los temas tratados</td></tr>
+        <tr><td>Cuando aprendo:</td><td>Me siento involucrado en los temas tratados</td><td>Me tomo mi tiempo antes de actuar</td><td>Prefiero las teorías y las ideas</td><td>Prefiero ver los resultados a través de mi propio trabajo</td></tr>
+        <tr><td>Aprendo mejor cuando:</td><td>Me baso en mis intuiciones y sentimientos</td><td>Me baso en observaciones personales</td><td>Tomo en cuenta mis propias ideas sobre el tema</td><td>Pruebo personalmente la tarea</td></tr>
+        <tr><td>Cuando estoy aprendiendo:</td><td>Soy una persona abierta</td><td>Soy una persona reservada</td><td>Soy una persona racional</td><td>Soy una persona responsable</td></tr>
+        <tr><td>Cuando aprendo:</td><td>Me involucro</td><td>Prefiero observar</td><td>Prefiero evaluar las cosas</td><td>Prefiero asumir una actitud activa</td></tr>
+        <tr><td>Aprendo mejor cuando:</td><td>Soy receptivo y de mente abierta</td><td>Soy cuidadoso</td><td>Analizo las ideas</td><td>Soy práctico</td></tr>
+        <tr style="background:var(--primary);color:#fff"><td><strong>TOTAL →</strong></td><td><strong>EC</strong> (Exp. Concreta)</td><td><strong>OR</strong> (Obs. Reflexiva)</td><td><strong>CA</strong> (Conc. Abstracta)</td><td><strong>EA</strong> (Exp. Activa)</td></tr>
+      </tbody></table></div>
+      <div class="tbl-wrap" style="margin-top:16px"><table><thead><tr><th>Estilo dominante</th><th>Perfil de interacción con HAB</th></tr></thead><tbody>
+        <tr><td><strong>EC alto</strong></td><td>Empático, orientado a personas; aprende sintiendo. Prefiere guía visual y apoyo contextual.</td></tr>
+        <tr><td><strong>OR alto</strong></td><td>Reflexivo; observa antes de actuar. Valora demos, tutoriales y documentación detallada.</td></tr>
+        <tr><td><strong>CA alto</strong></td><td>Analítico; necesita entender el modelo mental. Tolera complejidad si la lógica es coherente.</td></tr>
+        <tr><td><strong>EA alto</strong></td><td>Pragmático; aprende explorando. Prefiere atajos y resultados rápidos. Baja tolerancia a flujos largos.</td></tr>
+      </tbody></table></div>
+    </div></div>
+
+    <!-- Heurísticas Emocionales -->
+    <div class="card"><div class="md-body">
+      <h2>👁 Sección 6 — Registro de Heurísticas Emocionales</h2>
+      <blockquote><p>Instrumento para el <strong>observador</strong>. Registre cada expresión con el minuto aproximado (Tiempo) y el número de ocurrencias (Cantidad) por tarea.</p></blockquote>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>Heurística emocional</th><th>Interpretación</th><th>Tiempo (min:seg)</th><th>Cantidad</th></tr></thead><tbody>
+        <tr><td><strong>1</strong></td><td>FRUNCIR EL CEÑO</td><td>Desagrado · dificultad percibida · confusión · reflexión profunda</td><td></td><td></td></tr>
+        <tr><td><strong>2</strong></td><td>ELEVAR LAS CEJAS</td><td>Sorpresa · inseguridad · incredulidad · exasperación</td><td></td><td></td></tr>
+        <tr><td><strong>3</strong></td><td>DESVIAR LA MIRADA</td><td>Culpa · vergüenza · pérdida de foco en la interfaz</td><td></td><td></td></tr>
+        <tr><td><strong>4</strong></td><td>SONREÍR</td><td>Satisfacción · logro percibido · agrado con el sistema</td><td></td><td></td></tr>
+        <tr><td><strong>5</strong></td><td>APRETAR LOS LABIOS</td><td>Frustración · confusión · ansiedad · nerviosismo</td><td></td><td></td></tr>
+        <tr><td><strong>6</strong></td><td>MOVER LA BOCA (sin hablar)</td><td>Incertidumbre · sensación de estar perdido en la interfaz</td><td></td><td></td></tr>
+        <tr><td><strong>7</strong></td><td>EXPRESARSE ORALMENTE</td><td>Suspiros · jadeos · exclamaciones · frustración verbalizada</td><td></td><td></td></tr>
+        <tr><td><strong>8</strong></td><td>TOCARSE LA CARA CON LAS MANOS</td><td>Confusión · cansancio · incertidumbre · pérdida de orientación</td><td></td><td></td></tr>
+        <tr><td><strong>9</strong></td><td>RECLINARSE HACIA ATRÁS</td><td>Rechazo · negativa · deseo de alejarse de la actividad</td><td></td><td></td></tr>
+        <tr><td><strong>10</strong></td><td>INCLINARSE HACIA ADELANTE</td><td>Atención concentrada · acercarse para leer · frustración activa</td><td></td><td></td></tr>
+      </tbody></table></div>
+    </div></div>
+
+    <!-- Resumen del Observador -->
+    <div class="card"><div class="md-body">
+      <h2>📊 Sección 7 — Resumen de Resultados por Participante</h2>
+      <blockquote><p>Completar al finalizar cada sesión. Una fila por participante y tarea.</p></blockquote>
+      <div class="tbl-wrap"><table><thead><tr><th>Participante</th><th>Tarea</th><th>¿Completada?</th><th>Tiempo real</th><th>Errores / desvíos</th><th>Heurística dominante</th><th>Punt. satisfacción</th></tr></thead><tbody>
+        <tr><td rowspan="3"><strong>P1 — Emilly</strong><br><span style="font-size:.75rem;color:var(--muted-fg)">Avanzada</span></td><td>T1</td><td>☐ Sí &nbsp;☐ Ayuda &nbsp;☐ No</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>T2</td><td>☐ Sí &nbsp;☐ Ayuda &nbsp;☐ No</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>T3</td><td>☐ Sí &nbsp;☐ Ayuda &nbsp;☐ No</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td rowspan="3"><strong>P2 — Laura</strong><br><span style="font-size:.75rem;color:var(--muted-fg)">Intermedia</span></td><td>T1</td><td>☐ Sí &nbsp;☐ Ayuda &nbsp;☐ No</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>T2</td><td>☐ Sí &nbsp;☐ Ayuda &nbsp;☐ No</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>T3</td><td>☐ Sí &nbsp;☐ Ayuda &nbsp;☐ No</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td rowspan="3"><strong>P3 — Cuidador</strong><br><span style="font-size:.75rem;color:var(--muted-fg)">Novato</span></td><td>T1</td><td>☐ Sí &nbsp;☐ Ayuda &nbsp;☐ No</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>T2</td><td>☐ Sí &nbsp;☐ Ayuda &nbsp;☐ No</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>T3</td><td>☐ Sí &nbsp;☐ Ayuda &nbsp;☐ No</td><td></td><td></td><td></td><td></td></tr>
+      </tbody></table></div>
+      <h3>Hallazgos anticipados por perfil</h3>
+      <div class="tbl-wrap"><table><thead><tr><th>Participante</th><th>Punto de fricción anticipado</th><th>Origen</th></tr></thead><tbody>
+        <tr><td><strong>P1 — Emilly</strong></td><td>Tooltips ausentes en campos ICF D1–D6; útil para ella pero barrera para colegas noveles</td><td>Entrevista E1 · Heurística R1 (EH)</td></tr>
+        <tr><td><strong>P2 — Laura</strong></td><td>Panel de municipios y filtros de reporte; terminología clínica no familiar</td><td>Entrevista E2 · Heurística R8 (EH)</td></tr>
+        <tr><td><strong>P3 — Cuidador</strong></td><td>Flujo de registro complejo; terminología ICF desconocida; ausencia de modo de ayuda contextual</td><td>Entrevista E3 · Heurísticas R5/R6 (EH)</td></tr>
+      </tbody></table></div>
+    </div></div>
+
+    <div class="page-footer" style="margin-top:24px">
+      Documento: <code>08_test_de_usuario.md</code> · Health Access Bridge · Fase 4 Final · CORHUILA 2026 · ISO 9241-210:2019
+    </div>
+  </section>
+
   <div class="page-footer">
-    Health Access Bridge · Investigación HCI · Fase 1 · Fase 2 · Fase 3 · CORHUILA 2026 · ISO 9241-210:2019
+    Health Access Bridge · Investigación HCI · Fase 1 · Fase 2 · Fase 3 · <strong>Fase 4</strong> · CORHUILA 2026 · ISO 9241-210:2019
   </div>
 </main>
 
@@ -1536,6 +1739,7 @@ const INDEX = [
   {id:'p14',num:'14',label:'Lista de Chequeo Heurística', desc:'Fase 3 · EH · 10 heurísticas Nielsen · 39 ítems · severidad 0–4'},
   {id:'p15',num:'15',label:'Resultados de la Evaluación',desc:'Fase 3 · EH · Top 10 problemas · distribución severidad · hallazgos'},
   {id:'p16',num:'16',label:'Conclusiones y Recomendaciones',desc:'Fase 3 · EH · recomendaciones priorizadas · próximos pasos · PDF'},
+  {id:'p08',num:'08',label:'Test de Usuario — Fase 4 Final',desc:'Fase 4 · Guión de tareas HAB · protocolo · encuesta sociodemográfica · satisfacción post-test · Kolb · heurísticas emocionales'},
 ];
 
 const tbody = document.getElementById('index-table');
