@@ -35,13 +35,44 @@ body {
 }
 
 /* ── PRINT ─────────────────────────────────────────────── */
+@page { margin: 1.5cm 1.2cm; }
+
 @media print {
-  body { background: white; font-size: 12px; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+  body { background: white !important; font-size: 11px; }
   .no-print { display: none !important; }
-  .page-break { page-break-before: always; }
-  .card { box-shadow: none !important; border: 1px solid var(--border) !important; }
-  .cover { page-break-after: always; }
-  a { color: var(--primary) !important; }
+  .page-break { page-break-before: always; break-before: page; }
+  .card { box-shadow: none !important; border: 1px solid #d1d5db !important; break-inside: avoid; }
+  .cover { page-break-after: always; break-after: page; min-height: 100vh;
+    background: linear-gradient(135deg,hsl(217,91%,22%) 0%,hsl(217,91%,48%) 60%,hsl(195,80%,60%) 100%) !important; }
+  .cover h1,.cover h2,.cover-meta { color: white !important; }
+  .cover-badge { background: rgba(255,255,255,.2) !important; border: 1px solid rgba(255,255,255,.4) !important; color: white !important; }
+  .stat-number { color: hsl(217,91%,48%) !important; }
+  .badge-blue   { background: hsl(217,91%,92%) !important; color: hsl(217,91%,35%) !important; }
+  .badge-green  { background: hsl(142,60%,90%) !important; color: hsl(142,60%,28%) !important; }
+  .badge-orange { background: hsl(38,92%,90%)  !important; color: hsl(38,72%,35%)  !important; }
+  .badge-red    { background: hsl(0,84%,93%)   !important; color: hsl(0,72%,40%)   !important; }
+  .badge-gray   { background: #f3f4f6 !important; color: #6b7280 !important; }
+  .badge-purple { background: hsl(270,60%,93%) !important; color: hsl(270,60%,40%) !important; }
+  .mockup-container { background: hsl(220,15%,12%) !important; break-inside: avoid; }
+  .mockup-bar   { background: hsl(220,15%,18%) !important; }
+  .mock-sidebar { background: hsl(220,15%,22%) !important; }
+  .mock-sidebar-item        { background: hsl(220,15%,30%) !important; }
+  .mock-sidebar-item.active { background: hsl(217,91%,60%) !important; }
+  .mockup-url   { background: hsl(220,15%,25%) !important; color: hsl(220,15%,70%) !important; }
+  .tooltip-popup { background: hsl(220,15%,22%) !important; color: white !important; }
+  .code-block    { background: hsl(220,15%,16%) !important; color: hsl(195,80%,75%) !important; break-inside: avoid; }
+  .code-comment  { color: hsl(142,40%,55%) !important; }
+  .code-keyword  { color: hsl(38,92%,70%)  !important; }
+  .code-string   { color: hsl(0,72%,72%)   !important; }
+  .timeline-dot      { background: hsl(217,91%,60%) !important; box-shadow: 0 0 0 2px hsl(217,91%,60%) !important; }
+  .timeline-dot.done { background: hsl(142,71%,45%) !important; box-shadow: 0 0 0 2px hsl(142,71%,45%) !important; }
+  .status-table th   { background: hsl(217,91%,96%) !important; color: hsl(217,91%,35%) !important; }
+  .modal-mockup { break-inside: avoid; }
+  .alert-patient-card { background: hsl(0,84%,97%) !important; border: 1px solid hsl(0,84%,88%) !important; }
+  a { color: hsl(217,91%,48%) !important; }
+  h1.section-title { border-left: 4px solid hsl(217,91%,60%) !important; }
+  .report-footer { border-top: 2px solid #d1d5db !important; }
 }
 
 /* ── LAYOUT ─────────────────────────────────────────────── */
