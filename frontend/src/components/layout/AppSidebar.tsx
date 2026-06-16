@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, Activity, BarChart3, UserCog, Settings, LogOut, BookOpen } from 'lucide-react';
+import { LayoutDashboard, Users, Activity, BarChart3, UserCog, Settings, LogOut, BookOpen, HelpCircle } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation } from 'react-router-dom';
 import {
@@ -23,6 +23,7 @@ const menuItems = [
   { title: 'analytics', url: '/analytics', icon: BarChart3 },
   { title: 'predictiveGuide', url: '/predictive-guide', icon: BookOpen },
   { title: 'userList', url: '/admin', icon: UserCog },
+  { title: 'help', url: '/help', icon: HelpCircle },
 ];
 
 export function AppSidebar() {
@@ -45,6 +46,7 @@ export function AppSidebar() {
     if (user?.role !== 'admin' && item.title === 'userList') {
       return false;
     }
+    // Help is visible for all roles
     return true;
   });
 

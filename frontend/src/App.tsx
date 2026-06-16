@@ -14,7 +14,9 @@ import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import AdminPanel from "./pages/AdminPanel";
 import PredictiveGuide from "./pages/PredictiveGuide";
+import Help from "./pages/Help";
 import NotFound from "./pages/NotFound";
+import { OnboardingModal } from "./components/OnboardingModal";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +35,7 @@ const App = () => (
           <TooltipProvider>
             <Toaster />
             <Sonner />
+            <OnboardingModal />
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/login" element={<LoginLanding />} />
@@ -42,6 +45,7 @@ const App = () => (
                 <Route path="/predictions" element={<Predictions />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/predictive-guide" element={<PredictiveGuide />} />
+                <Route path="/help" element={<Help />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route element={<AdminRoute />}>
                   <Route path="/admin" element={<AdminPanel />} />

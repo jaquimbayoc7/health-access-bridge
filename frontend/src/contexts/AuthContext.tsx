@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiService } from '@/services/api';
+import { apiService, ApiService } from '@/services/api';
 import type { User as ApiUser } from '@/services/api';
+import { useJWTExpiry } from '@/hooks/useJWTExpiry';
+import { toast } from 'sonner';
 
 interface User {
   id: number;
@@ -24,6 +26,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
+  const logout = useCallback(() => {
+    apiService.clearToken();
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    setUser(null);
+    navigate('/login');
+  }, [navigate]);
+
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     const storedUser = localStorage.getItem('user');
@@ -33,6 +43,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    ApiService.onUnauthorized = () => {
+      toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.');
+      logout();
+    };
+    return () => { ApiService.onUnauthorized = null; };
+  }, [logout]);
+
+  useJWTExpiry(logout);
 
   const login = async (email: string, password: string) => {
     try {
@@ -59,14 +79,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       throw new Error('Correo electrónico o contraseña incorrectos');
     }
-  };
-
-  const logout = () => {
-    apiService.clearToken();
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-    setUser(null);
-    navigate('/login');
   };
 
   return (

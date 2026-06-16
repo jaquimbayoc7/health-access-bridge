@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus, Search, Edit, Trash2, Download, FileSpreadsheet } from 'lucide-react';
+import { ICFTooltipLabel } from '@/components/ICFTooltip';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -454,10 +455,10 @@ export default function Patients() {
           <DialogHeader>
             <DialogTitle>{editingPatient ? t('editPatient') : t('createPatient')}</DialogTitle>
             <DialogDescription>
-              Complete all the required information about the patient.
+              Complete la información requerida del paciente. Los campos ICF (D1–D6) miden las barreras funcionales en escala 0–100.
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleSavePatient} className="space-y-4">
+          <form onSubmit={handleSavePatient} className="space-y-4" aria-label="Formulario de paciente">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="nombre_apellidos">{t('fullName')}</Label>
@@ -573,13 +574,14 @@ export default function Patients() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="nivel_d1">{t('levelD1')}</Label>
+                <ICFTooltipLabel dimension="d1" htmlFor="nivel_d1" label={t('levelD1')} />
                 <Input
                   id="nivel_d1"
                   type="number"
                   min="0"
                   max="100"
                   value={formData.nivel_d1}
+                  aria-describedby="icf-scale-hint"
                   onChange={(e) => {
                     const newValue = Number(e.target.value);
                     const newFormData = { ...formData, nivel_d1: newValue };
@@ -591,13 +593,14 @@ export default function Patients() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="nivel_d2">{t('levelD2')}</Label>
+                <ICFTooltipLabel dimension="d2" htmlFor="nivel_d2" label={t('levelD2')} />
                 <Input
                   id="nivel_d2"
                   type="number"
                   min="0"
                   max="100"
                   value={formData.nivel_d2}
+                  aria-describedby="icf-scale-hint"
                   onChange={(e) => {
                     const newValue = Number(e.target.value);
                     const newFormData = { ...formData, nivel_d2: newValue };
@@ -609,13 +612,14 @@ export default function Patients() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="nivel_d3">{t('levelD3')}</Label>
+                <ICFTooltipLabel dimension="d3" htmlFor="nivel_d3" label={t('levelD3')} />
                 <Input
                   id="nivel_d3"
                   type="number"
                   min="0"
                   max="100"
                   value={formData.nivel_d3}
+                  aria-describedby="icf-scale-hint"
                   onChange={(e) => {
                     const newValue = Number(e.target.value);
                     const newFormData = { ...formData, nivel_d3: newValue };
@@ -627,13 +631,14 @@ export default function Patients() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="nivel_d4">{t('levelD4')}</Label>
+                <ICFTooltipLabel dimension="d4" htmlFor="nivel_d4" label={t('levelD4')} />
                 <Input
                   id="nivel_d4"
                   type="number"
                   min="0"
                   max="100"
                   value={formData.nivel_d4}
+                  aria-describedby="icf-scale-hint"
                   onChange={(e) => {
                     const newValue = Number(e.target.value);
                     const newFormData = { ...formData, nivel_d4: newValue };
@@ -645,13 +650,14 @@ export default function Patients() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="nivel_d5">{t('levelD5')}</Label>
+                <ICFTooltipLabel dimension="d5" htmlFor="nivel_d5" label={t('levelD5')} />
                 <Input
                   id="nivel_d5"
                   type="number"
                   min="0"
                   max="100"
                   value={formData.nivel_d5}
+                  aria-describedby="icf-scale-hint"
                   onChange={(e) => {
                     const newValue = Number(e.target.value);
                     const newFormData = { ...formData, nivel_d5: newValue };
@@ -663,13 +669,14 @@ export default function Patients() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="nivel_d6">{t('levelD6')}</Label>
+                <ICFTooltipLabel dimension="d6" htmlFor="nivel_d6" label={t('levelD6')} />
                 <Input
                   id="nivel_d6"
                   type="number"
                   min="0"
                   max="100"
                   value={formData.nivel_d6}
+                  aria-describedby="icf-scale-hint"
                   onChange={(e) => {
                     const newValue = Number(e.target.value);
                     const newFormData = { ...formData, nivel_d6: newValue };
@@ -688,9 +695,14 @@ export default function Patients() {
                   value={formData.nivel_global}
                   disabled
                   className="bg-muted cursor-not-allowed"
+                  aria-describedby="nivel-global-hint"
                 />
+                <p id="nivel-global-hint" className="text-xs text-muted-foreground">
+                  Calculado automáticamente como promedio de D1–D6.
+                </p>
               </div>
             </div>
+            <p id="icf-scale-hint" className="sr-only">Escala ICF: 0 sin barrera, 100 barrera completa</p>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                 {t('cancel')}
@@ -706,8 +718,16 @@ export default function Patients() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('confirmDelete')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('deleteWarning')}
+            <AlertDialogDescription asChild>
+              <div className="space-y-2">
+                {deletePatient && (
+                  <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                    <span className="font-semibold text-foreground">{deletePatient.nombre_apellidos}</span>
+                    <span className="text-muted-foreground text-sm">· Doc. {deletePatient.numero_documento}</span>
+                  </div>
+                )}
+                <p>{t('deleteWarning')}</p>
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

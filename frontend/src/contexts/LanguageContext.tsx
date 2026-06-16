@@ -17,6 +17,7 @@ const translations = {
     analytics: 'Analytics',
     predictiveGuide: 'Predictive Guide',
     userList: 'User List',
+    help: 'Help',
     settings: 'Settings',
     logout: 'Logout',
     
@@ -103,6 +104,7 @@ const translations = {
     analytics: 'Análisis',
     predictiveGuide: 'Guía Predictiva',
     userList: 'Listado de Usuarios',
+    help: 'Ayuda',
     settings: 'Configuración',
     logout: 'Cerrar Sesión',
     

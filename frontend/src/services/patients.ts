@@ -1,3 +1,5 @@
+import { ApiService } from './api';
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://hab-backend-dev.onrender.com';
 
 export interface Patient {
@@ -61,6 +63,31 @@ class PatientService {
     };
   }
 
+  private async handleResponse<T>(response: Response): Promise<T> {
+    if (response.ok) return response.json();
+    const body = await response.json().catch(() => ({}));
+    switch (response.status) {
+      case 401:
+        ApiService.onUnauthorized?.();
+        throw new Error('Sesión expirada. Por favor, inicie sesión nuevamente.');
+      case 403:
+        throw new Error('No tiene permisos para realizar esta acción.');
+      case 422: {
+        const detail = body.detail;
+        const msg = Array.isArray(detail)
+          ? detail[0]?.msg || 'Datos inválidos. Verifique la información ingresada.'
+          : typeof detail === 'string'
+          ? detail
+          : 'Datos inválidos. Verifique la información ingresada.';
+        throw new Error(msg);
+      }
+      case 500:
+        throw new Error('Error temporal del servidor. Intente de nuevo en unos momentos.');
+      default:
+        throw new Error(body.detail || `Error del servidor (${response.status}). Intente de nuevo.`);
+    }
+  }
+
   async getPatients(skip: number = 0, limit: number = 100, search: string = ''): Promise<Patient[]> {
     const params = new URLSearchParams({ skip: String(skip), limit: String(limit) });
     if (search.trim()) params.append('search', search.trim());
@@ -68,30 +95,14 @@ class PatientService {
       headers: this.getHeaders(),
     });
 
-    if (response.status === 401) {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userRole');
-      window.location.href = '/login';
-      throw new Error('Sesión expirada. Por favor, inicia sesión nuevamente.');
-    }
-
-    if (!response.ok) {
-      throw new Error('Error al obtener pacientes');
-    }
-
-    return response.json();
+    return this.handleResponse<Patient[]>(response);
   }
 
   async getPatient(patientId: number): Promise<Patient> {
     const response = await fetch(`${API_BASE_URL}/patients/${patientId}`, {
       headers: this.getHeaders(),
     });
-
-    if (!response.ok) {
-      throw new Error('Error al obtener paciente');
-    }
-
-    return response.json();
+    return this.handleResponse<Patient>(response);
   }
 
   async createPatient(patient: PatientCreate): Promise<Patient> {
@@ -100,13 +111,7 @@ class PatientService {
       headers: this.getHeaders(),
       body: JSON.stringify(patient),
     });
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: 'Error al crear paciente' }));
-      throw new Error(error.detail || 'Error al crear paciente');
-    }
-
-    return response.json();
+    return this.handleResponse<Patient>(response);
   }
 
   async updatePatient(patientId: number, patient: PatientCreate): Promise<Patient> {
@@ -115,20 +120,7 @@ class PatientService {
       headers: this.getHeaders(),
       body: JSON.stringify(patient),
     });
-
-    if (response.status === 401) {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userRole');
-      window.location.href = '/login';
-      throw new Error('Sesión expirada. Por favor, inicia sesión nuevamente.');
-    }
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: 'Error al actualizar paciente' }));
-      throw new Error(error.detail || 'Error al actualizar paciente');
-    }
-
-    return response.json();
+    return this.handleResponse<Patient>(response);
   }
 
   async deletePatient(patientId: number): Promise<void> {
@@ -136,17 +128,7 @@ class PatientService {
       method: 'DELETE',
       headers: this.getHeaders(),
     });
-
-    if (response.status === 401) {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userRole');
-      window.location.href = '/login';
-      throw new Error('Sesión expirada. Por favor, inicia sesión nuevamente.');
-    }
-
-    if (!response.ok) {
-      throw new Error('Error al eliminar paciente');
-    }
+    if (!response.ok) return this.handleResponse<void>(response);
   }
 
   async predictPatient(patientId: number): Promise<PredictionResult> {
@@ -154,13 +136,7 @@ class PatientService {
       method: 'POST',
       headers: this.getHeaders(),
     });
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: 'Error en la predicción' }));
-      throw new Error(error.detail || 'Error al realizar predicción');
-    }
-
-    return response.json();
+    return this.handleResponse<PredictionResult>(response);
   }
 }
 
