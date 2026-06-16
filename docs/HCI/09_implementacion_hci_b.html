@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reporte de Implementación HCI — Opción B · Health Access Bridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:         hsl(220,17%,97%);
+  --fg:         hsl(220,15%,20%);
+  --card:       #ffffff;
+  --primary:    hsl(217,91%,60%);
+  --primary-d:  hsl(217,91%,48%);
+  --primary-bg: hsl(217,91%,96%);
+  --success:    hsl(142,71%,45%);
+  --warning:    hsl(38,92%,50%);
+  --danger:     hsl(0,84%,60%);
+  --muted:      hsl(220,15%,95%);
+  --muted-fg:   hsl(220,10%,45%);
+  --border:     hsl(220,13%,91%);
+  --radius:     0.75rem;
+  --font:       'Inter', system-ui, sans-serif;
+}
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* ── PRINT ─────────────────────────────────────────────── */
+@media print {
+  body { background: white; font-size: 12px; }
+  .no-print { display: none !important; }
+  .page-break { page-break-before: always; }
+  .card { box-shadow: none !important; border: 1px solid var(--border) !important; }
+  .cover { page-break-after: always; }
+  a { color: var(--primary) !important; }
+}
+
+/* ── LAYOUT ─────────────────────────────────────────────── */
+.container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+/* ── COVER ─────────────────────────────────────────────── */
+.cover {
+  min-height: 100vh;
+  background: linear-gradient(135deg, hsl(217,91%,22%) 0%, hsl(217,91%,48%) 60%, hsl(195,80%,60%) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 3rem 2rem;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.cover-badge {
+  display: inline-block;
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.3);
+  padding: .4rem 1rem;
+  border-radius: 2rem;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+.cover h1 { font-size: 2.8rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+.cover h2 { font-size: 1.1rem; font-weight: 400; opacity: .85; max-width: 600px; margin-bottom: 2.5rem; }
+.cover-meta {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: .85rem;
+  opacity: .8;
+}
+.cover-meta span { display: flex; align-items: center; gap: .4rem; }
+
+/* ── TYPOGRAPHY ─────────────────────────────────────────── */
+h1.section-title {
+  font-size: 1.8rem; font-weight: 800;
+  border-left: 4px solid var(--primary);
+  padding-left: .75rem;
+  margin: 2.5rem 0 1rem;
+}
+h2.subsection { font-size: 1.1rem; font-weight: 700; color: var(--primary-d); margin: 1.5rem 0 .75rem; }
+p { margin-bottom: .75rem; color: var(--fg); }
+ul, ol { padding-left: 1.4rem; margin-bottom: .75rem; }
+li { margin-bottom: .3rem; }
+
+/* ── CARDS ─────────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: 1rem;
+  padding-bottom: .75rem;
+  border-bottom: 1px solid var(--border);
+}
+.card-icon {
+  width: 36px; height: 36px;
+  border-radius: .5rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.card-title { font-weight: 700; font-size: 1rem; }
+.card-file { font-size: .75rem; color: var(--muted-fg); font-family: monospace; }
+
+/* ── BADGES ─────────────────────────────────────────────── */
+.badge {
+  display: inline-block; padding: .2rem .6rem;
+  border-radius: 2rem; font-size: .7rem; font-weight: 600;
+  vertical-align: middle;
+}
+.badge-blue   { background: hsl(217,91%,92%); color: hsl(217,91%,35%); }
+.badge-green  { background: hsl(142,60%,90%); color: hsl(142,60%,28%); }
+.badge-orange { background: hsl(38,92%,90%);  color: hsl(38,72%,35%);  }
+.badge-red    { background: hsl(0,84%,93%);   color: hsl(0,72%,40%);   }
+.badge-gray   { background: var(--muted);      color: var(--muted-fg);  }
+.badge-purple { background: hsl(270,60%,93%); color: hsl(270,60%,40%); }
+
+/* ── STATUS TABLE ────────────────────────────────────────── */
+.status-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.status-table th {
+  background: var(--primary-bg); color: var(--primary-d);
+  padding: .5rem .75rem; text-align: left; font-weight: 700;
+  border-bottom: 2px solid var(--primary);
+}
+.status-table td { padding: .5rem .75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.status-table tr:last-child td { border-bottom: none; }
+.status-table tr:hover td { background: var(--muted); }
+.check { color: var(--success); font-weight: 700; }
+
+/* ── MOCKUP SCREENS ─────────────────────────────────────── */
+.mockup-container {
+  background: hsl(220,15%,12%);
+  border-radius: .75rem;
+  overflow: hidden;
+  margin: 1rem 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,.25);
+}
+.mockup-bar {
+  background: hsl(220,15%,18%);
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 .75rem;
+  gap: .4rem;
+}
+.mockup-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.dot-r { background: #ff5f57; }
+.dot-y { background: #febc2e; }
+.dot-g { background: #28c840; }
+.mockup-url {
+  flex: 1; background: hsl(220,15%,25%);
+  border-radius: .25rem; height: 18px; margin: 0 .5rem;
+  display: flex; align-items: center; padding: 0 .5rem;
+  font-size: .65rem; color: hsl(220,15%,70%); font-family: monospace;
+}
+.mockup-body {
+  background: hsl(220,17%,97%);
+  padding: 0;
+  display: flex;
+  min-height: 320px;
+}
+.mock-sidebar {
+  width: 56px;
+  background: hsl(220,15%,22%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: .75rem 0;
+  gap: .5rem;
+}
+.mock-sidebar-item {
+  width: 32px; height: 32px;
+  background: hsl(220,15%,30%);
+  border-radius: .4rem;
+}
+.mock-sidebar-item.active { background: var(--primary); }
+.mock-main { flex: 1; padding: 1rem; }
+.mock-header {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: .4rem .75rem;
+  font-size: .7rem; font-weight: 600;
+  color: var(--muted-fg);
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+}
+.mock-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .72rem;
+  color: var(--muted-fg);
+  padding: .4rem .75rem;
+  background: white;
+  border-bottom: 1px solid var(--border);
+}
+.mock-breadcrumb-active { color: var(--fg); font-weight: 600; }
+.mock-breadcrumb-sep { color: var(--border); }
+
+/* ── TOOLTIP MOCKUP ─────────────────────────────────────── */
+.tooltip-mockup {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: .4rem;
+  padding: .4rem .75rem;
+  font-size: .8rem;
+  font-weight: 500;
+  position: relative;
+}
+.tooltip-icon {
+  width: 14px; height: 14px;
+  background: var(--muted-fg);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: .55rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.tooltip-popup {
+  position: absolute;
+  top: -160px;
+  left: 0;
+  width: 280px;
+  background: hsl(220,15%,22%);
+  color: white;
+  border-radius: .5rem;
+  padding: .75rem;
+  font-size: .72rem;
+  line-height: 1.5;
+  box-shadow: 0 8px 24px rgba(0,0,0,.3);
+  z-index: 10;
+}
+.tooltip-popup::after {
+  content: '';
+  position: absolute;
+  bottom: -6px; left: 12px;
+  border: 6px solid transparent;
+  border-bottom: none;
+  border-top-color: hsl(220,15%,22%);
+}
+.tooltip-popup-title { font-weight: 700; font-size: .78rem; margin-bottom: .3rem; }
+.tooltip-popup-divider { border-top: 1px solid rgba(255,255,255,.15); margin: .4rem 0; }
+.tooltip-scale { font-size: .68rem; opacity: .75; }
+
+/* ── MODAL MOCKUP ────────────────────────────────────────── */
+.modal-mockup {
+  background: rgba(0,0,0,.5);
+  border-radius: .5rem;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+.modal-box {
+  background: white;
+  border-radius: .75rem;
+  width: 420px;
+  padding: 1.5rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+.modal-icon-wrap {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--primary-bg);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto .75rem;
+  font-size: 1.4rem;
+}
+.modal-title { font-size: 1.1rem; font-weight: 700; text-align: center; margin-bottom: .4rem; }
+.modal-desc { font-size: .8rem; color: var(--muted-fg); text-align: center; margin-bottom: .75rem; }
+.modal-hint {
+  background: hsl(38,92%,95%);
+  border-left: 3px solid var(--warning);
+  padding: .5rem .75rem;
+  border-radius: .3rem;
+  font-size: .75rem;
+  margin-bottom: .75rem;
+}
+.modal-progress {
+  height: 4px; background: var(--muted);
+  border-radius: 2px; overflow: hidden; margin-bottom: .4rem;
+}
+.modal-progress-bar {
+  height: 100%; background: var(--primary);
+  border-radius: 2px;
+}
+.modal-steps { display: flex; gap: .3rem; justify-content: center; margin-bottom: 1rem; }
+.modal-step {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--muted);
+}
+.modal-step.active { background: var(--primary); }
+.modal-step.done { background: var(--success); }
+.modal-actions { display: flex; gap: .5rem; justify-content: flex-end; }
+.btn { padding: .4rem 1rem; border-radius: .4rem; font-size: .8rem; font-weight: 600; border: none; cursor: pointer; }
+.btn-outline { background: white; border: 1px solid var(--border); color: var(--fg); }
+.btn-primary { background: var(--primary); color: white; }
+
+/* ── ALERT DIALOG MOCKUP ─────────────────────────────────── */
+.alert-box {
+  background: white;
+  border-radius: .75rem;
+  padding: 1.25rem;
+  max-width: 380px;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,.2);
+}
+.alert-patient-card {
+  background: hsl(0,84%,97%);
+  border: 1px solid hsl(0,84%,88%);
+  border-radius: .4rem;
+  padding: .5rem .75rem;
+  font-size: .8rem;
+  margin: .5rem 0;
+  display: flex; gap: .5rem; align-items: center;
+}
+.alert-patient-name { font-weight: 700; }
+.alert-patient-doc { color: var(--muted-fg); }
+
+/* ── HELP PAGE MOCKUP ────────────────────────────────────── */
+.help-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .5rem; margin-top: .75rem; }
+.help-card-mini {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: .4rem;
+  padding: .5rem;
+  font-size: .7rem;
+}
+.help-card-mini-title { font-weight: 700; color: var(--primary-d); margin-bottom: .2rem; }
+.icf-chip {
+  display: inline-block;
+  padding: .15rem .4rem;
+  border-radius: .25rem;
+  font-size: .65rem; font-weight: 600;
+  margin: .1rem;
+}
+
+/* ── CODE BLOCK ─────────────────────────────────────────── */
+.code-block {
+  background: hsl(220,15%,16%);
+  color: hsl(195,80%,75%);
+  border-radius: .5rem;
+  padding: .75rem 1rem;
+  font-family: 'Courier New', monospace;
+  font-size: .72rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: .75rem 0;
+}
+.code-comment { color: hsl(142,40%,55%); }
+.code-keyword { color: hsl(38,92%,70%); }
+.code-string  { color: hsl(0,72%,72%); }
+.code-fn      { color: hsl(195,80%,75%); }
+
+/* ── SUMMARY STATS ───────────────────────────────────────── */
+.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin: 1.25rem 0; }
+.stat-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: .75rem;
+  padding: 1rem;
+  text-align: center;
+}
+.stat-number { font-size: 2rem; font-weight: 800; color: var(--primary); line-height: 1; }
+.stat-label  { font-size: .72rem; color: var(--muted-fg); margin-top: .25rem; }
+
+/* ── TIMELINE ────────────────────────────────────────────── */
+.timeline { position: relative; padding-left: 1.5rem; }
+.timeline::before {
+  content: '';
+  position: absolute; left: 6px; top: 0; bottom: 0;
+  width: 2px; background: var(--border);
+}
+.timeline-item { position: relative; margin-bottom: 1rem; }
+.timeline-dot {
+  position: absolute; left: -1.5rem; top: .2rem;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--primary);
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px var(--primary);
+}
+.timeline-dot.done { background: var(--success); box-shadow: 0 0 0 2px var(--success); }
+.timeline-title { font-weight: 700; font-size: .9rem; }
+.timeline-sub   { font-size: .78rem; color: var(--muted-fg); }
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+.report-footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border);
+  text-align: center;
+  color: var(--muted-fg);
+  font-size: .78rem;
+}
+
+/* ── TOC ─────────────────────────────────────────────────── */
+.toc { list-style: none; padding: 0; }
+.toc li { padding: .3rem 0; border-bottom: 1px dashed var(--border); display: flex; justify-content: space-between; }
+.toc a { color: var(--primary); text-decoration: none; font-weight: 500; }
+.toc-num { color: var(--muted-fg); font-size: .8rem; }
+
+/* ── PRINT BTN ───────────────────────────────────────────── */
+.print-btn {
+  position: fixed; bottom: 2rem; right: 2rem;
+  background: var(--primary); color: white;
+  border: none; border-radius: 2rem;
+  padding: .75rem 1.5rem;
+  font-family: var(--font); font-size: .85rem; font-weight: 600;
+  cursor: pointer; box-shadow: 0 4px 20px rgba(59,130,246,.4);
+  z-index: 100;
+  transition: transform .2s;
+}
+.print-btn:hover { transform: translateY(-2px); }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PORTADA                                                   -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-badge">🏥 Health Access Bridge · HCI Sprint</div>
+  <h1>Reporte de Implementación<br>Mejoras HCI — Opción B</h1>
+  <h2>Documentación técnica de los cambios aplicados al frontend tras el proceso de investigación y evaluación heurística de usabilidad.</h2>
+  <div class="cover-meta">
+    <span>📅 Junio 2026</span>
+    <span>📁 12 archivos modificados</span>
+    <span>➕ 702 líneas insertadas</span>
+    <span>✅ 10 tareas completadas</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- CONTENIDO                                                 -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="container">
+
+  <!-- ── ÍNDICE ──────────────────────────────────────────── -->
+  <h1 class="section-title">Tabla de Contenidos</h1>
+  <div class="card">
+    <ul class="toc">
+      <li><a href="#contexto">1. Contexto y Tarea Asignada</a><span class="toc-num">§1</span></li>
+      <li><a href="#resumen">2. Resumen Ejecutivo</a><span class="toc-num">§2</span></li>
+      <li><a href="#sprint1">3. Sprint 1 — Correcciones Críticas de Usabilidad</a><span class="toc-num">§3</span></li>
+      <li><a href="#sprint2">4. Sprint 2 — Onboarding y Centro de Ayuda</a><span class="toc-num">§4</span></li>
+      <li><a href="#sprint3">5. Sprint 3 — Accesibilidad y Gestión de Sesión</a><span class="toc-num">§5</span></li>
+      <li><a href="#archivos">6. Inventario de Archivos</a><span class="toc-num">§6</span></li>
+      <li><a href="#conclusiones">7. Conclusiones y Próximos Pasos</a><span class="toc-num">§7</span></li>
+    </ul>
+  </div>
+
+  <!-- ── §1 CONTEXTO ─────────────────────────────────────── -->
+  <h1 class="section-title" id="contexto">1. Contexto y Tarea Asignada</h1>
+
+  <div class="card">
+    <h2 class="subsection">Origen de la tarea</h2>
+    <p>Tras completar el proceso de investigación HCI (entrevistas semi-estructuradas, user personas, user story mapping y tests de usuario), se identificaron <strong>hallazgos críticos de usabilidad</strong> en el frontend de Health Access Bridge. El equipo evaluó dos planes de mejora y seleccionó la <span class="badge badge-blue">Opción B — Plan completo</span>.</p>
+
+    <h2 class="subsection">Hallazgos HCI que motivaron la tarea</h2>
+    <ul>
+      <li><strong>H1 — Terminología ICF opaca:</strong> Los campos D1–D6 no tenían contexto ni ejemplos. Los médicos desconocían la escala 0–100.</li>
+      <li><strong>H2 — Confirmación de borrado genérica:</strong> El diálogo de eliminación de paciente no mostraba el nombre del afectado, generando ansiedad y riesgo de error.</li>
+      <li><strong>H3 — Errores API sin mensajes claros:</strong> Los errores 401/422/500 producían pantallas en blanco o mensajes en inglés sin orientación al usuario.</li>
+      <li><strong>H4 — Sin onboarding:</strong> Usuarios nuevos debían explorar el sistema sin ninguna guía inicial.</li>
+      <li><strong>H5 — Sin Centro de Ayuda:</strong> No existía documentación in-app para la terminología ICF ni las funciones del sistema.</li>
+      <li><strong>H6 — Sin indicación de expiración de sesión:</strong> El JWT expiraba sin aviso, causando pérdida de datos del formulario.</li>
+      <li><strong>H7 — Sin breadcrumbs de navegación:</strong> Los usuarios perdían el contexto de ubicación dentro de la aplicación.</li>
+    </ul>
+  </div>
+
+  <!-- ── §2 RESUMEN ──────────────────────────────────────── -->
+  <h1 class="section-title" id="resumen">2. Resumen Ejecutivo</h1>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">4</div>
+      <div class="stat-label">Archivos nuevos creados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">8</div>
+      <div class="stat-label">Archivos modificados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">702</div>
+      <div class="stat-label">Líneas insertadas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">10</div>
+      <div class="stat-label">Tareas completadas</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="subsection">Estado final del plan</h2>
+    <table class="status-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Tarea</th>
+          <th>Prioridad</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>s1-1</code></td>
+          <td>ICFTooltip.tsx — tooltip reutilizable D1–D6</td>
+          <td><span class="badge badge-red">Alta</span></td>
+          <td><span class="check">✅ Completado</span></td>
+        </tr>
+        <tr>
+          <td><code>s1-2</code></td>
+          <td>AlertDialog contextual con nombre del paciente</td>
+          <td><span class="badge badge-red">Alta</span></td>
+          <td><span class="check">✅ Completado</span></td>
+        </tr>
+        <tr>
+          <td><code>s1-3</code></td>
+          <td>Interceptor errores 401/422/500 en api.ts</td>
+          <td><span class="badge badge-red">Alta</span></td>
+          <td><span class="check">✅ Completado</span></td>
+        </tr>
+        <tr>
+          <td><code>s1-4</code></td>
+          <td>Toast sesión expirada + logout automático</td>
+          <td><span class="badge badge-red">Alta</span></td>
+          <td><span class="check">✅ Completado</span></td>
+        </tr>
+        <tr>
+          <td><code>s2-1</code></td>
+          <td>OnboardingModal.tsx — 4 pasos primer login</td>
+          <td><span class="badge badge-red">Alta</span></td>
+          <td><span class="check">✅ Completado</span></td>
+        </tr>
+        <tr>
+          <td><code>s2-2</code></td>
+          <td>Help.tsx — glosario ICF, roles, FAQ</td>
+          <td><span class="badge badge-red">Alta</span></td>
+          <td><span class="check">✅ Completado</span></td>
+        </tr>
+        <tr>
+          <td><code>s2-3</code></td>
+          <td>Ruta /help en App.tsx y AppSidebar.tsx</td>
+          <td><span class="badge badge-orange">Media</span></td>
+          <td><span class="check">✅ Completado</span></td>
+        </tr>
+        <tr>
+          <td><code>s2-4</code></td>
+          <td>Breadcrumbs dinámicos en DashboardLayout.tsx</td>
+          <td><span class="badge badge-orange">Media</span></td>
+          <td><span class="check">✅ Completado</span></td>
+        </tr>
+        <tr>
+          <td><code>s3-1</code></td>
+          <td>Labels ICF completos + aria en Patients.tsx</td>
+          <td><span class="badge badge-orange">Media</span></td>
+          <td><span class="check">✅ Completado</span></td>
+        </tr>
+        <tr>
+          <td><code>s3-2</code></td>
+          <td>useJWTExpiry.ts — alerta 5 min antes</td>
+          <td><span class="badge badge-orange">Media</span></td>
+          <td><span class="check">✅ Completado</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── §3 SPRINT 1 ─────────────────────────────────────── -->
+  <div class="page-break"></div>
+  <h1 class="section-title" id="sprint1">3. Sprint 1 — Correcciones Críticas de Usabilidad</h1>
+
+  <!-- S1-1: ICFTooltip -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:hsl(195,80%,90%); color:hsl(195,80%,35%);">💬</div>
+      <div>
+        <div class="card-title">S1-1 — Tooltips contextuales para campos ICF (D1–D6)</div>
+        <div class="card-file">frontend/src/components/ICFTooltip.tsx · NUEVO</div>
+      </div>
+    </div>
+
+    <p><strong>Problema HCI:</strong> Los médicos no sabían qué medir en cada campo ICF ni cómo interpretar la escala 0–100, lo que generaba datos inconsistentes e incompletos en el formulario de pacientes.</p>
+
+    <p><strong>Solución implementada:</strong> Componente <code>ICFTooltipLabel</code> que reemplaza el <code>&lt;Label&gt;</code> estándar en cada campo D1–D6. Al pasar el cursor sobre el ícono <strong>?</strong>, se despliega un tooltip con nombre oficial ICF, descripción funcional, ejemplos prácticos y la escala completa.</p>
+
+    <p style="font-weight:700; color:var(--primary-d); margin-bottom:.5rem;">Visualización del tooltip en acción:</p>
+
+    <div style="background:#f8f9fa; border:1px solid var(--border); border-radius:.5rem; padding:2rem; margin-bottom:1rem; position:relative; min-height:220px; display:flex; align-items:flex-end; justify-content:flex-start; gap:1.5rem;">
+      <!-- Tooltip activo -->
+      <div style="position:relative;">
+        <div class="tooltip-popup">
+          <div class="tooltip-popup-title">D4 — Movilidad</div>
+          <p style="font-size:.72rem; line-height:1.5; opacity:.9; margin-bottom:.3rem;">Capacidad para desplazarse, mantener posiciones corporales y transportar objetos.</p>
+          <p style="font-size:.7rem; opacity:.7; font-style:italic; margin-bottom:.3rem;">Ej: Caminar, subir escaleras, usar transporte, mover objetos.</p>
+          <div class="tooltip-popup-divider"></div>
+          <div class="tooltip-scale">
+            Escala 0–100 · 0 = Sin barrera · 25 = Leve · 50 = Moderada · 75 = Grave · 100 = Barrera completa
+          </div>
+        </div>
+        <div class="tooltip-mockup" style="margin-top:0;">
+          D4 — Nivel de Movilidad
+          <div class="tooltip-icon" style="background:var(--primary);">?</div>
+        </div>
+      </div>
+
+      <!-- Campo sin tooltip activo -->
+      <div class="tooltip-mockup">
+        D1 — Aprendizaje
+        <div class="tooltip-icon">?</div>
+      </div>
+
+      <div class="tooltip-mockup">
+        D5 — Autocuidado
+        <div class="tooltip-icon">?</div>
+      </div>
+    </div>
+
+    <p><strong>Dimensiones cubiertas con código ICF oficial:</strong></p>
+    <div style="display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.75rem;">
+      <span class="badge badge-blue">D1 Aprendizaje y conocimiento</span>
+      <span class="badge badge-green">D2 Tareas y demandas generales</span>
+      <span class="badge badge-orange">D3 Comunicación</span>
+      <span class="badge badge-purple">D4 Movilidad</span>
+      <span class="badge badge-red">D5 Autocuidado</span>
+      <span class="badge badge-gray">D6 Vida doméstica</span>
+    </div>
+
+    <div class="code-block">
+<span class="code-comment">// Patients.tsx — antes</span>
+&lt;<span class="code-keyword">Label</span> htmlFor="nivel_d1"&gt;{t(<span class="code-string">'levelD1'</span>)}&lt;/Label&gt;
+
+<span class="code-comment">// Patients.tsx — después</span>
+&lt;<span class="code-keyword">ICFTooltipLabel</span>
+  dimension=<span class="code-string">"d1"</span>
+  htmlFor=<span class="code-string">"nivel_d1"</span>
+  label={t(<span class="code-string">'levelD1'</span>)}
+/&gt;
+    </div>
+  </div>
+
+  <!-- S1-2: AlertDialog -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:hsl(0,84%,93%); color:hsl(0,72%,40%);">🗑️</div>
+      <div>
+        <div class="card-title">S1-2 — Confirmación de eliminación contextual</div>
+        <div class="card-file">frontend/src/pages/Patients.tsx · MODIFICADO</div>
+      </div>
+    </div>
+
+    <p><strong>Problema HCI:</strong> El diálogo de confirmación mostraba un texto genérico ("¿Está seguro?") sin identificar al paciente. Los médicos expresaron inseguridad sobre si estaban eliminando al paciente correcto.</p>
+
+    <p><strong>Solución implementada:</strong> El <code>AlertDialog</code> ahora muestra un bloque destacado con el nombre completo y número de documento del paciente que será eliminado, siguiendo el principio heurístico de "reconocimiento en lugar de recuerdo".</p>
+
+    <div class="modal-mockup">
+      <div class="alert-box">
+        <p style="font-weight:700; font-size:.95rem; margin-bottom:.4rem;">⚠️ ¿Confirmar eliminación?</p>
+        <p style="font-size:.8rem; color:var(--muted-fg); margin-bottom:.5rem;">Esta acción no se puede deshacer.</p>
+        <div class="alert-patient-card">
+          <span class="alert-patient-name">García Rodríguez, María</span>
+          <span class="alert-patient-doc">· Doc. 1098765432</span>
+        </div>
+        <p style="font-size:.78rem; color:var(--muted-fg); margin-bottom:1rem;">El paciente y todos sus datos serán eliminados permanentemente del sistema.</p>
+        <div style="display:flex; justify-content:flex-end; gap:.5rem;">
+          <button class="btn btn-outline" style="font-size:.78rem;">Cancelar</button>
+          <button class="btn btn-primary" style="background:hsl(0,84%,60%); font-size:.78rem;">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S1-3: API errors -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:hsl(38,92%,90%); color:hsl(38,72%,35%);">🔌</div>
+      <div>
+        <div class="card-title">S1-3 — Manejo centralizado de errores API en español</div>
+        <div class="card-file">frontend/src/services/api.ts · MODIFICADO &nbsp;|&nbsp; frontend/src/services/patients.ts · MODIFICADO</div>
+      </div>
+    </div>
+
+    <p><strong>Problema HCI:</strong> Los errores de red mostraban mensajes en inglés o pantallas en blanco. Los médicos no sabían si el error era transitorio o requería acción.</p>
+
+    <p><strong>Solución implementada:</strong> Método privado <code>handleResponse&lt;T&gt;</code> en ambos servicios (<code>ApiService</code> y <code>PatientService</code>) con mensajes en español para cada código HTTP. Se eliminaron 3 usos de <code>window.location.href = '/login'</code> reemplazados por el callback centralizado <code>ApiService.onUnauthorized</code>.</p>
+
+    <div class="code-block">
+<span class="code-keyword">switch</span> (response.status) {
+  <span class="code-keyword">case</span> 401: ApiService.onUnauthorized?.();
+           <span class="code-keyword">throw new</span> Error(<span class="code-string">'Sesión expirada. Por favor, inicie sesión nuevamente.'</span>);
+  <span class="code-keyword">case</span> 403: <span class="code-keyword">throw new</span> Error(<span class="code-string">'No tiene permisos para realizar esta acción.'</span>);
+  <span class="code-keyword">case</span> 422: <span class="code-keyword">throw new</span> Error(<span class="code-string">'Datos inválidos. Verifique la información ingresada.'</span>);
+  <span class="code-keyword">case</span> 500: <span class="code-keyword">throw new</span> Error(<span class="code-string">'Error temporal del servidor. Intente de nuevo.'</span>);
+}
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.5rem;">
+      <div style="background:#fff3cd; border:1px solid #ffc107; border-radius:.4rem; padding:.4rem .75rem; font-size:.75rem; display:flex; align-items:center; gap:.4rem;">
+        <span style="font-size:1rem;">🔔</span> <span><strong>HTTP 401</strong> → Toast error + logout automático</span>
+      </div>
+      <div style="background:#f8d7da; border:1px solid #f5c6cb; border-radius:.4rem; padding:.4rem .75rem; font-size:.75rem; display:flex; align-items:center; gap:.4rem;">
+        <span style="font-size:1rem;">🚫</span> <span><strong>HTTP 403</strong> → Toast "Sin permisos"</span>
+      </div>
+      <div style="background:#fff3cd; border:1px solid #ffc107; border-radius:.4rem; padding:.4rem .75rem; font-size:.75rem; display:flex; align-items:center; gap:.4rem;">
+        <span style="font-size:1rem;">⚠️</span> <span><strong>HTTP 422</strong> → Toast "Datos inválidos"</span>
+      </div>
+      <div style="background:#f8d7da; border:1px solid #f5c6cb; border-radius:.4rem; padding:.4rem .75rem; font-size:.75rem; display:flex; align-items:center; gap:.4rem;">
+        <span style="font-size:1rem;">💥</span> <span><strong>HTTP 500</strong> → Toast "Error del servidor"</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── §4 SPRINT 2 ─────────────────────────────────────── -->
+  <div class="page-break"></div>
+  <h1 class="section-title" id="sprint2">4. Sprint 2 — Onboarding y Centro de Ayuda</h1>
+
+  <!-- S2-1: Onboarding -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:hsl(270,60%,93%); color:hsl(270,60%,40%);">🎉</div>
+      <div>
+        <div class="card-title">S2-1 — Modal de Onboarding (primer login)</div>
+        <div class="card-file">frontend/src/components/OnboardingModal.tsx · NUEVO &nbsp;|&nbsp; frontend/src/App.tsx · MODIFICADO</div>
+      </div>
+    </div>
+
+    <p><strong>Problema HCI:</strong> Los usuarios nuevos no recibían ninguna orientación sobre el sistema. En los tests de usuario, el 100% de participantes necesitó ayuda externa para registrar su primer paciente.</p>
+
+    <p><strong>Solución implementada:</strong> Modal de bienvenida de 4 pasos que se activa automáticamente en el primer acceso al sistema (detectado por la clave <code>hab_onboarding_done</code> en <code>localStorage</code>). El modal se registra globalmente en <code>App.tsx</code> para ejecutarse independientemente de la ruta.</p>
+
+    <div class="modal-mockup" style="margin-bottom:.75rem;">
+      <div class="modal-box">
+        <div class="modal-icon-wrap">📊</div>
+        <div class="modal-title">Módulo de Pacientes</div>
+        <div class="modal-desc">Registra y gestiona el historial de tus pacientes. Completa los campos ICF (D1–D6) para medir las barreras funcionales en 6 dimensiones clave.</div>
+        <div class="modal-hint">💡 Cada campo ICF tiene un ícono "?" que explica qué mide la dimensión y cómo calificar en la escala de 0 a 100.</div>
+        <div class="modal-progress"><div class="modal-progress-bar" style="width:50%"></div></div>
+        <div class="modal-steps">
+          <div class="modal-step done"></div>
+          <div class="modal-step active"></div>
+          <div class="modal-step"></div>
+          <div class="modal-step"></div>
+        </div>
+        <div style="font-size:.7rem; color:var(--muted-fg); text-align:center; margin-bottom:.75rem;">Paso 2 de 4</div>
+        <div class="modal-actions">
+          <button class="btn btn-outline">← Anterior</button>
+          <button class="btn btn-primary">Siguiente →</button>
+        </div>
+      </div>
+    </div>
+
+    <p><strong>Los 4 pasos del onboarding:</strong></p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot done"></div>
+        <div class="timeline-title">Paso 1 — Bienvenida a HAB</div>
+        <div class="timeline-sub">Introducción a la plataforma y sus módulos principales.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot done"></div>
+        <div class="timeline-title">Paso 2 — Módulo de Pacientes</div>
+        <div class="timeline-sub">Explicación de los campos ICF D1–D6 y la escala 0–100.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot done"></div>
+        <div class="timeline-title">Paso 3 — Predicciones ML</div>
+        <div class="timeline-sub">Cómo interpretar los perfiles 0 (bajas), 1 (mixtas) y 2 (altas y generalizadas).</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot done"></div>
+        <div class="timeline-title">Paso 4 — Centro de Ayuda</div>
+        <div class="timeline-sub">Acceso permanente al glosario ICF, roles y FAQ desde el menú lateral.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2-2: Help page -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:hsl(142,60%,90%); color:hsl(142,60%,28%);">📚</div>
+      <div>
+        <div class="card-title">S2-2 — Página de Ayuda (/help)</div>
+        <div class="card-file">frontend/src/pages/Help.tsx · NUEVO</div>
+      </div>
+    </div>
+
+    <p><strong>Problema HCI:</strong> No existía documentación in-app. Los médicos debían recurrir a documentos externos para entender la terminología ICF o los perfiles de predicción.</p>
+
+    <p><strong>Solución implementada:</strong> Página completa accesible desde el menú lateral (ícono <code>HelpCircle</code>) para todos los roles. Contiene 4 secciones principales:</p>
+
+    <!-- Mockup Help page -->
+    <div class="mockup-container">
+      <div class="mockup-bar">
+        <div class="mockup-dot dot-r"></div>
+        <div class="mockup-dot dot-y"></div>
+        <div class="mockup-dot dot-g"></div>
+        <div class="mockup-url">localhost:5173/help</div>
+      </div>
+      <div class="mockup-body">
+        <div class="mock-sidebar">
+          <div class="mock-sidebar-item"></div>
+          <div class="mock-sidebar-item"></div>
+          <div class="mock-sidebar-item"></div>
+          <div class="mock-sidebar-item"></div>
+          <div class="mock-sidebar-item active"></div>
+        </div>
+        <div style="flex:1;">
+          <div class="mock-header">
+            <span>🏠 Inicio</span>
+            <span class="mock-breadcrumb-sep">›</span>
+            <span class="mock-breadcrumb-active">Ayuda</span>
+          </div>
+          <div style="padding:1rem;">
+            <p style="font-size:.8rem; font-weight:800; margin-bottom:.75rem;">📚 Centro de Ayuda — Health Access Bridge</p>
+            <div class="help-grid">
+              <div class="help-card-mini">
+                <div class="help-card-mini-title">📊 Glosario ICF</div>
+                <span class="icf-chip" style="background:#dbeafe; color:#1e3a8a;">D1</span>
+                <span class="icf-chip" style="background:#dcfce7; color:#14532d;">D2</span>
+                <span class="icf-chip" style="background:#fef9c3; color:#713f12;">D3</span>
+                <span class="icf-chip" style="background:#fce7f3; color:#831843;">D4</span>
+                <span class="icf-chip" style="background:#ede9fe; color:#3b0764;">D5</span>
+                <span class="icf-chip" style="background:#f0fdf4; color:#052e16;">D6</span>
+              </div>
+              <div class="help-card-mini">
+                <div class="help-card-mini-title">🤖 Perfiles ML</div>
+                <span class="icf-chip" style="background:#f3f4f6; color:#374151;">Perfil 0</span>
+                <span class="icf-chip" style="background:#dcfce7; color:#14532d;">Perfil 1</span>
+                <span class="icf-chip" style="background:#dbeafe; color:#1e3a8a;">Perfil 2</span>
+              </div>
+              <div class="help-card-mini">
+                <div class="help-card-mini-title">❓ FAQ</div>
+                <p style="font-size:.65rem; color:var(--muted-fg);">5 preguntas frecuentes sobre el sistema, exportaciones y roles.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:.75rem;">
+      <p><strong>Secciones de la página:</strong></p>
+      <ul>
+        <li><strong>Glosario ICF:</strong> 6 tarjetas con código oficial, descripción funcional y ejemplos clínicos para D1–D6.</li>
+        <li><strong>Perfiles de Predicción ML:</strong> 3 perfiles (0, 1, 2) con badge de color, descripción clínica y guía de intervención.</li>
+        <li><strong>Guía de Roles:</strong> Tabla comparativa de capacidades para rol médico y administrador.</li>
+        <li><strong>FAQ:</strong> 5 preguntas frecuentes sobre la escala ICF, las exportaciones, los perfiles y los roles.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- S2-3 / S2-4: Sidebar + Breadcrumbs -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:hsl(217,91%,92%); color:hsl(217,91%,35%);">🗺️</div>
+      <div>
+        <div class="card-title">S2-3/S2-4 — Enlace Ayuda en sidebar + Breadcrumbs dinámicos</div>
+        <div class="card-file">AppSidebar.tsx · MODIFICADO &nbsp;|&nbsp; DashboardLayout.tsx · MODIFICADO &nbsp;|&nbsp; App.tsx · MODIFICADO</div>
+      </div>
+    </div>
+
+    <p><strong>Problema HCI:</strong> Los usuarios perdían el contexto de navegación dentro del sistema. La página de Ayuda no tenía punto de entrada claro.</p>
+
+    <p><strong>Solución implementada:</strong> (1) Ícono <code>HelpCircle</code> agregado al menú lateral visible para todos los roles. (2) Componente interno <code>DynamicBreadcrumb</code> en <code>DashboardLayout</code> que mapea automáticamente la ruta actual a una etiqueta en español.</p>
+
+    <!-- Mockup con breadcrumb activo -->
+    <div class="mockup-container">
+      <div class="mockup-bar">
+        <div class="mockup-dot dot-r"></div>
+        <div class="mockup-dot dot-y"></div>
+        <div class="mockup-dot dot-g"></div>
+        <div class="mockup-url">localhost:5173/patients</div>
+      </div>
+      <div class="mockup-body">
+        <div class="mock-sidebar">
+          <div class="mock-sidebar-item"></div>
+          <div class="mock-sidebar-item active"></div>
+          <div class="mock-sidebar-item"></div>
+          <div class="mock-sidebar-item"></div>
+          <div class="mock-sidebar-item" style="background:hsl(142,60%,40%);"></div>
+        </div>
+        <div style="flex:1;">
+          <div class="mock-header">Health Access Bridge &nbsp;·&nbsp; Dr. Pérez López</div>
+          <div class="mock-breadcrumb">
+            <span style="color:var(--primary);">Inicio</span>
+            <span class="mock-breadcrumb-sep">›</span>
+            <span class="mock-breadcrumb-active">Pacientes</span>
+          </div>
+          <div style="padding:.75rem;">
+            <p style="font-size:.7rem; font-weight:700;">Lista de Pacientes</p>
+            <p style="font-size:.65rem; color:var(--muted-fg); margin-top:.25rem;">Datos de ejemplo — breadcrumb activo en la ruta /patients</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block" style="margin-top:.75rem;">
+<span class="code-comment">// DashboardLayout.tsx — ROUTE_LABELS map</span>
+<span class="code-keyword">const</span> ROUTE_LABELS: Record&lt;string, string&gt; = {
+  <span class="code-string">'/dashboard'</span>:       <span class="code-string">'Panel'</span>,
+  <span class="code-string">'/patients'</span>:        <span class="code-string">'Pacientes'</span>,
+  <span class="code-string">'/predictions'</span>:     <span class="code-string">'Predicciones'</span>,
+  <span class="code-string">'/analytics'</span>:       <span class="code-string">'Análisis'</span>,
+  <span class="code-string">'/predictive-guide'</span>: <span class="code-string">'Guía Predictiva'</span>,
+  <span class="code-string">'/help'</span>:            <span class="code-string">'Ayuda'</span>,
+  <span class="code-string">'/settings'</span>:        <span class="code-string">'Configuración'</span>,
+  <span class="code-string">'/admin'</span>:           <span class="code-string">'Administración'</span>,
+};
+    </div>
+  </div>
+
+  <!-- ── §5 SPRINT 3 ─────────────────────────────────────── -->
+  <div class="page-break"></div>
+  <h1 class="section-title" id="sprint3">5. Sprint 3 — Accesibilidad y Gestión de Sesión</h1>
+
+  <!-- S3-2: useJWTExpiry -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:hsl(0,84%,93%); color:hsl(0,72%,40%);">⏱️</div>
+      <div>
+        <div class="card-title">S3-2 — Hook useJWTExpiry + logout automático en AuthContext</div>
+        <div class="card-file">frontend/src/hooks/useJWTExpiry.ts · NUEVO &nbsp;|&nbsp; frontend/src/contexts/AuthContext.tsx · MODIFICADO</div>
+      </div>
+    </div>
+
+    <p><strong>Problema HCI:</strong> El JWT expiraba silenciosamente. Al intentar guardar un formulario largo, la sesión estaba inválida y se perdían todos los datos ingresados.</p>
+
+    <p><strong>Solución implementada:</strong> Hook <code>useJWTExpiry</code> que:</p>
+    <ol>
+      <li>Parsea el payload del JWT en <code>localStorage</code> para obtener el campo <code>exp</code>.</li>
+      <li><strong>5 minutos antes de expirar:</strong> lanza un <code>toast.warning</code> con cuenta regresiva visual.</li>
+      <li><strong>Al expirar:</strong> lanza un <code>toast.error</code> y ejecuta el callback <code>logout()</code> automáticamente.</li>
+    </ol>
+    <p>En <code>AuthContext</code> se registró el callback <code>ApiService.onUnauthorized</code> para que tanto el hook como el interceptor API disparen el mismo flujo de logout.</p>
+
+    <!-- Timeline de expiración -->
+    <div style="background:linear-gradient(to right, hsl(142,60%,90%), hsl(38,92%,90%), hsl(0,84%,93%)); border-radius:.5rem; padding:1rem; margin:1rem 0; position:relative; overflow:hidden;">
+      <div style="display:flex; justify-content:space-between; align-items:center; font-size:.78rem; font-weight:600;">
+        <span>🟢 Sesión activa</span>
+        <span>⚠️ Aviso 5 min</span>
+        <span>🔴 Sesión expirada</span>
+      </div>
+      <div style="position:relative; margin:.5rem 0; height:8px; background:rgba(255,255,255,.5); border-radius:4px; overflow:hidden;">
+        <div style="position:absolute; left:0; width:80%; height:100%; background:hsl(142,60%,45%); border-radius:4px;"></div>
+        <div style="position:absolute; left:80%; width:15%; height:100%; background:hsl(38,92%,50%);"></div>
+        <div style="position:absolute; left:95%; width:5%; height:100%; background:hsl(0,84%,60%);"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:.7rem; opacity:.8; margin-top:.25rem;">
+        <span>t=0</span>
+        <span>t=exp-5min → toast.warning()</span>
+        <span>t=exp → logout()</span>
+      </div>
+    </div>
+
+    <div class="code-block">
+<span class="code-comment">// useJWTExpiry.ts — lógica principal</span>
+<span class="code-keyword">const</span> <span class="code-fn">decoded</span> = JSON.parse(atob(token.split(<span class="code-string">'.'</span>)[1]));
+<span class="code-keyword">const</span> expiresAt = decoded.exp * 1000;
+<span class="code-keyword">const</span> msUntilExpiry = expiresAt - Date.now();
+<span class="code-keyword">const</span> warnAt = msUntilExpiry - 5 * 60 * 1000;  <span class="code-comment">// 5 min antes</span>
+
+<span class="code-fn">toast</span>.warning(<span class="code-string">'Tu sesión expirará en 5 minutos...'</span>);
+<span class="code-fn">onLogout</span>();  <span class="code-comment">// callback de AuthContext</span>
+    </div>
+  </div>
+
+  <!-- S3-1: Aria labels -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:hsl(217,91%,92%); color:hsl(217,91%,35%);">♿</div>
+      <div>
+        <div class="card-title">S3-1 — Accesibilidad (aria) + descripción del formulario ICF</div>
+        <div class="card-file">frontend/src/pages/Patients.tsx · MODIFICADO</div>
+      </div>
+    </div>
+
+    <p><strong>Problema HCI:</strong> El formulario de pacientes carecía de atributos de accesibilidad. Los campos ICF no tenían descripción semántica para lectores de pantalla.</p>
+
+    <p><strong>Cambios aplicados en el formulario de pacientes:</strong></p>
+    <ul>
+      <li><code>aria-label="Formulario de paciente"</code> en el elemento <code>&lt;form&gt;</code>.</li>
+      <li><code>aria-describedby="icf-scale-hint"</code> en los 6 campos D1–D6, con nodo <code>sr-only</code> que dice <em>"Escala ICF: 0 sin barrera, 100 barrera completa"</em>.</li>
+      <li><code>aria-describedby="nivel-global-hint"</code> en el campo nivel global, con texto visible <em>"Calculado automáticamente como promedio de D1–D6"</em>.</li>
+      <li>Descripción del diálogo actualizada a español con contexto sobre la escala ICF.</li>
+    </ul>
+
+    <div class="code-block">
+<span class="code-comment">&lt;!-- Hint semántico para lectores de pantalla --&gt;</span>
+&lt;<span class="code-keyword">p</span> id=<span class="code-string">"icf-scale-hint"</span> className=<span class="code-string">"sr-only"</span>&gt;
+  Escala ICF: 0 sin barrera, 100 barrera completa
+&lt;/p&gt;
+
+<span class="code-comment">&lt;!-- Hint visible para nivel global --&gt;</span>
+&lt;<span class="code-keyword">p</span> id=<span class="code-string">"nivel-global-hint"</span> className=<span class="code-string">"text-xs text-muted-foreground"</span>&gt;
+  Calculado automáticamente como promedio de D1–D6.
+&lt;/p&gt;
+    </div>
+  </div>
+
+  <!-- ── §6 INVENTARIO ────────────────────────────────────── -->
+  <div class="page-break"></div>
+  <h1 class="section-title" id="archivos">6. Inventario de Archivos</h1>
+
+  <div class="card">
+    <h2 class="subsection">Archivos nuevos creados</h2>
+    <table class="status-table">
+      <thead>
+        <tr><th>Archivo</th><th>Tipo</th><th>Propósito</th><th>Líneas</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>src/components/ICFTooltip.tsx</code></td>
+          <td><span class="badge badge-blue">Componente</span></td>
+          <td>Tooltip reutilizable para dimensiones ICF D1–D6</td>
+          <td>77</td>
+        </tr>
+        <tr>
+          <td><code>src/components/OnboardingModal.tsx</code></td>
+          <td><span class="badge badge-blue">Componente</span></td>
+          <td>Modal 4 pasos de bienvenida en primer login</td>
+          <td>109</td>
+        </tr>
+        <tr>
+          <td><code>src/pages/Help.tsx</code></td>
+          <td><span class="badge badge-green">Página</span></td>
+          <td>Centro de ayuda: glosario ICF, perfiles ML, roles, FAQ</td>
+          <td>260</td>
+        </tr>
+        <tr>
+          <td><code>src/hooks/useJWTExpiry.ts</code></td>
+          <td><span class="badge badge-purple">Hook</span></td>
+          <td>Alerta 5 min antes de expirar + logout automático</td>
+          <td>56</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="subsection" style="margin-top:1.25rem;">Archivos modificados</h2>
+    <table class="status-table">
+      <thead>
+        <tr><th>Archivo</th><th>Cambios principales</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>src/services/api.ts</code></td>
+          <td>Clase exportada + <code>handleResponse</code> centralizado + <code>onUnauthorized</code> static callback</td>
+        </tr>
+        <tr>
+          <td><code>src/services/patients.ts</code></td>
+          <td>Elimina 3 <code>window.location.href</code>, agrega <code>handleResponse</code> usando <code>ApiService.onUnauthorized</code></td>
+        </tr>
+        <tr>
+          <td><code>src/contexts/AuthContext.tsx</code></td>
+          <td>Registra <code>onUnauthorized</code>, integra <code>useJWTExpiry</code>, <code>useCallback</code> en logout</td>
+        </tr>
+        <tr>
+          <td><code>src/pages/Patients.tsx</code></td>
+          <td>ICFTooltipLabel en D1–D6, aria, confirmación borrado contextual, descripción formulario</td>
+        </tr>
+        <tr>
+          <td><code>src/App.tsx</code></td>
+          <td>Ruta <code>/help</code> + <code>&lt;OnboardingModal /&gt;</code> global</td>
+        </tr>
+        <tr>
+          <td><code>src/components/layout/AppSidebar.tsx</code></td>
+          <td>Item "Ayuda" con <code>HelpCircle</code> visible para todos los roles</td>
+        </tr>
+        <tr>
+          <td><code>src/components/layout/DashboardLayout.tsx</code></td>
+          <td>Componente interno <code>DynamicBreadcrumb</code> con mapa de rutas en español</td>
+        </tr>
+        <tr>
+          <td><code>src/contexts/LanguageContext.tsx</code></td>
+          <td>Clave de traducción <code>help</code> en inglés (<em>Help</em>) y español (<em>Ayuda</em>)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="subsection" style="margin-top:1.25rem;">Commits en el repositorio</h2>
+    <table class="status-table">
+      <thead><tr><th>Hash</th><th>Mensaje</th><th>Archivos</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>26ced4b</code></td>
+          <td>feat(HCI-B): mejoras HCI críticas + onboarding + ayuda</td>
+          <td>12 archivos · +702 / -105</td>
+        </tr>
+        <tr>
+          <td><code>9780516</code></td>
+          <td>fix(help): corregir perfiles de predicción 0/1/2 en Help.tsx y OnboardingModal</td>
+          <td>2 archivos · +24 / -8</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── §7 CONCLUSIONES ──────────────────────────────────── -->
+  <h1 class="section-title" id="conclusiones">7. Conclusiones y Próximos Pasos</h1>
+
+  <div class="card">
+    <h2 class="subsection">Heurísticas de Nielsen atendidas</h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem;">
+      <div style="background:hsl(142,60%,95%); border-left:3px solid var(--success); padding:.6rem .75rem; border-radius:.3rem; font-size:.8rem;">
+        <strong>#1 Visibilidad del estado</strong><br>
+        <span style="color:var(--muted-fg);">Breadcrumbs + toast de expiración de sesión.</span>
+      </div>
+      <div style="background:hsl(142,60%,95%); border-left:3px solid var(--success); padding:.6rem .75rem; border-radius:.3rem; font-size:.8rem;">
+        <strong>#5 Prevención de errores</strong><br>
+        <span style="color:var(--muted-fg);">AlertDialog con nombre del paciente antes de eliminar.</span>
+      </div>
+      <div style="background:hsl(142,60%,95%); border-left:3px solid var(--success); padding:.6rem .75rem; border-radius:.3rem; font-size:.8rem;">
+        <strong>#6 Reconocimiento vs. recuerdo</strong><br>
+        <span style="color:var(--muted-fg);">Tooltips ICF contextuales + Centro de Ayuda.</span>
+      </div>
+      <div style="background:hsl(142,60%,95%); border-left:3px solid var(--success); padding:.6rem .75rem; border-radius:.3rem; font-size:.8rem;">
+        <strong>#9 Ayuda diagnóstica de errores</strong><br>
+        <span style="color:var(--muted-fg);">Mensajes 401/422/500 en español con acción clara.</span>
+      </div>
+      <div style="background:hsl(142,60%,95%); border-left:3px solid var(--success); padding:.6rem .75rem; border-radius:.3rem; font-size:.8rem;">
+        <strong>#10 Ayuda y documentación</strong><br>
+        <span style="color:var(--muted-fg);">Onboarding de 4 pasos + página /help permanente.</span>
+      </div>
+      <div style="background:hsl(142,60%,95%); border-left:3px solid var(--success); padding:.6rem .75rem; border-radius:.3rem; font-size:.8rem;">
+        <strong>#4 Consistencia y estándares</strong><br>
+        <span style="color:var(--muted-fg);">Terminología ICF oficial OMS en todos los componentes.</span>
+      </div>
+    </div>
+
+    <h2 class="subsection" style="margin-top:1.25rem;">Posibles mejoras futuras</h2>
+    <ul>
+      <li><strong>Test A/B del onboarding:</strong> Medir tasa de completación del modal y tiempo hasta primer paciente registrado.</li>
+      <li><strong>Tooltips en modo edición:</strong> Activar tooltips ICF también en la vista de detalle/historial del paciente.</li>
+      <li><strong>i18n del Centro de Ayuda:</strong> Traducir Help.tsx al inglés cuando se active el modo de idioma en inglés.</li>
+      <li><strong>Extensión de breadcrumbs:</strong> Soporte para rutas dinámicas como <code>/patients/:id</code>.</li>
+      <li><strong>Renovación de token:</strong> Agregar opción de "renovar sesión" en el toast de aviso antes de que expire, en lugar de solo alertar.</li>
+    </ul>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="report-footer">
+    <p><strong>Health Access Bridge</strong> · Reporte de Implementación HCI — Opción B</p>
+    <p style="margin-top:.3rem;">Generado el 16 de junio de 2026 · Commits: <code>26ced4b</code> → <code>9780516</code> · Rama: <code>master</code></p>
+  </div>
+
+</div>
+
+<!-- Botón de impresión -->
+<button class="print-btn no-print" onclick="window.print()">🖨️ Exportar a PDF</button>
+
+</body>
+</html>
