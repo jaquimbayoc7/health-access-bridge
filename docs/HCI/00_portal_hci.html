@@ -301,6 +301,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg);
 
   <div class="nav-section">Fase 4 — Test de Usuario</div>
   <div class="nav-item" onclick="show('p08')"><span class="num">08</span> Test de Usuario · Final</div>
+  <div class="nav-item" onclick="show('p09-imp')"><span class="num">✅</span> Implementación HCI — Opción B</div>
 </nav>
 
 <!-- ── Main content ──────────────────────────────────────────────────── -->
@@ -1716,6 +1717,188 @@ flowchart LR
     </div>
   </section>
 
+  <!-- ── IMPLEMENTACIÓN HCI-B ────────────────────────────────────── -->
+  <section id="p09-imp" class="doc-section">
+    <div class="sec-header" style="background:linear-gradient(135deg,hsl(217,91%,28%) 0%,hsl(217,91%,50%) 60%,hsl(195,80%,55%) 100%)">
+      <h1>🚀 Implementación de Mejoras HCI — Opción B</h1>
+      <p>Reporte técnico de los cambios aplicados al frontend tras la evaluación heurística y el test de usuario · Junio 2026</p>
+      <div class="badges">
+        <span class="badge">Fase 4 · Implementación</span>
+        <span class="badge">10 Tareas completadas</span>
+        <span class="badge">12 Archivos modificados</span>
+        <span class="badge">702 líneas insertadas</span>
+        <span class="badge">Commits 26ced4b → 9780516</span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card"><div class="sv">4</div><div class="sl">Archivos nuevos</div></div>
+      <div class="stat-card"><div class="sv">8</div><div class="sl">Archivos modificados</div></div>
+      <div class="stat-card"><div class="sv">702</div><div class="sl">Líneas insertadas</div></div>
+      <div class="stat-card"><div class="sv">10</div><div class="sl">Tareas completadas</div></div>
+      <div class="stat-card"><div class="sv">6</div><div class="sl">Heurísticas Nielsen</div></div>
+    </div>
+
+    <!-- §1 Contexto -->
+    <div class="card"><div class="md-body">
+      <h2>📌 Contexto y Hallazgos que Motivaron la Tarea</h2>
+      <p>Tras el proceso de investigación HCI (entrevistas, user personas, user story mapping, evaluación heurística y test de usuario), se identificaron <strong>7 hallazgos críticos de usabilidad</strong> en el frontend. El equipo evaluó dos planes y seleccionó la <strong>Opción B — Plan completo</strong>.</p>
+      <div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Hallazgo HCI</th><th>Heurística Nielsen</th><th>Severidad</th></tr></thead><tbody>
+        <tr><td><strong>H1</strong></td><td>Campos ICF D1–D6 sin contexto ni ejemplos. Médicos desconocían escala 0–100.</td><td>#6 Reconocimiento vs. recuerdo</td><td><span style="background:#ffebee;color:#b71c1c;padding:2px 8px;border-radius:12px;font-size:.75rem;font-weight:700">Alta</span></td></tr>
+        <tr><td><strong>H2</strong></td><td>Confirmación de borrado genérica sin nombre del paciente afectado.</td><td>#5 Prevención de errores</td><td><span style="background:#ffebee;color:#b71c1c;padding:2px 8px;border-radius:12px;font-size:.75rem;font-weight:700">Alta</span></td></tr>
+        <tr><td><strong>H3</strong></td><td>Errores 401/422/500 producen pantalla en blanco o mensaje en inglés.</td><td>#9 Diagnóstico de errores</td><td><span style="background:#ffebee;color:#b71c1c;padding:2px 8px;border-radius:12px;font-size:.75rem;font-weight:700">Alta</span></td></tr>
+        <tr><td><strong>H4</strong></td><td>Sin onboarding para usuarios nuevos. 100% necesitó ayuda externa en test.</td><td>#10 Ayuda y documentación</td><td><span style="background:#ffebee;color:#b71c1c;padding:2px 8px;border-radius:12px;font-size:.75rem;font-weight:700">Alta</span></td></tr>
+        <tr><td><strong>H5</strong></td><td>Sin Centro de Ayuda in-app para terminología ICF ni funciones del sistema.</td><td>#10 Ayuda y documentación</td><td><span style="background:#ffebee;color:#b71c1c;padding:2px 8px;border-radius:12px;font-size:.75rem;font-weight:700">Alta</span></td></tr>
+        <tr><td><strong>H6</strong></td><td>JWT expiraba silenciosamente causando pérdida de datos del formulario.</td><td>#1 Visibilidad del estado</td><td><span style="background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:12px;font-size:.75rem;font-weight:700">Media</span></td></tr>
+        <tr><td><strong>H7</strong></td><td>Sin breadcrumbs. Usuarios perdían contexto de ubicación en la app.</td><td>#1 Visibilidad del estado</td><td><span style="background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:12px;font-size:.75rem;font-weight:700">Media</span></td></tr>
+      </tbody></table></div>
+    </div></div>
+
+    <!-- §2 Estado de tareas -->
+    <div class="card"><div class="md-body">
+      <h2>✅ Estado Final del Plan de Implementación</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Tarea</th><th>Archivo</th><th>Prioridad</th><th>Estado</th></tr></thead><tbody>
+        <tr><td><code>s1-1</code></td><td>ICFTooltip.tsx — tooltip reutilizable D1–D6</td><td><code>components/ICFTooltip.tsx</code></td><td><span style="background:#ffebee;color:#b71c1c;padding:2px 8px;border-radius:12px;font-size:.72rem;font-weight:700">Alta</span></td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700">✅ Completado</span></td></tr>
+        <tr><td><code>s1-2</code></td><td>AlertDialog contextual con nombre y doc del paciente</td><td><code>pages/Patients.tsx</code></td><td><span style="background:#ffebee;color:#b71c1c;padding:2px 8px;border-radius:12px;font-size:.72rem;font-weight:700">Alta</span></td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700">✅ Completado</span></td></tr>
+        <tr><td><code>s1-3</code></td><td>Interceptor errores 401/422/500 en español</td><td><code>services/api.ts · patients.ts</code></td><td><span style="background:#ffebee;color:#b71c1c;padding:2px 8px;border-radius:12px;font-size:.72rem;font-weight:700">Alta</span></td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700">✅ Completado</span></td></tr>
+        <tr><td><code>s1-4</code></td><td>Toast sesión expirada + logout automático</td><td><code>contexts/AuthContext.tsx</code></td><td><span style="background:#ffebee;color:#b71c1c;padding:2px 8px;border-radius:12px;font-size:.72rem;font-weight:700">Alta</span></td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700">✅ Completado</span></td></tr>
+        <tr><td><code>s2-1</code></td><td>OnboardingModal.tsx — 4 pasos primer login</td><td><code>components/OnboardingModal.tsx</code></td><td><span style="background:#ffebee;color:#b71c1c;padding:2px 8px;border-radius:12px;font-size:.72rem;font-weight:700">Alta</span></td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700">✅ Completado</span></td></tr>
+        <tr><td><code>s2-2</code></td><td>Help.tsx — glosario ICF, perfiles ML, roles, FAQ</td><td><code>pages/Help.tsx</code></td><td><span style="background:#ffebee;color:#b71c1c;padding:2px 8px;border-radius:12px;font-size:.72rem;font-weight:700">Alta</span></td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700">✅ Completado</span></td></tr>
+        <tr><td><code>s2-3</code></td><td>Ruta /help en App.tsx + AppSidebar.tsx</td><td><code>App.tsx · AppSidebar.tsx</code></td><td><span style="background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:12px;font-size:.72rem;font-weight:700">Media</span></td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700">✅ Completado</span></td></tr>
+        <tr><td><code>s2-4</code></td><td>Breadcrumbs dinámicos en DashboardLayout</td><td><code>layout/DashboardLayout.tsx</code></td><td><span style="background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:12px;font-size:.72rem;font-weight:700">Media</span></td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700">✅ Completado</span></td></tr>
+        <tr><td><code>s3-1</code></td><td>Labels ICF completos + aria en Patients.tsx</td><td><code>pages/Patients.tsx</code></td><td><span style="background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:12px;font-size:.72rem;font-weight:700">Media</span></td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700">✅ Completado</span></td></tr>
+        <tr><td><code>s3-2</code></td><td>useJWTExpiry.ts — alerta 5 min antes de expirar</td><td><code>hooks/useJWTExpiry.ts</code></td><td><span style="background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:12px;font-size:.72rem;font-weight:700">Media</span></td><td><span style="background:#e8f5e9;color:#1b5e20;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700">✅ Completado</span></td></tr>
+      </tbody></table></div>
+    </div></div>
+
+    <!-- §3 Sprint 1 -->
+    <div class="card"><div class="md-body">
+      <h2>🔴 Sprint 1 — Correcciones Críticas de Usabilidad</h2>
+
+      <h3>S1-1 · Tooltips contextuales ICF (D1–D6) — <code>ICFTooltip.tsx</code></h3>
+      <p>Componente <code>ICFTooltipLabel</code> que reemplaza el <code>&lt;Label&gt;</code> estándar en cada campo D1–D6. Al pasar el cursor sobre el ícono <strong>?</strong>, se muestra: nombre oficial ICF (OMS), descripción funcional, ejemplos prácticos y la escala completa 0–100.</p>
+      <blockquote class="bq-info"><p><strong>Dimensiones cubiertas:</strong> D1 Aprendizaje y conocimiento · D2 Tareas y demandas generales · D3 Comunicación · D4 Movilidad · D5 Autocuidado · D6 Vida doméstica. Códigos validados contra el componente "Actividades y Participación" de la CIF/OMS.</p></blockquote>
+      <pre><code><span style="color:#86efac">// Patients.tsx — antes</span>
+&lt;Label htmlFor="nivel_d1"&gt;{t('levelD1')}&lt;/Label&gt;
+
+<span style="color:#86efac">// Patients.tsx — después</span>
+&lt;ICFTooltipLabel
+  dimension="d1"
+  htmlFor="nivel_d1"
+  label={t('levelD1')}
+/&gt;</code></pre>
+
+      <h3>S1-2 · AlertDialog contextual — <code>Patients.tsx</code></h3>
+      <p>El diálogo de eliminación ahora muestra un bloque destacado con el <strong>nombre completo</strong> y <strong>número de documento</strong> del paciente que será eliminado, siguiendo el principio de "reconocimiento en lugar de recuerdo".</p>
+      <blockquote class="bq-warn"><p>Antes: texto genérico "¿Está seguro?". Después: tarjeta roja con nombre completo y documento del paciente antes de confirmar el borrado irreversible.</p></blockquote>
+
+      <h3>S1-3 · Manejo centralizado de errores API — <code>api.ts</code> · <code>patients.ts</code></h3>
+      <p>Método privado <code>handleResponse&lt;T&gt;</code> en ambos servicios con mensajes en español. Se eliminaron <strong>3 instancias</strong> de <code>window.location.href = '/login'</code> reemplazadas por el callback centralizado <code>ApiService.onUnauthorized</code>.</p>
+      <div class="tbl-wrap"><table><thead><tr><th>HTTP</th><th>Mensaje en español</th><th>Acción</th></tr></thead><tbody>
+        <tr><td><strong>401</strong></td><td>Sesión expirada. Por favor, inicie sesión nuevamente.</td><td>onUnauthorized() → logout</td></tr>
+        <tr><td><strong>403</strong></td><td>No tiene permisos para realizar esta acción.</td><td>Toast error</td></tr>
+        <tr><td><strong>422</strong></td><td>Datos inválidos. Verifique la información ingresada.</td><td>Toast warning</td></tr>
+        <tr><td><strong>500</strong></td><td>Error temporal del servidor. Intente de nuevo.</td><td>Toast error</td></tr>
+      </tbody></table></div>
+
+      <h3>S1-4 · Toast sesión + logout — <code>AuthContext.tsx</code></h3>
+      <p>Se registró <code>ApiService.onUnauthorized</code> en <code>AuthContext</code> para que tanto el interceptor de API como el hook de JWT disparen el mismo flujo de logout con toast de error.</p>
+    </div></div>
+
+    <!-- §4 Sprint 2 -->
+    <div class="card"><div class="md-body">
+      <h2>🟡 Sprint 2 — Onboarding y Centro de Ayuda</h2>
+
+      <h3>S2-1 · Modal de Onboarding — <code>OnboardingModal.tsx</code></h3>
+      <p>Modal de bienvenida de <strong>4 pasos</strong> que se activa automáticamente en el primer acceso (detectado por <code>hab_onboarding_done</code> en <code>localStorage</code>). Registrado globalmente en <code>App.tsx</code>.</p>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot"><span>1</span></div><div class="tl-title">Bienvenida a HAB</div><div class="tl-body">Introducción a la plataforma y sus módulos principales.</div></div>
+        <div class="tl-item"><div class="tl-dot"><span>2</span></div><div class="tl-title">Módulo de Pacientes</div><div class="tl-body">Campos ICF D1–D6 y escala 0–100. El ícono ? explica cada dimensión.</div></div>
+        <div class="tl-item"><div class="tl-dot"><span>3</span></div><div class="tl-title">Predicciones ML</div><div class="tl-body">3 perfiles: 0 (barreras bajas · gris), 1 (mixtas · verde), 2 (altas · azul).</div></div>
+        <div class="tl-item"><div class="tl-dot"><span>4</span></div><div class="tl-title">Centro de Ayuda</div><div class="tl-body">Acceso permanente desde el menú lateral a glosario ICF, roles y FAQ.</div></div>
+      </div>
+
+      <h3>S2-2 · Página /help — <code>Help.tsx</code></h3>
+      <p>Página completa accesible desde el menú lateral para todos los roles. Contiene:</p>
+      <ul>
+        <li><strong>Glosario ICF:</strong> 6 tarjetas D1–D6 con código oficial OMS, descripción y ejemplos clínicos.</li>
+        <li><strong>Perfiles ML:</strong> 3 perfiles (0, 1, 2) con badge de color e interpretación clínica. Corregido respecto a versión inicial que listaba erróneamente 5 perfiles (1–5).</li>
+        <li><strong>Guía de roles:</strong> tabla comparativa médico vs. administrador.</li>
+        <li><strong>FAQ:</strong> 5 preguntas frecuentes sobre escala ICF, exportaciones y roles.</li>
+      </ul>
+
+      <h3>S2-3/S2-4 · Enlace Ayuda en sidebar + Breadcrumbs dinámicos</h3>
+      <p>Ícono <code>HelpCircle</code> agregado al menú lateral visible para todos los roles. Componente <code>DynamicBreadcrumb</code> en <code>DashboardLayout</code> mapea automáticamente la ruta actual (<code>/patients</code> → <em>Inicio › Pacientes</em>).</p>
+    </div></div>
+
+    <!-- §5 Sprint 3 -->
+    <div class="card"><div class="md-body">
+      <h2>🟢 Sprint 3 — Accesibilidad y Gestión de Sesión</h2>
+
+      <h3>S3-2 · Hook useJWTExpiry — <code>useJWTExpiry.ts</code></h3>
+      <p>Hook que parsea el payload JWT (<code>exp</code>) y gestiona dos eventos:</p>
+      <ul>
+        <li><strong>5 minutos antes de expirar:</strong> <code>toast.warning()</code> con aviso proactivo.</li>
+        <li><strong>Al expirar:</strong> <code>toast.error()</code> + ejecución del callback <code>logout()</code>.</li>
+      </ul>
+      <blockquote class="bq-success"><p>Resuelve la pérdida silenciosa de datos de formulario al expirar la sesión JWT sin previo aviso — hallazgo crítico del test de usuario.</p></blockquote>
+
+      <h3>S3-1 · Accesibilidad aria en campos ICF — <code>Patients.tsx</code></h3>
+      <p>Atributos de accesibilidad añadidos al formulario de pacientes:</p>
+      <ul>
+        <li><code>aria-label="Formulario de paciente"</code> en el elemento <code>&lt;form&gt;</code>.</li>
+        <li><code>aria-describedby="icf-scale-hint"</code> en los 6 campos D1–D6 con nodo <code>sr-only</code>: <em>"Escala ICF: 0 sin barrera, 100 barrera completa"</em>.</li>
+        <li><code>aria-describedby="nivel-global-hint"</code> con texto visible: <em>"Calculado automáticamente como promedio de D1–D6"</em>.</li>
+      </ul>
+    </div></div>
+
+    <!-- §6 Inventario de archivos -->
+    <div class="card"><div class="md-body">
+      <h2>📁 Inventario de Archivos y Commits</h2>
+      <h3>Archivos nuevos creados</h3>
+      <div class="tbl-wrap"><table><thead><tr><th>Archivo</th><th>Tipo</th><th>Líneas</th><th>Propósito</th></tr></thead><tbody>
+        <tr><td><code>src/components/ICFTooltip.tsx</code></td><td>Componente</td><td>77</td><td>Tooltip reutilizable D1–D6 con info ICF oficial</td></tr>
+        <tr><td><code>src/components/OnboardingModal.tsx</code></td><td>Componente</td><td>109</td><td>Modal 4 pasos bienvenida en primer login</td></tr>
+        <tr><td><code>src/pages/Help.tsx</code></td><td>Página</td><td>260</td><td>Glosario ICF, perfiles ML, roles, FAQ</td></tr>
+        <tr><td><code>src/hooks/useJWTExpiry.ts</code></td><td>Hook</td><td>56</td><td>Alerta 5 min antes de expirar sesión JWT</td></tr>
+      </tbody></table></div>
+      <h3>Archivos modificados</h3>
+      <div class="tbl-wrap"><table><thead><tr><th>Archivo</th><th>Cambios principales</th></tr></thead><tbody>
+        <tr><td><code>src/services/api.ts</code></td><td>Clase exportada + <code>handleResponse</code> + <code>onUnauthorized</code> static callback</td></tr>
+        <tr><td><code>src/services/patients.ts</code></td><td>Elimina 3 <code>window.location.href</code>, usa <code>ApiService.onUnauthorized</code></td></tr>
+        <tr><td><code>src/contexts/AuthContext.tsx</code></td><td>Registra onUnauthorized, integra useJWTExpiry, useCallback en logout</td></tr>
+        <tr><td><code>src/pages/Patients.tsx</code></td><td>ICFTooltipLabel en D1–D6, aria, confirmación borrado contextual</td></tr>
+        <tr><td><code>src/App.tsx</code></td><td>Ruta <code>/help</code> + <code>&lt;OnboardingModal /&gt;</code> global</td></tr>
+        <tr><td><code>src/components/layout/AppSidebar.tsx</code></td><td>Item Ayuda con HelpCircle para todos los roles</td></tr>
+        <tr><td><code>src/components/layout/DashboardLayout.tsx</code></td><td>DynamicBreadcrumb con mapa de rutas en español</td></tr>
+        <tr><td><code>src/contexts/LanguageContext.tsx</code></td><td>Clave <code>help</code> en inglés/español</td></tr>
+      </tbody></table></div>
+      <h3>Commits en rama <code>master</code></h3>
+      <div class="tbl-wrap"><table><thead><tr><th>Hash</th><th>Mensaje</th><th>Cambios</th></tr></thead><tbody>
+        <tr><td><code>26ced4b</code></td><td>feat(HCI-B): mejoras HCI críticas + onboarding + ayuda</td><td>12 archivos · +702 / −105</td></tr>
+        <tr><td><code>9780516</code></td><td>fix(help): corregir perfiles de predicción 0/1/2</td><td>2 archivos · +24 / −8</td></tr>
+      </tbody></table></div>
+    </div></div>
+
+    <!-- §7 Heurísticas -->
+    <div class="card"><div class="md-body">
+      <h2>🎯 Heurísticas de Nielsen Atendidas</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Heurística</th><th>Mejora implementada</th></tr></thead><tbody>
+        <tr><td><strong>#1 Visibilidad del estado</strong></td><td>Breadcrumbs dinámicos + toast de aviso 5 min antes de expirar sesión</td></tr>
+        <tr><td><strong>#5 Prevención de errores</strong></td><td>AlertDialog con nombre y documento del paciente antes de confirmar borrado</td></tr>
+        <tr><td><strong>#6 Reconocimiento vs. recuerdo</strong></td><td>Tooltips ICF contextuales en D1–D6 + Centro de Ayuda permanente</td></tr>
+        <tr><td><strong>#9 Diagnóstico de errores</strong></td><td>Mensajes 401/422/500 en español con acción clara</td></tr>
+        <tr><td><strong>#10 Ayuda y documentación</strong></td><td>Onboarding 4 pasos en primer login + página /help con glosario y FAQ</td></tr>
+        <tr><td><strong>#4 Consistencia y estándares</strong></td><td>Terminología ICF oficial OMS en todos los componentes y documentación</td></tr>
+      </tbody></table></div>
+    </div></div>
+
+    <div class="page-footer" style="margin-top:24px">
+      Documento: <code>09_implementacion_hci_b.html</code> · Health Access Bridge · Fase 4 — Implementación · CORHUILA 2026 · ISO 9241-210:2019
+    </div>
+  </section>
+
   <div class="page-footer">
     Health Access Bridge · Investigación HCI · Fase 1 · Fase 2 · Fase 3 · <strong>Fase 4</strong> · CORHUILA 2026 · ISO 9241-210:2019
   </div>
@@ -1740,6 +1923,7 @@ const INDEX = [
   {id:'p15',num:'15',label:'Resultados de la Evaluación',desc:'Fase 3 · EH · Top 10 problemas · distribución severidad · hallazgos'},
   {id:'p16',num:'16',label:'Conclusiones y Recomendaciones',desc:'Fase 3 · EH · recomendaciones priorizadas · próximos pasos · PDF'},
   {id:'p08',num:'08',label:'Test de Usuario — Fase 4 Final',desc:'Fase 4 · Guión de tareas HAB · protocolo · encuesta sociodemográfica · satisfacción post-test · Kolb · heurísticas emocionales'},
+  {id:'p09-imp',num:'✅',label:'Implementación HCI — Opción B',desc:'Fase 4 · 10 tareas · 12 archivos · 702 líneas · Tooltips ICF · Onboarding · Help · JWT · Errores API · Breadcrumbs · Commits 26ced4b → 9780516'},
 ];
 
 const tbody = document.getElementById('index-table');
