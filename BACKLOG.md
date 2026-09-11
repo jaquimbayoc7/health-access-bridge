@@ -13,15 +13,17 @@
 |---------|---------------|-----------|
 | EPICA-01 Estructuración y Diseño | — | EPICA-02 Funcionalidades Core |
 | HU-01 Autenticación y Roles (8 pts) | — | EPICA-03 IA Generativa y Cierre |
-| HU-02 Registro y Precarga de Pacientes (13 pts) | — | HU-05 Modo Offline y PWA (13 pts) |
-| HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | HU-06 Pruebas de Integración y Rendimiento (8 pts) |
-| HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | HU-07 Orquestación LLM (21 pts) |
-| [#14 HU-11](https://github.com/jaquimbayoc7/health-access-bridge/issues/14) Pruebas Smoke en Producción (3 pts) | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
-| [#15 HU-12](https://github.com/jaquimbayoc7/health-access-bridge/issues/15) Pruebas de Integración Backend (5 pts) | — | HU-09 Pruebas Completas y Feedback (8 pts) |
-| [#16 HU-13](https://github.com/jaquimbayoc7/health-access-bridge/issues/16) Pruebas de Diseño y UI Frontend (8 pts) | — | HU-10 Despliegue Final y Manuales (5 pts) |
+| HU-02 Registro y Precarga de Pacientes (13 pts) | — | HU-06 Pruebas de Integración y Rendimiento (8 pts) |
+| HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | HU-07 Orquestación LLM (21 pts) |
+| HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
+| [#14 HU-11](https://github.com/jaquimbayoc7/health-access-bridge/issues/14) Pruebas Smoke en Producción (3 pts) | — | HU-09 Pruebas Completas y Feedback (8 pts) |
+| [#15 HU-12](https://github.com/jaquimbayoc7/health-access-bridge/issues/15) Pruebas de Integración Backend (5 pts) | — | HU-10 Despliegue Final y Manuales (5 pts) |
+| [#16 HU-13](https://github.com/jaquimbayoc7/health-access-bridge/issues/16) Pruebas de Diseño y UI Frontend (8 pts) | — | — |
+| HU-05 Mejoras de Usabilidad (HCI) (13 pts) | — | — |
+| HU-05b Ayuda contextual traducida (3 pts) | — | — |
 
-**Puntos completados: 63 pts · Puntos pendientes: 68 pts · Total: 131 pts**  
-**Avance general: 48% · Momento 1 100% completado (Sprint 3.5 incluido)**
+**Puntos completados: 79 pts · Puntos pendientes: 55 pts · Total: 134 pts**  
+**Avance general: 59% · Momento 1 100% completado (Sprint 3.5 incluido)**
 
 ---
 
@@ -218,20 +220,51 @@
 
 ---
 
-### Sprint 6 & 7: Capacidades PWA y Rendimiento (Semanas 14-17)
+### Sprint 6 & 7: Mejoras de Usabilidad (HCI) y Rendimiento (Semanas 14-17)
 
-#### HU-05: Modo Offline y PWA
-- **Como** Médico en zonas rurales
-- **Deseo** acceder a la lista de pacientes sin conexión a internet
-- **Para** garantizar la continuidad del servicio en áreas de baja conectividad.
+#### HU-05: Mejoras de Usabilidad derivadas de Investigación HCI ✅ Done
+- **Como** Médico
+- **Deseo** que la plataforma resuelva las fricciones de usabilidad detectadas en las entrevistas y el test de usuario
+- **Para** reducir errores, inseguridad al operar el sistema y mejorar la curva de aprendizaje.
+
+**Detalles:**
+Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su lugar se implementó el plan de mejoras salido de la investigación de usuarios HCI (`docs/HCI/`), documentado en `docs/HCI/09_implementacion_hci_b.html`: 4 archivos nuevos, 8 modificados, 702 líneas insertadas, 10 tareas completadas en 3 sprints.
+
+**Tareas completadas:**
+- ✅ **Sprint 1 — Correcciones críticas de usabilidad:**
+  - `ICFTooltip.tsx` (nuevo) — tooltips contextuales reutilizables para los campos ICF D1–D6 (nombre oficial, descripción, ejemplos y escala 0–100).
+  - `AlertDialog` de eliminación de paciente ahora muestra nombre y documento del paciente (reconocimiento en lugar de recuerdo).
+  - Interceptor centralizado de errores HTTP (401/403/422/500) en `api.ts` con mensajes en español.
+  - Toast de sesión expirada + logout automático ante 401.
+- ✅ **Sprint 2 — Onboarding y Centro de Ayuda:**
+  - `OnboardingModal.tsx` (nuevo) — guía de 4 pasos en el primer login.
+  - `Help.tsx` (nuevo) — Centro de Ayuda con glosario ICF, guía de roles, perfiles de predicción y FAQ.
+  - Ruta `/help` agregada en `App.tsx` y `AppSidebar.tsx`.
+  - Breadcrumbs dinámicos en `DashboardLayout.tsx`.
+- ✅ **Sprint 3 — Accesibilidad y gestión de sesión:**
+  - Labels ICF completos + atributos `aria-*` en `Patients.tsx`.
+  - `useJWTExpiry.ts` (nuevo) — alerta al usuario 5 minutos antes de que expire la sesión.
+
+**DoD:** Cambios desplegados en frontend, documentados en `docs/HCI/09_implementacion_hci_b.html`, heurísticas de Nielsen atendidas.  
+**Estimación:** 13 puntos.  
+**Estado:** ✅ Completado — ver inventario completo de archivos y commits en `docs/HCI/09_implementacion_hci_b.html`.
+**Pendiente detectado:** el Centro de Ayuda (`Help.tsx`) y los tooltips ICF (`ICFTooltip.tsx`) quedaron con texto fijo en español y no reaccionan al selector de idioma (`LanguageContext`) — ver corrección en HU-05b.
+
+---
+
+#### HU-05b: Ayuda contextual (Help + Tooltips ICF) traducida según idioma ✅ Done
+- **Como** Usuario (médico o administrador) que cambia el idioma de la interfaz
+- **Deseo** que el Centro de Ayuda y los tooltips de ayuda ICF cambien de idioma junto con el resto de la app
+- **Para** tener una experiencia consistente sin textos de ayuda "atrapados" en español.
 
 **Tareas:**
-- Configurar Service Worker.
-- Implementar Manifiesto de aplicación.
-- Estrategia de caché (Stale-while-revalidate).
+- Migrar `ICF_INFO` (`ICFTooltip.tsx`) y el contenido de `Help.tsx` (glosario ICF, perfiles de predicción, guía de roles, atajos, FAQ) a claves de `LanguageContext.tsx`.
+- Reemplazar textos hardcodeados por `t('...')` usando `useLanguage()`.
+- Verificar que el cambio de idioma desde el selector actualiza la ayuda delimitada sin recargar la página.
 
-**DoD:** Instalable en móvil/escritorio, carga básica sin internet.  
-**Estimación:** 13 puntos.
+**DoD:** Ayuda 100% bilingüe (en/es), sin textos fijos.  
+**Estimación:** 3 puntos.  
+**Estado:** ✅ Completado.
 
 ---
 
