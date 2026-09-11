@@ -14,7 +14,7 @@
 | EPICA-01 Estructuración y Diseño | — | EPICA-02 Funcionalidades Core |
 | HU-01 Autenticación y Roles (8 pts) | — | EPICA-03 IA Generativa y Cierre |
 | HU-02 Registro y Precarga de Pacientes (13 pts) | — | HU-06 Pruebas de Integración y Rendimiento (8 pts) |
-| HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | HU-07 Servidor Local para Códigos ICF (21 pts) |
+| HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | HU-07 Servidor Local con LLM Ajustado para Códigos ICF (21 pts) |
 | HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
 | [#14 HU-11](https://github.com/jaquimbayoc7/health-access-bridge/issues/14) Pruebas Smoke en Producción (3 pts) | — | HU-09 Pruebas Completas y Feedback (8 pts) |
 | [#15 HU-12](https://github.com/jaquimbayoc7/health-access-bridge/issues/15) Pruebas de Integración Backend (5 pts) | — | HU-10 Despliegue Final y Manuales (5 pts) |
@@ -288,32 +288,36 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 
 ### Sprint 8 & 9: Servidor Local y Codificación ICF (Semanas 19-22)
 
-#### HU-07: Alistamiento de Servidor Local Físico para Sugerencia de Códigos ICF (Colombia)
+#### HU-07: Alistamiento de Servidor Local Físico con LLM Ajustado para Sugerencia de Códigos ICF (Colombia)
 - **Como** Médico / Administrador de TI en sede clínica
-- **Deseo** contar con un servidor físico local que reciba los datos capturados del paciente y sugiera los códigos de la Clasificación Internacional del Funcionamiento (CIF/ICF) bajo el estándar adoptado en Colombia
-- **Para** operar de forma confiable en sedes con conectividad limitada y mantener el procesamiento de datos clínicos sensibles dentro de la infraestructura local.
+- **Deseo** contar con un servidor físico local, con un modelo LLM instalado y ajustado (fine-tuned) para esta misión, que reciba los datos capturados del paciente y sugiera los códigos de la Clasificación Internacional del Funcionamiento (CIF/ICF) bajo el estándar adoptado en Colombia
+- **Para** operar de forma confiable en sedes con conectividad limitada, mantener el procesamiento de datos clínicos sensibles dentro de la infraestructura local, y obtener sugerencias de codificación con razonamiento en lenguaje natural en vez de un simple mapeo de reglas.
 
 **Detalles:**
-- **Infraestructura:** Aprovisionar y configurar el servidor físico (SO, dependencias, contenedores) en la sede clínica.
-- **Backend local:** Servicio que recibe los datos ICF (D1–D6) capturados en HAB y sugiere el código/calificador correspondiente según el estándar CIF-Colombia (Resolución/RIPS vigente).
-- **Sincronización:** Definir estrategia de sincronización o modo standalone entre el servidor local y el backend en la nube (Render).
-- **Referencia:** Cargar la tabla oficial de codificación ICF/CIF como catálogo local de consulta.
+- **Infraestructura:** Aprovisionar y configurar el servidor físico (SO, GPU/CPU con capacidad de inferencia, dependencias, contenedores) en la sede clínica.
+- **Modelo LLM local:** Instalar un LLM open-weight ejecutable on-premise (ej. vía Ollama / vLLM) y ajustarlo (fine-tuning o RAG con el manual oficial CIF-Colombia) para la tarea específica de sugerir códigos/calificadores ICF a partir de los niveles D1–D6 y la nota clínica del paciente.
+- **Backend local:** Servicio que recibe los datos ICF capturados en HAB, arma el prompt/contexto para el LLM local y devuelve el código/calificador sugerido con su justificación.
+- **Sincronización:** Definir estrategia de sincronización o modo standalone entre el servidor local y el backend en la nube (Render); el LLM y los datos sensibles nunca salen de la red local.
+- **Referencia:** Cargar la tabla oficial de codificación ICF/CIF como catálogo/contexto local para el modelo (RAG) y como respaldo de reglas.
 
 **Criterios de Aceptación:**
-- El servidor local queda operativo y accesible en la red interna de la sede.
-- Dado un registro de paciente con niveles D1–D6, el servicio sugiere el código ICF/CIF correspondiente según el estándar colombiano.
-- Funciona sin depender de conexión a internet.
-- Documentación de instalación y mantenimiento del servidor.
+- El servidor local queda operativo y accesible en la red interna de la sede, con el LLM cargado y sirviendo inferencias.
+- Dado un registro de paciente con niveles D1–D6, el LLM local sugiere el código ICF/CIF correspondiente según el estándar colombiano, con una justificación breve.
+- Funciona sin depender de conexión a internet (modelo e inferencia 100% on-premise).
+- Tiempo de respuesta de la inferencia dentro de un umbral aceptable para uso clínico (a definir en pruebas).
+- Documentación de instalación, ajuste del modelo y mantenimiento del servidor.
 
 **Tareas:**
-- Aprovisionar y configurar el servidor físico (hardware, SO, dependencias).
-- Implementar el servicio/endpoint de sugerencia de códigos ICF/CIF a partir de los niveles D1–D6.
-- Cargar el catálogo oficial de códigos ICF/CIF-Colombia como referencia local.
+- Aprovisionar y configurar el servidor físico (hardware, SO, dependencias, runtime de inferencia).
+- Seleccionar y desplegar el LLM local (ej. Ollama/vLLM con un modelo open-weight adecuado al hardware disponible).
+- Ajustar el modelo para la tarea (fine-tuning y/o RAG) usando el estándar oficial CIF-Colombia como base de conocimiento.
+- Implementar el servicio/endpoint que arma el prompt con los niveles D1–D6 y consulta al LLM local para sugerir el código ICF/CIF.
+- Cargar el catálogo oficial de códigos ICF/CIF-Colombia como contexto/referencia del modelo.
 - Definir y probar la estrategia de sincronización con el backend en la nube.
-- Pruebas de disponibilidad y latencia en red local.
-- Documentar instalación, configuración y mantenimiento.
+- Pruebas de precisión de las sugerencias, disponibilidad y latencia en red local.
+- Documentar instalación, ajuste del modelo y mantenimiento del servidor.
 
-**DoD:** Servidor local operativo, sugerencia de códigos ICF/CIF funcionando con datos reales, documentación de instalación.  
+**DoD:** Servidor local operativo con el LLM ajustado, sugerencia de códigos ICF/CIF funcionando con datos reales y justificación del modelo, documentación de instalación y ajuste.  
 **Estimación:** 21 puntos.
 
 ---
