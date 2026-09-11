@@ -25,7 +25,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 | **Frontend** | React 18 · TypeScript · Vite · TailwindCSS · shadcn/ui · Recharts · React Query |
 | **Autenticación** | JWT con claims de rol (Admin, Médico) · Bcrypt |
 | **IA Predictiva** | HybridModelDisability (modelo ML embebido) |
-| **IA Generativa** | LLM OpenAI GPT-4 *(HU-07 — futuro)* |
+| **Servidor Local ICF** | Servidor físico on-premise para sugerencia de códigos CIF/ICF-Colombia *(HU-07 — futuro)* |
 | **Despliegue** | Render · Web Service · PostgreSQL managed |
 | **CI/CD** | GitHub Actions · 3 workflows (dev/qa/prod) |
 
@@ -146,7 +146,7 @@ Documentación de arquitectura en cuatro niveles siguiendo el [C4 Model](https:/
 
 | Issue | Título | Sprint | Pts | Estado |
 |-------|--------|--------|-----|--------|
-| [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7) | [HU-07] Orquestación con LLM para Recomendaciones Clínicas | Sprint 8-9 (Sem. 19-22) | 21 | 📋 Backlog |
+| [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7) | [HU-07] Servidor Local Físico para Sugerencia de Códigos ICF (Colombia) | Sprint 8-9 (Sem. 19-22) | 21 | 📋 Backlog |
 | [#8](https://github.com/jaquimbayoc7/health-access-bridge/issues/8) | [HU-08] Dashboard de Análisis y Exportación | Sprint 10-11 (Sem. 23-26) | 13 | 📋 Backlog |
 | [#9](https://github.com/jaquimbayoc7/health-access-bridge/issues/9) | [HU-09] Pruebas Completas y Feedback de Usuarios | Sprint 11 (Sem. 25-26) | 8 | 📋 Backlog |
 | [#10](https://github.com/jaquimbayoc7/health-access-bridge/issues/10) | [HU-10] Despliegue Final y Generación de Manuales | Sprint 12 (Sem. 27) | 5 | 📋 Backlog |

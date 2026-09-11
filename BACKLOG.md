@@ -14,7 +14,7 @@
 | EPICA-01 Estructuración y Diseño | — | EPICA-02 Funcionalidades Core |
 | HU-01 Autenticación y Roles (8 pts) | — | EPICA-03 IA Generativa y Cierre |
 | HU-02 Registro y Precarga de Pacientes (13 pts) | — | HU-06 Pruebas de Integración y Rendimiento (8 pts) |
-| HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | HU-07 Orquestación LLM (21 pts) |
+| HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | HU-07 Servidor Local para Códigos ICF (21 pts) |
 | HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
 | [#14 HU-11](https://github.com/jaquimbayoc7/health-access-bridge/issues/14) Pruebas Smoke en Producción (3 pts) | — | HU-09 Pruebas Completas y Feedback (8 pts) |
 | [#15 HU-12](https://github.com/jaquimbayoc7/health-access-bridge/issues/15) Pruebas de Integración Backend (5 pts) | — | HU-10 Despliegue Final y Manuales (5 pts) |
@@ -286,24 +286,34 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 
 ## MOMENTO 3: TRABAJO INTEGRADOR III (Semanas 19-27) - Avance 0% 🔴
 
-### Sprint 8 & 9: IA Generativa y Recomendaciones (Semanas 19-22)
+### Sprint 8 & 9: Servidor Local y Codificación ICF (Semanas 19-22)
 
-#### HU-07: Orquestación con LLM para Recomendaciones Clínicas
-- **Como** Médico
-- **Deseo** que la IA generativa (GPT-4 u otro LLM) cree resúmenes y planes personalizados
-- **Para** apoyar la toma de decisiones clínicas basadas en evidencia.
+#### HU-07: Alistamiento de Servidor Local Físico para Sugerencia de Códigos ICF (Colombia)
+- **Como** Médico / Administrador de TI en sede clínica
+- **Deseo** contar con un servidor físico local que reciba los datos capturados del paciente y sugiera los códigos de la Clasificación Internacional del Funcionamiento (CIF/ICF) bajo el estándar adoptado en Colombia
+- **Para** operar de forma confiable en sedes con conectividad limitada y mantener el procesamiento de datos clínicos sensibles dentro de la infraestructura local.
 
 **Detalles:**
-- **Backend:** Integrar API LLM (ej. OpenAI, Abacus LLM).
-- **Frontend:** Mostrar resumen generado y recomendaciones en perfil paciente.
-- **Proceso:** Enviar datos y contexto al LLM, recibir texto enriquecido.
+- **Infraestructura:** Aprovisionar y configurar el servidor físico (SO, dependencias, contenedores) en la sede clínica.
+- **Backend local:** Servicio que recibe los datos ICF (D1–D6) capturados en HAB y sugiere el código/calificador correspondiente según el estándar CIF-Colombia (Resolución/RIPS vigente).
+- **Sincronización:** Definir estrategia de sincronización o modo standalone entre el servidor local y el backend en la nube (Render).
+- **Referencia:** Cargar la tabla oficial de codificación ICF/CIF como catálogo local de consulta.
 
 **Criterios de Aceptación:**
-- Resumen coherente y útil.
-- Opción para exportar a PDF.
-- Disclaimer legal visible.
+- El servidor local queda operativo y accesible en la red interna de la sede.
+- Dado un registro de paciente con niveles D1–D6, el servicio sugiere el código ICF/CIF correspondiente según el estándar colombiano.
+- Funciona sin depender de conexión a internet.
+- Documentación de instalación y mantenimiento del servidor.
 
-**DoD:** Integración completa, UI amigable, logs de uso.  
+**Tareas:**
+- Aprovisionar y configurar el servidor físico (hardware, SO, dependencias).
+- Implementar el servicio/endpoint de sugerencia de códigos ICF/CIF a partir de los niveles D1–D6.
+- Cargar el catálogo oficial de códigos ICF/CIF-Colombia como referencia local.
+- Definir y probar la estrategia de sincronización con el backend en la nube.
+- Pruebas de disponibilidad y latencia en red local.
+- Documentar instalación, configuración y mantenimiento.
+
+**DoD:** Servidor local operativo, sugerencia de códigos ICF/CIF funcionando con datos reales, documentación de instalación.  
 **Estimación:** 21 puntos.
 
 ---
