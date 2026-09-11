@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright (HU-06 E2E)
+/playwright-report/
+/test-results/
+/blob-report/
+/playwright/.cache/

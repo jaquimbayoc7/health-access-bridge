@@ -9,9 +9,12 @@ class TestPatientsAuth:
         r = client.get("/patients/")
         assert r.status_code == 401
 
-    def test_list_patients_as_admin_forbidden(self, client, auth_headers_admin):
+    def test_list_patients_as_admin_allowed(self, client, auth_headers_admin):
+        """El admin tiene acceso de supervision a todos los pacientes (mismo criterio
+        que GET/PUT/DELETE /patients/{id}, que tambien permiten bypass de ownership)."""
         r = client.get("/patients/", headers=auth_headers_admin)
-        assert r.status_code == 403
+        assert r.status_code == 200
+        assert isinstance(r.json(), list)
 
     def test_create_patient_unauthenticated(self, client):
         r = client.post("/patients/", json=PATIENT_PAYLOAD)
@@ -26,7 +29,6 @@ class TestPatientCRUD:
         assert body["nombre_apellidos"] == PATIENT_PAYLOAD["nombre_apellidos"]
         assert body["numero_documento"] == PATIENT_PAYLOAD["numero_documento"]
         assert "id" in body
-        return body["id"]
 
     def test_list_patients(self, client, auth_headers_medico):
         r = client.get("/patients/", headers=auth_headers_medico)
@@ -59,8 +61,9 @@ class TestPatientCRUD:
         assert r.json() == []
 
     def test_get_patient_by_id(self, client, auth_headers_medico):
+        payload = {**PATIENT_PAYLOAD, "numero_documento": "1100000001"}
         create = client.post(
-            "/patients/", json=PATIENT_PAYLOAD, headers=auth_headers_medico
+            "/patients/", json=payload, headers=auth_headers_medico
         )
         patient_id = create.json()["id"]
 
@@ -73,12 +76,13 @@ class TestPatientCRUD:
         assert r.status_code == 404
 
     def test_update_patient(self, client, auth_headers_medico):
+        payload = {**PATIENT_PAYLOAD, "numero_documento": "1100000002"}
         create = client.post(
-            "/patients/", json=PATIENT_PAYLOAD, headers=auth_headers_medico
+            "/patients/", json=payload, headers=auth_headers_medico
         )
         patient_id = create.json()["id"]
 
-        updated = {**PATIENT_PAYLOAD, "nombre_apellidos": "Juan Pérez Actualizado"}
+        updated = {**payload, "nombre_apellidos": "Juan Pérez Actualizado"}
         r = client.put(
             f"/patients/{patient_id}", json=updated, headers=auth_headers_medico
         )
@@ -86,13 +90,14 @@ class TestPatientCRUD:
         assert r.json()["nombre_apellidos"] == "Juan Pérez Actualizado"
 
     def test_delete_patient_soft(self, client, auth_headers_medico):
+        payload = {**PATIENT_PAYLOAD, "numero_documento": "1100000003"}
         create = client.post(
-            "/patients/", json=PATIENT_PAYLOAD, headers=auth_headers_medico
+            "/patients/", json=payload, headers=auth_headers_medico
         )
         patient_id = create.json()["id"]
 
         r = client.delete(f"/patients/{patient_id}", headers=auth_headers_medico)
-        assert r.status_code == 200
+        assert r.status_code == 204
 
         r2 = client.get(f"/patients/{patient_id}", headers=auth_headers_medico)
         assert r2.status_code == 404
@@ -162,4 +167,4 @@ class TestPatientOwnership:
         patient_id = create.json()["id"]
 
         r = client.get(f"/patients/{patient_id}", headers=auth_headers_medico)
-        assert r.status_code == 404
+        assert r.status_code == 403

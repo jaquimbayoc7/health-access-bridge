@@ -43,3 +43,9 @@ Thumbs.db
 # Archivos de configuración local
 .env.local
 .env.*.local
+
+# Cobertura y cache de pytest
+.pytest_cache/
+coverage.xml
+htmlcov/
+.coverage

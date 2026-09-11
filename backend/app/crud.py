@@ -45,7 +45,14 @@ def activate_all_users(db: Session):
     return count
 
 def get_patient(db: Session, patient_id: int):
-    return db.query(models.Patient).filter(models.Patient.id == patient_id).first()
+    """Obtiene un paciente activo por ID. Los pacientes con soft-delete
+    (is_active=False) no son visibles, igual que en get_all_patients /
+    get_patients_by_owner, para evitar que GET/PUT/DELETE por ID expongan
+    o modifiquen registros ya eliminados."""
+    return db.query(models.Patient).filter(
+        models.Patient.id == patient_id,
+        models.Patient.is_active == True,
+    ).first()
 
 def get_all_patients(db: Session, skip: int = 0, limit: int = 100, search: str = None):
     query = db.query(models.Patient).filter(models.Patient.is_active == True)

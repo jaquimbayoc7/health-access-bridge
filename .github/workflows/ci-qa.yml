@@ -120,10 +120,10 @@ jobs:
           fi
           echo "✅ /health OK"
 
-      - name: Smoke test — POST /api/v1/auth/login returns 422 or 200
+      - name: Smoke test — POST /users/login returns 422 or 200
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -X POST https://hab-backend-qa.onrender.com/api/v1/auth/login \
+            -X POST https://hab-backend-qa.onrender.com/users/login \
             -H "Content-Type: application/json" \
             -d '{"username":"smoke@test.com","password":"smoke"}')
           echo "Login endpoint status: $STATUS"
@@ -131,12 +131,12 @@ jobs:
             echo "❌ Auth endpoint unreachable (HTTP $STATUS)"
             exit 1
           fi
-          echo "✅ /auth/login reachable"
+          echo "✅ /users/login reachable"
 
-      - name: Smoke test — GET /api/v1/patients/ returns 401
+      - name: Smoke test — GET /patients/ returns 401
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            https://hab-backend-qa.onrender.com/api/v1/patients/)
+            https://hab-backend-qa.onrender.com/patients/)
           echo "Patients endpoint status: $STATUS"
           if [ "$STATUS" != "401" ] && [ "$STATUS" != "403" ]; then
             echo "❌ Patients endpoint unexpected response (HTTP $STATUS)"
@@ -173,7 +173,7 @@ jobs:
 
       - name: Run E2E tests
         env:
-          PLAYWRIGHT_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          PLAYWRIGHT_BASE_URL: https://hab-frontend-qa.onrender.com
         run: cd frontend && npx playwright test
 
   promote-to-production-gate:

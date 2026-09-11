@@ -126,11 +126,21 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     Maneja errores de validación de requests y asegura que los headers de CORS estén presentes.
     """
     origin = request.headers.get("origin")
-    
+
+    # exc.body puede no ser serializable a JSON (ej. FormData en requests
+    # application/x-www-form-urlencoded como /users/login). Se normaliza
+    # a un tipo serializable para evitar que el handler mismo crashee con
+    # un 500 en vez de devolver el 422 esperado.
+    body_content = exc.body
+    if isinstance(body_content, (bytes, bytearray)):
+        body_content = body_content.decode("utf-8", errors="replace")
+    elif not isinstance(body_content, (dict, list, str, int, float, bool, type(None))):
+        body_content = str(body_content)
+
     # Crear la respuesta de error de validación
     response = JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content={"detail": exc.errors(), "body": exc.body}
+        content={"detail": exc.errors(), "body": body_content}
     )
     
     # Agregar headers de CORS si el origen está permitido
