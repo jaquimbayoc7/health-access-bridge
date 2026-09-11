@@ -4,9 +4,9 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 
 ---
 
-## Estado del Proyecto — Momento 1
+## Estado del Proyecto — Momento 1 y 2
 
-> **Actualizado:** Abril 2026 · Sprint 3.5 completado — Momento 1 al 100%
+> **Actualizado:** Septiembre 2026 · Momento 1 y Momento 2 completados al 100% (HU-06 cerrada)
 
 | Capa | Estado | Detalle |
 |------|--------|----------|
