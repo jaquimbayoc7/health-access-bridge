@@ -136,8 +136,9 @@ Documentación de arquitectura en cuatro niveles siguiendo el [C4 Model](https:/
 | Issue | Título | Sprint | Pts | Estado |
 |-------|--------|--------|-----|--------|
 | [#4](https://github.com/jaquimbayoc7/health-access-bridge/issues/4) | [HU-04] Integración Modelo Predictivo (HybridModelDisability) | Sprint 4-5 (Sem. 10-13) | 21 | ✅ Done (adelantado en M1) · no cuenta en M1 sprint |
-| [#5](https://github.com/jaquimbayoc7/health-access-bridge/issues/5) | [HU-05] Modo Offline y PWA | Sprint 6-7 (Sem. 14-17) | 13 | 📋 Backlog |
+| [#5](https://github.com/jaquimbayoc7/health-access-bridge/issues/5) | [HU-05] Mejoras de Usabilidad (Investigación HCI) | Sprint 6-7 (Sem. 14-17) | 13 | ✅ Done |
 | [#6](https://github.com/jaquimbayoc7/health-access-bridge/issues/6) | [HU-06] Pruebas de Integración y Rendimiento API | Sprint 7 (Sem. 16-17) | 8 | 📋 Backlog |
+| — | [HU-05b] Ayuda contextual (Help + Tooltips ICF) traducida por idioma | Sprint 6-7 (Sem. 14-17) | 3 | ✅ Done |
 
 ### Momento 3 — Trabajo Integrador III (Semanas 19-27) · [Milestone](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3)
 
