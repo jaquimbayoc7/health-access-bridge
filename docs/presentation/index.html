@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Health Access Bridge — Momento 1</title>
+<title>Health Access Bridge — Momento 1 y 2</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -72,7 +72,8 @@ html{scroll-behavior:smooth}
     <div class="fi">
       <div class="flex gap-2 mb-4">
         <span class="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">✅ Momento 1 Completado</span>
-        <span class="bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">Abril 2026</span>
+        <span class="bg-yellow-100 text-yellow-700 text-xs font-semibold px-3 py-1 rounded-full">🟡 Momento 2 en progreso</span>
+        <span class="bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">Mayo 2026</span>
       </div>
       <h1 class="text-4xl md:text-5xl font-bold text-slate-900 leading-tight mb-4">
         Sistema Inteligente de<br/>Perfilamiento de<br/><span class="text-primary">Discapacidad</span>
@@ -80,15 +81,15 @@ html{scroll-behavior:smooth}
       <p class="text-slate-500 text-base leading-relaxed mb-6 max-w-md">Herramienta para profesionales de la salud que facilita la predicción de barreras de acceso en personas con discapacidad en zonas rurales de Colombia, mediante inteligencia artificial.</p>
       <div class="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-200">
         <div class="flex justify-between text-xs font-medium text-slate-500 mb-2">
-          <span>Avance del proyecto</span><span class="text-primary font-bold">48% completado</span>
+          <span>Avance del proyecto</span><span class="text-primary font-bold">59% completado</span>
         </div>
         <div class="h-3 bg-slate-200 rounded-full overflow-hidden">
           <div id="pbar" class="h-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-1000" style="width:0%"></div>
         </div>
         <div class="flex justify-between text-xs text-slate-400 mt-2">
-          <span>Plan M1: 26%</span>
-          <span class="text-green-600 font-semibold">+22% sobre el plan ↑</span>
-          <span>Total: 131 pts</span>
+          <span>M1: 100% (63 pts)</span>
+          <span class="text-yellow-600 font-semibold">M2: 67% (16/24 pts)</span>
+          <span>Total: 134 pts</span>
         </div>
       </div>
       <div class="flex flex-wrap gap-3">
@@ -105,12 +106,12 @@ html{scroll-behavior:smooth}
     </div>
     <div class="grid grid-cols-2 gap-4">
       <div class="bg-primary rounded-2xl p-5 text-white col-span-2">
-        <div class="text-4xl font-bold">63 <span class="text-blue-200 text-xl font-normal">/ 131 pts</span></div>
-        <div class="text-blue-200 text-sm mt-1">Story Points completados — Momento 1</div>
+        <div class="text-4xl font-bold">79 <span class="text-blue-200 text-xl font-normal">/ 134 pts</span></div>
+        <div class="text-blue-200 text-sm mt-1">Story Points completados — Momento 1 y 2</div>
         <div class="mt-3 flex gap-2 flex-wrap text-xs">
-          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">7 HUs completadas</span>
+          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">8 HUs completadas</span>
           <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">Sprint 3.5 extra</span>
-          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">+22% sobre plan</span>
+          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">HU-05 HCI adelantada</span>
         </div>
       </div>
       <div class="bg-white rounded-xl p-4 border border-slate-200 card">
@@ -136,7 +137,7 @@ html{scroll-behavior:smooth}
       <div class="bg-white rounded-xl p-4 border border-slate-200 card">
         <div class="text-2xl font-bold text-slate-900">100%</div>
         <div class="text-slate-500 text-xs mt-0.5">Momento 1</div>
-        <div class="text-xs text-blue-600 font-medium mt-2">Plan 26% → Real 48%</div>
+        <div class="text-xs text-blue-600 font-medium mt-2">Momento 2: 67% (16/24 pts)</div>
       </div>
     </div>
   </div>
@@ -273,7 +274,7 @@ html{scroll-behavior:smooth}
 <section id="historias" class="py-16">
   <div class="max-w-7xl mx-auto px-6">
     <h2 class="text-2xl font-bold mb-2 section-title">Historias de Usuario Completadas</h2>
-    <p class="text-slate-500 text-sm mb-10 mt-4">7 HUs entregadas en Momento 1 — 63 Story Points</p>
+    <p class="text-slate-500 text-sm mb-10 mt-4">8 HUs entregadas en Momento 1 y 2 — 79 Story Points</p>
     <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <!-- HU cards -->
       <div class="bg-white rounded-xl border border-slate-200 p-4 card">
@@ -318,6 +319,13 @@ html{scroll-behavior:smooth}
         <ul class="text-xs text-slate-500 space-y-1"><li>• Vitest + RTL + jsdom · 16/16 ✅</li><li>• AuthContext · Login · Dashboard · Patients</li><li>• CI/CD integrado · 8.36s</li></ul>
         <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/16" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #16 →</a>
       </div>
+      <!-- HU-05 HCI -->
+      <div class="bg-white rounded-xl border-l-4 border-l-yellow-400 border border-slate-200 p-4 card">
+        <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-0.5 rounded">HU-05</span><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">✅</span></div><span class="text-xs text-slate-400">16 pts · S6-7</span></div>
+        <h3 class="font-semibold text-slate-800 text-sm mb-2">Mejoras de Usabilidad (HCI)</h3>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• Tooltips ICF, AlertDialog contextual, errores API en español</li><li>• Onboarding, Centro de Ayuda, breadcrumbs, expiración de sesión</li><li>• Ayuda 100% bilingüe (en/es) vía LanguageContext</li></ul>
+        <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/5" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #5 →</a>
+      </div>
       <!-- Velocity summary -->
       <div class="bg-primary rounded-xl p-4 text-white">
         <div class="text-xs text-blue-200 mb-3 font-semibold">VELOCITY POR SPRINT</div>
@@ -326,8 +334,9 @@ html{scroll-behavior:smooth}
           <div class="flex justify-between"><span>Sprint 2</span><span class="font-bold">13 pts · 6.5/sem</span></div>
           <div class="flex justify-between"><span>Sprint 3</span><span class="font-bold">26 pts · 13/sem</span></div>
           <div class="flex justify-between text-orange-300"><span>Sprint 3.5 🏆</span><span class="font-bold">16 pts · 16/sem</span></div>
+          <div class="flex justify-between text-yellow-300"><span>Sprint 6-7</span><span class="font-bold">16 pts · 8/sem</span></div>
         </div>
-        <div class="mt-3 pt-3 border-t border-white/20 text-xs text-blue-200">Mayor velocity del proyecto</div>
+        <div class="mt-3 pt-3 border-t border-white/20 text-xs text-blue-200">Mayor velocity del proyecto: Sprint 3.5</div>
       </div>
     </div>
   </div>
@@ -1012,7 +1021,7 @@ html{scroll-behavior:smooth}
 <section id="roadmap" class="py-16">
   <div class="max-w-7xl mx-auto px-6">
     <h2 class="text-2xl font-bold mb-2 section-title">Roadmap del Proyecto</h2>
-    <p class="text-slate-500 text-sm mb-10 mt-4">27 semanas · 3 Momentos · 131 Story Points</p>
+    <p class="text-slate-500 text-sm mb-10 mt-4">27 semanas · 3 Momentos · 134 Story Points</p>
     <div class="space-y-4">
       <div class="bg-white rounded-xl border-2 border-green-300 p-5 card">
         <div class="flex flex-wrap items-center justify-between mb-3">
@@ -1029,23 +1038,24 @@ html{scroll-behavior:smooth}
           <span class="bg-orange-50 text-orange-700 px-2 py-0.5 rounded">HU-13 UI Tests (8)</span>
         </div>
       </div>
-      <div class="bg-white rounded-xl border border-slate-200 p-5 opacity-75">
+      <div class="bg-white rounded-xl border-2 border-yellow-300 p-5 card">
         <div class="flex flex-wrap items-center justify-between mb-3">
           <div><h3 class="font-bold text-slate-800">M2 — Trabajo Integrador II</h3><div class="text-xs text-slate-400">Semanas 10-18</div></div>
-          <div class="flex items-center gap-2"><span class="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full">📋 Pendiente</span><span class="text-slate-500 font-bold">21 pts</span></div>
+          <div class="flex items-center gap-2"><span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 rounded-full">🟡 67% (16/24 pts)</span><span class="text-yellow-700 font-bold">24 pts</span></div>
         </div>
         <div class="flex flex-wrap gap-1.5 text-xs">
-          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-05 PWA Offline (13)</span>
-          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-06 Integration Tests (8)</span>
+          <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ HU-05 Mejoras HCI (13)</span>
+          <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ HU-05b Ayuda traducida (3)</span>
+          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">📋 HU-06 Pruebas Integración (8)</span>
         </div>
       </div>
-      <div class="bg-white rounded-xl border border-slate-200 p-5 opacity-60">
+      <div class="bg-white rounded-xl border border-slate-200 p-5 opacity-75">
         <div class="flex flex-wrap items-center justify-between mb-3">
           <div><h3 class="font-bold text-slate-800">M3 — Trabajo Integrador III</h3><div class="text-xs text-slate-400">Semanas 19-27</div></div>
           <div class="flex items-center gap-2"><span class="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full">📋 Pendiente</span><span class="text-slate-500 font-bold">47 pts</span></div>
         </div>
         <div class="flex flex-wrap gap-1.5 text-xs">
-          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-07 LLM GPT-4 (21)</span>
+          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-07 Servidor Local + LLM ICF (21)</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-08 Dashboard+ (13)</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-09 UAT (8)</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-10 Deploy Final (5)</span>
@@ -1059,12 +1069,12 @@ html{scroll-behavior:smooth}
 <section id="sprints" class="py-16 bg-white">
   <div class="max-w-7xl mx-auto px-6">
     <h2 class="text-2xl font-bold mb-2 section-title">Seguimiento de Sprints</h2>
-    <p class="text-slate-500 text-sm mb-10 mt-4">4 sprints completados · Momento 1 · 63 Story Points entregados</p>
+    <p class="text-slate-500 text-sm mb-10 mt-4">5 sprints completados · Momento 1 y 2 · 79 Story Points entregados</p>
 
     <!-- KPI summary -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
       <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
-        <div class="text-3xl font-extrabold text-primary">63</div>
+        <div class="text-3xl font-extrabold text-primary">79</div>
         <div class="text-xs text-blue-600 mt-1 font-medium">Story Points entregados</div>
       </div>
       <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
@@ -1076,7 +1086,7 @@ html{scroll-behavior:smooth}
         <div class="text-xs text-purple-600 mt-1 font-medium">Sprint efficiency (0 deuda técnica)</div>
       </div>
       <div class="bg-teal-50 border border-teal-200 rounded-xl p-4 text-center">
-        <div class="text-3xl font-extrabold text-teal-700">7</div>
+        <div class="text-3xl font-extrabold text-teal-700">8</div>
         <div class="text-xs text-teal-600 mt-1 font-medium">HUs completadas / cerradas</div>
       </div>
     </div>
@@ -1174,6 +1184,29 @@ html{scroll-behavior:smooth}
         <div class="mt-3 bg-slate-100 rounded-full h-2"><div class="bg-orange-400 h-2 rounded-full" style="width:100%"></div></div>
         <div class="text-xs text-right text-orange-600 mt-1 font-medium">16 / 16 pts</div>
       </div>
+
+      <!-- Sprint 6-7 -->
+      <div class="bg-white rounded-xl border-2 border-yellow-300 p-5 card">
+        <div class="flex justify-between items-start mb-3">
+          <div>
+            <div class="text-xs font-bold text-yellow-700 bg-yellow-100 px-2 py-0.5 rounded mb-1 inline-block">Sprint 6-7</div>
+            <div class="font-bold text-slate-800 text-sm">Mejoras de Usabilidad (HCI)</div>
+          </div>
+          <span class="text-green-600 text-lg">✅</span>
+        </div>
+        <div class="space-y-2 text-xs text-slate-600 mb-4">
+          <div class="flex justify-between"><span>Semanas</span><span class="font-mono">14 – 17</span></div>
+          <div class="flex justify-between"><span>SP planificados</span><span class="font-semibold">16</span></div>
+          <div class="flex justify-between"><span>SP completados</span><span class="font-semibold text-green-700">16</span></div>
+          <div class="flex justify-between"><span>Eficiencia</span><span class="font-semibold text-green-700">100%</span></div>
+        </div>
+        <div class="flex flex-wrap gap-1">
+          <span class="bg-yellow-50 text-yellow-700 text-xs px-2 py-0.5 rounded">#5 HU-05</span>
+          <span class="bg-yellow-50 text-yellow-700 text-xs px-2 py-0.5 rounded">HU-05b</span>
+        </div>
+        <div class="mt-3 bg-slate-100 rounded-full h-2"><div class="bg-yellow-400 h-2 rounded-full" style="width:100%"></div></div>
+        <div class="text-xs text-right text-yellow-600 mt-1 font-medium">16 / 16 pts</div>
+      </div>
     </div>
 
     <!-- Charts row -->
@@ -1188,7 +1221,7 @@ html{scroll-behavior:smooth}
 
       <!-- Burndown chart -->
       <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
-        <h3 class="font-semibold text-slate-700 text-sm mb-1">Burndown — Momento 1</h3>
+        <h3 class="font-semibold text-slate-700 text-sm mb-1">Burndown — Momento 1 y 2</h3>
         <p class="text-xs text-slate-400 mb-4">SP restantes vs avance ideal</p>
         <canvas id="burndownChart" height="200"></canvas>
       </div>
@@ -1196,18 +1229,18 @@ html{scroll-behavior:smooth}
 
     <!-- Kanban metrics -->
     <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
-      <h3 class="font-semibold text-slate-700 text-sm mb-5">Estado del Backlog — Momento 1</h3>
+      <h3 class="font-semibold text-slate-700 text-sm mb-5">Estado del Backlog — Momento 1 y 2</h3>
       <div class="grid md:grid-cols-3 gap-4 mb-5">
         <div class="bg-slate-200 rounded-xl p-4 text-center">
-          <div class="text-2xl font-extrabold text-slate-600">0</div>
-          <div class="text-xs text-slate-500 mt-1">📋 To Do (pendiente)</div>
+          <div class="text-2xl font-extrabold text-slate-600">1</div>
+          <div class="text-xs text-slate-500 mt-1">📋 To Do (HU-06 pendiente)</div>
         </div>
         <div class="bg-blue-100 rounded-xl p-4 text-center">
           <div class="text-2xl font-extrabold text-blue-700">0</div>
           <div class="text-xs text-blue-600 mt-1">🔄 In Progress</div>
         </div>
         <div class="bg-green-100 rounded-xl p-4 text-center">
-          <div class="text-2xl font-extrabold text-green-700">7</div>
+          <div class="text-2xl font-extrabold text-green-700">8</div>
           <div class="text-xs text-green-600 mt-1">✅ Done (HUs cerradas)</div>
         </div>
       </div>
@@ -1239,6 +1272,14 @@ html{scroll-behavior:smooth}
         <div>
           <div class="flex justify-between mb-1"><span class="font-medium text-slate-600">HU-13 — Frontend UI Tests</span><span class="text-orange-600 font-semibold">✅ Done · 8 SP · Sprint 3.5</span></div>
           <div class="bg-slate-200 rounded-full h-2"><div class="bg-orange-400 h-2 rounded-full" style="width:100%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1"><span class="font-medium text-slate-600">HU-05 — Mejoras de Usabilidad (HCI) + HU-05b</span><span class="text-yellow-600 font-semibold">✅ Done · 16 SP · Sprint 6-7</span></div>
+          <div class="bg-slate-200 rounded-full h-2"><div class="bg-yellow-400 h-2 rounded-full" style="width:100%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1"><span class="font-medium text-slate-600">HU-06 — Pruebas de Integración y Rendimiento</span><span class="text-slate-500 font-semibold">📋 Backlog · 8 SP · Sprint 7</span></div>
+          <div class="bg-slate-200 rounded-full h-2"><div class="bg-slate-300 h-2 rounded-full" style="width:0%"></div></div>
         </div>
       </div>
     </div>
@@ -1448,7 +1489,7 @@ html{scroll-behavior:smooth}
       </div>
     </div>
     <div class="border-t border-slate-800 mt-8 pt-6 text-center text-xs">
-      Health Access Bridge · Momento 1 completado · Abril 2026 · <a href="https://github.com/jaquimbayoc7" class="hover:text-white">@jaquimbayoc7</a>
+      Health Access Bridge · Momento 1 completado · Momento 2 en progreso (67%) · Mayo 2026 · <a href="https://github.com/jaquimbayoc7" class="hover:text-white">@jaquimbayoc7</a>
     </div>
   </div>
 </footer>
@@ -1465,7 +1506,7 @@ html{scroll-behavior:smooth}
 <script>
   // Progress bar animation
   window.addEventListener('load', () => {
-    setTimeout(() => { document.getElementById('pbar').style.width = '48%'; }, 300);
+    setTimeout(() => { document.getElementById('pbar').style.width = '59%'; }, 300);
   });
 
   // Chart.js language donut
@@ -1489,19 +1530,19 @@ html{scroll-behavior:smooth}
   new Chart(document.getElementById('velocityChart').getContext('2d'), {
     type: 'bar',
     data: {
-      labels: ['Sprint 1','Sprint 2','Sprint 3','Sprint 3.5'],
+      labels: ['Sprint 1','Sprint 2','Sprint 3','Sprint 3.5','Sprint 6-7'],
       datasets: [
         {
           label: 'SP Completados',
-          data: [8, 13, 26, 16],
-          backgroundColor: ['#22C55E','#22C55E','#22C55E','#F97316'],
+          data: [8, 13, 26, 16, 16],
+          backgroundColor: ['#22C55E','#22C55E','#22C55E','#F97316','#EAB308'],
           borderRadius: 6, borderSkipped: false
         },
         {
           label: 'SP Planificados',
-          data: [8, 13, 26, 16],
+          data: [8, 13, 26, 16, 16],
           backgroundColor: 'transparent',
-          borderColor: ['#16A34A','#16A34A','#16A34A','#EA580C'],
+          borderColor: ['#16A34A','#16A34A','#16A34A','#EA580C','#CA8A04'],
           borderWidth: 2, type: 'bar', borderRadius: 6, borderSkipped: false
         }
       ]
@@ -1523,17 +1564,17 @@ html{scroll-behavior:smooth}
   new Chart(document.getElementById('burndownChart').getContext('2d'), {
     type: 'line',
     data: {
-      labels: ['Inicio','Fin S1','Fin S2','Fin S3','Fin S3.5'],
+      labels: ['Inicio','Fin S1','Fin S2','Fin S3','Fin S3.5','Fin S6-7'],
       datasets: [
         {
           label: 'Real (SP restantes)',
-          data: [63, 55, 42, 16, 0],
+          data: [79, 71, 58, 32, 16, 0],
           borderColor: '#2563EB', backgroundColor: 'rgba(37,99,235,0.08)',
           pointBackgroundColor: '#2563EB', pointRadius: 5, tension: 0.3, fill: true
         },
         {
           label: 'Ideal (línea base)',
-          data: [63, 47.25, 31.5, 15.75, 0],
+          data: [79, 63.2, 47.4, 31.6, 15.8, 0],
           borderColor: '#94A3B8', borderDash: [6, 4],
           pointRadius: 3, tension: 0.1, fill: false
         }
@@ -1546,7 +1587,7 @@ html{scroll-behavior:smooth}
         tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y} SP` } }
       },
       scales: {
-        y: { beginAtZero: true, max: 70, ticks: { stepSize: 10, font: { size: 11 } }, grid: { color: '#F1F5F9' } },
+        y: { beginAtZero: true, max: 85, ticks: { stepSize: 10, font: { size: 11 } }, grid: { color: '#F1F5F9' } },
         x: { ticks: { font: { size: 11 } }, grid: { display: false } }
       }
     }
