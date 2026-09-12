@@ -3,9 +3,13 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 vi.mock('@/contexts/AuthContext', () => ({ useAuth: vi.fn() }));
-vi.mock('@/contexts/LanguageContext', () => ({ useLanguage: vi.fn() }));
+vi.mock('@/contexts/LanguageContext', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/contexts/LanguageContext')>();
+  return { ...actual, useLanguage: vi.fn() };
+});
 vi.mock('@/services/patients', () => ({
   patientService: {
     getPatients: vi.fn(),
@@ -48,7 +52,9 @@ const MOCK_PATIENT = {
 const renderPatients = () =>
   render(
     <MemoryRouter>
-      <Patients />
+      <TooltipProvider>
+        <Patients />
+      </TooltipProvider>
     </MemoryRouter>
   );
 

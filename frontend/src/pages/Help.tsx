@@ -52,6 +52,15 @@ export default function Help() {
         </p>
       </div>
 
+      {/* Disclaimer: adaptación del modelo ICF/OMS, no oficial, apoyo a la decisión clínica */}
+      <div className="p-4 bg-amber-50 border border-amber-300 rounded-lg flex gap-3 text-sm text-amber-900">
+        <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0 text-amber-600" />
+        <div>
+          <p className="font-semibold">{t('helpDisclaimerTitle')}</p>
+          <p className="mt-1 leading-relaxed">{t('helpDisclaimerText')}</p>
+        </div>
+      </div>
+
       {/* Glosario ICF */}
       <Card>
         <CardHeader>

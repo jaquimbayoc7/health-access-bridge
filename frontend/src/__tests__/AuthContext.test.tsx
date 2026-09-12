@@ -11,6 +11,9 @@ vi.mock('@/services/api', () => ({
     setToken: vi.fn(),
     clearToken: vi.fn(),
   },
+  ApiService: {
+    onUnauthorized: undefined as (() => void) | undefined,
+  },
 }));
 
 import { apiService } from '@/services/api';

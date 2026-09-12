@@ -189,6 +189,10 @@ export default function LoginLanding() {
                 {isLoading ? t('loading') : t('login')}
               </Button>
             </form>
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              <span className="font-medium">{t('forgotPasswordText')}</span>{' '}
+              {t('passwordRecoveryDisclaimer')}
+            </p>
           </CardContent>
         </Card>
       </section>

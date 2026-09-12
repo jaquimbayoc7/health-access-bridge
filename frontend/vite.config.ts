@@ -21,5 +21,8 @@ export default defineConfig(({ mode }) => ({
     globals: true,
     setupFiles: ["./src/__tests__/setup.ts"],
     css: false,
+    // Los specs de e2e/ (Playwright, HU-06) tienen su propio runner
+    // (npm run test:e2e) y no deben ser recolectados por Vitest.
+    exclude: ["**/node_modules/**", "**/dist/**", "e2e/**"],
   },
 }));

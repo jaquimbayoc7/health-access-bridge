@@ -27,6 +27,8 @@ const translations = {
     password: 'Password',
     welcomeBack: 'Welcome Back',
     loginSubtitle: 'Enter your credentials to access your account',
+    forgotPasswordText: 'Forgot your password?',
+    passwordRecoveryDisclaimer: 'For security reasons, passwords cannot be reset from this page. Please contact your corresponding administrator, who will send you a recovery email.',
     
     // Dashboard
     totalPatients: 'Total Patients',
@@ -99,6 +101,8 @@ const translations = {
     // Help Center
     helpCenterTitle: 'Help Center',
     helpCenterSubtitle: 'ICF glossary, role guide, prediction profiles and frequently asked questions about HAB.',
+    helpDisclaimerTitle: 'Important notice',
+    helpDisclaimerText: 'Health Access Bridge (HAB) uses an adaptation of the International Classification of Functioning, Disability and Health (ICF) model developed by the World Health Organization (WHO). This platform is NOT an official WHO application, nor is it endorsed or certified by that organization. The predictions and functional profiles generated are decision-support tools intended to assist the treating physician — they do not replace clinical judgment, a formal diagnosis, or professional medical evaluation.',
     helpGlossaryTitle: 'Glossary — ICF Dimensions (D1–D6)',
     helpScaleBanner: 'Uniform 0–100 scale:',
     helpScaleBannerRest: '0 = No barrier · 25 = Mild · 50 = Moderate · 75 = Severe · 100 = Complete barrier. The Global Level is automatically calculated as the average of D1 to D6.',
@@ -129,6 +133,8 @@ const translations = {
     password: 'Contraseña',
     welcomeBack: 'Bienvenido de Nuevo',
     loginSubtitle: 'Ingresa tus credenciales para acceder a tu cuenta',
+    forgotPasswordText: '¿Olvidó su contraseña?',
+    passwordRecoveryDisclaimer: 'Por seguridad, la contraseña no se puede restablecer desde esta página. Comuníquese con el administrador correspondiente, quien le enviará un correo de recuperación.',
     
     // Panel
     totalPatients: 'Total de Pacientes',
@@ -201,6 +207,8 @@ const translations = {
     // Centro de Ayuda
     helpCenterTitle: 'Centro de Ayuda',
     helpCenterSubtitle: 'Glosario ICF, guía de roles, perfiles de predicción y preguntas frecuentes sobre HAB.',
+    helpDisclaimerTitle: 'Aviso importante',
+    helpDisclaimerText: 'Health Access Bridge (HAB) utiliza una adaptación del modelo de la Clasificación Internacional del Funcionamiento, de la Discapacidad y de la Salud (CIF/ICF) desarrollado por la Organización Mundial de la Salud (OMS). Esta plataforma NO es una aplicación oficial de la OMS, ni está avalada ni certificada por dicha organización. Las predicciones y perfiles funcionales generados son herramientas de apoyo a la decisión, pensadas para asistir al médico tratante — no reemplazan el criterio clínico, un diagnóstico formal ni la evaluación médica profesional.',
     helpGlossaryTitle: 'Glosario — Dimensiones ICF (D1–D6)',
     helpScaleBanner: 'Escala uniforme 0–100:',
     helpScaleBannerRest: '0 = Sin barrera · 25 = Leve · 50 = Moderada · 75 = Grave · 100 = Barrera completa. El Nivel Global se calcula automáticamente como el promedio de D1 a D6.',
