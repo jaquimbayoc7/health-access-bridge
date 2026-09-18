@@ -14,8 +14,9 @@
 | EPICA-01 Estructuración y Diseño | — | EPICA-02 Funcionalidades Core |
 | HU-01 Autenticación y Roles (8 pts) | — | EPICA-03 IA Generativa y Cierre |
 | HU-02 Registro y Precarga de Pacientes (13 pts) | — | EPICA-03 IA Generativa y Cierre |
-| HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | HU-07 Servidor Local con LLM Ajustado para Códigos ICF (21 pts) |
-| HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
+| HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | DEUDA-01 Escalado de Rendimiento API (ver §5 Release Plan) |
+| HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | HU-07 Servidor Local con LLM Ajustado para Códigos ICF (21 pts) |
+| — | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
 | [#14 HU-11](https://github.com/jaquimbayoc7/health-access-bridge/issues/14) Pruebas Smoke en Producción (3 pts) | — | HU-09 Pruebas Completas y Feedback (8 pts) |
 | [#15 HU-12](https://github.com/jaquimbayoc7/health-access-bridge/issues/15) Pruebas de Integración Backend (5 pts) | — | HU-10 Despliegue Final y Manuales (5 pts) |
 | [#16 HU-13](https://github.com/jaquimbayoc7/health-access-bridge/issues/16) Pruebas de Diseño y UI Frontend (8 pts) | — | — |
@@ -28,6 +29,25 @@
 
 ---
 
+## Criterios de Priorización
+
+El orden del backlog (qué HU va en qué sprint) se define combinando tres criterios, en este orden de peso:
+
+1. **Dependencia técnica** — una HU que es prerrequisito de otras se prioriza primero (ej. HU-01 Auth antes que HU-02 Pacientes, porque el CRUD requiere RBAC; la deuda técnica de rendimiento se prioriza antes que HU-07 porque el servidor LLM añade carga sobre la misma API).
+2. **Valor de negocio / riesgo clínico** — historias que habilitan el flujo clínico central (registro de paciente, predicción de perfil) se priorizan sobre historias de soporte (dashboards, exportación).
+3. **Riesgo de usabilidad validado con usuarios reales** — hallazgos de investigación HCI (entrevistas, test de usuario, ver [`docs/HCI/07_user_story_mapping.md`](docs/HCI/07_user_story_mapping.md)) pueden re-priorizar o redefinir el alcance de una HU ya planificada (así se redefinió HU-05, de "Modo Offline y PWA" a "Mejoras de Usabilidad HCI").
+
+Detalle completo de esta técnica de priorización y su trazabilidad con evidencia de repo: [`docs/reports/AGILE_PRACTICES.md`](docs/reports/AGILE_PRACTICES.md).
+
+## Definition of Ready (DoR)
+
+Una HU entra a un sprint solo si cumple:
+- Historia redactada en formato Como/Deseo/Para.
+- Criterios de aceptación definidos y verificables.
+- Estimación en story points acordada (Planning Poker informal por complejidad relativa a HUs ya completadas).
+- Sin dependencias bloqueantes de otra HU aún no completada.
+- Definition of Done (DoD) explícita para saber cuándo se considera cerrada.
+
 ## MOMENTO 1: TRABAJO INTEGRADOR I (Semanas 1-9) - Avance 100% ✅
 
 ### Épica 1: Estructuración y Diseño (Semanas 1-3) ✅ Done
@@ -37,7 +57,7 @@
 - ✅ **Reporte de Insights GitHub** - `docs/INSIGHTS_REPORT.md`
 - ✅ **Reporte de Testing** - `docs/TESTING_REPORT.md`
 - 📋 BPM (pendiente)
-- 📋 Release Plan (pendiente)
+- ✅ **Release Plan** - [`docs/reports/RELEASE_PLAN.md`](docs/reports/RELEASE_PLAN.md)
 
 ### Sprint 1: Gestión de Usuarios y Estructura Backend (Semanas 4-5) ✅ Done
 
@@ -300,6 +320,33 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 ---
 
 ## MOMENTO 3: TRABAJO INTEGRADOR III (Semanas 19-27) - Avance 0% 🔴
+
+### Sprint 8: Deuda Técnica de Rendimiento (previo a Sprint 8 & 9)
+
+#### DEUDA-01: Escalado de Rendimiento de la API antes de sumar carga del LLM 📋 Backlog
+- **Como** equipo del proyecto
+- **Deseo** resolver el cuello de botella de rendimiento detectado en producción/QA
+- **Para** que el servidor LLM local de HU-07 no agrave una API que ya no cumple el umbral de latencia.
+
+**Detalles:**
+- **Hallazgo:** prueba de carga de 200 usuarios concurrentes ejecutada el 18-sep-2026 contra QA — `p95` real = 54.6s (umbral definido: <200ms). Tasa de error 0.98% (sí cumple <1%). Causa raíz: 1 worker de Uvicorn + pool SQLAlchemy de 30 conexiones + servicio en tier Starter/Basic de Render. Detalle completo en `docs/test-report.md` §4.
+- **Origen:** descubierto durante HU-06 (Sprint 7), pasado a este ítem independiente de backlog para no bloquear el cierre de HU-06.
+
+**Criterios de Aceptación:**
+- Ajustar `--workers` de Uvicorn y `pool_size`/`max_overflow` de SQLAlchemy.
+- Evaluar upgrade de Web Service (Starter → Pro) y de PostgreSQL (Basic → Pro-8gb) según presupuesto disponible.
+- Repetir la prueba de carga de 200 usuarios concurrentes y confirmar `p95 < 200ms`.
+
+**Tareas:**
+- Ajustar configuración de workers/pool (costo $0).
+- Documentar decisión de upgrade de plan Render (costo real: ver `docs/reports/RELEASE_PLAN.md` §5).
+- Repetir prueba de carga k6 y comparar contra baseline de `docs/test-report.md`.
+
+**DoD:** Prueba de carga repetida con `p95 < 200ms` documentada, o decisión explícita de aceptar el riesgo con justificación de costo/beneficio.
+**Estimación:** 5 puntos (spike + ajuste de configuración; no incluye el costo recurrente de infraestructura, que es una decisión de negocio, no de esfuerzo de desarrollo).
+**Estado:** 📋 Backlog — priorizado antes de HU-07 (ver `docs/reports/RELEASE_PLAN.md` §5, riesgo confirmado).
+
+---
 
 ### Sprint 8 & 9: Servidor Local y Codificación ICF (Semanas 19-22)
 

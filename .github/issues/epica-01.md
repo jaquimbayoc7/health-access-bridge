@@ -15,7 +15,7 @@ Fase inicial del proyecto en la que se definen todos los artefactos de arquitect
 ## Artefactos a Entregar
 
 - [ ] **BPM (Business Process Model):** Modelado de procesos de negocio del flujo de atención médica
-- [ ] **Release Plan:** Plan de releases para las 27 semanas del proyecto
+- [x] **Release Plan:** Plan de releases para las 27 semanas del proyecto — ver [`docs/reports/RELEASE_PLAN.md`](../../docs/reports/RELEASE_PLAN.md)
 - [ ] **Arquitectura:** Diagrama de arquitectura del sistema (frontend, backend, base de datos, modelo predictivo, LLM)
 - [x] **Mockups de Diseño:** Prototipos de alta fidelidad de las pantallas principales
   - Ver mockups en: [`frontend/design/images/`](../../frontend/design/images/)
@@ -26,7 +26,7 @@ Fase inicial del proyecto en la que se definen todos los artefactos de arquitect
 ## Criterios de Aceptación
 
 - [ ] BPM aprobado por el equipo y docente
-- [ ] Release Plan publicado en el repositorio
+- [x] Release Plan publicado en el repositorio
 - [ ] Diagrama de arquitectura documenta stack completo (FastAPI + React + PostgreSQL + HybridModelDisability + LLM)
 - [x] Mockups de diseño cubren flujos de Admin y Médico (8 pantallas completadas)
 

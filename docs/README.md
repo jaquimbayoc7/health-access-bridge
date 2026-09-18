@@ -11,6 +11,8 @@
 | [PROJECT_STATUS.md](./PROJECT_STATUS.md) | Estado detallado por HU, épica y sprint | ✅ Actualizado |
 | [INSIGHTS_REPORT.md](./INSIGHTS_REPORT.md) | Reporte de GitHub Insights: commits, lenguajes, velocity, SCRUM metrics | ✅ Generado |
 | [TESTING_REPORT.md](./TESTING_REPORT.md) | Reporte de pruebas: 30 tests de integración backend (pytest), cobertura | ✅ Generado |
+| [RELEASE_PLAN.md](./reports/RELEASE_PLAN.md) | Plan de releases por Momento: alcance, fechas, riesgos y ambientes | ✅ Generado |
+| [AGILE_PRACTICES.md](./reports/AGILE_PRACTICES.md) | Mapeo de roles, eventos y artefactos SCRUM a evidencia del repo | ✅ Generado |
 | [../BACKLOG.md](../BACKLOG.md) | Backlog maestro SCRUM con todas las HUs y épicas | ✅ Actualizado |
 
 ---
@@ -67,7 +69,7 @@ Prototipos de alta fidelidad — 8 pantallas principales:
 | **Mockups de Diseño** (8 pantallas) | ✅ Completado |
 | **Arquitectura C4** (6 diagramas HTML) | ✅ Completado |
 | **BPM** — Business Process Model | 📋 Pendiente |
-| **Release Plan** | 📋 Pendiente |
+| **Release Plan** | ✅ Completado — [`reports/RELEASE_PLAN.md`](./reports/RELEASE_PLAN.md) |
 
 ---
 
