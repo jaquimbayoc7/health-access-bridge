@@ -1302,6 +1302,7 @@ html{scroll-behavior:smooth}
         <h3 class="font-semibold text-slate-700 text-sm mb-1">Velocity por Sprint</h3>
         <p class="text-xs text-slate-400 mb-4">Story Points completados en cada sprint</p>
         <canvas id="velocityChart" height="200"></canvas>
+        <p class="text-[11px] text-purple-600 mt-3">⚡ <strong>Sprint 4-5</strong> (morado) muestra HU-04 en su ventana planificada original, pero fue entregada anticipadamente en Sprint 3 — no se suma dos veces al total de 87 pts.</p>
       </div>
 
       <!-- Burndown chart -->
@@ -1309,6 +1310,7 @@ html{scroll-behavior:smooth}
         <h3 class="font-semibold text-slate-700 text-sm mb-1">Burndown — Momento 1 y 2</h3>
         <p class="text-xs text-slate-400 mb-4">SP restantes vs avance ideal</p>
         <canvas id="burndownChart" height="200"></canvas>
+        <p class="text-[11px] text-purple-600 mt-3">⚡ El punto morado en <strong>Fin S4-5</strong> es una meseta: no hubo nueva reducción porque HU-04 (21 pts) ya se había entregado en Sprint 3.</p>
       </div>
     </div>
 
@@ -1617,19 +1619,19 @@ html{scroll-behavior:smooth}
   new Chart(document.getElementById('velocityChart').getContext('2d'), {
     type: 'bar',
     data: {
-      labels: ['Sprint 1','Sprint 2','Sprint 3','Sprint 3.5','Sprint 6-7','Sprint 7'],
+      labels: ['Sprint 1','Sprint 2','Sprint 3',['Sprint 3.5'],['Sprint 4-5','(adelantado)'],'Sprint 6-7','Sprint 7'],
       datasets: [
         {
           label: 'SP Completados',
-          data: [8, 13, 26, 16, 16, 8],
-          backgroundColor: ['#22C55E','#22C55E','#22C55E','#F97316','#EAB308','#14B8A6'],
+          data: [8, 13, 26, 16, 21, 16, 8],
+          backgroundColor: ['#22C55E','#22C55E','#22C55E','#F97316','#A855F7','#EAB308','#14B8A6'],
           borderRadius: 6, borderSkipped: false
         },
         {
           label: 'SP Planificados',
-          data: [8, 13, 26, 16, 16, 8],
+          data: [8, 13, 26, 16, 21, 16, 8],
           backgroundColor: 'transparent',
-          borderColor: ['#16A34A','#16A34A','#16A34A','#EA580C','#CA8A04','#0D9488'],
+          borderColor: ['#16A34A','#16A34A','#16A34A','#EA580C','#9333EA','#CA8A04','#0D9488'],
           borderWidth: 2, type: 'bar', borderRadius: 6, borderSkipped: false
         }
       ]
@@ -1638,7 +1640,12 @@ html{scroll-behavior:smooth}
       responsive: true,
       plugins: {
         legend: { labels: { font: { size: 11 }, boxWidth: 12 } },
-        tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y} SP` } }
+        tooltip: { callbacks: {
+          label: c => ` ${c.dataset.label}: ${c.parsed.y} SP`,
+          afterBody: c => c[0].dataIndex === 4
+            ? ['⚡ HU-04 entregada anticipadamente en Sprint 3.', 'No suma dos veces al total de 87 pts.']
+            : []
+        } }
       },
       scales: {
         y: { beginAtZero: true, max: 30, ticks: { stepSize: 5, font: { size: 11 } }, grid: { color: '#F1F5F9' } },
@@ -1651,17 +1658,19 @@ html{scroll-behavior:smooth}
   new Chart(document.getElementById('burndownChart').getContext('2d'), {
     type: 'line',
     data: {
-      labels: ['Inicio','Fin S1','Fin S2','Fin S3','Fin S3.5','Fin S6-7','Fin S7'],
+      labels: ['Inicio','Fin S1','Fin S2','Fin S3','Fin S3.5','Fin S4-5 ⚡','Fin S6-7','Fin S7'],
       datasets: [
         {
           label: 'Real (SP restantes)',
-          data: [87, 79, 66, 40, 24, 8, 0],
+          data: [87, 79, 66, 40, 24, 24, 8, 0],
           borderColor: '#2563EB', backgroundColor: 'rgba(37,99,235,0.08)',
-          pointBackgroundColor: '#2563EB', pointRadius: 5, tension: 0.3, fill: true
+          pointBackgroundColor: (ctx) => ctx.dataIndex === 5 ? '#A855F7' : '#2563EB',
+          pointRadius: (ctx) => ctx.dataIndex === 5 ? 7 : 5,
+          tension: 0.3, fill: true
         },
         {
           label: 'Ideal (línea base)',
-          data: [87, 72.5, 58, 43.5, 29, 14.5, 0],
+          data: [87, 74.6, 62.1, 49.7, 37.3, 24.9, 12.4, 0],
           borderColor: '#94A3B8', borderDash: [6, 4],
           pointRadius: 3, tension: 0.1, fill: false
         }
@@ -1671,7 +1680,12 @@ html{scroll-behavior:smooth}
       responsive: true,
       plugins: {
         legend: { labels: { font: { size: 11 }, boxWidth: 12 } },
-        tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y} SP` } }
+        tooltip: { callbacks: {
+          label: c => ` ${c.dataset.label}: ${c.parsed.y} SP`,
+          afterBody: c => c[0].dataIndex === 5 && c[0].datasetIndex === 0
+            ? ['⚡ Meseta: HU-04 (21 pts) ya se habia entregado', 'en Sprint 3, antes de esta ventana.']
+            : []
+        } }
       },
       scales: {
         y: { beginAtZero: true, max: 90, ticks: { stepSize: 10, font: { size: 11 } }, grid: { color: '#F1F5F9' } },
