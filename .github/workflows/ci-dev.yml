@@ -45,13 +45,6 @@ jobs:
       - name: Install backend dependencies
         run: pip install -r backend/requirements-test.txt
 
-      - name: Run Alembic migrations
-        env:
-          DATABASE_URL: postgresql://hab_user:hab_password@localhost:5432/hab_dev
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          ENVIRONMENT: development
-        run: cd backend && alembic upgrade head
-
       - name: Run backend tests
         env:
           DATABASE_URL: postgresql://hab_user:hab_password@localhost:5432/hab_dev
