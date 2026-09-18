@@ -26,7 +26,7 @@ export default function LoginLanding() {
   const { language, setLanguage, t } = useLanguage();
 
   if (user) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={user.role === 'admin' ? '/admin' : '/dashboard'} replace />;
   }
 
   const handleLogin = async (e: React.FormEvent) => {
