@@ -1,8 +1,9 @@
 # Pruebas de Carga — HU-06
 
-> ⚠️ **PENDIENTE:** esta prueba aún no se ha ejecutado contra un ambiente real
-> desplegado. Sigue pendiente de agendar y ejecutar, y de documentar los
-> resultados en `docs/test-report.md`.
+> ✅ **Ejecutada el 18 Sep 2026** contra `hab-backend-qa.onrender.com` (autorización
+> explícita). Resultado: el criterio de latencia **no se cumplió** (p95 real ≈ 55s
+> vs. <200ms esperado); la tasa de error sí cumplió (<1%). Ver el análisis completo,
+> causas probables y recomendaciones en `docs/test-report.md` (Sección 4).
 
 Prueba de carga con [k6](https://k6.io) para validar el criterio de aceptación:
 **"API responde en menos de 200ms bajo carga simulada (200 usuarios concurrentes)"**.

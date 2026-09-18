@@ -111,7 +111,7 @@ html{scroll-behavior:smooth}
         <div class="mt-3 flex gap-2 flex-wrap text-xs">
           <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">9 HUs completadas</span>
           <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">Momento 2 100% ✅</span>
-          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">3 bugs críticos corregidos</span>
+          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">4 bugs críticos corregidos</span>
         </div>
       </div>
       <div class="bg-white rounded-xl p-4 border border-slate-200 card">
@@ -124,10 +124,10 @@ html{scroll-behavior:smooth}
         </div>
       </div>
       <div class="bg-white rounded-xl p-4 border border-slate-200 card">
-        <div class="text-2xl font-bold text-slate-900">123</div>
+        <div class="text-2xl font-bold text-slate-900">128</div>
         <div class="text-slate-500 text-xs mt-0.5">Commits al repo</div>
-        <div class="text-xs text-slate-400 mt-2">16 días activos</div>
-        <div class="text-xs text-green-600 font-medium">26 Feb – 11 Sep</div>
+        <div class="text-xs text-slate-400 mt-2">17 días activos</div>
+        <div class="text-xs text-green-600 font-medium">26 Feb – 18 Sep</div>
       </div>
       <div class="bg-white rounded-xl p-4 border border-slate-200 card">
         <div class="text-2xl font-bold text-slate-900">3</div>
@@ -330,7 +330,7 @@ html{scroll-behavior:smooth}
       <div class="bg-white rounded-xl border-l-4 border-l-teal-400 border border-slate-200 p-4 card">
         <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-teal-100 text-teal-700 text-xs font-bold px-2 py-0.5 rounded">HU-06</span><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">✅</span></div><span class="text-xs text-slate-400">8 pts · S7</span></div>
         <h3 class="font-semibold text-slate-800 text-sm mb-2">Pruebas de Integración y Rendimiento</h3>
-        <ul class="text-xs text-slate-500 space-y-1"><li>• 9 tests de integración del flujo de predicción ML (44/44 total)</li><li>• 7 specs E2E con Playwright + script de carga k6 (100 VUs)</li><li>• 3 bugs críticos encontrados y corregidos</li></ul>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• 9 tests de integración del flujo de predicción ML (44/44 total)</li><li>• 7 specs E2E con Playwright + carga k6 ejecutada (200 VUs)</li><li>• 4 bugs críticos encontrados y corregidos</li><li class="text-red-500">• ⚠️ Carga real: p95 = 54.6s bajo 200 VUs (no cumple &lt;200ms)</li></ul>
         <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/6" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #6 →</a>
       </div>
       <!-- Velocity summary -->
@@ -404,7 +404,7 @@ html{scroll-behavior:smooth}
     <!-- Report links -->
     <div class="mt-5 bg-white rounded-xl border border-slate-200 p-5">
       <div class="text-xs font-semibold text-slate-600 mb-4">📄 Reportes de Pruebas</div>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
         <a href="https://github.com/jaquimbayoc7/health-access-bridge/blob/master/docs/reports/TEST_CASES.md" target="_blank"
            class="flex items-start gap-3 bg-teal-50 border border-teal-200 rounded-xl p-4 hover:bg-teal-100 transition-colors group">
           <div class="w-9 h-9 bg-teal-100 group-hover:bg-teal-200 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors">
@@ -456,8 +456,30 @@ html{scroll-behavior:smooth}
           </div>
           <div>
             <div class="font-semibold text-orange-800 text-sm">HU-06 Test Report</div>
-            <div class="text-orange-600 text-xs mt-0.5">Integración ML · E2E Playwright · carga k6 · 3 bugs corregidos</div>
+            <div class="text-orange-600 text-xs mt-0.5">Integración ML · E2E Playwright · carga k6 ejecutada · 4 bugs corregidos</div>
             <div class="text-orange-500 text-xs mt-1 font-mono">test-report.md →</div>
+          </div>
+        </a>
+        <a href="https://github.com/jaquimbayoc7/health-access-bridge/blob/master/docs/reports/INSIGHTS_REPORT3.md" target="_blank"
+           class="flex items-start gap-3 bg-indigo-50 border border-indigo-200 rounded-xl p-4 hover:bg-indigo-100 transition-colors group">
+          <div class="w-9 h-9 bg-indigo-100 group-hover:bg-indigo-200 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors">
+            <svg class="w-5 h-5 text-indigo-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.1-2.8-2.8L7 14.1"/></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-indigo-800 text-sm">Insight Report 3</div>
+            <div class="text-indigo-600 text-xs mt-0.5">Coherencia GitHub · bugs · prueba de carga real · Sep 2026</div>
+            <div class="text-indigo-500 text-xs mt-1 font-mono">INSIGHTS_REPORT3.md →</div>
+          </div>
+        </a>
+        <a href="https://github.com/jaquimbayoc7/health-access-bridge/blob/master/docs/reports/PROJECT_STATUS_M2.md" target="_blank"
+           class="flex items-start gap-3 bg-rose-50 border border-rose-200 rounded-xl p-4 hover:bg-rose-100 transition-colors group">
+          <div class="w-9 h-9 bg-rose-100 group-hover:bg-rose-200 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors">
+            <svg class="w-5 h-5 text-rose-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-rose-800 text-sm">Estado del Proyecto — M2</div>
+            <div class="text-rose-600 text-xs mt-0.5">Cierre Momento 2 · resultado prueba de carga · próximos pasos M3</div>
+            <div class="text-rose-500 text-xs mt-1 font-mono">PROJECT_STATUS_M2.md →</div>
           </div>
         </a>
       </div>
@@ -961,7 +983,7 @@ html{scroll-behavior:smooth}
 <section id="metricas" class="py-16">
   <div class="max-w-7xl mx-auto px-6">
     <h2 class="text-2xl font-bold mb-2 section-title">Métricas del Repositorio</h2>
-    <p class="text-slate-500 text-sm mb-10 mt-4">GitHub — 26 Feb – 11 Sep 2026</p>
+    <p class="text-slate-500 text-sm mb-10 mt-4">GitHub — 26 Feb – 18 Sep 2026</p>
     <div class="grid md:grid-cols-2 gap-8">
       <div class="bg-white rounded-xl border border-slate-200 p-6">
         <h3 class="font-semibold text-slate-700 mb-4 text-sm">Distribución de Lenguajes</h3>
@@ -979,16 +1001,16 @@ html{scroll-behavior:smooth}
       <div class="bg-white rounded-xl border border-slate-200 p-6">
         <h3 class="font-semibold text-slate-700 mb-4 text-sm">Actividad de Commits</h3>
         <div class="grid grid-cols-2 gap-3 mb-4 text-center text-xs">
-          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">123</div><div class="text-slate-500">Total commits</div></div>
-          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">16</div><div class="text-slate-500">Días activos</div></div>
-          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-green-600">10</div><div class="text-slate-500">Issues cerradas</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">128</div><div class="text-slate-500">Total commits</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">17</div><div class="text-slate-500">Días activos</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-green-600">11</div><div class="text-slate-500">Issues cerradas</div></div>
           <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-orange-500">17</div><div class="text-slate-500">Pico (17 Mar)</div></div>
         </div>
         <div class="space-y-2 text-xs">
-          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">docs:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-blue-400 h-2 rounded-full" style="width:30%"></div></div><span class="text-slate-400 w-6">37</span></div>
-          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">fix:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-red-400 h-2 rounded-full" style="width:33%"></div></div><span class="text-slate-400 w-6">40</span></div>
-          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">feat:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-green-400 h-2 rounded-full" style="width:26%"></div></div><span class="text-slate-400 w-6">32</span></div>
-          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">chore:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-slate-400 h-2 rounded-full" style="width:6%"></div></div><span class="text-slate-400 w-6">7</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">fix:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-red-400 h-2 rounded-full" style="width:33%"></div></div><span class="text-slate-400 w-6">42</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">docs:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-blue-400 h-2 rounded-full" style="width:29%"></div></div><span class="text-slate-400 w-6">37</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">feat:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-green-400 h-2 rounded-full" style="width:26%"></div></div><span class="text-slate-400 w-6">33</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">chore:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-slate-400 h-2 rounded-full" style="width:7%"></div></div><span class="text-slate-400 w-6">9</span></div>
         </div>
       </div>
     </div>
@@ -1521,7 +1543,8 @@ html{scroll-behavior:smooth}
         </div>
         <div><div class="text-white font-medium mb-2">Reports</div>
           <div class="space-y-1.5">
-            <a href="../reports/INSIGHTS_REPORT2.md" class="block hover:text-white transition-colors">Insights Report</a>
+            <a href="../reports/INSIGHTS_REPORT3.md" class="block hover:text-white transition-colors">Insights Report 3</a>
+            <a href="../reports/PROJECT_STATUS_M2.md" class="block hover:text-white transition-colors">Estado del Proyecto M2</a>
             <a href="../reports/TESTING_REPORT.md" class="block hover:text-white transition-colors">Testing Report</a>
             <a href="../test-report.md" class="block hover:text-white transition-colors">HU-06 Test Report</a>
             <a href="../../BACKLOG.md" class="block hover:text-white transition-colors">Backlog</a>

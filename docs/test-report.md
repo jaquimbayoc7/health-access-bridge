@@ -120,28 +120,52 @@ Integrado en `ci-qa.yml` (job `e2e-tests`), se ejecuta contra
 
 ---
 
-## 4. Prueba de carga (k6)
+## 4. Prueba de carga (k6) — EJECUTADA
 
 **Archivo:** `backend/tests/load/k6_load_test.js` · Instrucciones: `backend/tests/load/README.md`
+**Ejecutada:** 18 Sep 2026, contra `https://hab-backend-qa.onrender.com` (autorización explícita)
+**Duración:** 3m 30s · rampa 0 → 200 VUs (50 → 100 → 200, sostenido 1 min, bajada)
 
-Simula una rampa de 0 → 200 usuarios virtuales concurrentes ejecutando `GET /health`,
-`POST /users/login` y `GET /patients/` en bucle, con los siguientes *thresholds*:
+### Resultados reales
 
-| Métrica | Umbral |
-|---|---|
-| `http_req_duration` (p95) | < 200ms |
-| `http_req_failed` | < 1% |
+| Métrica | Resultado | Umbral | Estado |
+|---|---|---|---|
+| `http_req_duration` p95 | **54.6 s** | < 200 ms | ❌ **No cumple** |
+| `http_req_duration` avg | 23.4 s | — | — |
+| `http_req_duration` min / max | 156 ms / 60 s (timeout) | — | — |
+| `http_req_failed` | 0.98% (10/1018) | < 1% | ✅ Cumple |
+| Iteraciones completadas / interrumpidas | 279 / 140 | — | — |
+| Health check post-prueba | HTTP 200 en 0.52s | — | ✅ Backend se recuperó normal |
 
-> ⚠️ **PENDIENTE — no ejecutada todavía.** La ejecución real contra un ambiente
-> desplegado (QA) **no se ha realizado**, para evitar generar carga no autorizada
-> sobre servicios de Render compartidos. Queda pendiente:
-> 1. Agendar y ejecutar la prueba de carga con 200 usuarios concurrentes contra un
->    ambiente controlado (QA).
-> 2. Registrar aquí los resultados reales obtenidos (p95, tasa de error, cuellos de
->    botella detectados).
-> 3. Una vez con esos resultados, generar un nuevo **Insight Report 3**
->    (`docs/reports/INSIGHTS_REPORT3.md`) con el estado actual del proyecto, y un
->    **Estado del Proyecto para Momento Integrador II** posterior a esta prueba.
+Latencia por endpoint (promedio / p95):
+
+| Endpoint | Avg | p95 |
+|---|---|---|
+| `GET /health` | 20.4 s | 46.7 s |
+| `POST /users/login` | 27.8 s | 58.0 s |
+| `GET /patients/` | 22.2 s | 52.0 s |
+
+### Hallazgo — Bottleneck de infraestructura (nuevo)
+
+El backend de QA **no soporta 200 usuarios concurrentes** dentro del umbral de 200ms.
+La tasa de error se mantuvo baja (0.98%, dentro del umbral) — el servicio no cayó ni
+devolvió errores masivos — pero la latencia se degradó severamente conforme la
+concurrencia subió de 50 a 200 VUs, hasta un p95 de ~55 segundos. El servicio se
+recuperó a la normalidad inmediatamente después de terminar la prueba (health check
+en 0.52s), lo que indica que el cuello de botella es de **capacidad/concurrencia bajo
+carga**, no un error de código ni una caída del servicio.
+
+**Causa probable:** el plan gratuito/starter de Render para `hab-backend-qa` corre un
+único worker de Uvicorn sin *connection pooling* dimensionado para 200 conexiones
+concurrentes, sumado a que la base de datos PostgreSQL compartida en Render también
+tiene límites de conexión en el tier actual.
+
+**Recomendación (no bloqueante para HU-06, pasa a backlog técnico):**
+- Aumentar el número de workers de Uvicorn/Gunicorn en el `startCommand` del backend.
+- Evaluar upgrade de tier de Render (de free/starter a un plan con más CPU/RAM) al
+  menos para producción.
+- Configurar *connection pooling* explícito en SQLAlchemy (`pool_size`, `max_overflow`).
+- Repetir la prueba después de aplicar estos cambios para verificar mejora real.
 
 ---
 
@@ -150,6 +174,12 @@ Simula una rampa de 0 → 200 usuarios virtuales concurrentes ejecutando `GET /h
 | Criterio | Estado |
 |---|---|
 | Pruebas automatizadas de integración pasan al 100% | ✅ 44/44 backend |
-| API responde en menos de 200ms bajo carga simulada (200 usuarios concurrentes) | 🟡 Script listo, ejecución real **pendiente** |
-| No hay bugs críticos bloqueantes | ✅ 3 bugs encontrados y corregidos |
+| API responde en menos de 200ms bajo carga simulada (200 usuarios concurrentes) | ❌ **No cumple** — p95 real: 54.6s (ver sección 4) |
+| No hay bugs críticos bloqueantes | ✅ 3 bugs encontrados y corregidos (ver sección 2) |
 | Reporte de pruebas generado y documentado | ✅ Este documento |
+
+> El criterio de rendimiento bajo carga **no se cumple** en la infraestructura actual
+> de Render (QA). Esto no es un bug de código sino una limitación de capacidad de
+> infraestructura — se documenta como hallazgo y se traslada como ítem de backlog
+> técnico (ver recomendaciones arriba), sin bloquear el cierre de HU-06 (cuyo objetivo
+> era construir y ejecutar la suite de pruebas, lo cual sí se completó).

@@ -17,9 +17,10 @@
  * NO ejecutar contra produccion sin autorizacion explicita: 200 VUs pueden
  * generar carga significativa sobre la base de datos y el dyno de Render.
  *
- * PENDIENTE (ver docs/test-report.md y BACKLOG.md HU-06): esta prueba aun
- * no se ha ejecutado contra un ambiente real desplegado. Sigue pendiente
- * de agendar y ejecutar, y de documentar sus resultados.
+ * EJECUTADA: 18 Sep 2026 contra hab-backend-qa.onrender.com (autorizacion
+ * explicita). Resultado: threshold de latencia NO cumplido (p95 real ~55s
+ * vs. <200ms esperado); error rate si cumplio (<1%). Ver el analisis
+ * completo y las recomendaciones en docs/test-report.md (Seccion 4).
  */
 import http from 'k6/http';
 import { check, sleep } from 'k6';
