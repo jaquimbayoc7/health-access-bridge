@@ -192,9 +192,9 @@ html{scroll-behavior:smooth}
     <!-- SVG Architecture -->
     <div class="bg-slate-50 rounded-2xl border border-slate-200 p-6">
       <h3 class="font-semibold text-slate-800 mb-1 text-center">Arquitectura del Sistema</h3>
-      <p class="text-slate-400 text-xs text-center mb-5">Flujo completo desde el usuario hasta la infraestructura cloud</p>
+      <p class="text-slate-400 text-xs text-center mb-5">Flujo completo desde el usuario hasta la infraestructura cloud y el servidor físico con LLM para interpretación CIF</p>
       <div class="overflow-x-auto">
-        <svg viewBox="0 0 940 460" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-4xl mx-auto" style="min-width:600px">
+        <svg viewBox="0 0 940 566" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-4xl mx-auto" style="min-width:600px">
           <defs>
             <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#94A3B8"/></marker>
           </defs>
@@ -203,13 +203,15 @@ html{scroll-behavior:smooth}
           <rect x="10" y="90" width="920" height="88" rx="8" fill="#EFF6FF" stroke="#BFDBFE"/>
           <rect x="10" y="202" width="920" height="88" rx="8" fill="#F0FDF4" stroke="#BBF7D0"/>
           <rect x="10" y="314" width="920" height="88" rx="8" fill="#FDF4FF" stroke="#E9D5FF"/>
-          <rect x="10" y="420" width="920" height="32" rx="6" fill="#1E293B"/>
+          <rect x="10" y="420" width="920" height="88" rx="8" fill="#F1F5F9" stroke="#94A3B8" stroke-dasharray="6,3"/>
+          <rect x="10" y="526" width="920" height="32" rx="6" fill="#1E293B"/>
           <!-- Layer labels -->
           <text x="24" y="44" font-family="Inter,sans-serif" font-size="9" fill="#94A3B8" font-weight="700">USUARIO</text>
           <text x="24" y="126" font-family="Inter,sans-serif" font-size="9" fill="#93C5FD" font-weight="700">FRONTEND — React 18 · TypeScript · Vite · TailwindCSS · shadcn/ui</text>
           <text x="24" y="238" font-family="Inter,sans-serif" font-size="9" fill="#86EFAC" font-weight="700">BACKEND — FastAPI · Python 3.11 · SQLAlchemy · Pydantic v2</text>
           <text x="24" y="350" font-family="Inter,sans-serif" font-size="9" fill="#D8B4FE" font-weight="700">DATOS &amp; IA — PostgreSQL 15 · HybridModelDisability · ORM</text>
-          <text x="24" y="440" font-family="Inter,sans-serif" font-size="9" fill="#94A3B8" font-weight="700">CI/CD — GitHub Actions: 3 workflows (dev/qa/prod) → Auto-deploy + Approval Gate → Render Cloud · Smoke Tests</text>
+          <text x="24" y="456" font-family="Inter,sans-serif" font-size="9" fill="#64748B" font-weight="700">🖥️ IA GENERATIVA — Servidor Físico On-Premise (fuera de Render Cloud)</text>
+          <text x="24" y="546" font-family="Inter,sans-serif" font-size="9" fill="#94A3B8" font-weight="700">CI/CD — GitHub Actions: 3 workflows (dev/qa/prod) → Auto-deploy + Approval Gate → Render Cloud · Smoke Tests</text>
           <!-- Browser -->
           <rect x="370" y="18" width="200" height="38" rx="7" fill="#1E293B" stroke="#334155"/>
           <text x="470" y="34" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="white" font-weight="600">🌐 Navegador Web</text>
@@ -264,6 +266,15 @@ html{scroll-behavior:smooth}
           <text x="780" y="350" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="white" font-weight="600">SQLAlchemy ORM</text>
           <text x="780" y="364" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#CCFBF1">models.py · crud.py</text>
           <text x="780" y="378" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#CCFBF1">User · Patient · Pydantic v2</text>
+          <!-- Arrow ML→LLM On-Premise -->
+          <line x1="470" y1="392" x2="470" y2="436" stroke="#64748B" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ar)"/>
+          <rect x="420" y="402" width="100" height="13" rx="3" fill="white"/>
+          <text x="470" y="412" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#475569">API REST · VPN 🔒</text>
+          <!-- On-Premise LLM Server -->
+          <rect x="340" y="436" width="260" height="62" rx="8" fill="#1E293B" stroke="#334155"/>
+          <text x="470" y="455" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="white" font-weight="700">🖥️ Servidor LLM On-Premise</text>
+          <text x="470" y="469" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#CBD5E1">Llama 3 / Mistral · self-hosted (Ollama)</text>
+          <text x="470" y="483" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#CBD5E1">Interpreta códigos CIF D1-D6 → lenguaje clínico</text>
         </svg>
       </div>
     </div>
