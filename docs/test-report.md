@@ -124,7 +124,7 @@ Integrado en `ci-qa.yml` (job `e2e-tests`), se ejecuta contra
 
 **Archivo:** `backend/tests/load/k6_load_test.js` · Instrucciones: `backend/tests/load/README.md`
 
-Simula una rampa de 0 → 100 usuarios virtuales concurrentes ejecutando `GET /health`,
+Simula una rampa de 0 → 200 usuarios virtuales concurrentes ejecutando `GET /health`,
 `POST /users/login` y `GET /patients/` en bucle, con los siguientes *thresholds*:
 
 | Métrica | Umbral |
@@ -132,10 +132,16 @@ Simula una rampa de 0 → 100 usuarios virtuales concurrentes ejecutando `GET /h
 | `http_req_duration` (p95) | < 200ms |
 | `http_req_failed` | < 1% |
 
-> **Nota:** la ejecución real contra un ambiente desplegado (QA) **no se realizó** en
-> esta sesión para evitar generar carga no autorizada sobre servicios de Render
-> compartidos. Se documenta el script y el procedimiento para que el equipo lo corra
-> de forma controlada y registre aquí los resultados obtenidos.
+> ⚠️ **PENDIENTE — no ejecutada todavía.** La ejecución real contra un ambiente
+> desplegado (QA) **no se ha realizado**, para evitar generar carga no autorizada
+> sobre servicios de Render compartidos. Queda pendiente:
+> 1. Agendar y ejecutar la prueba de carga con 200 usuarios concurrentes contra un
+>    ambiente controlado (QA).
+> 2. Registrar aquí los resultados reales obtenidos (p95, tasa de error, cuellos de
+>    botella detectados).
+> 3. Una vez con esos resultados, generar un nuevo **Insight Report 3**
+>    (`docs/reports/INSIGHTS_REPORT3.md`) con el estado actual del proyecto, y un
+>    **Estado del Proyecto para Momento Integrador II** posterior a esta prueba.
 
 ---
 
@@ -144,6 +150,6 @@ Simula una rampa de 0 → 100 usuarios virtuales concurrentes ejecutando `GET /h
 | Criterio | Estado |
 |---|---|
 | Pruebas automatizadas de integración pasan al 100% | ✅ 44/44 backend |
-| API responde en menos de 200ms bajo carga simulada (100 usuarios concurrentes) | 🟡 Script listo, ejecución real pendiente |
+| API responde en menos de 200ms bajo carga simulada (200 usuarios concurrentes) | 🟡 Script listo, ejecución real **pendiente** |
 | No hay bugs críticos bloqueantes | ✅ 3 bugs encontrados y corregidos |
 | Reporte de pruebas generado y documentado | ✅ Este documento |

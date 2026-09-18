@@ -1,7 +1,11 @@
 # Pruebas de Carga — HU-06
 
+> ⚠️ **PENDIENTE:** esta prueba aún no se ha ejecutado contra un ambiente real
+> desplegado. Sigue pendiente de agendar y ejecutar, y de documentar los
+> resultados en `docs/test-report.md`.
+
 Prueba de carga con [k6](https://k6.io) para validar el criterio de aceptación:
-**"API responde en menos de 200ms bajo carga simulada (100 usuarios concurrentes)"**.
+**"API responde en menos de 200ms bajo carga simulada (200 usuarios concurrentes)"**.
 
 ## Instalación de k6
 
@@ -31,7 +35,7 @@ winget install k6
 
 ## Ejecución contra un ambiente desplegado (QA)
 
-> ⚠️ No ejecutar contra **producción** sin autorización explícita: 100 VUs generan
+> ⚠️ No ejecutar contra **producción** sin autorización explícita: 200 VUs generan
 > carga real sobre la base de datos y el servicio de Render.
 
 ```bash
@@ -43,7 +47,7 @@ k6 run backend/tests/load/k6_load_test.js
 
 ## Qué mide
 
-El script simula una rampa de 0 → 100 usuarios virtuales concurrentes (30s → 30s → 30s
+El script simula una rampa de 0 → 200 usuarios virtuales concurrentes (30s → 30s → 30s
 sostenidos 1 min en el pico → bajada), ejecutando en cada iteración:
 
 1. `GET /health` — health check público

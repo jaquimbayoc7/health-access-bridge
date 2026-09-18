@@ -1,9 +1,9 @@
 /**
  * HU-06 — Prueba de carga (rendimiento API)
  *
- * Simula hasta 100 usuarios concurrentes contra el backend de HAB para
+ * Simula hasta 200 usuarios concurrentes contra el backend de HAB para
  * validar el criterio de aceptacion: "API responde en menos de 200ms bajo
- * carga simulada (100 usuarios concurrentes)".
+ * carga simulada (200 usuarios concurrentes)".
  *
  * Requiere k6 (https://k6.io/docs/get-started/installation/).
  *
@@ -14,8 +14,12 @@
  *   k6 run backend/tests/load/k6_load_test.js
  *
  * Por defecto apunta a un backend corriendo en local (http://localhost:8000).
- * NO ejecutar contra produccion sin autorizacion explicita: 100 VUs pueden
+ * NO ejecutar contra produccion sin autorizacion explicita: 200 VUs pueden
  * generar carga significativa sobre la base de datos y el dyno de Render.
+ *
+ * PENDIENTE (ver docs/test-report.md y BACKLOG.md HU-06): esta prueba aun
+ * no se ha ejecutado contra un ambiente real desplegado. Sigue pendiente
+ * de agendar y ejecutar, y de documentar sus resultados.
  */
 import http from 'k6/http';
 import { check, sleep } from 'k6';
@@ -32,14 +36,14 @@ const patientsTrend = new Trend('hab_patients_list_duration');
 
 export const options = {
   scenarios: {
-    ramp_to_100_vus: {
+    ramp_to_200_vus: {
       executor: 'ramping-vus',
       startVUs: 0,
       stages: [
-        { duration: '30s', target: 25 },
         { duration: '30s', target: 50 },
-        { duration: '30s', target: 100 }, // 100 usuarios concurrentes
-        { duration: '1m', target: 100 },  // sostiene la carga pico
+        { duration: '30s', target: 100 },
+        { duration: '30s', target: 200 }, // 200 usuarios concurrentes
+        { duration: '1m', target: 200 },  // sostiene la carga pico
         { duration: '30s', target: 0 },
       ],
     },
