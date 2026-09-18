@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Health Access Bridge — Trabajo Integrador II · Evidencia de Prácticas Ágiles, Product Backlog y Release Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']},colors:{primary:'#2563EB','pdark':'#1D4ED8','plight':'#EFF6FF'}}}}</script>
+<style>
+body{font-family:'Inter',sans-serif}
+.section-title::after{content:'';display:block;width:48px;height:4px;background:#2563EB;border-radius:2px;margin-top:8px}
+.toc a{transition:color .15s}
+.toc a:hover{color:#2563EB}
+.toc-num{display:inline-block;width:2.2rem;font-variant-numeric:tabular-nums;color:#94a3b8}
+.badge-done{background:#DCFCE7;color:#166534}
+.badge-plan{background:#F1F5F9;color:#475569}
+.cover-band{background:linear-gradient(90deg,#1D4ED8,#2563EB)}
+.page-break{page-break-before:always}
+</style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased">
+
+<!-- ═══════════════ PORTADA ═══════════════ -->
+<section class="cover-band text-white min-h-screen flex flex-col justify-center px-10">
+  <div class="max-w-3xl mx-auto w-full">
+    <div class="text-xs font-semibold tracking-widest uppercase text-blue-200 mb-3">Maestría en Computación para el Desarrollo de Apps Inteligentes · Curso: Trabajo Integrador II · Profesora: Beatriz Florian · Universidad del Valle</div>
+    <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">Health Access Bridge</h1>
+    <p class="text-xl mt-3 text-blue-100">Trabajo Integrador II: Evidencia de Prácticas Ágiles, Product Backlog y Release Plan</p>
+    <div class="mt-10 bg-white/10 rounded-2xl p-6 backdrop-blur-sm">
+      <div class="text-sm text-blue-100 font-medium mb-1">Autor</div>
+      <div class="text-2xl font-bold">Julian Andres Quimbayo Castro</div>
+      <div class="text-sm text-blue-200 mt-1">@jaquimbayoc7 · <a class="underline" href="https://github.com/jaquimbayoc7/health-access-bridge">github.com/jaquimbayoc7/health-access-bridge</a></div>
+      <div class="text-sm text-blue-200 mt-3">Septiembre 2026</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ TABLA DE CONTENIDO ═══════════════ -->
+<section class="bg-white min-h-screen flex items-center px-10 py-16">
+  <div class="max-w-3xl mx-auto w-full">
+    <h2 class="text-3xl font-bold section-title mb-8">Tabla de contenido</h2>
+    <div class="toc space-y-3 text-slate-700">
+      <div><span class="toc-num">1</span><a href="#sec1">Contexto y alcance de la evaluación</a></div>
+      <div><span class="toc-num">2</span><a href="#sec2">Dimensión 1 — Aplicación eficiente y eficaz de las prácticas ágiles</a></div>
+      <div class="ml-8 text-sm text-slate-500 space-y-1">
+        <div><a href="#sec2-1">2.1 Roles SCRUM</a></div>
+        <div><a href="#sec2-2">2.2 Eventos SCRUM</a></div>
+        <div><a href="#sec2-3">2.3 Artefactos SCRUM</a></div>
+        <div><a href="#sec2-4">2.4 Métricas ágiles</a></div>
+      </div>
+      <div><span class="toc-num">3</span><a href="#sec3">Dimensión 2 — Calidad del Product Backlog</a></div>
+      <div class="ml-8 text-sm text-slate-500 space-y-1">
+        <div><a href="#sec3-1">3.1 Estructura y formato de historias</a></div>
+        <div><a href="#sec3-2">3.2 Criterios de priorización</a></div>
+        <div><a href="#sec3-3">3.3 Definition of Ready (DoR) y Definition of Done (DoD)</a></div>
+        <div><a href="#sec3-4">3.4 Refinamiento continuo</a></div>
+      </div>
+      <div><span class="toc-num">4</span><a href="#sec4">Dimensión 3 — Calidad del Release Plan</a></div>
+      <div class="ml-8 text-sm text-slate-500 space-y-1">
+        <div><a href="#sec4-1">4.1 Visión general de las 3 releases</a></div>
+        <div><a href="#sec4-2">4.2 Release 1 — MVP Clínico</a></div>
+        <div><a href="#sec4-3">4.3 Release 2 — Usabilidad y Calidad</a></div>
+        <div><a href="#sec4-4">4.4 Release 3 — IA Generativa y Cierre</a></div>
+        <div><a href="#sec4-5">4.5 Riesgos y mitigación</a></div>
+      </div>
+      <div><span class="toc-num">5</span><a href="#sec5">Evidencias de apoyo y repositorio</a></div>
+      <div><span class="toc-num">6</span><a href="#sec6">Conclusiones</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SECCIÓN 1 ═══════════════ -->
+<section id="sec1" class="page-break bg-white px-10 py-16">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl font-bold section-title">1 · Contexto y alcance de la evaluación</h2>
+    <p class="mt-4 text-slate-600 leading-relaxed">
+      Este documento presenta la evidencia del proyecto <b>Health Access Bridge (HAB)</b> bajo tres dimensiones de la rúbrica de Trabajo Integrador II: <b>(1) prácticas ágiles</b>, <b>(2) calidad del Product Backlog</b> y <b>(3) calidad del Release Plan</b>. Toda la evidencia se deriva exclusivamente de artefactos versionados en el repositorio público de GitHub — código, issues, workflows de CI/CD, reportes de pruebas y documentación técnica — sin depender de material externo no trazable.
+    </p>
+    <div class="mt-6 grid grid-cols-3 gap-4 text-center">
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-4"><div class="text-3xl font-extrabold text-primary">134</div><div class="text-xs text-slate-500 mt-1">Story Points totales</div></div>
+      <div class="bg-green-50 border border-green-200 rounded-xl p-4"><div class="text-3xl font-extrabold text-green-700">87</div><div class="text-xs text-slate-500 mt-1">Completados (64.9%)</div></div>
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><div class="text-3xl font-extrabold text-slate-600">47</div><div class="text-xs text-slate-500 mt-1">Pendientes (Momento 3)</div></div>
+    </div>
+    <div class="mt-6 bg-slate-50 border border-slate-200 rounded-xl p-5 text-sm">
+      <div class="font-semibold text-slate-700 mb-2">Alcance evaluado</div>
+      <p class="text-slate-600">Se evalúa el estado acumulado del proyecto a la fecha de entrega (18 de septiembre de 2026): <b>Momento 1</b> (Semanas 1–9) y <b>Momento 2</b> (Semanas 10–18) completados al 100%, y <b>Momento 3</b> (Semanas 19–27) documentado como planificado (Release Plan + riesgos). El Product Backlog, el Release Plan y la evidencia ágil se formalizaron como documentos independientes en <span class="font-mono text-xs">docs/reports/</span> para esta entrega.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SECCIÓN 2 ═══════════════ -->
+<section id="sec2" class="page-break bg-white px-10 py-16">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl font-bold section-title">2 · Dimensión 1 — Prácticas Ágiles</h2>
+    <p class="mt-4 text-slate-600">Se aplicó SCRUM adaptado a un equipo unipersonal. La siguiente tabla mapea cada elemento del marco contra su evidencia concreta y verificable en el repositorio.</p>
+
+    <h3 id="sec2-1" class="mt-8 text-lg font-semibold text-slate-800">2.1 Roles</h3>
+    <table class="w-full text-sm mt-3 border border-slate-200 rounded-lg overflow-hidden">
+      <thead class="bg-slate-100 text-slate-700"><tr><th class="text-left px-4 py-2">Rol</th><th class="text-left px-4 py-2">Responsable</th><th class="text-left px-4 py-2">Evidencia</th></tr></thead>
+      <tbody class="divide-y divide-slate-200">
+        <tr><td class="px-4 py-2 font-medium">Product Owner</td><td class="px-4 py-2">@jaquimbayoc7</td><td class="px-4 py-2">Prioriza y redacta HUs en <span class="font-mono text-xs">BACKLOG.md</span>; define alcance por release</td></tr>
+        <tr><td class="px-4 py-2 font-medium">Dev Team</td><td class="px-4 py-2">@jaquimbayoc7</td><td class="px-4 py-2">Autor único de commits (INSIGHTS_REPORT3 §1 — "Assignee único")</td></tr>
+        <tr><td class="px-4 py-2 font-medium">Scrum Master</td><td class="px-4 py-2">Rol distribuido (autogestión + rúbrica)</td><td class="px-4 py-2">Auditorías de coherencia documentadas en PROJECT_STATUS_M2.md</td></tr>
+        <tr><td class="px-4 py-2 font-medium">Stakeholders</td><td class="px-4 py-2">Médicos entrevistados (ICBF, Alcaldía)</td><td class="px-4 py-2">Entrevistas, fichas y diagrama de afinidad en <span class="font-mono text-xs">docs/HCI/</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="sec2-2" class="mt-8 text-lg font-semibold text-slate-800">2.2 Eventos</h3>
+    <table class="w-full text-sm mt-3 border border-slate-200 rounded-lg overflow-hidden">
+      <thead class="bg-slate-100 text-slate-700"><tr><th class="text-left px-4 py-2">Evento</th><th class="text-left px-4 py-2">Aplicación</th><th class="text-left px-4 py-2">Evidencia</th></tr></thead>
+      <tbody class="divide-y divide-slate-200">
+        <tr><td class="px-4 py-2 font-medium">Sprint Planning</td><td class="px-4 py-2">Cada HU se estima en SP antes del sprint, con historia, criterios de aceptación, tareas y DoD</td><td class="px-4 py-2"><span class="font-mono text-xs">BACKLOG.md</span> (estimación previa al "Done")</td></tr>
+        <tr><td class="px-4 py-2 font-medium">Daily Scrum</td><td class="px-4 py-2">Adaptado a formato asíncrono: commits frecuentes agrupados por sesiones de trabajo</td><td class="px-4 py-2"><span class="font-mono text-xs">INSIGHTS_REPORT3.md</span> §3 (timeline por commit, Conventional Commits)</td></tr>
+        <tr><td class="px-4 py-2 font-medium">Sprint Review</td><td class="px-4 py-2">Cada HU se demuestra desplegada y accesible en dev/qa/prod antes de cerrarse</td><td class="px-4 py-2"><span class="font-mono text-xs">render.yaml</span> + 3 workflows CI/CD + smoke tests post-deploy</td></tr>
+        <tr><td class="px-4 py-2 font-medium">Sprint Retrospective</td><td class="px-4 py-2">Inspección y adaptación al cierre de cada Momento: bugs, causas raíz y correcciones</td><td class="px-4 py-2"><span class="font-mono text-xs">PROJECT_STATUS_M2.md</span> §"Hallazgos de esta auditoría"</td></tr>
+        <tr><td class="px-4 py-2 font-medium">Backlog Refinement</td><td class="px-4 py-2">Historias re-alcanzadas con base en investigación de usuario real (HCI)</td><td class="px-4 py-2">HU-05 redefinida de "PWA offline" a "Mejoras de Usabilidad HCI" en <span class="font-mono text-xs">BACKLOG.md</span>, validado con <span class="font-mono text-xs">docs/HCI/07_user_story_mapping.md</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="sec2-3" class="mt-8 text-lg font-semibold text-slate-800">2.3 Artefactos</h3>
+    <table class="w-full text-sm mt-3 border border-slate-200 rounded-lg overflow-hidden">
+      <thead class="bg-slate-100 text-slate-700"><tr><th class="text-left px-4 py-2">Artefacto</th><th class="text-left px-4 py-2">Implementación</th></tr></thead>
+      <tbody class="divide-y divide-slate-200">
+        <tr><td class="px-4 py-2 font-medium">Product Backlog</td><td class="px-4 py-2"><span class="font-mono text-xs">BACKLOG.md</span> — épicas, HUs, story points, priorización</td></tr>
+        <tr><td class="px-4 py-2 font-medium">Sprint Backlog</td><td class="px-4 py-2">Tareas técnicas por HU dentro de cada sprint en <span class="font-mono text-xs">BACKLOG.md</span></td></tr>
+        <tr><td class="px-4 py-2 font-medium">Incremento</td><td class="px-4 py-2">Software potencialmente entregable verificado con despliegue real + pruebas (3 ambientes live, 87/134 pts con demo funcional)</td></tr>
+        <tr><td class="px-4 py-2 font-medium">Definition of Done</td><td class="px-4 py-2">Criterio de cierre explícito por HU (código en main, pruebas pasando, documentación)</td></tr>
+        <tr><td class="px-4 py-2 font-medium">Definition of Ready</td><td class="px-4 py-2">Historia + criterios de aceptación + estimación + sin dependencias bloqueantes (sección nueva en <span class="font-mono text-xs">BACKLOG.md</span>)</td></tr>
+        <tr><td class="px-4 py-2 font-medium">Burndown / Tablero</td><td class="px-4 py-2">Tabla Kanban Done/Progreso/Backlog en <span class="font-mono text-xs">BACKLOG.md</span> + GitHub Project board <span class="font-mono text-xs">projects/1</span></td></tr>
+        <tr><td class="px-4 py-2 font-medium">Release Plan</td><td class="px-4 py-2"><span class="font-mono text-xs">docs/reports/RELEASE_PLAN.md</span> (formalizado para esta entrega)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="sec2-4" class="mt-8 text-lg font-semibold text-slate-800">2.4 Métricas ágiles</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3 text-center">
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-3"><div class="text-2xl font-extrabold text-primary">14.5</div><div class="text-xs text-slate-500">Velocity promedio (SP/sprint)</div></div>
+      <div class="bg-green-50 border border-green-200 rounded-xl p-3"><div class="text-2xl font-extrabold text-green-700">100%</div><div class="text-xs text-slate-500">Sprint efficiency (SP planificados = SP entregados)</div></div>
+      <div class="bg-purple-50 border border-purple-200 rounded-xl p-3"><div class="text-2xl font-extrabold text-purple-700">44/44</div><div class="text-xs text-slate-500">Backend tests (83% cobertura)</div></div>
+      <div class="bg-teal-50 border border-teal-200 rounded-xl p-3"><div class="text-2xl font-extrabold text-teal-700">16/16</div><div class="text-xs text-slate-500">Frontend tests (Vitest)</div></div>
+    </div>
+
+    <div class="mt-6 bg-slate-50 border border-slate-200 rounded-xl p-5">
+      <div class="text-sm font-semibold text-slate-700 mb-2">Velocity por sprint (story points entregados)</div>
+      <canvas id="velocityChart" height="120"></canvas>
+    </div>
+
+    <div class="mt-4 bg-slate-50 border border-slate-200 rounded-xl p-5">
+      <div class="text-sm font-semibold text-slate-700 mb-2">Distribución de tipos de commit (Conventional Commits, histórico completo)</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+        <canvas id="commitChart" height="140"></canvas>
+        <div class="text-xs text-slate-600 space-y-1">
+          <div><b>fix</b> 32.8% — corrección de bugs reales de producción (login, soft-delete, rutas CI, lockfile)</div>
+          <div><b>docs</b> 28.9% — reportes de estado, insights, backlog</div>
+          <div><b>feat</b> 25.8% — nuevas funcionalidades (HUs)</div>
+          <div><b>chore/test</b> 12.5% — mantenimiento e infraestructura de pruebas</div>
+          <div class="mt-2 text-slate-500">Fuente: <span class="font-mono">INSIGHTS_REPORT3.md</span> §3.2</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="mt-4 text-xs text-slate-500">Mapeo completo y trazable: <span class="font-mono">docs/reports/AGILE_PRACTICES.md</span>.</p>
+  </div>
+</section>
+
+<!-- ═══════════════ SECCIÓN 3 ═══════════════ -->
+<section id="sec3" class="page-break bg-white px-10 py-16">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl font-bold section-title">3 · Dimensión 2 — Calidad del Product Backlog</h2>
+    <p class="mt-4 text-slate-600">El backlog maestro (<span class="font-mono text-xs">BACKLOG.md</span>) se evalúa por estructura, priorización, criterios de entrada/salida y refinamiento continuo.</p>
+
+    <h3 id="sec3-1" class="mt-8 text-lg font-semibold text-slate-800">3.1 Estructura y formato de historias</h3>
+    <p class="mt-2 text-sm text-slate-600">Cada historia de usuario sigue el formato <b>Como / Deseo / Para</b> y va acompañada de criterios de aceptación verificables, tareas técnicas desglosadas, estimación en story points, Definition of Done explícita y enlace a su issue de GitHub. Ejemplo representativo (HU-02):</p>
+    <div class="mt-3 bg-slate-50 border border-slate-200 rounded-xl p-5 text-xs font-mono text-slate-700 space-y-1">
+      <div>• <b>Como</b> Médico</div>
+      <div>• <b>Deseo</b> visualizar y gestionar pacientes con datos precargados</div>
+      <div>• <b>Para</b> agilizar la consulta médica y no empezar desde cero con cada registro</div>
+      <div class="pt-2 border-t border-slate-200">Criterios: ≥10 pacientes de prueba · edición de historia clínica</div>
+      <div>DoD: CRUD 100% · BD normalizada · validación de campos</div>
+      <div>Estimación: 13 pts · Estado: ✅ Done (Issue #2)</div>
+    </div>
+
+    <h3 id="sec3-2" class="mt-8 text-lg font-semibold text-slate-800">3.2 Criterios de priorización (explícitos)</h3>
+    <p class="mt-2 text-sm text-slate-600">El orden del backlog se define combinando tres criterios, en este orden de peso:</p>
+    <ol class="mt-2 text-sm text-slate-600 list-decimal list-inside space-y-1">
+      <li><b>Dependencia técnica</b> — una HU prerrequisito se prioriza primero (ej. HU-01 Auth antes de HU-02 Pacientes; deuda de rendimiento antes de HU-07 LLM, porque el LLM añade carga sobre la misma API).</li>
+      <li><b>Valor de negocio / riesgo clínico</b> — historias del flujo clínico central (registro, predicción) sobre historias de soporte (dashboards, exportación).</li>
+      <li><b>Riesgo de usabilidad validado con usuarios reales</b> — hallazgos de HCI (entrevistas, test de usuario) pueden re-priorizar o redefinir una HU ya planificada (así se redefinió HU-05).</li>
+    </ol>
+
+    <h3 id="sec3-3" class="mt-8 text-lg font-semibold text-slate-800">3.3 Definition of Ready (DoR) y Definition of Done (DoD)</h3>
+    <div class="grid md:grid-cols-2 gap-4 mt-3">
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm">
+        <div class="font-semibold text-slate-700 mb-1">DoR — entrada al sprint</div>
+        <ul class="text-xs text-slate-600 list-disc list-inside space-y-1">
+          <li>Historia Como/Deseo/Para</li>
+          <li>Criterios de aceptación verificables</li>
+          <li>Estimación en SP acordada</li>
+          <li>Sin dependencias bloqueantes</li>
+          <li>DoD explícita de cierre</li>
+        </ul>
+      </div>
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm">
+        <div class="font-semibold text-slate-700 mb-1">DoD — cierre de HU</div>
+        <ul class="text-xs text-slate-600 list-disc list-inside space-y-1">
+          <li>Código en rama principal</li>
+          <li>Pruebas automatizadas pasando en CI/CD</li>
+          <li>Documentación actualizada</li>
+          <li>Desplegado y verificado en ambiente</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 id="sec3-4" class="mt-8 text-lg font-semibold text-slate-800">3.4 Refinamiento continuo</h3>
+    <p class="mt-2 text-sm text-slate-600">El backlog se refinó con base en evidencia real, no solo en el plan inicial: HU-05 cambió su alcance de "Modo Offline y PWA" a "Mejoras de Usabilidad derivadas de Investigación HCI" tras entrevistas y test de usuario (<span class="font-mono text-xs">docs/HCI/07_user_story_mapping.md</span>). Además, el hallazgo de rendimiento de la prueba de carga real (18-sep-2026) se incorporó como ítem de backlog formal <b>DEUDA-01</b> — priorizado antes de HU-07 — con criterios de aceptación y estimación propios, en vez de quedar solo como nota en un reporte.</p>
+
+    <div class="mt-6 bg-slate-50 border border-slate-200 rounded-xl p-5">
+      <div class="text-sm font-semibold text-slate-700 mb-2">Estado del backlog por Momento (story points)</div>
+      <canvas id="backlogChart" height="110"></canvas>
+    </div>
+
+    <p class="mt-4 text-xs text-slate-500">Backlog maestro completo: <span class="font-mono">BACKLOG.md</span>.</p>
+  </div>
+</section>
+
+<!-- ═══════════════ SECCIÓN 4 ═══════════════ -->
+<section id="sec4" class="page-break bg-white px-10 py-16">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl font-bold section-title">4 · Dimensión 3 — Calidad del Release Plan</h2>
+    <p class="mt-4 text-slate-600">El Release Plan (<span class="font-mono text-xs">docs/reports/RELEASE_PLAN.md</span>) formaliza las 3 releases del proyecto con objetivo, alcance, fechas, ambientes, riesgos y criterios de salida. Consolida información ya publicada en el backlog y reportes de estado, sin introducir alcance nuevo.</p>
+
+    <h3 id="sec4-1" class="mt-8 text-lg font-semibold text-slate-800">4.1 Visión general</h3>
+    <table class="w-full text-sm mt-3 border border-slate-200 rounded-lg overflow-hidden">
+      <thead class="bg-slate-100 text-slate-700"><tr><th class="text-left px-4 py-2">Release</th><th class="text-left px-4 py-2">Momento</th><th class="text-left px-4 py-2">Semanas</th><th class="text-left px-4 py-2">Puntos</th><th class="text-left px-4 py-2">Estado</th></tr></thead>
+      <tbody class="divide-y divide-slate-200">
+        <tr><td class="px-4 py-2 font-medium">R1 — MVP Clínico</td><td class="px-4 py-2">Momento 1</td><td class="px-4 py-2">1–9</td><td class="px-4 py-2">63</td><td class="px-4 py-2"><span class="badge-done text-xs font-semibold px-2 py-0.5 rounded-full">✅ Entregado</span></td></tr>
+        <tr><td class="px-4 py-2 font-medium">R2 — Usabilidad y Calidad</td><td class="px-4 py-2">Momento 2</td><td class="px-4 py-2">10–18</td><td class="px-4 py-2">24</td><td class="px-4 py-2"><span class="badge-done text-xs font-semibold px-2 py-0.5 rounded-full">✅ Entregado</span></td></tr>
+        <tr><td class="px-4 py-2 font-medium">R3 — IA Generativa y Cierre</td><td class="px-4 py-2">Momento 3</td><td class="px-4 py-2">19–27</td><td class="px-4 py-2">47</td><td class="px-4 py-2"><span class="badge-plan text-xs font-semibold px-2 py-0.5 rounded-full">🔴 Planificado</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="sec4-2" class="mt-8 text-lg font-semibold text-slate-800">4.2 Release 1 — MVP Clínico (Semanas 1–9) ✅</h3>
+    <p class="mt-2 text-sm text-slate-600"><b>Objetivo:</b> MVP desplegado en la nube con autenticación por rol, gestión de pacientes y modelo predictivo ML de extremo a extremo, más base de calidad (pruebas automatizadas). <b>Alcance:</b> HU-01, HU-02, HU-03, HU-04 (adelantada), HU-11, HU-12, HU-13 = 63 pts. <b>Criterios de salida:</b> 3 ambientes respondiendo <span class="font-mono text-xs">/health</span>, login + CRUD + predicción operativos en producción, suite de pruebas en verde, smoke tests post-deploy pasando.</p>
+
+    <h3 id="sec4-3" class="mt-6 text-lg font-semibold text-slate-800">4.3 Release 2 — Usabilidad y Calidad (Semanas 10–18) ✅</h3>
+    <p class="mt-2 text-sm text-slate-600"><b>Objetivo:</b> cerrar brechas de usabilidad detectadas en investigación HCI y validar estabilidad con pruebas de integración y carga antes de sumar el servidor LLM. <b>Alcance propio:</b> HU-05, HU-05b, HU-06 = 24 pts. <b>Hallazgo real:</b> la prueba de carga de 200 usuarios concurrentes no cumplió el umbral de latencia (<span class="font-mono text-xs">p95 = 54.6s</span> vs. <span class="font-mono text-xs">&lt;200ms</span> objetivo). Se documentó como hallazgo técnico y pasó a deuda técnica priorizada al inicio de R3, sin bloquear el cierre de HU-06.</p>
+
+    <h3 id="sec4-4" class="mt-6 text-lg font-semibold text-slate-800">4.4 Release 3 — IA Generativa y Cierre (Semanas 19–27) 🔴</h3>
+    <p class="mt-2 text-sm text-slate-600"><b>Objetivo:</b> servidor físico on-premise con LLM ajustado para sugerir códigos ICF/CIF-Colombia a partir de niveles D1–D6, más dashboards exportables y cierre con UAT y manuales. <b>Alcance planificado:</b> DEUDA-01 (rendimiento, prerrequisito), HU-07, HU-08, HU-09, HU-10 = 47 pts. <b>Dependencia clave:</b> es la única release con un componente fuera de la nube (hardware físico local), por lo que su cronograma depende de la disponibilidad de ese servidor.</p>
+
+    <h3 id="sec4-5" class="mt-6 text-lg font-semibold text-slate-800">4.5 Riesgos y mitigación</h3>
+    <table class="w-full text-xs mt-3 border border-slate-200 rounded-lg overflow-hidden">
+      <thead class="bg-slate-100 text-slate-700"><tr><th class="text-left px-3 py-2">Riesgo</th><th class="text-left px-3 py-2">Impacto</th><th class="text-left px-3 py-2">Mitigación</th><th class="text-left px-3 py-2">Estado</th></tr></thead>
+      <tbody class="divide-y divide-slate-200">
+        <tr><td class="px-3 py-2">Bottleneck de rendimiento API (p95=54.6s confirmado)</td><td class="px-3 py-2">Alto</td><td class="px-3 py-2">Plan de escalado con pricing real (workers/pool → upgrade de servicio y BD), repetir prueba de carga</td><td class="px-3 py-2">🔴 Pendiente (inicio R3)</td></tr>
+        <tr><td class="px-3 py-2">Dependencia de hardware físico para el LLM</td><td class="px-3 py-2">Alto</td><td class="px-3 py-2">Aprovisionar specs mínimas antes del Sprint 8; fallback con modelo más liviano</td><td class="px-3 py-2">🔴 Por planificar</td></tr>
+        <tr><td class="px-3 py-2">Latencia de inferencia del LLM incompatible con uso clínico</td><td class="px-3 py-2">Medio</td><td class="px-3 py-2">Definir umbral aceptable en pruebas antes de seleccionar el modelo</td><td class="px-3 py-2">🔴 Por planificar</td></tr>
+        <tr><td class="px-3 py-2">Desincronización de lockfile rompiendo deploys</td><td class="px-3 py-2">Medio</td><td class="px-3 py-2">Verificación de lockfile agregada al pipeline tras hallazgo de R2</td><td class="px-3 py-2">✅ Mitigado</td></tr>
+        <tr><td class="px-3 py-2">Alcance HCI redefinido sin actualizar GitHub</td><td class="px-3 py-2">Bajo</td><td class="px-3 py-2">Auditoría de coherencia de GitHub ejecutada en cierre de R2</td><td class="px-3 py-2">✅ Mitigado</td></tr>
+      </tbody>
+    </table>
+
+    <p class="mt-4 text-xs text-slate-500">Release Plan completo: <span class="font-mono">docs/reports/RELEASE_PLAN.md</span>.</p>
+  </div>
+</section>
+
+<!-- ═══════════════ SECCIÓN 5 ═══════════════ -->
+<section id="sec5" class="page-break bg-white px-10 py-16">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl font-bold section-title">5 · Evidencias de apoyo y repositorio</h2>
+    <p class="mt-4 text-slate-600">Toda la evidencia citada es pública y verificable en el repositorio. Enlaces directos:</p>
+    <ul class="mt-4 text-sm text-slate-700 space-y-2 list-disc list-inside">
+      <li><a class="text-primary hover:underline" href="https://github.com/jaquimbayoc7/health-access-bridge">Repositorio GitHub</a> (rama <span class="font-mono text-xs">master</span>)</li>
+      <li><a class="text-primary hover:underline" href="https://github.com/jaquimbayoc7/health-access-bridge/blob/master/BACKLOG.md">Product Backlog</a> — épicas, HUs, priorización, DoR, DoD</li>
+      <li><a class="text-primary hover:underline" href="https://github.com/jaquimbayoc7/health-access-bridge/blob/master/docs/reports/RELEASE_PLAN.md">Release Plan</a> — 3 releases, riesgos, ambientes</li>
+      <li><a class="text-primary hover:underline" href="https://github.com/jaquimbayoc7/health-access-bridge/blob/master/docs/reports/AGILE_PRACTICES.md">Evidencia de Prácticas Ágiles</a> — mapeo SCRUM → repo</li>
+      <li><a class="text-primary hover:underline" href="https://github.com/jaquimbayoc7/health-access-bridge/blob/master/docs/reports/PROJECT_STATUS_M2.md">Estado del Proyecto — Momento 2</a> — hallazgos y cierre</li>
+      <li><a class="text-primary hover:underline" href="https://github.com/jaquimbayoc7/health-access-bridge/blob/master/docs/reports/INSIGHTS_REPORT3.md">GitHub Insights Report 3</a> — métricas de commits, velocity, tipos de commit</li>
+      <li><a class="text-primary hover:underline" href="https://github.com/jaquimbayoc7/health-access-bridge/blob/master/docs/reports/TESTING_REPORT.md">Reporte de Testing</a> — 35 backend + 16 frontend tests</li>
+      <li><a class="text-primary hover:underline" href="https://github.com/jaquimbayoc7/health-access-bridge/blob/master/docs/test-report.md">Reporte de Pruebas de Integración y Carga (HU-06)</a> — resultado real p95=54.6s y plan de escalado</li>
+      <li><a class="text-primary hover:underline" href="https://github.com/users/jaquimbayoc7/projects/1">GitHub Project board "HAB - SCRUM Board"</a> — tablero visual por estado</li>
+      <li>Issues y Milestones: <a class="text-primary hover:underline" href="https://github.com/jaquimbayoc7/health-access-bridge/issues">Issues</a> · <a class="text-primary hover:underline" href="https://github.com/jaquimbayoc7/health-access-bridge/milestones">Milestones</a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════ SECCIÓN 6 ═══════════════ -->
+<section id="sec6" class="page-break bg-white px-10 py-16">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl font-bold section-title">6 · Conclusiones</h2>
+    <p class="mt-4 text-slate-600 leading-relaxed">
+      El proyecto Health Access Bridge cumple las tres dimensiones evaluadas con evidencia verificable y versionada. En <b>prácticas ágiles</b>, se aplicó SCRUM con roles, eventos y artefactos mapeables a commits, issues, CI/CD y métricas públicas (velocity 14.5 SP/sprint, eficiencia 100% en los sprints cerrados). En <b>Product Backlog</b>, el backlog maestro tiene historias bien formadas, priorización explícita, DoR/DoD y refinamiento continuo basado en investigación de usuario real. En <b>Release Plan</b>, las 3 releases del proyecto están formalizadas con objetivos, alcance, fechas, ambientes, riesgos y criterios de salida — incluyendo la gestión transparente del hallazgo real de rendimiento como deuda técnica priorizada antes del siguiente release, en lugar de ocultarla. El 64.9% del alcance total (87/134 pts) está entregado y demostrable en ambientes en vivo.
+    </p>
+  </div>
+</section>
+
+<script>
+const gridColor='rgba(148,163,184,.25)';
+Chart.defaults.font.family='Inter, sans-serif';
+// Velocity por sprint
+new Chart(document.getElementById('velocityChart'),{
+  type:'bar',
+  data:{labels:['S1','S2','S3','S3.5','S6-7','S7'],
+    datasets:[{label:'SP entregados',data:[8,13,26,16,16,8],backgroundColor:['#3B82F6','#3B82F6','#2563EB','#F97316','#F59E0B','#14B8A6'],borderRadius:6}]},
+  options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:gridColor}},x:{grid:{display:false}}}}
+});
+// Tipos de commit
+new Chart(document.getElementById('commitChart'),{
+  type:'doughnut',
+  data:{labels:['fix','docs','feat','chore','otros'],
+    datasets:[{data:[32.8,28.9,25.8,7.0,5.5],backgroundColor:['#EF4444','#3B82F6','#22C55E','#F59E0B','#94A3B8'],borderWidth:2,borderColor:'#fff'}]},
+  options:{plugins:{legend:{position:'bottom'}},cutout:'60%'}
+});
+// Backlog por momento
+new Chart(document.getElementById('backlogChart'),{
+  type:'bar',
+  data:{labels:['Momento 1','Momento 2','Momento 3'],
+    datasets:[
+      {label:'Completado',data:[63,24,0],backgroundColor:'#22C55E',stack:'s'},
+      {label:'Pendiente',data:[0,0,47],backgroundColor:'#CBD5E1',stack:'s'}
+    ]},
+  options:{plugins:{legend:{position:'bottom'}},scales:{y:{stacked:true,beginAtZero:true,grid:{color:gridColor}},x:{stacked:true,grid:{display:false}}}}
+});
+</script>
+</body>
+</html>
