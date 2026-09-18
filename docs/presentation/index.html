@@ -330,7 +330,7 @@ html{scroll-behavior:smooth}
       <div class="bg-white rounded-xl border-l-4 border-l-teal-400 border border-slate-200 p-4 card">
         <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-teal-100 text-teal-700 text-xs font-bold px-2 py-0.5 rounded">HU-06</span><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">✅</span></div><span class="text-xs text-slate-400">8 pts · S7</span></div>
         <h3 class="font-semibold text-slate-800 text-sm mb-2">Pruebas de Integración y Rendimiento</h3>
-        <ul class="text-xs text-slate-500 space-y-1"><li>• 9 tests de integración del flujo de predicción ML (44/44 total)</li><li>• 7 specs E2E con Playwright + carga k6 ejecutada (200 VUs)</li><li>• 4 bugs críticos encontrados y corregidos</li><li class="text-red-500">• ⚠️ Carga real: p95 = 54.6s bajo 200 VUs (no cumple &lt;200ms)</li></ul>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• 9 tests de integración del flujo de predicción ML (44/44 total)</li><li>• 7 specs E2E con Playwright + carga k6 ejecutada (200 VUs)</li><li>• 4 bugs críticos encontrados y corregidos</li><li class="text-red-500">• ⚠️ Carga real: p95 = 54.6s bajo 200 VUs (no cumple &lt;200ms)</li><li class="text-slate-400">• Causa: 1 worker + pool 30 conexiones + tier Starter. Plan de escalado en test-report.md</li></ul>
         <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/6" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #6 →</a>
       </div>
       <!-- Velocity summary -->

@@ -11,10 +11,12 @@
 Se amplió la suite de pruebas de integración del backend con cobertura end-to-end del
 flujo de predicción ML (`POST /patients/{id}/predict`), se añadió una suite de pruebas
 E2E con Playwright para los flujos críticos de la aplicación (login, pacientes,
-predicciones), y un script de prueba de carga con k6 para validar el criterio de
-rendimiento (`p95 < 200ms` bajo 100 usuarios concurrentes simulados).
+predicciones), y se ejecutó una prueba de carga real con k6 contra QA para validar el
+criterio de rendimiento (`p95 < 200ms` bajo **200 usuarios concurrentes** simulados).
+El criterio de latencia **no se cumplió** (p95 real ≈ 55s) — ver hallazgo y
+recomendaciones de escalado en la sección 4.
 
-Durante el desarrollo de esta HU se encontraron y corrigieron **3 bugs reales**
+Durante el desarrollo de esta HU se encontraron y corrigieron **4 bugs reales**
 detectados por las nuevas pruebas de integración (ver sección "Bugs encontrados y
 corregidos").
 
@@ -25,8 +27,8 @@ corregidos").
 | **Pruebas backend (pytest)** | 44 casos — 44/44 ✅ (35 previos + 9 nuevos de `test_predictions.py`) |
 | **Cobertura de código backend** | 83% (`--cov-fail-under=80` ✅) |
 | **Pruebas E2E (Playwright)** | 7 specs nuevos — login, pacientes, predicciones |
-| **Prueba de carga (k6)** | Script configurado — rampa 0→100 VUs, thresholds `p95<200ms` y `error rate<1%` |
-| **Bugs críticos encontrados y corregidos** | 3 |
+| **Prueba de carga (k6)** | **Ejecutada** contra QA — rampa 0→200 usuarios concurrentes, `p95` real ≈ 55s (❌ no cumple `<200ms`), `error rate` 0.98% (✅ cumple `<1%`) |
+| **Bugs críticos encontrados y corregidos** | 4 |
 
 ---
 
@@ -155,17 +157,38 @@ recuperó a la normalidad inmediatamente después de terminar la prueba (health 
 en 0.52s), lo que indica que el cuello de botella es de **capacidad/concurrencia bajo
 carga**, no un error de código ni una caída del servicio.
 
-**Causa probable:** el plan gratuito/starter de Render para `hab-backend-qa` corre un
-único worker de Uvicorn sin *connection pooling* dimensionado para 200 conexiones
-concurrentes, sumado a que la base de datos PostgreSQL compartida en Render también
-tiene límites de conexión en el tier actual.
+**Causa raíz confirmada en el código** (no es una suposición — se verificó directamente):
 
-**Recomendación (no bloqueante para HU-06, pasa a backlog técnico):**
-- Aumentar el número de workers de Uvicorn/Gunicorn en el `startCommand` del backend.
-- Evaluar upgrade de tier de Render (de free/starter a un plan con más CPU/RAM) al
-  menos para producción.
-- Configurar *connection pooling* explícito en SQLAlchemy (`pool_size`, `max_overflow`).
-- Repetir la prueba después de aplicar estos cambios para verificar mejora real.
+1. **Un solo worker de Uvicorn.** `startCommand` en `render.yaml` es `uvicorn app.main:app --host 0.0.0.0 --port $PORT`, sin `--workers`. Un único proceso maneja toda la concurrencia.
+2. **Pool de conexiones a la BD limitado a 30.** `backend/app/database.py`: `pool_size=10, max_overflow=20` → máximo 30 conexiones simultáneas a Postgres **por worker**. Con 200 requests concurrentes, la gran mayoría queda en cola esperando una conexión libre.
+3. **El plan "Pro" pagado es del workspace, no del servicio.** Al revisar la facturación real de Render: el servicio web activo (`hab-backend-qa`/prod) factura como **Starter** (~$7/mes → 0.5 CPU / 512 MB RAM), y la base de datos como **Basic** (~0.1 CPU, 256 MB–1 GB). El plan **Pro del workspace** ($25/mes, prorateado a $22.78 en la factura) habilita funcionalidades (autoescalado horizontal, previews, servicios ilimitados) pero **no aumenta el tamaño de cómputo de cada servicio individual** — eso se paga aparte, por servicio.
+
+Con 0.5 CPU, 1 worker y un pool de 30 conexiones, 200 requests concurrentes generan una cola masiva → de ahí el p95 de ~55s (la mayoría de requests esperando turno, no procesándose en paralelo).
+
+### Recomendación de escalado (basada en pricing real de Render, sep. 2026)
+
+**Configuración actual (medida en la factura del usuario):**
+
+| Recurso | Plan actual | Specs | Costo |
+|---|---|---|---|
+| Web Service (backend) | Starter | 0.5 CPU / 512 MB, 1 worker | ~$7/mes |
+| PostgreSQL | Basic (~256MB-1GB) | 0.1 CPU, 100 conexiones máx. | ~$10/mes |
+| Workspace | **Pro** | Habilita autoescalado horizontal, sin límite de servicios | $25/mes (prorateado) |
+
+**Estimación de capacidad actual** (analítica, basada en la configuración — no un benchmark exhaustivo por escalón): con 1 worker sobre 0.5 CPU y un pool de 30 conexiones DB, el sistema puede sostener de forma estable aproximadamente **20-30 usuarios concurrentes** antes de que la cola empiece a crecer y la latencia se degrade de forma no lineal (consistente con que la prueba ya mostraba señales de degradación fuerte desde el escalón de 100 VUs). **Se recomienda una prueba escalonada (20 → 50 → 100 VUs) para precisar el punto de quiebre exacto.**
+
+**Plan de escalado sugerido para sostener 200 usuarios concurrentes bajo <200ms:**
+
+| Paso | Acción | Plan Render sugerido | Costo aprox. |
+|---|---|---|---|
+| 1 (gratis) | Agregar `--workers 2` (o 4) al `startCommand` de Uvicorn | — | $0 |
+| 2 (gratis) | Subir `pool_size`/`max_overflow` en `database.py`, acorde al límite de conexiones de la BD | — | $0 |
+| 3 | Escalar verticalmente el Web Service: Starter → **Pro** (2 CPU / 4 GB) para soportar 2-4 workers reales | Web Service **Pro** | $85/mes |
+| 4 | Escalar la base de datos a un tier con más CPU y conexiones | Postgres **Pro-8gb** (2 CPU, 200 conexiones) | $100/mes |
+| 5 (opcional, ya disponible en su plan) | Activar **autoescalado horizontal** (feature del workspace Pro que ya paga) con 2 instancias del Web Service Pro detrás del load balancer de Render | 2× Web Service Pro | $170/mes |
+| 6 | Repetir la prueba de carga de 200 VUs tras aplicar 1-4 (y 5 si aplica) para validar que sí se cumple `p95 < 200ms` | — | — |
+
+**Costo total estimado para el escenario robusto (pasos 1-5):** de ~$17/mes actuales (Starter + Basic) a **~$195-270/mes** (Pro Web Service ×1-2 + Postgres Pro-8gb), más el workspace Pro ($25/mes) que ya se está pagando. Los pasos 1-2 son gratis y deberían aplicarse primero — es posible que mejoren sustancialmente el resultado sin gastar más, dado que actualmente ni siquiera se usan múltiples workers.
 
 ---
 
@@ -175,11 +198,12 @@ tiene límites de conexión en el tier actual.
 |---|---|
 | Pruebas automatizadas de integración pasan al 100% | ✅ 44/44 backend |
 | API responde en menos de 200ms bajo carga simulada (200 usuarios concurrentes) | ❌ **No cumple** — p95 real: 54.6s (ver sección 4) |
-| No hay bugs críticos bloqueantes | ✅ 3 bugs encontrados y corregidos (ver sección 2) |
+| No hay bugs críticos bloqueantes | ✅ 4 bugs encontrados y corregidos (ver sección 2) |
 | Reporte de pruebas generado y documentado | ✅ Este documento |
 
 > El criterio de rendimiento bajo carga **no se cumple** en la infraestructura actual
 > de Render (QA). Esto no es un bug de código sino una limitación de capacidad de
-> infraestructura — se documenta como hallazgo y se traslada como ítem de backlog
-> técnico (ver recomendaciones arriba), sin bloquear el cierre de HU-06 (cuyo objetivo
-> era construir y ejecutar la suite de pruebas, lo cual sí se completó).
+> infraestructura, con causa raíz identificada (1 worker + pool de 30 conexiones +
+> tier Starter/Basic) — se documenta como hallazgo con plan de escalado concreto
+> (ver arriba), sin bloquear el cierre de HU-06 (cuyo objetivo era construir y
+> ejecutar la suite de pruebas, lo cual sí se completó).

@@ -56,7 +56,7 @@ El proyecto Health Access Bridge completó el **Momento 2** (Semanas 10-18) con 
 - `backend/app/tests/test_predictions.py` (nuevo) — 9 pruebas de integración del flujo completo de predicción ML.
 - `frontend/e2e/` (nuevo) — 7 specs E2E con Playwright: login, CRUD de pacientes, ejecución de predicción.
 - `backend/tests/load/k6_load_test.js` (nuevo) — script de carga con k6.
-- **3 bugs críticos** encontrados y corregidos durante la auditoría de integración (ver sección de Hallazgos abajo).
+- **4 bugs críticos** encontrados y corregidos durante la auditoría de integración (ver sección de Hallazgos abajo).
 - Suite backend: **44/44 tests pasando**, cobertura 83%.
 
 #### 🔴 Resultado real de la prueba de carga (200 usuarios concurrentes) — ejecutada 18 Sep 2026
@@ -124,7 +124,15 @@ El backend de QA (`hab-backend-qa.onrender.com`) **no soporta 200 usuarios concu
 
 ## Próximos Pasos — Momento 3 (Semanas 19-27)
 
-1. **Resolver el bottleneck de rendimiento** (workers de Uvicorn, connection pooling, tier de Render) antes de sumar la carga del servidor local + LLM de HU-07.
+1. **Resolver el bottleneck de rendimiento** antes de sumar la carga del servidor local + LLM de HU-07. Causa raíz confirmada: 1 worker de Uvicorn, pool SQLAlchemy de 30 conexiones, y el servicio real facturado como Starter/Basic (el plan Pro que se paga es del **workspace**, no del tamaño de cómputo del servicio). Plan de escalado con pricing real de Render (ver `docs/test-report.md` §4 para el detalle completo):
+
+   | Paso | Acción | Costo |
+   |---|---|---|
+   | 1-2 | `--workers` en Uvicorn + ajustar `pool_size`/`max_overflow` | $0 |
+   | 3 | Web Service: Starter → **Pro** (2 CPU/4GB) | $85/mes |
+   | 4 | Postgres: Basic → **Pro-8gb** (2 CPU, 200 conexiones) | $100/mes |
+   | 5 (opcional) | Autoescalado horizontal ×2 (ya incluido en el workspace Pro que se paga) | +$85/mes |
+
 2. **HU-07:** Alistar servidor local físico con LLM ajustado para sugerencia de códigos CIF/ICF-Colombia (redefinida — ver [HU-07 #7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7)).
 3. **HU-08:** Desarrollar dashboard de análisis y exportación.
 4. **HU-09:** Pruebas completas y feedback de usuarios.

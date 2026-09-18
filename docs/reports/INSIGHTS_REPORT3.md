@@ -269,7 +269,7 @@ Ejecutada el 18 Sep 2026 contra QA con 200 VUs. Resultado: **criterio de latenci
 
 ## 11. Recomendaciones para Momento 3
 
-1. **Resolver el bottleneck de rendimiento antes de iniciar HU-07:** el servidor local con LLM (HU-07, 21 pts) agregará carga computacional adicional. Escalar/optimizar la infraestructura actual (workers, connection pooling, tier de Render) es prerequisito antes de sumar más carga.
+1. **Resolver el bottleneck de rendimiento antes de iniciar HU-07:** el servidor local con LLM (HU-07, 21 pts) agregará carga computacional adicional. Causa raíz confirmada en código: 1 solo worker de Uvicorn (`render.yaml` sin `--workers`) + pool SQLAlchemy limitado a 30 conexiones (`database.py`) + el servicio web factura como **Starter** (0.5 CPU/512MB) y la BD como **Basic**, aunque el workspace de Render sea Pro (esa suscripción habilita features como autoescalado horizontal, no aumenta el tamaño de cómputo por servicio). Plan de escalado sugerido con pricing real de Render en `docs/test-report.md` §4: pasos gratis primero (workers + pool), luego Web Service → Pro ($85/mes) y Postgres → Pro-8gb ($100/mes), con autoescalado horizontal (ya incluido en el workspace Pro) como opción adicional.
 
 2. **Activar Pull Requests:** persiste desde R1/R2 — con HU-07 (servidor local + LLM) siendo la HU más compleja restante, el riesgo de regresiones sin code review sigue siendo alto.
 

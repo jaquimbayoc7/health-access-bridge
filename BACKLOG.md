@@ -280,7 +280,8 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 - ✅ `backend/app/tests/test_predictions.py` — 9 pruebas de integración del flujo completo de predicción ML (`POST /patients/{id}/predict`), con modelo dummy vía `monkeypatch`.
 - ✅ `frontend/e2e/` — 7 specs E2E con Playwright: login (éxito/fallo), pacientes (listado, crear, cancelar), predicciones (carga, ejecución).
 - ✅ `backend/tests/load/k6_load_test.js` — script de carga con k6: rampa 0→200 usuarios concurrentes, thresholds `p95<200ms` y `error rate<1%`.
-- ✅ 3 bugs críticos encontrados y corregidos: crash 500 en `/users/login` con body inválido (`FormData` no serializable), paciente con soft-delete seguía accesible por ID (`crud.get_patient` no filtraba `is_active`), rutas incorrectas en smoke tests de `ci-qa.yml` (`/api/v1/...` inexistente) + `PLAYWRIGHT_BASE_URL` mal configurado.
+- ✅ 4 bugs críticos encontrados y corregidos: crash 500 en `/users/login` con body inválido (`FormData` no serializable), paciente con soft-delete seguía accesible por ID (`crud.get_patient` no filtraba `is_active`), rutas incorrectas en smoke tests de `ci-qa.yml` (`/api/v1/...` inexistente) + `PLAYWRIGHT_BASE_URL` mal configurado, y `package-lock.json` desincronizado que rompió 6+ deploys de frontend silenciosamente.
+- ✅ Causa raíz del bottleneck de carga confirmada en código: 1 worker de Uvicorn + pool SQLAlchemy de 30 conexiones + servicio real en tier Starter/Basic (el Pro pagado es del workspace, no del cómputo del servicio). Plan de escalado con pricing real de Render documentado en `docs/test-report.md` §4.
 - ✅ Reporte documentado en `docs/test-report.md`.
 
 **Criterios de Aceptación:**
