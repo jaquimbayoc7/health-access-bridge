@@ -3,14 +3,15 @@
 **Proyecto:** Health Access Bridge  
 **Metodología:** SCRUM  
 **Duración Total:** 27 Semanas  
-**Última actualización:** Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada) · DEUDA-01 en progreso (prueba a 30 VUs ejecutada 23-sep-2026) · Protección de rama y flujo de PR activados (23-sep-2026)
+**Última actualización:** Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada) · DEUDA-01 cerrada con riesgo aceptado (23-sep-2026) · Protección de rama y flujo de PR activados (23-sep-2026) · Ver [`docs/reports/INSIGHTS_REPORT4.md`](docs/reports/INSIGHTS_REPORT4.md) para el detalle completo de esta sesión.
 
 ---
 
 ## Riesgos de proceso resueltos
 
-- **Sin PRs / code review** (detectado en `docs/reports/INSIGHTS_REPORT3.md` §9, ítem 10) — ✅ Resuelto 23-sep-2026: se activó protección de rama en GitHub para `develop`, `staging` y `master` (requiere Pull Request + checks de CI en verde — `Backend Tests` y `Frontend Build` del ambiente correspondiente — antes de mergear; sin forzar un segundo revisor dado que hay un único desarrollador). Se agregó plantilla de PR (`.github/PULL_REQUEST_TEMPLATE.md`). Configuración reproducible en `.github/scripts/branch-protection-*.json`. Validado end-to-end con [PR #18](https://github.com/jaquimbayoc7/health-access-bridge/pull/18).
+- **Sin PRs / code review** (detectado en `docs/reports/INSIGHTS_REPORT3.md` §9, ítem 10) — ✅ Resuelto 23-sep-2026: se activó protección de rama en GitHub para `develop`, `staging` y `master` (requiere Pull Request + checks de CI en verde — `Backend Tests` y `Frontend Build` del ambiente correspondiente — antes de mergear; sin forzar un segundo revisor dado que hay un único desarrollador). Se agregó plantilla de PR (`.github/PULL_REQUEST_TEMPLATE.md`). Configuración reproducible en `.github/scripts/branch-protection-*.json`. Validado end-to-end con [PR #18](https://github.com/jaquimbayoc7/health-access-bridge/pull/18) y [PR #19](https://github.com/jaquimbayoc7/health-access-bridge/pull/19).
 - **`package-lock.json` desincronizado rompió deploys silenciosamente** (bug #4 de HU-06, ver `docs/reports/INSIGHTS_REPORT3.md` §8) — ✅ Mitigado 23-sep-2026: se agregó un paso explícito "Verificar sincronía package.json / package-lock.json" (`npm ci --dry-run`) al inicio de `frontend-build` en `ci-dev.yml`, `ci-qa.yml` y `ci-prod.yml`, que falla rápido con un mensaje claro si el lockfile queda desincronizado. Combinado con la protección de rama (punto anterior), un desync ya no puede llegar a `master` sin bloquear el merge.
+- **`develop`/`staging` desincronizadas de `master` por meses** (descubierto al validar el flujo de PR, ver `docs/reports/INSIGHTS_REPORT4.md` §6.5) — ✅ Resuelto 23-sep-2026: verificado que el contenido único de esas ramas eran duplicados ya presentes en `master`, y sincronizadas las 3 al mismo commit.
 
 ---
 
@@ -306,23 +307,25 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 **Tareas completadas:**
 - ✅ `backend/app/tests/test_predictions.py` — 9 pruebas de integración del flujo completo de predicción ML (`POST /patients/{id}/predict`), con modelo dummy vía `monkeypatch`.
 - ✅ `frontend/e2e/` — 7 specs E2E con Playwright: login (éxito/fallo), pacientes (listado, crear, cancelar), predicciones (carga, ejecución).
-- ✅ `backend/tests/load/k6_load_test.js` — script de carga con k6: rampa 0→200 usuarios concurrentes, thresholds `p95<200ms` y `error rate<1%`.
-- ✅ 4 bugs críticos encontrados y corregidos: crash 500 en `/users/login` con body inválido (`FormData` no serializable), paciente con soft-delete seguía accesible por ID (`crud.get_patient` no filtraba `is_active`), rutas incorrectas en smoke tests de `ci-qa.yml` (`/api/v1/...` inexistente) + `PLAYWRIGHT_BASE_URL` mal configurado, y `package-lock.json` desincronizado que rompió 6+ deploys de frontend silenciosamente.
-- ✅ Causa raíz del bottleneck de carga confirmada en código: 1 worker de Uvicorn + pool SQLAlchemy de 30 conexiones + servicio real en tier Starter/Basic (el Pro pagado es del workspace, no del cómputo del servicio). Plan de escalado con pricing real de Render documentado en `docs/test-report.md` §4.
+- ✅ `backend/tests/load/k6_load_test.js` — script de carga con k6: rampa 0→30 usuarios concurrentes *(ajustado el 23-sep-2026 al límite real del pool de conexiones; ejecutado originalmente a 200 VUs el 18-sep-2026)*, thresholds `p95<200ms` y `error rate<1%`.
+- ✅ 4 bugs críticos encontrados y corregidos: crash 500 en `/users/login` con body inválido (`FormData` no serializable), paciente con soft-delete seguía accesible por ID (`crud.get_patient` no filtraba `is_active`), rutas incorrectas en smoke tests de `ci-qa.yml` (`/api/v1/...` inexistente) + `PLAYWRIGHT_BASE_URL` mal configurado, y `package-lock.json` desincronizado que rompió 6+ deploys de frontend silenciosamente. Este último bug quedó **mitigado con un check de CI dedicado** (`npm ci --dry-run` en `frontend-build`, ver §Riesgos de proceso resueltos) y **blindado por la protección de rama** activada el 23-sep-2026.
+- ✅ Causa raíz del bottleneck de carga confirmada en código y **refinada el 23-sep-2026**: no es solo el pool de 30 conexiones (a 30 VUs exactos, sin saturar el pool, `p95` sigue en 17.04s) — el limitante dominante es la **CPU fraccional del tier Starter (0.5 CPU)**, agravada por el costo computacional de `bcrypt` en el login. Detalle en `docs/test-report.md` §4 y §4.1.
 - ✅ Reporte documentado en `docs/test-report.md`.
 
 **Criterios de Aceptación:**
 - ✅ Pruebas automatizadas de integración pasan al 100% (44/44 backend).
-- ❌ API responde en menos de 200ms bajo carga simulada (200 usuarios) — **ejecutado 18 Sep 2026 contra QA: p95 real = 54.6s, no cumple.** Ver hallazgo y recomendaciones en `docs/test-report.md` §4. Pasa a backlog técnico (escalado de infraestructura), no bloquea el cierre de esta HU.
+- ❌ API responde en menos de 200ms bajo carga simulada — **no cumple ni a 200 VUs (18-sep, p95=54.6s) ni a 30 VUs (23-sep, p95=17.04s, límite real del pool).** Ver hallazgo y recomendaciones en `docs/test-report.md` §4 y §4.1. **Decisión final (23-sep-2026): no se escalará la infraestructura de Render por ahora — riesgo aceptado** (ver DEUDA-01 en Momento 3, ahora cerrado). No bloquea el cierre de esta HU.
 
 **Hecho (ya no pendiente):**
 1. ✅ Prueba de carga con **200 usuarios concurrentes** ejecutada contra QA (`hab-backend-qa.onrender.com`), 18 Sep 2026.
 2. ✅ `docs/reports/INSIGHTS_REPORT3.md` generado con el estado actual del proyecto.
 3. ✅ `docs/reports/PROJECT_STATUS_M2.md` generado — Estado del Proyecto para Momento Integrador II posterior a la prueba de carga.
+4. ✅ Prueba de carga repetida a **30 usuarios concurrentes** (límite real del pool) contra QA, 23-sep-2026 — confirma que la CPU, no el pool, es el limitante dominante.
+5. ✅ `docs/reports/INSIGHTS_REPORT4.md` generado — cierre de DEUDA-01, activación de flujo de PR/protección de rama, check de CI de lockfile, sincronización de ramas develop/staging/master.
 
 **DoD:** Reporte de pruebas (`docs/test-report.md`), corrección de bugs críticos.  
 **Estimación:** 8 puntos.  
-**Estado:** ✅ Completado — ver detalle completo en `docs/test-report.md`. Hallazgo de rendimiento bajo carga documentado como item de backlog tecnico (no bloqueante).
+**Estado:** ✅ Completado — ver detalle completo en `docs/test-report.md`. Hallazgo de rendimiento bajo carga **cerrado** con decisión explícita de aceptar el riesgo (ver DEUDA-01), sin escalar infraestructura por ahora.
 
 ---
 
