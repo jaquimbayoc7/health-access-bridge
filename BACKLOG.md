@@ -3,7 +3,7 @@
 **Proyecto:** Health Access Bridge  
 **Metodología:** SCRUM  
 **Duración Total:** 27 Semanas  
-**Última actualización:** Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada)
+**Última actualización:** Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada) · DEUDA-01 en progreso (prueba a 30 VUs ejecutada 23-sep-2026)
 
 ---
 
@@ -11,11 +11,11 @@
 
 | ✅ Done | 🟡 En Progreso | 📋 Backlog |
 |---------|---------------|-----------|
-| EPICA-01 Estructuración y Diseño | — | EPICA-02 Funcionalidades Core |
+| EPICA-01 Estructuración y Diseño | DEUDA-01 Escalado de Rendimiento API (ver §5 Release Plan) | EPICA-03 IA Generativa y Cierre |
 | HU-01 Autenticación y Roles (8 pts) | — | EPICA-03 IA Generativa y Cierre |
-| HU-02 Registro y Precarga de Pacientes (13 pts) | — | EPICA-03 IA Generativa y Cierre |
-| HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | DEUDA-01 Escalado de Rendimiento API (ver §5 Release Plan) |
-| HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | HU-07 Servidor Local con LLM Ajustado para Códigos ICF (21 pts) |
+| HU-02 Registro y Precarga de Pacientes (13 pts) | — | HU-07 Servidor Local con LLM Ajustado para Códigos ICF (21 pts) |
+| HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | — |
+| HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | — |
 | — | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
 | [#14 HU-11](https://github.com/jaquimbayoc7/health-access-bridge/issues/14) Pruebas Smoke en Producción (3 pts) | — | HU-09 Pruebas Completas y Feedback (8 pts) |
 | [#15 HU-12](https://github.com/jaquimbayoc7/health-access-bridge/issues/15) Pruebas de Integración Backend (5 pts) | — | HU-10 Despliegue Final y Manuales (5 pts) |
@@ -329,22 +329,24 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 - **Para** que el servidor LLM local de HU-07 no agrave una API que ya no cumple el umbral de latencia.
 
 **Detalles:**
-- **Hallazgo:** prueba de carga de 200 usuarios concurrentes ejecutada el 18-sep-2026 contra QA — `p95` real = 54.6s (umbral definido: <200ms). Tasa de error 0.98% (sí cumple <1%). Causa raíz: 1 worker de Uvicorn + pool SQLAlchemy de 30 conexiones + servicio en tier Starter/Basic de Render. Detalle completo en `docs/test-report.md` §4.
+- **Hallazgo inicial:** prueba de carga de 200 usuarios concurrentes ejecutada el 18-sep-2026 contra QA — `p95` real = 54.6s (umbral definido: <200ms). Tasa de error 0.98% (sí cumple <1%). Causa raíz atribuida a: 1 worker de Uvicorn + pool SQLAlchemy de 30 conexiones + servicio en tier Starter/Basic de Render. Detalle completo en `docs/test-report.md` §4.
+- **Hallazgo refinado (23-sep-2026):** se repitió la prueba igualando la concurrencia al límite real del pool (30 VUs, ver `docs/test-report.md` §4.1). Resultado: 0% de errores y `p95` mejora a 17.04s (vs. 54.6s), pero **sigue sin cumplir <200ms** incluso sin saturar el pool. Esto descarta al pool de conexiones como única causa raíz — el cuello de botella dominante es la **CPU fraccional del tier Starter (0.5 CPU)**, agravado por el costo computacional de `bcrypt` (12 rounds) en `POST /users/login`, que compite por esa CPU compartida con el resto de requests síncronos (incluso `GET /health`, sin BD, degrada a p95=592ms bajo la misma carga).
 - **Origen:** descubierto durante HU-06 (Sprint 7), pasado a este ítem independiente de backlog para no bloquear el cierre de HU-06.
 
 **Criterios de Aceptación:**
-- Ajustar `--workers` de Uvicorn y `pool_size`/`max_overflow` de SQLAlchemy.
-- Evaluar upgrade de Web Service (Starter → Pro) y de PostgreSQL (Basic → Pro-8gb) según presupuesto disponible.
-- Repetir la prueba de carga de 200 usuarios concurrentes y confirmar `p95 < 200ms`.
+- Ajustar `--workers` de Uvicorn y `pool_size`/`max_overflow` de SQLAlchemy (mejora concurrencia, no resuelve el cuello de CPU).
+- Evaluar upgrade de Web Service (Starter → Pro, más CPU) como acción prioritaria dado que el cuello de botella es de cómputo, no solo de conexiones.
+- Repetir la prueba de carga (30 VUs primero, luego 200 VUs) y confirmar `p95 < 200ms`.
 
 **Tareas:**
-- Ajustar configuración de workers/pool (costo $0).
-- Documentar decisión de upgrade de plan Render (costo real: ver `docs/reports/RELEASE_PLAN.md` §5).
-- Repetir prueba de carga k6 y comparar contra baseline de `docs/test-report.md`.
+- ✅ Ajustar y repetir la prueba de carga a 30 VUs (límite del pool) — hecho 23-sep-2026, confirma que la CPU (no el pool) es el limitante dominante.
+- Ajustar configuración de workers/pool (costo $0) — pendiente, mejora esperada menor dado el hallazgo de CPU.
+- Documentar decisión de upgrade de plan Render (costo real: ver `docs/reports/RELEASE_PLAN.md` §5), priorizando CPU del Web Service.
+- Repetir prueba de carga k6 (30 y 200 VUs) tras el upgrade y comparar contra baseline de `docs/test-report.md`.
 
 **DoD:** Prueba de carga repetida con `p95 < 200ms` documentada, o decisión explícita de aceptar el riesgo con justificación de costo/beneficio.
 **Estimación:** 5 puntos (spike + ajuste de configuración; no incluye el costo recurrente de infraestructura, que es una decisión de negocio, no de esfuerzo de desarrollo).
-**Estado:** 📋 Backlog — priorizado antes de HU-07 (ver `docs/reports/RELEASE_PLAN.md` §5, riesgo confirmado).
+**Estado:** � En Progreso — prueba de línea base a 30 VUs completada (23-sep-2026); pendiente decisión de upgrade de infraestructura y prueba de confirmación. Sigue priorizado antes de HU-07 (ver `docs/reports/RELEASE_PLAN.md` §5, riesgo confirmado).
 
 ---
 

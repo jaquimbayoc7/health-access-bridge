@@ -192,6 +192,39 @@ Con 0.5 CPU, 1 worker y un pool de 30 conexiones, 200 requests concurrentes gene
 
 ---
 
+### 4.1 Prueba ajustada a 30 usuarios concurrentes (DEUDA-01) — EJECUTADA 23 Sep 2026
+
+**Motivación:** probar con 200 VUs contra un pool de solo 30 conexiones no mide el rendimiento del API — mide la saturación inmediata de la cola de conexiones. Se repitió la prueba con una rampa de 0→30 VUs (`ramp_to_30_vus` en `k6_load_test.js`), igualando el número de usuarios concurrentes a la capacidad máxima real del pool (`pool_size=10 + max_overflow=20 = 30`), para evaluar el rendimiento dentro de lo que la infraestructura actual sí soporta.
+
+**Ejecutada:** 23 Sep 2026, contra `https://hab-backend-qa.onrender.com` (autorización explícita) · Duración: 3m01s · rampa 0→30 VUs (10→20→30, sostenido ~1m30s, bajada)
+
+| Métrica | Resultado (30 VUs) | Resultado previo (200 VUs) | Umbral | Estado |
+|---|---|---|---|---|
+| `http_req_duration` p95 | **17.04 s** | 54.6 s | < 200 ms | ❌ Sigue sin cumplir, pero **68% mejor** |
+| `http_req_duration` avg | 3.61 s | 23.4 s | — | — |
+| `http_req_failed` | **0.00%** (0/939) | 0.98% | < 1% | ✅ Cumple |
+| Iteraciones completadas / interrumpidas | 313 / 0 | 279 / 140 | — | ✅ Sin interrupciones (antes 140 sí se interrumpían por timeout) |
+
+Latencia por endpoint (avg / p95):
+
+| Endpoint | Avg | p95 |
+|---|---|---|
+| `GET /health` (sin BD, sin auth) | 304 ms | 592 ms |
+| `POST /users/login` | 9.75 s | 20.8 s |
+| `GET /patients/` (autenticado) | 795 ms | 1.73 s |
+
+**Hallazgo revisado — el pool de conexiones NO es la única causa raíz:**
+
+Aun estando exactamente al límite del pool (30 VUs = 30 conexiones), sin cola de espera por conexiones DB y con 0% de errores, el sistema **sigue sin cumplir <200ms**, y `/users/login` sigue siendo ~35x más lento que `/health`. Esto apunta a un segundo cuello de botella, independiente del pool:
+
+- `POST /users/login` usa `bcrypt` vía `passlib` (`backend/app/auth.py`) con el costo por defecto (12 rounds), que es intencionalmente lento y **consume CPU real** (no I/O) por cada verificación de contraseña.
+- El endpoint es `def` (síncrono), por lo que FastAPI lo ejecuta en el threadpool de Starlette — no bloquea el event loop por sí solo — pero con el Web Service en tier **Starter (0.5 CPU)**, 30 verificaciones de bcrypt compitiendo por media CPU se serializan de facto, sin importar cuántos hilos estén disponibles.
+- Esto también explica que `GET /health` (sin BD, sin bcrypt, endpoint trivial) tenga p95=592ms bajo esta misma carga: compite por la misma CPU compartida y limitada con el resto de requests síncronos en el threadpool.
+
+**Conclusión:** el pool de 30 conexiones evita que el sistema colapse por completo (como sí ocurría a 200 VUs), pero **la CPU fraccional del tier Starter (0.5 CPU) es el limitante dominante**, agravado por el costo computacional de `bcrypt` en el login. El plan de escalado de la sección anterior (pasos 1-5) sigue siendo válido, pero el paso de **subir el tier de CPU del Web Service (paso 3)** es más determinante que los pasos de `--workers`/pool (pasos 1-2) para este caso concreto, dado que el cuello de botella es de cómputo, no solo de concurrencia de conexiones.
+
+---
+
 ## 5. Estado de criterios de aceptación (HU-06)
 
 | Criterio | Estado |
