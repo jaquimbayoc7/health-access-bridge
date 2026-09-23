@@ -3,7 +3,13 @@
 **Proyecto:** Health Access Bridge  
 **Metodología:** SCRUM  
 **Duración Total:** 27 Semanas  
-**Última actualización:** Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada) · DEUDA-01 en progreso (prueba a 30 VUs ejecutada 23-sep-2026)
+**Última actualización:** Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada) · DEUDA-01 en progreso (prueba a 30 VUs ejecutada 23-sep-2026) · Protección de rama y flujo de PR activados (23-sep-2026)
+
+---
+
+## Riesgos de proceso resueltos
+
+- **Sin PRs / code review** (detectado en `docs/reports/INSIGHTS_REPORT3.md` §9, ítem 10) — ✅ Resuelto 23-sep-2026: se activó protección de rama en GitHub para `develop`, `staging` y `master` (requiere Pull Request + checks de CI en verde — `Backend Tests` y `Frontend Build` del ambiente correspondiente — antes de mergear; sin forzar un segundo revisor dado que hay un único desarrollador). Se agregó plantilla de PR (`.github/PULL_REQUEST_TEMPLATE.md`). Configuración reproducible en `.github/scripts/branch-protection-*.json`.
 
 ---
 
@@ -346,7 +352,7 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 
 **DoD:** Prueba de carga repetida con `p95 < 200ms` documentada, o decisión explícita de aceptar el riesgo con justificación de costo/beneficio.
 **Estimación:** 5 puntos (spike + ajuste de configuración; no incluye el costo recurrente de infraestructura, que es una decisión de negocio, no de esfuerzo de desarrollo).
-**Estado:** � En Progreso — prueba de línea base a 30 VUs completada (23-sep-2026); pendiente decisión de upgrade de infraestructura y prueba de confirmación. Sigue priorizado antes de HU-07 (ver `docs/reports/RELEASE_PLAN.md` §5, riesgo confirmado).
+**Estado:** 🟡 En Progreso — prueba de línea base a 30 VUs completada (23-sep-2026); pendiente decisión de upgrade de infraestructura y prueba de confirmación. Sigue priorizado antes de HU-07 (ver `docs/reports/RELEASE_PLAN.md` §5, riesgo confirmado).
 
 ---
 
