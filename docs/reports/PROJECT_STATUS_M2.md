@@ -147,5 +147,6 @@ El backend de QA (`hab-backend-qa.onrender.com`) **no soporta 200 usuarios concu
 - [SCRUM Board](https://github.com/users/jaquimbayoc7/projects/1)
 - [Backlog](../../BACKLOG.md)
 - [Insight Report 3](./INSIGHTS_REPORT3.md)
+- [Insight Report 4](./INSIGHTS_REPORT4.md) — cierre de DEUDA-01, flujo de PR/protección de rama, check de CI de lockfile
 - [Reporte de Pruebas HU-06](../test-report.md)
 - [Estado del Proyecto — Momento 1](./PROJECT_STATUS.md)
