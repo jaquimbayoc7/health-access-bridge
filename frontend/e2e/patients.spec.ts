@@ -11,13 +11,17 @@ test.describe('Pacientes', () => {
 
   test('la lista de pacientes carga correctamente', async ({ page }) => {
     await page.goto('/patients');
-    await expect(page.getByRole('heading', { name: /pacientes|patients/i })).toBeVisible();
+    // Nivel 1 para no matchear tambien el heading "No patients yet" del estado vacio,
+    // que tambien contiene la palabra "patients" (bug reproducido en QA con lista vacia).
+    await expect(page.getByRole('heading', { name: /pacientes|patients/i, level: 1 })).toBeVisible();
   });
 
   test('el diálogo de creación de paciente abre y cierra', async ({ page }) => {
     await page.goto('/patients');
 
-    await page.getByRole('button', { name: /agregar paciente|add patient/i }).click();
+    // .first(): con la lista vacia existen 2 botones "Add Patient" (header + estado vacio),
+    // ambos abren el mismo dialogo.
+    await page.getByRole('button', { name: /agregar paciente|add patient/i }).first().click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await expect(page.locator('#nombre_apellidos')).toBeVisible();
     await expect(page.locator('#numero_documento')).toBeVisible();
@@ -30,7 +34,7 @@ test.describe('Pacientes', () => {
     await page.goto('/patients');
     const documentNumber = `E2E${Date.now()}`;
 
-    await page.getByRole('button', { name: /agregar paciente|add patient/i }).click();
+    await page.getByRole('button', { name: /agregar paciente|add patient/i }).first().click();
 
     await page.locator('#nombre_apellidos').fill('Paciente Prueba E2E');
     await page.locator('#numero_documento').fill(documentNumber);
