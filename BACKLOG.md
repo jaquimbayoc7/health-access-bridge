@@ -9,7 +9,8 @@
 
 ## Riesgos de proceso resueltos
 
-- **Sin PRs / code review** (detectado en `docs/reports/INSIGHTS_REPORT3.md` §9, ítem 10) — ✅ Resuelto 23-sep-2026: se activó protección de rama en GitHub para `develop`, `staging` y `master` (requiere Pull Request + checks de CI en verde — `Backend Tests` y `Frontend Build` del ambiente correspondiente — antes de mergear; sin forzar un segundo revisor dado que hay un único desarrollador). Se agregó plantilla de PR (`.github/PULL_REQUEST_TEMPLATE.md`). Configuración reproducible en `.github/scripts/branch-protection-*.json`.
+- **Sin PRs / code review** (detectado en `docs/reports/INSIGHTS_REPORT3.md` §9, ítem 10) — ✅ Resuelto 23-sep-2026: se activó protección de rama en GitHub para `develop`, `staging` y `master` (requiere Pull Request + checks de CI en verde — `Backend Tests` y `Frontend Build` del ambiente correspondiente — antes de mergear; sin forzar un segundo revisor dado que hay un único desarrollador). Se agregó plantilla de PR (`.github/PULL_REQUEST_TEMPLATE.md`). Configuración reproducible en `.github/scripts/branch-protection-*.json`. Validado end-to-end con [PR #18](https://github.com/jaquimbayoc7/health-access-bridge/pull/18).
+- **`package-lock.json` desincronizado rompió deploys silenciosamente** (bug #4 de HU-06, ver `docs/reports/INSIGHTS_REPORT3.md` §8) — ✅ Mitigado 23-sep-2026: se agregó un paso explícito "Verificar sincronía package.json / package-lock.json" (`npm ci --dry-run`) al inicio de `frontend-build` en `ci-dev.yml`, `ci-qa.yml` y `ci-prod.yml`, que falla rápido con un mensaje claro si el lockfile queda desincronizado. Combinado con la protección de rama (punto anterior), un desync ya no puede llegar a `master` sin bloquear el merge.
 
 ---
 
@@ -329,7 +330,7 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 
 ### Sprint 8: Deuda Técnica de Rendimiento (previo a Sprint 8 & 9)
 
-#### DEUDA-01: Escalado de Rendimiento de la API antes de sumar carga del LLM 📋 Backlog
+#### DEUDA-01: Escalado de Rendimiento de la API antes de sumar carga del LLM ✅ Cerrado (riesgo aceptado)
 - **Como** equipo del proyecto
 - **Deseo** resolver el cuello de botella de rendimiento detectado en producción/QA
 - **Para** que el servidor LLM local de HU-07 no agrave una API que ya no cumple el umbral de latencia.
@@ -352,7 +353,8 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 
 **DoD:** Prueba de carga repetida con `p95 < 200ms` documentada, o decisión explícita de aceptar el riesgo con justificación de costo/beneficio.
 **Estimación:** 5 puntos (spike + ajuste de configuración; no incluye el costo recurrente de infraestructura, que es una decisión de negocio, no de esfuerzo de desarrollo).
-**Estado:** 🟡 En Progreso — prueba de línea base a 30 VUs completada (23-sep-2026); pendiente decisión de upgrade de infraestructura y prueba de confirmación. Sigue priorizado antes de HU-07 (ver `docs/reports/RELEASE_PLAN.md` §5, riesgo confirmado).
+**Decisión final (23-sep-2026):** el equipo decide **no** escalar la infraestructura de Render (Web Service ni PostgreSQL) por ahora — se acepta el riesgo de latencia degradada bajo alta concurrencia (>30 usuarios simultáneos) como limitación conocida y documentada, dado que HU-07 se reorienta a un servidor local propio con Ollama (ver HU-07 más abajo), lo cual reduce la urgencia de escalar la API en la nube: el cómputo pesado del LLM ya no correrá sobre el mismo Web Service de Render.
+**Estado:** ✅ Cerrado — prueba de línea base a 30 VUs completada y documentada (23-sep-2026); causa raíz identificada (CPU fraccional + bcrypt); decisión explícita de no invertir en upgrade de infraestructura por ahora. Riesgo residual aceptado y documentado en `docs/test-report.md` §4.1.
 
 ---
 
@@ -389,6 +391,7 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 
 **DoD:** Servidor local operativo con el LLM ajustado, sugerencia de códigos ICF/CIF funcionando con datos reales y justificación del modelo, documentación de instalación y ajuste.  
 **Estimación:** 21 puntos.
+**Decisión de alcance confirmada (23-sep-2026):** se usará **Ollama** sobre un servidor físico ya disponible (no se comprará hardware nuevo), con un modelo open-weight gratuito (a seleccionar según capacidad del servidor) ajustado vía RAG/fine-tuning con el estándar CIF-Colombia. Esta decisión reduce el riesgo de presupuesto de hardware señalado en `docs/reports/INSIGHTS_REPORT3.md` §11 (punto 5) y desacopla el cómputo del LLM del Web Service de Render (ver nota de DEUDA-01 arriba).
 
 ---
 
