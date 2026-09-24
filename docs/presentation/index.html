@@ -54,6 +54,7 @@ html{scroll-behavior:smooth}
     <div class="hidden md:flex items-center gap-5 text-sm text-slate-600 font-medium">
       <a href="#contexto" class="hover:text-primary transition-colors">Contexto</a>
       <a href="#stack" class="hover:text-primary transition-colors">Stack</a>
+      <a href="#cicd" class="hover:text-primary transition-colors">CI/CD</a>
       <a href="#historias" class="hover:text-primary transition-colors">HUs</a>
       <a href="#testing" class="hover:text-primary transition-colors">Testing</a>
       <a href="#casos" class="hover:text-primary transition-colors">Casos</a>
@@ -110,25 +111,27 @@ html{scroll-behavior:smooth}
         <div class="text-4xl font-bold">87 <span class="text-blue-200 text-xl font-normal">/ 134 pts</span></div>
         <div class="text-blue-200 text-sm mt-1">Story Points completados — Momento 1 y 2</div>
         <div class="mt-3 flex gap-2 flex-wrap text-xs">
-          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">9 HUs completadas</span>
+          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">10 HUs + 2 épicas completadas</span>
           <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">Momento 2 100% ✅</span>
           <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">4 bugs críticos corregidos</span>
+          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">DEUDA-01 cerrada</span>
         </div>
       </div>
       <div class="bg-white rounded-xl p-4 border border-slate-200 card">
-        <div class="text-2xl font-bold text-slate-900">53</div>
+        <div class="text-2xl font-bold text-slate-900">62</div>
         <div class="text-slate-500 text-xs mt-0.5">Tests automatizados</div>
         <div class="flex gap-1 mt-2 flex-wrap text-xs">
-          <span class="bg-green-100 text-green-700 px-1.5 py-0.5 rounded">35 backend</span>
+          <span class="bg-green-100 text-green-700 px-1.5 py-0.5 rounded">44 backend</span>
           <span class="bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">16 frontend</span>
           <span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded">2 smoke</span>
+          <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">7 E2E</span>
         </div>
       </div>
       <div class="bg-white rounded-xl p-4 border border-slate-200 card">
-        <div class="text-2xl font-bold text-slate-900">128</div>
+        <div class="text-2xl font-bold text-slate-900">150</div>
         <div class="text-slate-500 text-xs mt-0.5">Commits al repo</div>
-        <div class="text-xs text-slate-400 mt-2">17 días activos</div>
-        <div class="text-xs text-green-600 font-medium">26 Feb – 18 Sep</div>
+        <div class="text-xs text-slate-400 mt-2">18 días activos</div>
+        <div class="text-xs text-green-600 font-medium">26 Feb – 24 Sep</div>
       </div>
       <div class="bg-white rounded-xl p-4 border border-slate-200 card">
         <div class="text-2xl font-bold text-slate-900">3</div>
@@ -276,6 +279,120 @@ html{scroll-behavior:smooth}
           <text x="470" y="455" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="white" font-weight="700">🖥️ Servidor LLM On-Premise</text>
           <text x="470" y="469" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#CBD5E1">Llama 3 / Mistral · self-hosted (Ollama)</text>
           <text x="470" y="483" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#CBD5E1">Interpreta códigos CIF D1-D6 → lenguaje clínico</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLUJO CI/CD -->
+<section id="cicd" class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl font-bold mb-2 section-title">Flujo CI/CD</h2>
+    <p class="text-slate-500 text-sm mb-8 mt-4">3 ramas protegidas (develop · staging · master) · 3 workflows de GitHub Actions · despliegue automático a Render — activado 23-sep-2026</p>
+    <div class="grid md:grid-cols-4 gap-3 mb-8 text-center text-xs">
+      <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 card"><div class="text-2xl font-bold text-primary">3</div><div class="text-slate-500 mt-1">Ramas protegidas</div></div>
+      <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 card"><div class="text-2xl font-bold text-primary">3</div><div class="text-slate-500 mt-1">Workflows (dev/qa/prod)</div></div>
+      <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 card"><div class="text-2xl font-bold text-green-600">7</div><div class="text-slate-500 mt-1">PRs mergeados</div></div>
+      <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 card"><div class="text-2xl font-bold text-cyan-600">0</div><div class="text-slate-500 mt-1">Push directo permitido</div></div>
+    </div>
+    <div class="bg-slate-50 rounded-2xl border border-slate-200 p-6">
+      <h3 class="font-semibold text-slate-800 mb-1 text-center">Ramas, Pull Requests y GitHub Actions</h3>
+      <p class="text-slate-400 text-xs text-center mb-5">Cada rama exige Pull Request + checks de CI en verde antes de mergear (branch protection, sin excepción salvo bypass explícito de admin)</p>
+      <div class="overflow-x-auto">
+        <svg viewBox="0 0 980 470" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-5xl mx-auto" style="min-width:700px">
+          <defs>
+            <marker id="car" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#94A3B8"/></marker>
+          </defs>
+
+          <!-- Feature branch (origen del trabajo) -->
+          <rect x="20" y="8" width="300" height="34" rx="7" fill="#F1F5F9" stroke="#94A3B8" stroke-dasharray="5,3"/>
+          <text x="170" y="29" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#475569" font-weight="600">🌿 rama feature/fix (local)</text>
+          <line x1="170" y1="42" x2="170" y2="66" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#car)"/>
+          <rect x="122" y="47" width="96" height="13" rx="3" fill="white"/>
+          <text x="170" y="57" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#475569">Pull Request</text>
+
+          <!-- Branch boxes -->
+          <rect x="20" y="70" width="300" height="52" rx="8" fill="#2563EB" stroke="#1D4ED8"/>
+          <text x="170" y="91" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="white" font-weight="700">🔒 develop</text>
+          <text x="170" y="107" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#BFDBFE">Integración diaria · PR requerido</text>
+
+          <rect x="340" y="70" width="300" height="52" rx="8" fill="#D97706" stroke="#B45309"/>
+          <text x="490" y="91" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="white" font-weight="700">🔒 staging</text>
+          <text x="490" y="107" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#FEF3C7">Candidato QA/Prod · PR requerido</text>
+
+          <rect x="660" y="70" width="300" height="52" rx="8" fill="#16A34A" stroke="#15803D"/>
+          <text x="810" y="91" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="white" font-weight="700">🔒 master</text>
+          <text x="810" y="107" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#BBF7D0">Producción · PR requerido</text>
+
+          <!-- Horizontal PR arrows between branches -->
+          <line x1="320" y1="96" x2="338" y2="96" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#car)"/>
+          <rect x="283" y="80" width="74" height="13" rx="3" fill="white" stroke="#E2E8F0"/>
+          <text x="320" y="90" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#475569">Pull Request</text>
+
+          <line x1="640" y1="96" x2="658" y2="96" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#car)"/>
+          <rect x="603" y="80" width="74" height="13" rx="3" fill="white" stroke="#E2E8F0"/>
+          <text x="640" y="90" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#475569">Pull Request</text>
+
+          <!-- Arrows down to CI workflows -->
+          <line x1="170" y1="122" x2="170" y2="148" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#car)"/>
+          <line x1="490" y1="122" x2="490" y2="148" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#car)"/>
+          <line x1="810" y1="122" x2="810" y2="148" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#car)"/>
+
+          <!-- CI workflow boxes -->
+          <rect x="20" y="154" width="300" height="128" rx="8" fill="#EFF6FF" stroke="#BFDBFE"/>
+          <text x="170" y="172" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#1D4ED8" font-weight="700">⚙️ ci-dev.yml</text>
+          <text x="170" y="188" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#1E40AF">✓ Verificar sincronía package-lock</text>
+          <text x="170" y="202" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#1E40AF">✓ Backend Tests (Dev) — pytest</text>
+          <text x="170" y="216" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#1E40AF">✓ Frontend Build (Dev) — Vitest</text>
+          <text x="170" y="230" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#1E40AF">✓ Notify Dev Ready</text>
+          <text x="170" y="250" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#3B82F6" font-style="italic">2 checks requeridos por branch protection</text>
+          <text x="170" y="264" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#64748B">Trigger: push / PR → develop</text>
+
+          <rect x="340" y="154" width="300" height="128" rx="8" fill="#FFFBEB" stroke="#FDE68A"/>
+          <text x="490" y="172" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#B45309" font-weight="700">⚙️ ci-qa.yml</text>
+          <text x="490" y="188" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#92400E">✓ Backend Tests (QA) + coverage</text>
+          <text x="490" y="202" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#92400E">✓ Frontend Build (QA) + lockfile</text>
+          <text x="490" y="216" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#92400E">✓ Smoke Tests + E2E (Playwright)</text>
+          <text x="490" y="230" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#92400E">🔐 Approval Gate → Producción</text>
+          <text x="490" y="250" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#D97706" font-style="italic">2 checks requeridos por branch protection</text>
+          <text x="490" y="264" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#64748B">Trigger: push / PR → staging</text>
+
+          <rect x="660" y="154" width="300" height="128" rx="8" fill="#F0FDF4" stroke="#BBF7D0"/>
+          <text x="810" y="172" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#15803D" font-weight="700">⚙️ ci-prod.yml</text>
+          <text x="810" y="188" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#166534">✓ Backend Tests (Prod) — pytest</text>
+          <text x="810" y="202" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#166534">✓ Frontend Build (Prod) + lockfile</text>
+          <text x="810" y="216" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#166534">🔐 Approval Gate → Deploy Prod</text>
+          <text x="810" y="230" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#166534">✓ Smoke Tests — Render PROD</text>
+          <text x="810" y="250" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#16A34A" font-style="italic">2 checks requeridos por branch protection</text>
+          <text x="810" y="264" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="#64748B">Trigger: push / PR → master</text>
+
+          <!-- Arrows down to Render targets -->
+          <line x1="170" y1="282" x2="170" y2="308" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#car)"/>
+          <line x1="490" y1="282" x2="490" y2="308" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#car)"/>
+          <line x1="810" y1="282" x2="810" y2="308" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#car)"/>
+
+          <!-- Render deploy targets -->
+          <rect x="20" y="314" width="300" height="60" rx="8" fill="#1E293B" stroke="#334155"/>
+          <text x="170" y="333" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="white" font-weight="700">☁️ Render — Ambiente DEV</text>
+          <text x="170" y="347" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#CBD5E1">hab-backend-dev · hab-frontend-dev</text>
+          <text x="170" y="361" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#CBD5E1">Auto-deploy sin aprobación manual</text>
+
+          <rect x="340" y="314" width="300" height="60" rx="8" fill="#1E293B" stroke="#334155"/>
+          <text x="490" y="333" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="white" font-weight="700">☁️ Render — Ambiente QA</text>
+          <text x="490" y="347" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#CBD5E1">hab-backend-qa · hab-frontend-qa</text>
+          <text x="490" y="361" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#CBD5E1">Auto-deploy + gate manual a Prod</text>
+
+          <rect x="660" y="314" width="300" height="60" rx="8" fill="#1E293B" stroke="#334155"/>
+          <text x="810" y="333" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="white" font-weight="700">☁️ Render — Producción</text>
+          <text x="810" y="347" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#CBD5E1">hab-backend-szj1 · hab-frontend</text>
+          <text x="810" y="361" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#CBD5E1">Requiere Approval Gate previo</text>
+
+          <!-- Branch protection banner -->
+          <rect x="20" y="392" width="940" height="66" rx="8" fill="#F1F5F9" stroke="#94A3B8" stroke-dasharray="6,3"/>
+          <text x="490" y="412" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#334155" font-weight="700">🔒 Branch protection (activado 23-sep-2026, .github/scripts/branch-protection-*.json)</text>
+          <text x="490" y="428" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#475569">Pull Request obligatorio · 2 checks de CI en verde requeridos · sin force-push · sin borrar la rama</text>
+          <text x="490" y="443" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#64748B">required_approving_review_count=0 (único desarrollador) · enforce_admins=false (bypass de emergencia disponible)</text>
         </svg>
       </div>
     </div>
@@ -1006,34 +1123,35 @@ html{scroll-behavior:smooth}
 <section id="metricas" class="py-16">
   <div class="max-w-7xl mx-auto px-6">
     <h2 class="text-2xl font-bold mb-2 section-title">Métricas del Repositorio</h2>
-    <p class="text-slate-500 text-sm mb-10 mt-4">GitHub — 26 Feb – 18 Sep 2026</p>
+    <p class="text-slate-500 text-sm mb-10 mt-4">GitHub — 26 Feb – 24 Sep 2026</p>
     <div class="grid md:grid-cols-2 gap-8">
       <div class="bg-white rounded-xl border border-slate-200 p-6">
         <h3 class="font-semibold text-slate-700 mb-4 text-sm">Distribución de Lenguajes</h3>
         <div class="flex items-center gap-6">
           <div class="w-44 h-44 flex-shrink-0"><canvas id="langChart"></canvas></div>
           <div class="space-y-2 text-xs">
-            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-blue-500 flex-shrink-0"></div><span>TypeScript</span><span class="text-slate-400 ml-auto font-medium">81.3%</span></div>
-            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-green-500 flex-shrink-0"></div><span>Python</span><span class="text-slate-400 ml-auto font-medium">16.3%</span></div>
-            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-pink-400 flex-shrink-0"></div><span>CSS</span><span class="text-slate-400 ml-auto font-medium">1.0%</span></div>
-            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-yellow-400 flex-shrink-0"></div><span>Shell</span><span class="text-slate-400 ml-auto font-medium">0.7%</span></div>
-            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-slate-300 flex-shrink-0"></div><span>Otros</span><span class="text-slate-400 ml-auto font-medium">0.7%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-blue-500 flex-shrink-0"></div><span>TypeScript</span><span class="text-slate-400 ml-auto font-medium">79.4%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-green-500 flex-shrink-0"></div><span>Python</span><span class="text-slate-400 ml-auto font-medium">17.6%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-pink-400 flex-shrink-0"></div><span>CSS</span><span class="text-slate-400 ml-auto font-medium">0.9%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-yellow-400 flex-shrink-0"></div><span>Shell</span><span class="text-slate-400 ml-auto font-medium">0.6%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-slate-300 flex-shrink-0"></div><span>Otros (JS, HTML, Docker)</span><span class="text-slate-400 ml-auto font-medium">1.5%</span></div>
           </div>
         </div>
       </div>
       <div class="bg-white rounded-xl border border-slate-200 p-6">
         <h3 class="font-semibold text-slate-700 mb-4 text-sm">Actividad de Commits</h3>
         <div class="grid grid-cols-2 gap-3 mb-4 text-center text-xs">
-          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">128</div><div class="text-slate-500">Total commits</div></div>
-          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">17</div><div class="text-slate-500">Días activos</div></div>
-          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-green-600">11</div><div class="text-slate-500">Issues cerradas</div></div>
-          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-orange-500">17</div><div class="text-slate-500">Pico (17 Mar)</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">150</div><div class="text-slate-500">Total commits</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">18</div><div class="text-slate-500">Días activos</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-green-600">18</div><div class="text-slate-500">Issues + PRs cerrados</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-cyan-600">7</div><div class="text-slate-500">Pull Requests mergeados</div></div>
         </div>
         <div class="space-y-2 text-xs">
-          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">fix:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-red-400 h-2 rounded-full" style="width:33%"></div></div><span class="text-slate-400 w-6">42</span></div>
-          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">docs:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-blue-400 h-2 rounded-full" style="width:29%"></div></div><span class="text-slate-400 w-6">37</span></div>
-          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">feat:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-green-400 h-2 rounded-full" style="width:26%"></div></div><span class="text-slate-400 w-6">33</span></div>
-          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">chore:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-slate-400 h-2 rounded-full" style="width:7%"></div></div><span class="text-slate-400 w-6">9</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">fix:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-red-400 h-2 rounded-full" style="width:35%"></div></div><span class="text-slate-400 w-6">53</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">docs:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-blue-400 h-2 rounded-full" style="width:29%"></div></div><span class="text-slate-400 w-6">44</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">feat:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-green-400 h-2 rounded-full" style="width:25%"></div></div><span class="text-slate-400 w-6">37</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">chore:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-slate-400 h-2 rounded-full" style="width:7%"></div></div><span class="text-slate-400 w-6">10</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">ci:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-cyan-400 h-2 rounded-full" style="width:1%"></div></div><span class="text-slate-400 w-6">1</span></div>
         </div>
       </div>
     </div>
@@ -1726,7 +1844,7 @@ html{scroll-behavior:smooth}
     data: {
       labels: ['TypeScript','Python','CSS','Shell','Otros'],
       datasets: [{
-        data: [81.3, 16.3, 1.0, 0.7, 0.7],
+        data: [79.4, 17.6, 0.9, 0.6, 1.5],
         backgroundColor: ['#3B82F6','#22C55E','#EC4899','#EAB308','#CBD5E1'],
         borderWidth: 2, borderColor: '#fff'
       }]
