@@ -3,7 +3,7 @@
 **Proyecto:** Health Access Bridge  
 **Metodología:** SCRUM  
 **Duración Total:** 27 Semanas  
-**Última actualización:** Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada) · DEUDA-01 cerrada con riesgo aceptado (23-sep-2026) · Protección de rama y flujo de PR activados (23-sep-2026) · Ver [`docs/reports/INSIGHTS_REPORT4.md`](docs/reports/INSIGHTS_REPORT4.md) para el detalle completo de esta sesión.
+**Última actualización:** Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada) · DEUDA-01 cerrada con riesgo aceptado (23-sep-2026) · Protección de rama y flujo de PR activados (23-sep-2026) · Hallazgo post-cierre de flakiness E2E corregido y validado en CI (24-sep-2026) · Ver [`docs/reports/INSIGHTS_REPORT4.md`](docs/reports/INSIGHTS_REPORT4.md) para el detalle completo de esta sesión.
 
 ---
 
@@ -322,6 +322,7 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 3. ✅ `docs/reports/PROJECT_STATUS_M2.md` generado — Estado del Proyecto para Momento Integrador II posterior a la prueba de carga.
 4. ✅ Prueba de carga repetida a **30 usuarios concurrentes** (límite real del pool) contra QA, 23-sep-2026 — confirma que la CPU, no el pool, es el limitante dominante.
 5. ✅ `docs/reports/INSIGHTS_REPORT4.md` generado — cierre de DEUDA-01, activación de flujo de PR/protección de rama, check de CI de lockfile, sincronización de ramas develop/staging/master.
+6. ✅ **Hallazgo post-cierre (24-sep-2026):** suite E2E (`patients.spec.ts`) fallaba de forma intermitente en CI por un `OnboardingModal` global que compite por `role="dialog"` con los diálogos bajo prueba. Corregido deshabilitando el modal en `frontend/e2e/utils.ts` (Bug 5, ver `docs/test-report.md` §2 y §3.1); validado con 2 corridas completas y consecutivas del pipeline de QA — 7/7 specs sin reintentos.
 
 **DoD:** Reporte de pruebas (`docs/test-report.md`), corrección de bugs críticos.  
 **Estimación:** 8 puntos.  
