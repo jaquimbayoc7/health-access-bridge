@@ -28,6 +28,10 @@ test.describe('Predicciones', () => {
     await firstOption.click();
     await page.getByRole('button', { name: /ejecutar predicción|run prediction/i }).click();
 
-    await expect(page.getByText(/perfil de barreras|barrier profile|perfil \d/i)).toBeVisible({ timeout: 15000 });
+    // Se valida el toast de confirmación en vez de buscar el texto del perfil:
+    // el backend QA es real y compartido, y el historial acumula predicciones
+    // de otros pacientes con la misma descripción, lo que rompe el modo strict
+    // de Playwright si se busca ese texto en toda la página.
+    await expect(page.getByText(/predicción completada|prediction completed/i)).toBeVisible({ timeout: 15000 });
   });
 });
