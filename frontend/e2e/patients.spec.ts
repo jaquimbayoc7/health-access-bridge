@@ -51,7 +51,11 @@ test.describe('Pacientes', () => {
     await page.getByRole('button', { name: /guardar|save/i }).click();
     await createResponse;
 
-    await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 10000 });
-    await expect(page.getByText(documentNumber)).toBeVisible({ timeout: 10000 });
+    // El toast de éxito confirma que la creación se completó del lado del backend
+    // antes que el cierre del diálogo, que puede demorar por el re-render de la
+    // lista (el backend QA compartido acumula muchos pacientes de corridas previas).
+    await expect(page.getByText(/paciente creado|patient created/i)).toBeVisible({ timeout: 15000 });
+    await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 15000 });
+    await expect(page.getByText(documentNumber)).toBeVisible({ timeout: 15000 });
   });
 });
