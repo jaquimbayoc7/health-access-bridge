@@ -113,8 +113,9 @@ html{scroll-behavior:smooth}
         <div class="mt-3 flex gap-2 flex-wrap text-xs">
           <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">10 HUs + 2 épicas completadas</span>
           <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">Momento 2 100% ✅</span>
-          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">4 bugs críticos corregidos</span>
+          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">5 bugs críticos corregidos</span>
           <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">DEUDA-01 cerrada</span>
+          <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">E2E estabilizado 24-sep</span>
         </div>
       </div>
       <div class="bg-white rounded-xl p-4 border border-slate-200 card">
@@ -459,7 +460,7 @@ html{scroll-behavior:smooth}
       <div class="bg-white rounded-xl border-l-4 border-l-teal-400 border border-slate-200 p-4 card">
         <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-teal-100 text-teal-700 text-xs font-bold px-2 py-0.5 rounded">HU-06</span><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">✅</span></div><span class="text-xs text-slate-400">8 pts · S7</span></div>
         <h3 class="font-semibold text-slate-800 text-sm mb-2">Pruebas de Integración y Rendimiento</h3>
-        <ul class="text-xs text-slate-500 space-y-1"><li>• 9 tests de integración del flujo de predicción ML (44/44 total)</li><li>• 7 specs E2E con Playwright + carga k6 ejecutada (200 VUs y luego 30 VUs)</li><li>• 4 bugs críticos encontrados y corregidos (1 mitigado con check de CI)</li><li class="text-red-500">• ⚠️ Carga real: p95 = 54.6s (200 VUs) → 17.04s (30 VUs, límite del pool) — sigue sin cumplir &lt;200ms</li><li class="text-slate-400">• Causa raíz refinada: CPU fraccional (0.5 CPU) + bcrypt, no solo el pool. DEUDA-01 cerrada 23-sep: se acepta el riesgo, no se escala infra</li></ul>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• 9 tests de integración del flujo de predicción ML (44/44 total)</li><li>• 7 specs E2E con Playwright + carga k6 ejecutada (200 VUs y luego 30 VUs)</li><li>• 5 bugs críticos encontrados y corregidos (1 mitigado con check de CI, 1 hallado post-cierre)</li><li class="text-red-500">• ⚠️ Carga real: p95 = 54.6s (200 VUs) → 17.04s (30 VUs, límite del pool) — sigue sin cumplir &lt;200ms</li><li class="text-slate-400">• Causa raíz refinada: CPU fraccional (0.5 CPU) + bcrypt, no solo el pool. DEUDA-01 cerrada 23-sep: se acepta el riesgo, no se escala infra</li><li class="text-cyan-600">• 24-sep: flakiness intermitente en E2E (OnboardingModal vs. role="dialog") corregida — 7/7 specs validados en 2 corridas limpias de CI</li></ul>
         <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/6" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #6 →</a>
       </div>
       <!-- Velocity summary -->
@@ -1237,6 +1238,7 @@ html{scroll-behavior:smooth}
         </div>
         <div class="flex flex-wrap gap-1.5 text-xs">
           <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ DEUDA-01 Rendimiento API — cerrada 23-sep (riesgo aceptado)</span>
+          <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ E2E estabilizado — flakiness de OnboardingModal corregida 24-sep</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-07 Servidor Local + LLM ICF con Ollama (21)</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-08 Dashboard+ (13)</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-09 UAT (8)</span>
@@ -1445,20 +1447,22 @@ html{scroll-behavior:smooth}
           <span class="text-green-600 text-lg">✅</span>
         </div>
         <div class="space-y-2 text-xs text-slate-600 mb-4">
-          <div class="flex justify-between"><span>Fecha</span><span class="font-mono">23-sep</span></div>
+          <div class="flex justify-between"><span>Fecha</span><span class="font-mono">23–24-sep</span></div>
           <div class="flex justify-between"><span>SP de producto</span><span class="font-semibold">0 (deuda técnica)</span></div>
-          <div class="flex justify-between"><span>Alcance</span><span class="font-semibold text-cyan-700">DEUDA-01 + proceso</span></div>
+          <div class="flex justify-between"><span>Alcance</span><span class="font-semibold text-cyan-700">DEUDA-01 + proceso + QA E2E</span></div>
         </div>
         <ul class="text-xs text-slate-500 space-y-1 mb-3">
           <li>• DEUDA-01: prueba de carga repetida a 30 VUs (límite del pool), causa raíz refinada (CPU/bcrypt) — cerrada, riesgo aceptado</li>
           <li>• Flujo de PR + protección de rama activado y validado en develop/staging/master (#18, #19)</li>
           <li>• Check de CI para sincronía de package-lock.json en los 3 workflows</li>
           <li>• Sincronización de ramas develop/staging con master (divergencia de meses corregida)</li>
+          <li>• Bug 5 (24-sep): flakiness intermitente en E2E por `OnboardingModal` compitiendo por `role="dialog"` — corregido y validado con 2 corridas limpias consecutivas en CI (7/7 specs)</li>
         </ul>
         <div class="flex flex-wrap gap-1">
           <span class="bg-cyan-50 text-cyan-700 text-xs px-2 py-0.5 rounded">DEUDA-01</span>
           <span class="bg-cyan-50 text-cyan-700 text-xs px-2 py-0.5 rounded">#18 PR flow</span>
           <span class="bg-cyan-50 text-cyan-700 text-xs px-2 py-0.5 rounded">#19 CI lockfile</span>
+          <span class="bg-cyan-50 text-cyan-700 text-xs px-2 py-0.5 rounded">Bug 5 E2E flakiness</span>
         </div>
         <div class="mt-3 bg-slate-100 rounded-full h-2"><div class="bg-cyan-400 h-2 rounded-full" style="width:100%"></div></div>
         <div class="text-xs text-right text-cyan-600 mt-1 font-medium">Deuda cerrada</div>
@@ -1817,7 +1821,7 @@ html{scroll-behavior:smooth}
       </div>
     </div>
     <div class="border-t border-slate-800 mt-8 pt-6 text-center text-xs">
-      Health Access Bridge · Momento 1 y 2 completados (100%) · DEUDA-01 cerrada + flujo de PR activado (23-sep-2026) · Septiembre 2026 · <a href="https://github.com/jaquimbayoc7" class="hover:text-white">@jaquimbayoc7</a>
+      Health Access Bridge · Momento 1 y 2 completados (100%) · DEUDA-01 cerrada + flujo de PR activado (23-sep-2026) · Suite E2E estabilizada (24-sep-2026) · Septiembre 2026 · <a href="https://github.com/jaquimbayoc7" class="hover:text-white">@jaquimbayoc7</a>
     </div>
   </div>
 </footer>
