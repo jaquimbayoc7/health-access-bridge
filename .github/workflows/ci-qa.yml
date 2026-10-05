@@ -115,8 +115,8 @@ jobs:
           for NAME in HOOK_BACKEND HOOK_FRONTEND; do
             URL="${!NAME}"
             if [ -z "$URL" ]; then
-              echo "::error::Falta el secret de $NAME (RENDER_DEPLOY_HOOK_QA_*). Crealo en Settings > Environments > qa."
-              exit 1
+              echo "::warning::Sin secret RENDER_DEPLOY_HOOK_QA_* para $NAME: no se dispara deploy desde CI. Render despliega por su cuenta si autoDeploy esta activo."
+              continue
             fi
             curl -fsS -X POST "$URL" > /dev/null
             echo "Deploy disparado: $NAME"
