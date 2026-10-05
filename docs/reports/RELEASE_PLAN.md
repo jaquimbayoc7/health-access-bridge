@@ -90,14 +90,14 @@
 | HU | Descripción | Puntos | Sprint |
 |----|-------------|--------|--------|
 | DEUDA-TÉCNICA-01 | Resolver bottleneck de rendimiento API (ver §5) — *prerrequisito antes de sumar carga del LLM* | — (ver `BACKLOG.md`) | Inicio Sprint 8 |
-| HU-07 | Perfil Funcional ICF con RAG y LLM local para sugerencia de códigos CIF (Colombia) — sub-historias 07a (servidor y catálogo, 5), 07b (motor y evaluación, 5), 07c (backend, 5), 07d (frontend, 4), 07e (pruebas y docs, 2) | 21 | Sprint 8-9 |
+| HU-07 | Perfil Funcional ICF con RAG y LLM local para sugerencia de códigos CIF-IA según el Anexo Técnico de la Resolución 1239 de 2022 — sub-historias 07a (servidor y catálogo, 5), 07b (motor y evaluación, 8), 07c (backend, 5), 07d (frontend, 5), 07e (pruebas y docs, 2) | 21 (25 propuestos, pendiente de aprobación) | Sprint 8-9 |
 | HU-08 | Dashboard de Análisis y Exportación | 13 | Sprint 10-11 |
 | HU-09 | Pruebas Completas y Feedback de Usuarios (UAT) | 8 | Sprint 11 |
 | HU-10 | Despliegue Final y Generación de Manuales | 5 | Sprint 12 |
 
 **Criterios de salida (Definition of Done de release):**
 - El servidor local queda operativo en red interna, con el LLM y el catálogo CIF cargados, accesible desde el backend solo por un túnel autenticado.
-- Dado un registro con niveles D1-D6, el sistema sugiere códigos CIF con calificador y justificación; el médico puede aceptarlos, editarlos o rechazarlos.
+- Dado un registro con niveles D1-D6, el sistema sugiere el perfil de funcionamiento (máximo 3 códigos CIF-IA por componente: funciones, estructuras, actividades y participación) con calificador y justificación; el médico puede aceptarlos, editarlos o rechazarlos, y el reporte se presenta como borrador de apoyo, no como certificado.
 - Dashboard de análisis exporta a Excel/PDF sin errores.
 - Pruebas UAT documentadas con feedback de usuarios reales, corregido antes del cierre.
 - Aplicación desplegada en producción con manuales técnicos y de usuario entregados.
@@ -115,6 +115,7 @@
 | **Latencia de inferencia del LLM local** incompatible con uso clínico | Medio | Media | Definir umbral aceptable en pruebas (criterio de aceptación de HU-07) antes de seleccionar el tamaño del modelo | 🔴 Por planificar |
 | **Calidad de las sugerencias con modelos pequeños (~3B)** (códigos inventados o títulos incorrectos) | Alto — error clínico si el médico confía en la sugerencia | Media | RAG con lista cerrada de códigos, título desde el catálogo, calificador por reglas, validación contra catálogo, set de referencia validado por un médico y decisión final siempre del médico (HU-07b) | 🔴 Por planificar |
 | **Conexión Render ↔ servidor local** (caída del túnel o del servidor) | Medio — solo afecta la función de sugerencias | Media | Túnel autenticado con token, timeout y respuesta 503 con aviso claro en la pantalla; el resto de la aplicación no depende del servicio (HU-07c) | 🔴 Por planificar |
+| **Cobertura parcial del Anexo Técnico (Res. 1239/2022)**: HAB captura 2 de las 7 categorías de discapacidad y no tiene diagnóstico CIE; sus niveles D1–D6 no son los 6 dominios oficiales | Medio — las sugerencias de funciones/estructuras serán genéricas y las de visión, audición o intelectual limitadas | Alta (confirmado al revisar el Anexo) | Campos opcionales de diagnóstico CIE y notas, mapeo explícito de dominios, reporte rotulado como borrador de apoyo y limitación documentada (HU-07) | 🟡 Mitigado en diseño |
 | **Desincronización de `package-lock.json`** rompiendo deploys silenciosamente (ya ocurrió en R2) | Medio | Baja (mitigado) | Verificación de lockfile agregada al pipeline CI/CD tras el hallazgo en R2 | ✅ Mitigado |
 | **Alcance HCI reemplazado sin actualizar GitHub** (HU-05 cambió de "PWA offline" a "mejoras de usabilidad" sin reflejarse en la épica) | Bajo | Baja (mitigado) | Auditoría de coherencia de GitHub ejecutada en cierre de R2 (épicas, milestones, issues corregidos) | ✅ Mitigado |
 
