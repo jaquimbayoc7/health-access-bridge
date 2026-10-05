@@ -63,6 +63,7 @@ html{scroll-behavior:smooth}
       <a href="#roadmap" class="hover:text-primary transition-colors">Roadmap</a>
       <a href="#agile" class="hover:text-primary transition-colors">Ágil</a>
       <a href="#hci" class="hover:text-primary transition-colors">HCI</a>
+      <a href="#cif" class="hover:text-primary transition-colors">Códigos CIF</a>
       <a href="https://hab-frontend.onrender.com/login" target="_blank" class="bg-primary text-white px-4 py-1.5 rounded-lg hover:bg-pdark transition-colors">Abrir App →</a>
     </div>
   </div>
@@ -1781,6 +1782,43 @@ html{scroll-behavior:smooth}
         <div><div class="font-semibold text-slate-800 mb-1">Panel coordinador</div><div class="text-slate-600">E2 necesita ver todos los municipios a cargo con estado de actualización</div></div>
         <div><div class="font-semibold text-slate-800 mb-1">Validación del ML</div><div class="text-slate-600">Ambas usuarias piden ficha técnica del modelo antes de confiar en las predicciones</div></div>
         <div><div class="font-semibold text-slate-800 mb-1">Tooltips ICF</div><div class="text-slate-600">Campos D1–D6 sin explicación · barrera de aprendizaje para usuarios nuevos</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CODIGOS CIF -->
+<section id="cif" class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl font-bold mb-2 section-title">Códigos CIF</h2>
+    <p class="text-slate-500 text-sm mb-10 mt-4">Perfil funcional con CIF-IA (OMS 2011) · Anexo Técnico de la Resolución 1239 de 2022 · HU-07 (Momento 3) · haz clic en el diagrama para ampliar</p>
+
+    <!-- Datos clave -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+      <div class="bg-white rounded-xl p-3 border border-slate-200 text-center card"><div class="text-2xl font-bold text-primary">1.593</div><div class="text-xs text-slate-500 mt-1">Códigos CIF-IA catalogados</div></div>
+      <div class="bg-white rounded-xl p-3 border border-slate-200 text-center card"><div class="text-2xl font-bold text-primary">4</div><div class="text-xs text-slate-500 mt-1">Componentes (b, s, d, e)</div></div>
+      <div class="bg-white rounded-xl p-3 border border-slate-200 text-center card"><div class="text-2xl font-bold text-primary">N3</div><div class="text-xs text-slate-500 mt-1">Nivel máximo del perfil</div></div>
+      <div class="bg-white rounded-xl p-3 border border-slate-200 text-center card"><div class="text-2xl font-bold text-primary">3</div><div class="text-xs text-slate-500 mt-1">Códigos máx. por componente</div></div>
+    </div>
+
+    <!-- Diagrama -->
+    <div onclick="openLb('../diagrams/cif-ia-codigos.svg','Códigos CIF-IA: cómo se leen y cómo los usaremos en HAB')" class="cursor-pointer rounded-xl overflow-hidden border border-slate-200 card bg-white mb-8">
+      <img src="../diagrams/cif-ia-codigos.svg" alt="Anatomía de un código CIF-IA, componentes, escala del calificador y flujo de sugerencia en HAB" class="w-full h-auto"/>
+    </div>
+
+    <!-- Cómo lo trabajamos -->
+    <div class="grid md:grid-cols-3 gap-4 text-sm">
+      <div class="bg-white rounded-xl p-5 border border-slate-200 card">
+        <div class="font-semibold text-slate-800 mb-2">Cómo se lee un código</div>
+        <div class="text-slate-600">Letra del componente + capítulo + segundo y tercer nivel + calificador de 0 a 4. <span class="font-mono text-primary">d4500.2</span> es «andar distancias cortas» con dificultad moderada. Sin calificador el código está incompleto.</div>
+      </div>
+      <div class="bg-white rounded-xl p-5 border border-slate-200 card">
+        <div class="font-semibold text-slate-800 mb-2">Cómo lo trabajamos en HAB</div>
+        <div class="text-slate-600">Reglas fijas calculan capítulo y calificador a partir de D1–D6. Una búsqueda sobre el catálogo propone candidatos y un LLM local elige solo entre ellos. El médico acepta, edita o rechaza cada código.</div>
+      </div>
+      <div class="bg-white rounded-xl p-5 border border-slate-200 card">
+        <div class="font-semibold text-slate-800 mb-2">Límites claros</div>
+        <div class="text-slate-600">El título sale siempre del catálogo, nunca del LLM. No viajan nombre ni documento. Es un <span class="font-semibold">borrador de apoyo</span> que no sustituye el certificado oficial del RLCPD.</div>
       </div>
     </div>
   </div>
