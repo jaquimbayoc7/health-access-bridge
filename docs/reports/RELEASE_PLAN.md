@@ -83,21 +83,21 @@
 
 ## 4. Release 3 — IA Generativa y Cierre (Semanas 19-27) 🔴 Planificado
 
-**Objetivo de release:** incorporar un servidor físico on-premise con un LLM ajustado para sugerir códigos ICF/CIF-Colombia a partir de los niveles D1-D6, completar los dashboards de análisis exportables, y cerrar el proyecto con pruebas de aceptación de usuario y documentación final.
+**Objetivo de release:** incorporar un servicio local on-premise (Ollama + PostgreSQL/pgvector) que, mediante RAG sobre el catálogo CIF oficial y sin fine-tuning, sugiera códigos ICF/CIF-Colombia a partir de los niveles D1-D6 y la predicción de barreras, con una pantalla "Perfil Funcional ICF" donde el médico acepta, edita o rechaza cada código; completar los dashboards de análisis exportables, y cerrar el proyecto con pruebas de aceptación de usuario y documentación final.
 
 **Alcance planificado (HUs):**
 
 | HU | Descripción | Puntos | Sprint |
 |----|-------------|--------|--------|
 | DEUDA-TÉCNICA-01 | Resolver bottleneck de rendimiento API (ver §5) — *prerrequisito antes de sumar carga del LLM* | — (ver `BACKLOG.md`) | Inicio Sprint 8 |
-| HU-07 | Servidor Local Físico con LLM ajustado para sugerencia de códigos ICF (Colombia) | 21 | Sprint 8-9 |
+| HU-07 | Perfil Funcional ICF con RAG y LLM local para sugerencia de códigos CIF (Colombia) — sub-historias 07a (servidor y catálogo, 5), 07b (motor y evaluación, 5), 07c (backend, 5), 07d (frontend, 4), 07e (pruebas y docs, 2) | 21 | Sprint 8-9 |
 | HU-08 | Dashboard de Análisis y Exportación | 13 | Sprint 10-11 |
 | HU-09 | Pruebas Completas y Feedback de Usuarios (UAT) | 8 | Sprint 11 |
 | HU-10 | Despliegue Final y Generación de Manuales | 5 | Sprint 12 |
 
 **Criterios de salida (Definition of Done de release):**
-- El servidor físico on-premise queda operativo en red interna, con el LLM sirviendo inferencias sin dependencia de internet.
-- Dado un registro con niveles D1-D6, el LLM sugiere el código ICF/CIF correspondiente con justificación en lenguaje natural.
+- El servidor local queda operativo en red interna, con el LLM y el catálogo CIF cargados, accesible desde el backend solo por un túnel autenticado.
+- Dado un registro con niveles D1-D6, el sistema sugiere códigos CIF con calificador y justificación; el médico puede aceptarlos, editarlos o rechazarlos.
 - Dashboard de análisis exporta a Excel/PDF sin errores.
 - Pruebas UAT documentadas con feedback de usuarios reales, corregido antes del cierre.
 - Aplicación desplegada en producción con manuales técnicos y de usuario entregados.
@@ -113,6 +113,8 @@
 | **Bottleneck de rendimiento API** bajo carga concurrente (`p95` real = 54.6s con 200 usuarios, ver `docs/test-report.md` §4) | Alto — el servidor LLM de HU-07 añadirá más carga de cómputo sobre la misma infraestructura | Confirmado (ya ocurrió en prueba real del 18-sep-2026) | Plan de escalado documentado con pricing real de Render: ajustar `--workers`/pool de conexiones ($0) → upgrade Web Service a Pro ($85/mes) → upgrade Postgres a Pro-8gb ($100/mes) → autoescalado horizontal opcional (+$85/mes). Repetir prueba de carga tras escalar. | 🔴 Pendiente — priorizado al inicio de R3 |
 | **Dependencia de hardware físico** para el servidor LLM (HU-07) | Alto — bloquea toda la HU si no hay servidor disponible a tiempo | Media | Definir con antelación las specs mínimas (CPU/GPU, RAM) y aprovisionar antes del Sprint 8; evaluar fallback con modelo más liviano si el hardware es limitado | 🔴 Por planificar |
 | **Latencia de inferencia del LLM local** incompatible con uso clínico | Medio | Media | Definir umbral aceptable en pruebas (criterio de aceptación de HU-07) antes de seleccionar el tamaño del modelo | 🔴 Por planificar |
+| **Calidad de las sugerencias con modelos pequeños (~3B)** (códigos inventados o títulos incorrectos) | Alto — error clínico si el médico confía en la sugerencia | Media | RAG con lista cerrada de códigos, título desde el catálogo, calificador por reglas, validación contra catálogo, set de referencia validado por un médico y decisión final siempre del médico (HU-07b) | 🔴 Por planificar |
+| **Conexión Render ↔ servidor local** (caída del túnel o del servidor) | Medio — solo afecta la función de sugerencias | Media | Túnel autenticado con token, timeout y respuesta 503 con aviso claro en la pantalla; el resto de la aplicación no depende del servicio (HU-07c) | 🔴 Por planificar |
 | **Desincronización de `package-lock.json`** rompiendo deploys silenciosamente (ya ocurrió en R2) | Medio | Baja (mitigado) | Verificación de lockfile agregada al pipeline CI/CD tras el hallazgo en R2 | ✅ Mitigado |
 | **Alcance HCI reemplazado sin actualizar GitHub** (HU-05 cambió de "PWA offline" a "mejoras de usabilidad" sin reflejarse en la épica) | Bajo | Baja (mitigado) | Auditoría de coherencia de GitHub ejecutada en cierre de R2 (épicas, milestones, issues corregidos) | ✅ Mitigado |
 
