@@ -1,22 +1,23 @@
 name: CI - Development
 
-# ──────────────────────────────────────────────────────────────
-# STAGE 1 — DEV
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# STAGE 1 â€” DEV
 # Trigger: push o PR a develop
-# Resultado: CI pasa → Render despliega DEV automáticamente
-# Siguiente paso: abrir PR develop→staging y esperar aprobación
-# ──────────────────────────────────────────────────────────────
+# Resultado: CI pasa â†’ Render despliega DEV automÃ¡ticamente
+# Siguiente paso: abrir PR developâ†’staging y esperar aprobaciÃ³n
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 on:
   push:
     branches: [develop]
   pull_request:
     branches: [develop]
+  workflow_dispatch:
 
 jobs:
   backend-test:
     name: Backend Tests (Dev)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment: development
 
     services:
@@ -54,7 +55,7 @@ jobs:
 
   frontend-build:
     name: Frontend Build (Dev)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment: development
 
     steps:
@@ -89,15 +90,15 @@ jobs:
 
   notify-dev-ready:
     name: Notify DEV deploy ready
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [backend-test, frontend-build]
     if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
 
     steps:
       - name: DEV environment ready
         run: |
-          echo "✅ CI passed on develop."
-          echo "🚀 Render will auto-deploy to DEV environment."
-          echo "📋 Next step: open a PR from develop → staging and request approval to promote to QA."
+          echo "âœ… CI passed on develop."
+          echo "ðŸš€ Render will auto-deploy to DEV environment."
+          echo "ðŸ“‹ Next step: open a PR from develop â†’ staging and request approval to promote to QA."
           echo "   URL DEV backend: https://hab-backend-dev.onrender.com"
           echo "   URL DEV frontend: https://hab-frontend-dev.onrender.com"

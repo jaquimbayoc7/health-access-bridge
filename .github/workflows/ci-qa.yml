@@ -1,26 +1,27 @@
 name: CI/CD - QA Staging
 
-# ──────────────────────────────────────────────────────────────────────────────
-# STAGE 2 — QA
-# Trigger: PR develop→staging (aprobación requerida) o push a staging
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# STAGE 2 â€” QA
+# Trigger: PR developâ†’staging (aprobaciÃ³n requerida) o push a staging
 # Pasos:
 #   1. CI unit tests (Python 3.14)
 #   2. API smoke tests contra Render QA en vivo
 #   3. E2E frontend tests
-#   4. Aprobación manual (environment gate) antes de poder pasar a producción
-# Siguiente paso: abrir PR staging→master y esperar aprobación
-# ──────────────────────────────────────────────────────────────────────────────
+#   4. AprobaciÃ³n manual (environment gate) antes de poder pasar a producciÃ³n
+# Siguiente paso: abrir PR stagingâ†’master y esperar aprobaciÃ³n
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 on:
   push:
     branches: [staging]
   pull_request:
     branches: [staging]
+  workflow_dispatch:
 
 jobs:
   backend-test:
     name: Backend Tests (QA)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment: qa
 
     services:
@@ -64,7 +65,7 @@ jobs:
 
   frontend-build:
     name: Frontend Build (QA)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment: qa
 
     steps:
@@ -98,8 +99,8 @@ jobs:
         run: cd frontend && npm run build
 
   api-smoke-tests:
-    name: API Smoke Tests — Render QA
-    runs-on: ubuntu-latest
+    name: API Smoke Tests â€” Render QA
+    runs-on: ubuntu-26.04
     needs: [backend-test]
     if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
 
@@ -111,17 +112,17 @@ jobs:
           echo "Waiting 60s for Render QA to finish deploying..."
           sleep 60
 
-      - name: Health check — /health
+      - name: Health check â€” /health
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hab-backend-qa.onrender.com/health)
           echo "Health check status: $STATUS"
           if [ "$STATUS" != "200" ]; then
-            echo "❌ Health check failed (HTTP $STATUS)"
+            echo "âŒ Health check failed (HTTP $STATUS)"
             exit 1
           fi
-          echo "✅ /health OK"
+          echo "âœ… /health OK"
 
-      - name: Smoke test — POST /users/login returns 422 or 200
+      - name: Smoke test â€” POST /users/login returns 422 or 200
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -X POST https://hab-backend-qa.onrender.com/users/login \
@@ -129,35 +130,35 @@ jobs:
             -d '{"username":"smoke@test.com","password":"smoke"}')
           echo "Login endpoint status: $STATUS"
           if [ "$STATUS" != "422" ] && [ "$STATUS" != "200" ] && [ "$STATUS" != "401" ]; then
-            echo "❌ Auth endpoint unreachable (HTTP $STATUS)"
+            echo "âŒ Auth endpoint unreachable (HTTP $STATUS)"
             exit 1
           fi
-          echo "✅ /users/login reachable"
+          echo "âœ… /users/login reachable"
 
-      - name: Smoke test — GET /patients/ returns 401
+      - name: Smoke test â€” GET /patients/ returns 401
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             https://hab-backend-qa.onrender.com/patients/)
           echo "Patients endpoint status: $STATUS"
           if [ "$STATUS" != "401" ] && [ "$STATUS" != "403" ]; then
-            echo "❌ Patients endpoint unexpected response (HTTP $STATUS)"
+            echo "âŒ Patients endpoint unexpected response (HTTP $STATUS)"
             exit 1
           fi
-          echo "✅ /patients/ protected correctly"
+          echo "âœ… /patients/ protected correctly"
 
-      - name: Smoke test — GET /docs returns 200
+      - name: Smoke test â€” GET /docs returns 200
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hab-backend-qa.onrender.com/docs)
           echo "Docs status: $STATUS"
           if [ "$STATUS" != "200" ]; then
-            echo "❌ /docs not available (HTTP $STATUS)"
+            echo "âŒ /docs not available (HTTP $STATUS)"
             exit 1
           fi
-          echo "✅ /docs OK"
+          echo "âœ… /docs OK"
 
   e2e-tests:
     name: E2E Tests (QA)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [frontend-build, api-smoke-tests]
     if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
 
@@ -178,16 +179,16 @@ jobs:
         run: cd frontend && npx playwright test
 
   promote-to-production-gate:
-    name: "🔐 Approval Gate — Promote QA → Production"
-    runs-on: ubuntu-latest
+    name: "ðŸ” Approval Gate â€” Promote QA â†’ Production"
+    runs-on: ubuntu-26.04
     needs: [backend-test, frontend-build, api-smoke-tests, e2e-tests]
     environment: qa-to-prod-approval
     if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
 
     steps:
-      - name: QA approved — ready to promote
+      - name: QA approved â€” ready to promote
         run: |
-          echo "✅ All QA checks passed and approved."
-          echo "📋 Next step: open a PR from staging → master to deploy to production."
+          echo "âœ… All QA checks passed and approved."
+          echo "ðŸ“‹ Next step: open a PR from staging â†’ master to deploy to production."
           echo "   URL QA backend: https://hab-backend-qa.onrender.com"
           echo "   URL QA frontend: https://hab-frontend-qa.onrender.com"
