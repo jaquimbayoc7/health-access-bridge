@@ -95,14 +95,16 @@ El backend de QA (`hab-backend-qa.onrender.com`) **no soporta 200 usuarios concu
 | Métrica | Valor |
 |---------|-------|
 | **Puntos completados** | 87 pts |
-| **Puntos pendientes** | 47 pts |
-| **Total del proyecto** | 134 pts |
-| **Avance general** | 64.9% |
+| **Puntos pendientes** | 51 pts |
+| **Total del proyecto** | 138 pts |
+| **Avance general** | 63.0% |
 | **Momento 1** | ✅ 100% (63 pts) |
 | **Momento 2** | ✅ 100% (24 pts) |
-| **Momento 3** | 🔴 0% (47 pts) |
+| **Momento 3** | 🔴 0% (51 pts) |
 | **HUs + épicas completadas** | HU-01 [#1], HU-02 [#2], HU-03 [#3], HU-04 [#4], HU-05 [#5], HU-06 [#6], HU-11 [#14], HU-12 [#15], HU-13 [#16], EPICA-01 [#11], EPICA-02 [#12] |
 | **HUs en backlog (M3)** | HU-07 [#7], HU-08 [#8], HU-09 [#9], HU-10 [#10] |
+
+> **Nota (05-oct-2026):** las cifras de pendientes, total y avance se actualizaron por la reestimación de HU-07 (21 → 25 pts) tras revisar el Anexo Técnico de la Resolución 1239 de 2022. Al cierre de M2 eran 47 pendientes, 134 en total y 64.9 %; el resumen ejecutivo de este documento conserva esos valores históricos.
 
 [#1]: https://github.com/jaquimbayoc7/health-access-bridge/issues/1
 [#2]: https://github.com/jaquimbayoc7/health-access-bridge/issues/2
@@ -133,7 +135,7 @@ El backend de QA (`hab-backend-qa.onrender.com`) **no soporta 200 usuarios concu
    | 4 | Postgres: Basic → **Pro-8gb** (2 CPU, 200 conexiones) | $100/mes |
    | 5 (opcional) | Autoescalado horizontal ×2 (ya incluido en el workspace Pro que se paga) | +$85/mes |
 
-2. **HU-07:** Alistar servidor local físico con LLM ajustado para sugerencia de códigos CIF/ICF-Colombia (redefinida — ver [HU-07 #7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7)).
+2. **HU-07:** Perfil Funcional ICF con RAG y LLM local (Ollama + PostgreSQL/pgvector, sin fine-tuning) para sugerir códigos CIF-IA según el Anexo Técnico de la Resolución 1239 de 2022, dividida en 07a–07e (25 pts; ver [HU-07 #7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7) y [`docs/diagrams/rag-icf-postgresql.md`](../diagrams/rag-icf-postgresql.md)).
 3. **HU-08:** Desarrollar dashboard de análisis y exportación.
 4. **HU-09:** Pruebas completas y feedback de usuarios.
 5. **HU-10:** Despliegue final y generación de manuales.

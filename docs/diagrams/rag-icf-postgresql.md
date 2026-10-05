@@ -343,7 +343,7 @@ El modelo sigue siendo el mismo y nunca se reentrena, pero las sugerencias mejor
 
 Revisión de [`BACKLOG.md`](../../BACKLOG.md), sección *Momento 3*:
 
-- **DEUDA-01** (Sprint 8) ya está ✅ cerrada, así que **la primera tarea abierta del Momento 3 es HU-07** (21 pts originales; 25 propuestos tras el ajuste al Anexo, pendientes de aprobación).
+- **DEUDA-01** (Sprint 8) ya está ✅ cerrada, así que **la primera tarea abierta del Momento 3 es HU-07** (25 pts tras la reestimación del 05-oct-2026; eran 21).
 - La **primera tarea listada en HU-07** es: *"Aprovisionar y configurar el servidor físico (hardware, SO, dependencias, runtime de inferencia)"*.
 - Ya está decidido (23-sep-2026) usar **Ollama sobre un servidor propio, con un modelo open-weight gratuito**.
 

@@ -3,7 +3,7 @@
 **Proyecto:** Health Access Bridge  
 **Metodología:** SCRUM  
 **Duración Total:** 27 Semanas  
-**Última actualización:** Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada) · DEUDA-01 cerrada con riesgo aceptado (23-sep-2026) · Protección de rama y flujo de PR activados (23-sep-2026) · Hallazgo post-cierre de flakiness E2E corregido y validado en CI (24-sep-2026) · HU-07 redefinida con RAG y dividida en 07a–07e para iniciar Momento 3 (05-oct-2026) · HU-07 ajustada al Anexo Técnico de la Resolución 1239 de 2022 (05-oct-2026) · Ver [`docs/reports/INSIGHTS_REPORT4.md`](docs/reports/INSIGHTS_REPORT4.md) para el detalle completo de esta sesión.
+**Última actualización:** Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada) · DEUDA-01 cerrada con riesgo aceptado (23-sep-2026) · Protección de rama y flujo de PR activados (23-sep-2026) · Hallazgo post-cierre de flakiness E2E corregido y validado en CI (24-sep-2026) · HU-07 redefinida con RAG y dividida en 07a–07e para iniciar Momento 3 (05-oct-2026) · HU-07 ajustada al Anexo Técnico de la Resolución 1239 de 2022 (05-oct-2026) · HU-07 reestimada a 25 pts y total del proyecto en 138 pts (05-oct-2026) · Ver [`docs/reports/INSIGHTS_REPORT4.md`](docs/reports/INSIGHTS_REPORT4.md) para el detalle completo de esta sesión.
 
 ---
 
@@ -21,7 +21,7 @@
 |---------|---------------|-----------|
 | EPICA-01 Estructuración y Diseño | DEUDA-01 Escalado de Rendimiento API (ver §5 Release Plan) | EPICA-03 IA Generativa y Cierre |
 | HU-01 Autenticación y Roles (8 pts) | — | EPICA-03 IA Generativa y Cierre |
-| HU-02 Registro y Precarga de Pacientes (13 pts) | — | HU-07 Perfil Funcional ICF con RAG y LLM local (21 pts, sub-historias 07a–07e) |
+| HU-02 Registro y Precarga de Pacientes (13 pts) | — | HU-07 Perfil Funcional ICF con RAG y LLM local (25 pts, sub-historias 07a–07e) |
 | HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | — |
 | HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | — |
 | — | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
@@ -32,8 +32,8 @@
 | HU-05b Ayuda contextual traducida (3 pts) | — | — |
 | [#6 HU-06](https://github.com/jaquimbayoc7/health-access-bridge/issues/6) Pruebas de Integración y Rendimiento (8 pts) | — | — |
 
-**Puntos completados: 87 pts · Puntos pendientes: 47 pts · Total: 134 pts**  
-**Avance general: 65% · Momento 1 100% completado (Sprint 3.5 incluido) · Momento 2 100% completado**
+**Puntos completados: 87 pts · Puntos pendientes: 51 pts · Total: 138 pts** *(HU-07 reestimada de 21 a 25 pts el 05-oct-2026; antes 47 pendientes y 134 en total)*  
+**Avance general: 63% · Momento 1 100% completado (Sprint 3.5 incluido) · Momento 2 100% completado**
 
 ---
 
@@ -419,7 +419,7 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 - Si el servidor local o el túnel caen, solo esta función queda afectada.
 
 **DoD:** Servidor local operativo con RAG sobre el catálogo CIF, sugerencias funcionando de punta a punta (frontend, backend, servicio local) con aceptar/editar/rechazar, set de referencia validado por un médico, pruebas en verde en CI y documentación de instalación y mantenimiento.  
-**Estimación:** 21 puntos (original) → **25 puntos propuestos** (07a 5 + 07b 8 + 07c 5 + 07d 5 + 07e 2) tras revisar el Anexo Técnico de la Resolución 1239 de 2022 (+4: estructuras s, 3 códigos por componente, mapeo de dominios y campos clínicos). **Pendiente de aprobación:** los totales del proyecto (134 pts; 47 pendientes en Momento 3) se mantienen con 21 hasta confirmar la reestimación; de aprobarse pasarían a 138 y 51.
+**Estimación:** **25 puntos** (07a 5 + 07b 8 + 07c 5 + 07d 5 + 07e 2). Reestimada desde 21 puntos el 05-oct-2026 tras revisar el Anexo Técnico de la Resolución 1239 de 2022 (+4: estructuras s, 3 códigos por componente, mapeo de dominios y campos clínicos). Con esto el Momento 3 pasa de 47 a **51 pts** (HU-07 25 + HU-08 13 + HU-09 8 + HU-10 5) y el total del proyecto de 134 a **138 pts** (87 completados, 63.0 %).
 **Decisión de alcance confirmada (23-sep-2026, refinada el 05-oct-2026):** se usará **Ollama** sobre un servidor físico ya disponible (no se comprará hardware nuevo), con un modelo open-weight gratuito (Qwen o Gemma, a elegir en HU-07b según la evaluación) usando **RAG sobre el estándar CIF-Colombia, sin fine-tuning**. Esta decisión reduce el riesgo de presupuesto de hardware señalado en `docs/reports/INSIGHTS_REPORT3.md` §11 (punto 5) y desacopla el cómputo del LLM del Web Service de Render (ver nota de DEUDA-01 arriba).
 
 ---
