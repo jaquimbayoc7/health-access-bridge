@@ -1,14 +1,14 @@
 name: CI/CD - Production
 
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# STAGE 3 â€” PRODUCTION
-# Trigger: PR stagingâ†’master (aprobaciÃ³n requerida) o push a master
+# ──────────────────────────────────────────────────────────────────────────
+# STAGE 3 — PRODUCTION
+# Trigger: PR staging→master (aprobación requerida) o push a master
 # Requisito previo: QA gate aprobado (promote-to-production-gate en ci-qa.yml)
 # Pasos:
 #   1. CI unit tests finales (Python 3.14)
-#   2. AprobaciÃ³n manual obligatoria (environment gate "production")
-#   3. Render despliega a PROD automÃ¡ticamente desde master
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#   2. Aprobación manual obligatoria (environment gate "production")
+#   3. Render despliega a PROD automáticamente desde master
+# ──────────────────────────────────────────────────────────────────────────
 
 on:
   push:
@@ -90,7 +90,7 @@ jobs:
         run: cd frontend && npm run build
 
   deploy-approval:
-    name: "ðŸ” Approval Gate â€” Deploy to Production"
+    name: "🔐 Approval Gate — Deploy to Production"
     runs-on: ubuntu-26.04
     environment: production
     needs: [backend-test, frontend-build]
@@ -99,13 +99,13 @@ jobs:
     steps:
       - name: Production deploy approved
         run: |
-          echo "âœ… Production deploy approved."
-          echo "ðŸš€ Render is deploying to PRODUCTION from master branch."
+          echo "✅ Production deploy approved."
+          echo "🚀 Render is deploying to PRODUCTION from master branch."
           echo "   URL PROD backend:  https://hab-backend-szj1.onrender.com"
           echo "   URL PROD frontend: https://hab-frontend.onrender.com"
 
   api-smoke-tests-prod:
-    name: API Smoke Tests â€” Render PROD
+    name: API Smoke Tests — Render PROD
     runs-on: ubuntu-26.04
     needs: [deploy-approval]
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
@@ -116,17 +116,17 @@ jobs:
           echo "Waiting 90s for Render PROD to finish deploying..."
           sleep 90
 
-      - name: Health check â€” /health
+      - name: Health check — /health
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hab-backend-szj1.onrender.com/health)
           echo "Health check status: $STATUS"
           if [ "$STATUS" != "200" ]; then
-            echo "âŒ Production health check failed (HTTP $STATUS)"
+            echo "❌ Production health check failed (HTTP $STATUS)"
             exit 1
           fi
-          echo "âœ… /health OK"
+          echo "✅ /health OK"
 
-      - name: Smoke test â€” POST /api/v1/auth/login reachable
+      - name: Smoke test — POST /api/v1/auth/login reachable
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -X POST https://hab-backend-szj1.onrender.com/users/login \
@@ -134,7 +134,7 @@ jobs:
             -d '{"username":"smoke@test.com","password":"smoke"}')
           echo "Login endpoint status: $STATUS"
           if [ "$STATUS" != "422" ] && [ "$STATUS" != "200" ] && [ "$STATUS" != "401" ]; then
-            echo "âŒ Auth endpoint unreachable in PROD (HTTP $STATUS)"
+            echo "❌ Auth endpoint unreachable in PROD (HTTP $STATUS)"
             exit 1
           fi
-          echo "âœ… /auth/login reachable in PROD"
+          echo "✅ /auth/login reachable in PROD"
