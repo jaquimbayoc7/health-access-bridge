@@ -5,9 +5,10 @@ name: CI/CD - Production
 # Trigger: PR staging→master (aprobación requerida) o push a master
 # Requisito previo: QA gate aprobado (promote-to-production-gate en ci-qa.yml)
 # Pasos:
-#   1. CI unit tests finales (Python 3.14)
+#   1. CI unit tests finales (Python 3.11)
 #   2. Aprobación manual obligatoria (environment gate "production")
-#   3. Render despliega a PROD automáticamente desde master
+#   3. Tras aprobar, este workflow dispara el deploy en Render (deploy hooks)
+#   4. Smoke tests contra PROD (backend y frontend)
 # ──────────────────────────────────────────────────────────────────────────
 
 on:
@@ -97,10 +98,20 @@ jobs:
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
 
     steps:
-      - name: Production deploy approved
+      - name: Trigger Render PROD deploy hooks (backend + frontend)
+        env:
+          HOOK_BACKEND: ${{ secrets.RENDER_DEPLOY_HOOK_PROD_BACKEND }}
+          HOOK_FRONTEND: ${{ secrets.RENDER_DEPLOY_HOOK_PROD_FRONTEND }}
         run: |
-          echo "✅ Production deploy approved."
-          echo "🚀 Render is deploying to PRODUCTION from master branch."
+          for NAME in HOOK_BACKEND HOOK_FRONTEND; do
+            URL="${!NAME}"
+            if [ -z "$URL" ]; then
+              echo "::warning::Sin secret RENDER_DEPLOY_HOOK_PROD_* para $NAME: no se dispara deploy desde CI. Render despliega por su cuenta si autoDeploy esta activo."
+              continue
+            fi
+            curl -fsS -X POST "$URL" > /dev/null
+            echo "Deploy disparado: $NAME"
+          done
           echo "   URL PROD backend:  https://hab-backend-szj1.onrender.com"
           echo "   URL PROD frontend: https://hab-frontend.onrender.com"
 
@@ -111,10 +122,16 @@ jobs:
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
 
     steps:
-      - name: Wait for Render PROD deploy to be ready
+      - name: Wait for Render PROD to be healthy (up to 10 min)
         run: |
-          echo "Waiting 90s for Render PROD to finish deploying..."
-          sleep 90
+          for i in $(seq 1 60); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hab-backend-szj1.onrender.com/health || true)
+            echo "Intento $i: /health -> $STATUS"
+            [ "$STATUS" = "200" ] && exit 0
+            sleep 10
+          done
+          echo "::error::Render PROD no respondio 200 en /health tras 10 minutos"
+          exit 1
 
       - name: Health check — /health
         run: |
@@ -126,7 +143,7 @@ jobs:
           fi
           echo "✅ /health OK"
 
-      - name: Smoke test — POST /api/v1/auth/login reachable
+      - name: Smoke test — POST /users/login reachable
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -X POST https://hab-backend-szj1.onrender.com/users/login \
@@ -137,4 +154,15 @@ jobs:
             echo "❌ Auth endpoint unreachable in PROD (HTTP $STATUS)"
             exit 1
           fi
-          echo "✅ /auth/login reachable in PROD"
+          echo "✅ /users/login reachable in PROD"
+
+      - name: Smoke test — frontend PROD returns 200
+        run: |
+          for i in $(seq 1 30); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hab-frontend.onrender.com/ || true)
+            echo "Intento $i: frontend -> $STATUS"
+            [ "$STATUS" = "200" ] && { echo "✅ Frontend PROD OK"; exit 0; }
+            sleep 10
+          done
+          echo "::error::Frontend PROD no respondio 200"
+          exit 1

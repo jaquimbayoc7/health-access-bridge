@@ -4,8 +4,9 @@ name: CI/CD - QA Staging
 # STAGE 2 — QA
 # Trigger: PR develop→staging (aprobación requerida) o push a staging
 # Pasos:
-#   1. CI unit tests (Python 3.14)
-#   2. API smoke tests contra Render QA en vivo
+#   1. CI unit tests (Python 3.11)
+#   2. Deploy a Render QA vía deploy hook (solo si los tests pasan)
+#   2b. API smoke tests contra Render QA en vivo
 #   3. E2E frontend tests
 #   4. Aprobación manual (environment gate) antes de poder pasar a producción
 # Siguiente paso: abrir PR staging→master y esperar aprobación
@@ -98,19 +99,48 @@ jobs:
           VITE_ENVIRONMENT: staging
         run: cd frontend && npm run build
 
+  deploy-qa:
+    name: Deploy to Render QA
+    runs-on: ubuntu-26.04
+    needs: [backend-test, frontend-build]
+    environment: qa
+    if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
+
+    steps:
+      - name: Trigger Render deploy hooks (backend + frontend)
+        env:
+          HOOK_BACKEND: ${{ secrets.RENDER_DEPLOY_HOOK_QA_BACKEND }}
+          HOOK_FRONTEND: ${{ secrets.RENDER_DEPLOY_HOOK_QA_FRONTEND }}
+        run: |
+          for NAME in HOOK_BACKEND HOOK_FRONTEND; do
+            URL="${!NAME}"
+            if [ -z "$URL" ]; then
+              echo "::warning::Sin secret RENDER_DEPLOY_HOOK_QA_* para $NAME: no se dispara deploy desde CI. Render despliega por su cuenta si autoDeploy esta activo."
+              continue
+            fi
+            curl -fsS -X POST "$URL" > /dev/null
+            echo "Deploy disparado: $NAME"
+          done
+
   api-smoke-tests:
     name: API Smoke Tests — Render QA
     runs-on: ubuntu-26.04
-    needs: [backend-test]
+    needs: [deploy-qa]
     if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Wait for Render QA deploy to be ready
+      - name: Wait for Render QA to be healthy (up to 8 min)
         run: |
-          echo "Waiting 60s for Render QA to finish deploying..."
-          sleep 60
+          for i in $(seq 1 48); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hab-backend-qa.onrender.com/health || true)
+            echo "Intento $i: /health -> $STATUS"
+            [ "$STATUS" = "200" ] && exit 0
+            sleep 10
+          done
+          echo "::error::Render QA no respondio 200 en /health tras 8 minutos"
+          exit 1
 
       - name: Health check — /health
         run: |
