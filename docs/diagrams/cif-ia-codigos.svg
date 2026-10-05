@@ -1,0 +1,288 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1720" width="1400" height="1720" role="img" aria-labelledby="t d">
+  <title id="t">Códigos CIF-IA y cómo se trabajan en HAB</title>
+  <desc id="d">Anatomía de un código CIF-IA, los cuatro componentes, la escala del calificador y el flujo de sugerencia de códigos en Health Access Bridge.</desc>
+  <style>
+    text { font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif; fill: #1f2430; }
+    .h1 { font-size: 34px; font-weight: 700; }
+    .sub { font-size: 17px; fill: #4a5568; }
+    .h2 { font-size: 22px; font-weight: 700; }
+    .h3 { font-size: 18px; font-weight: 700; }
+    .t { font-size: 15px; }
+    .s { font-size: 13.5px; fill: #4a5568; }
+    .w { fill: #ffffff; }
+    .mono { font-family: Consolas, "Cascadia Mono", "Courier New", monospace; }
+    .big { font-size: 54px; font-weight: 700; }
+    .card { fill: #ffffff; stroke: #d9d4c7; stroke-width: 1.5; }
+    .lbl { font-size: 14.5px; font-weight: 600; }
+  </style>
+
+  <rect width="1400" height="1720" fill="#fbfaf7"/>
+
+  <!-- ENCABEZADO -->
+  <text x="60" y="62" class="h1">Códigos CIF-IA: cómo se leen y cómo los usaremos en HAB</text>
+  <text x="60" y="94" class="sub">Clasificación Internacional del Funcionamiento, de la Discapacidad y de la Salud, versión infancia y adolescencia (OMS 2011) · Resolución 1239 de 2022</text>
+  <line x1="60" y1="116" x2="1340" y2="116" stroke="#d9d4c7" stroke-width="2"/>
+
+  <!-- 1. ANATOMIA -->
+  <text x="60" y="158" class="h2">1 · Anatomía de un código</text>
+
+  <g transform="translate(60,184)">
+    <rect x="0"   y="0" width="110" height="96" rx="12" fill="#2b6cb0"/>
+    <rect x="130" y="0" width="110" height="96" rx="12" fill="#0f766e"/>
+    <rect x="260" y="0" width="150" height="96" rx="12" fill="#b7791f"/>
+    <rect x="430" y="0" width="110" height="96" rx="12" fill="#6b46c1"/>
+    <text x="560" y="66" class="big mono" fill="#1f2430" style="fill:#1f2430">.</text>
+    <rect x="600" y="0" width="110" height="96" rx="12" fill="#c53030"/>
+    <text x="55"  y="68" class="big mono w" text-anchor="middle">d</text>
+    <text x="185" y="68" class="big mono w" text-anchor="middle">4</text>
+    <text x="335" y="68" class="big mono w" text-anchor="middle">50</text>
+    <text x="485" y="68" class="big mono w" text-anchor="middle">0</text>
+    <text x="655" y="68" class="big mono w" text-anchor="middle">2</text>
+
+    <!-- etiquetas -->
+    <text x="55"  y="128" class="lbl" text-anchor="middle" style="fill:#2b6cb0">Componente</text>
+    <text x="55"  y="148" class="s" text-anchor="middle">d = Actividades</text>
+    <text x="55"  y="165" class="s" text-anchor="middle">y participación</text>
+
+    <text x="185" y="128" class="lbl" text-anchor="middle" style="fill:#0f766e">Capítulo (N1)</text>
+    <text x="185" y="148" class="s" text-anchor="middle">4 = Movilidad</text>
+
+    <text x="335" y="128" class="lbl" text-anchor="middle" style="fill:#b7791f">Segundo nivel (N2)</text>
+    <text x="335" y="148" class="s" text-anchor="middle">d450 = Andar</text>
+
+    <text x="485" y="128" class="lbl" text-anchor="middle" style="fill:#6b46c1">Tercer nivel (N3)</text>
+    <text x="485" y="148" class="s" text-anchor="middle">d4500 = Andar</text>
+    <text x="485" y="165" class="s" text-anchor="middle">distancias cortas</text>
+
+    <text x="655" y="128" class="lbl" text-anchor="middle" style="fill:#c53030">Calificador</text>
+    <text x="655" y="148" class="s" text-anchor="middle">2 = dificultad</text>
+    <text x="655" y="165" class="s" text-anchor="middle">moderada (25–49 %)</text>
+  </g>
+
+  <rect x="820" y="176" width="520" height="190" rx="14" class="card"/>
+  <text x="844" y="208" class="h3">Se lee así</text>
+  <text x="844" y="236" class="t"><tspan class="mono" font-weight="700">d4500.2</tspan> = «Andar distancias cortas»</text>
+  <text x="844" y="258" class="t">con dificultad <tspan font-weight="700">moderada</tspan>.</text>
+  <text x="844" y="290" class="t">• El código <tspan font-weight="700">solo está completo con calificador</tspan>.</text>
+  <text x="844" y="312" class="t">• Cada nivel está dentro del anterior (d4 ⊃ d450 ⊃ d4500).</text>
+  <text x="844" y="334" class="t">• El Anexo 1239 registra el perfil <tspan font-weight="700">hasta N3</tspan></text>
+  <text x="844" y="354" class="t">(4 o 5 dígitos). Existe un N4 de 6 caracteres: no se usa.</text>
+
+  <!-- 2. COMPONENTES -->
+  <text x="60" y="418" class="h2">2 · Los cuatro componentes y su calificador</text>
+
+  <!-- b -->
+  <rect x="60" y="440" width="300" height="232" rx="14" class="card"/>
+  <circle cx="98" cy="480" r="24" fill="#2b6cb0"/><text x="98" y="488" class="h3 w mono" text-anchor="middle">b</text>
+  <text x="134" y="486" class="h3">Funciones corporales</text>
+  <text x="80" y="520" class="t mono" style="fill:#2b6cb0">b210 · b2100</text>
+  <text x="80" y="546" class="t">1 calificador: magnitud de la</text>
+  <text x="80" y="566" class="t">deficiencia (0–4).</text>
+  <text x="80" y="596" class="t">Solo cuentan calificadores ≥ 1.</text>
+  <text x="80" y="626" class="s">Se infiere de la historia clínica:</text>
+  <text x="80" y="646" class="s">depende del diagnóstico CIE y notas.</text>
+
+  <!-- s -->
+  <rect x="380" y="440" width="300" height="232" rx="14" class="card"/>
+  <circle cx="418" cy="480" r="24" fill="#0f766e"/><text x="418" y="488" class="h3 w mono" text-anchor="middle">s</text>
+  <text x="454" y="486" class="h3">Estructuras corporales</text>
+  <text x="400" y="520" class="t mono" style="fill:#0f766e">s730 · s7300</text>
+  <text x="400" y="546" class="t">3 calificadores:</text>
+  <text x="400" y="566" class="t">magnitud · naturaleza · localización.</text>
+  <text x="400" y="596" class="t">HAB sugiere solo la magnitud.</text>
+  <text x="400" y="626" class="s">Naturaleza y localización quedan en</text>
+  <text x="400" y="646" class="s">8 (no especificada); el médico edita.</text>
+
+  <!-- d -->
+  <rect x="700" y="440" width="300" height="232" rx="14" class="card"/>
+  <circle cx="738" cy="480" r="24" fill="#b7791f"/><text x="738" y="488" class="h3 w mono" text-anchor="middle">d</text>
+  <text x="772" y="486" class="h3" style="font-size:16px">Actividades y participación</text>
+  <text x="720" y="520" class="t mono" style="fill:#b7791f">d450 · d4500</text>
+  <text x="720" y="546" class="t">1 calificador (Tabla 2 del Anexo):</text>
+  <text x="720" y="566" class="t">dificultad en el desempeño.</text>
+  <text x="720" y="596" class="t">Sale de los niveles D1–D6 de HAB.</text>
+  <text x="720" y="626" class="s">La CIF base usa dos (desempeño y</text>
+  <text x="720" y="646" class="s">capacidad); la resolución usa uno.</text>
+
+  <!-- e -->
+  <rect x="1020" y="440" width="320" height="232" rx="14" class="card"/>
+  <circle cx="1058" cy="480" r="24" fill="#6b46c1"/><text x="1058" y="488" class="h3 w mono" text-anchor="middle">e</text>
+  <text x="1094" y="486" class="h3">Factores ambientales</text>
+  <text x="1040" y="520" class="t mono" style="fill:#6b46c1">e310 · e5750</text>
+  <text x="1040" y="546" class="t">Barreras (.) y facilitadores (+).</text>
+  <text x="1040" y="576" class="t">Quedan <tspan font-weight="700">fuera</tspan> del perfil de</text>
+  <text x="1040" y="596" class="t">funcionamiento del certificado:</text>
+  <text x="1040" y="616" class="t">el Anexo pide solo b, s y d.</text>
+  <text x="1040" y="646" class="s">Se registran en la entrevista aparte.</text>
+
+  <!-- 3. ESCALA -->
+  <text x="60" y="718" class="h2">3 · La escala del calificador y cómo la calculamos</text>
+
+  <g transform="translate(60,742)">
+    <rect x="0"   y="0" width="190" height="88" rx="12" fill="#2f855a"/>
+    <rect x="200" y="0" width="190" height="88" rx="12" fill="#68a35a"/>
+    <rect x="400" y="0" width="190" height="88" rx="12" fill="#d69e2e"/>
+    <rect x="600" y="0" width="190" height="88" rx="12" fill="#dd6b20"/>
+    <rect x="800" y="0" width="190" height="88" rx="12" fill="#c53030"/>
+    <rect x="1010" y="0" width="130" height="88" rx="12" fill="#718096"/>
+    <rect x="1150" y="0" width="130" height="88" rx="12" fill="#a0aec0"/>
+
+    <text x="95"  y="38" class="h2 w" text-anchor="middle">0 · Ninguna</text>
+    <text x="95"  y="64" class="t w" text-anchor="middle">0 – 4 %</text>
+    <text x="295" y="38" class="h2 w" text-anchor="middle">1 · Leve</text>
+    <text x="295" y="64" class="t w" text-anchor="middle">5 – 24 %</text>
+    <text x="495" y="38" class="h2 w" text-anchor="middle">2 · Moderada</text>
+    <text x="495" y="64" class="t w" text-anchor="middle">25 – 49 %</text>
+    <text x="695" y="38" class="h2 w" text-anchor="middle">3 · Severa</text>
+    <text x="695" y="64" class="t w" text-anchor="middle">50 – 95 %</text>
+    <text x="895" y="38" class="h2 w" text-anchor="middle">4 · Completa</text>
+    <text x="895" y="64" class="t w" text-anchor="middle">96 – 100 %</text>
+    <text x="1075" y="38" class="h3 w" text-anchor="middle">8</text>
+    <text x="1075" y="64" class="s w" text-anchor="middle" style="fill:#fff">sin especificar</text>
+    <text x="1215" y="38" class="h3 w" text-anchor="middle">9</text>
+    <text x="1215" y="64" class="s w" text-anchor="middle" style="fill:#fff">no aplicable</text>
+  </g>
+
+  <text x="60" y="866" class="t">En HAB, el nivel 0–100 de cada dominio (D1–D6) se convierte con esta misma escala <tspan font-weight="700">por reglas fijas</tspan>. Es una aproximación,</text>
+  <text x="60" y="888" class="t">por eso el calificador siempre se muestra como <tspan font-weight="700">sugerido y editable</tspan>. El LLM nunca decide la gravedad.</text>
+
+  <!-- mapeo D1-D6 -->
+  <rect x="60" y="908" width="1280" height="98" rx="14" class="card"/>
+  <text x="84" y="938" class="h3">Mapeo de los niveles de HAB a los capítulos CIF-IA</text>
+  <g class="t">
+    <text x="84"  y="968">D1 → d1 Aprendizaje</text>
+    <text x="300" y="968">D2 → d2 Tareas generales</text>
+    <text x="540" y="968">D3 → d3 Comunicación</text>
+    <text x="760" y="968">D4 → d4 Movilidad</text>
+    <text x="950" y="968">D5 → d5 Autocuidado</text>
+    <text x="1150" y="968">D6 → d6 Vida doméstica</text>
+  </g>
+  <text x="84" y="994" class="s">Se revisan los capítulos con nivel ≥ 5. Los dominios oficiales del Anexo (cognición, movilidad, cuidado personal, relaciones, actividades cotidianas, participación) se rotulan aparte.</text>
+
+  <!-- 4. FLUJO -->
+  <text x="60" y="1056" class="h2">4 · Cómo lo trabajaremos: el flujo de sugerencia</text>
+
+  <defs>
+    <marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#718096"/>
+    </marker>
+  </defs>
+
+  <!-- cajas -->
+  <g>
+    <rect x="60"   y="1080" width="195" height="236" rx="14" class="card"/>
+    <rect x="269"  y="1080" width="195" height="236" rx="14" class="card"/>
+    <rect x="478"  y="1080" width="195" height="236" rx="14" class="card"/>
+    <rect x="687"  y="1080" width="195" height="236" rx="14" class="card"/>
+    <rect x="896"  y="1080" width="195" height="236" rx="14" class="card"/>
+    <rect x="1105" y="1080" width="235" height="236" rx="14" class="card"/>
+  </g>
+  <g stroke="#718096" stroke-width="2.5" marker-end="url(#ar)" fill="none">
+    <line x1="255" y1="1198" x2="267" y2="1198"/>
+    <line x1="464" y1="1198" x2="476" y2="1198"/>
+    <line x1="673" y1="1198" x2="685" y2="1198"/>
+    <line x1="882" y1="1198" x2="894" y2="1198"/>
+    <line x1="1091" y1="1198" x2="1103" y2="1198"/>
+  </g>
+
+  <!-- 1 -->
+  <circle cx="86" cy="1108" r="16" fill="#2b6cb0"/><text x="86" y="1114" class="t w" text-anchor="middle" font-weight="700">1</text>
+  <text x="110" y="1114" class="h3">Datos</text>
+  <text x="76" y="1146" class="t">Edad, género, causa,</text>
+  <text x="76" y="1166" class="t">categoría física o</text>
+  <text x="76" y="1186" class="t">psicosocial, niveles</text>
+  <text x="76" y="1206" class="t">D1–D6, perfil de</text>
+  <text x="76" y="1226" class="t">barreras, diagnóstico</text>
+  <text x="76" y="1246" class="t">CIE y notas.</text>
+  <text x="76" y="1282" class="s">Sin nombre ni documento.</text>
+
+  <!-- 2 -->
+  <circle cx="295" cy="1108" r="16" fill="#2b6cb0"/><text x="295" y="1114" class="t w" text-anchor="middle" font-weight="700">2</text>
+  <text x="319" y="1114" class="h3">Reglas fijas</text>
+  <text x="285" y="1146" class="t">Decide qué capítulos</text>
+  <text x="285" y="1166" class="t">revisar (nivel ≥ 5) y</text>
+  <text x="285" y="1186" class="t">calcula el calificador</text>
+  <text x="285" y="1206" class="t">0–4 con la escala.</text>
+  <text x="285" y="1236" class="t">Menores de 6 años:</text>
+  <text x="285" y="1256" class="t">aviso, no se sugiere.</text>
+  <text x="285" y="1292" class="s">Código determinista.</text>
+
+  <!-- 3 -->
+  <circle cx="504" cy="1108" r="16" fill="#2b6cb0"/><text x="504" y="1114" class="t w" text-anchor="middle" font-weight="700">3</text>
+  <text x="528" y="1114" class="h3">Candidatos</text>
+  <text x="494" y="1146" class="t">Tabla transcrita del</text>
+  <text x="494" y="1166" class="t">Anexo por dominio</text>
+  <text x="494" y="1186" class="t">(ej. movilidad: d4154,</text>
+  <text x="494" y="1206" class="t">d4104, d4600, d4602,</text>
+  <text x="494" y="1226" class="t">d4501) como pre-filtro.</text>
+  <text x="494" y="1292" class="s">Código determinista.</text>
+
+  <!-- 4 -->
+  <circle cx="713" cy="1108" r="16" fill="#0f766e"/><text x="713" y="1114" class="t w" text-anchor="middle" font-weight="700">4</text>
+  <text x="737" y="1114" class="h3">Búsqueda RAG</text>
+  <text x="703" y="1146" class="t">SQL + pgvector sobre</text>
+  <text x="703" y="1166" class="t">el catálogo CIF-IA</text>
+  <text x="703" y="1186" class="t">(tabla icf_codes,</text>
+  <text x="703" y="1206" class="t">1.593 códigos hasta</text>
+  <text x="703" y="1226" class="t">tercer nivel).</text>
+  <text x="703" y="1292" class="s">Reduce la lista a elegir.</text>
+
+  <!-- 5 -->
+  <circle cx="922" cy="1108" r="16" fill="#b7791f"/><text x="922" y="1114" class="t w" text-anchor="middle" font-weight="700">5</text>
+  <text x="946" y="1114" class="h3">LLM local</text>
+  <text x="912" y="1146" class="t">Ollama (Qwen o Gemma)</text>
+  <text x="912" y="1166" class="t">elige solo entre los</text>
+  <text x="912" y="1186" class="t">candidatos, con JSON</text>
+  <text x="912" y="1206" class="t">válido y temperatura 0.</text>
+  <text x="912" y="1236" class="t">Aporta la justificación.</text>
+  <text x="912" y="1292" class="s">No inventa códigos.</text>
+
+  <!-- 6 -->
+  <circle cx="1131" cy="1108" r="16" fill="#2f855a"/><text x="1131" y="1114" class="t w" text-anchor="middle" font-weight="700">6</text>
+  <text x="1155" y="1114" class="h3">Médico decide</text>
+  <text x="1121" y="1146" class="t">Acepta, edita o rechaza</text>
+  <text x="1121" y="1166" class="t">cada código. Máximo 3</text>
+  <text x="1121" y="1186" class="t">por componente (b, s, d),</text>
+  <text x="1121" y="1206" class="t">ordenados por relevancia.</text>
+  <text x="1121" y="1236" class="t">La decisión queda guardada</text>
+  <text x="1121" y="1256" class="t">con el modelo que sugirió.</text>
+  <text x="1121" y="1292" class="s">Decisión clínica final.</text>
+
+  <!-- barra de quién decide -->
+  <g>
+    <rect x="60"  y="1332" width="404" height="30" rx="8" fill="#2b6cb0"/>
+    <rect x="478" y="1332" width="195" height="30" rx="8" fill="#2b6cb0"/>
+    <rect x="687" y="1332" width="195" height="30" rx="8" fill="#0f766e"/>
+    <rect x="896" y="1332" width="195" height="30" rx="8" fill="#b7791f"/>
+    <rect x="1105" y="1332" width="235" height="30" rx="8" fill="#2f855a"/>
+    <text x="262" y="1352" class="t w" text-anchor="middle" font-weight="700">Reglas (sin LLM)</text>
+    <text x="575" y="1352" class="t w" text-anchor="middle" font-weight="700">Reglas</text>
+    <text x="784" y="1352" class="t w" text-anchor="middle" font-weight="700">Búsqueda</text>
+    <text x="993" y="1352" class="t w" text-anchor="middle" font-weight="700">IA acotada</text>
+    <text x="1222" y="1352" class="t w" text-anchor="middle" font-weight="700">Persona</text>
+  </g>
+
+  <!-- 5. REGLAS DE ORO -->
+  <text x="60" y="1412" class="h2">5 · Reglas que no se negocian</text>
+  <rect x="60" y="1430" width="1280" height="216" rx="14" class="card"/>
+  <g class="t">
+    <text x="88" y="1466">✔ El <tspan font-weight="700">título de cada código sale del catálogo</tspan>, nunca del LLM.</text>
+    <text x="88" y="1496">✔ El <tspan font-weight="700">calificador sale de reglas</tspan>, no del modelo; es sugerido y editable.</text>
+    <text x="88" y="1526">✔ El LLM solo puede elegir códigos de una <tspan font-weight="700">lista cerrada</tspan>.</text>
+    <text x="88" y="1556">✔ Máximo <tspan font-weight="700">3 códigos por componente</tspan> (b, s, d), hasta tercer nivel.</text>
+    <text x="88" y="1586">✔ Un código sin calificador está incompleto y no se muestra.</text>
+    <text x="88" y="1616">✔ Estructuras (s): naturaleza y localización en 8 por defecto.</text>
+
+    <text x="720" y="1466">✔ Al servicio local <tspan font-weight="700">no viajan nombre, documento ni</tspan></text>
+    <text x="742" y="1486"><tspan font-weight="700">orientación sexual</tspan>.</text>
+    <text x="720" y="1516">✔ Si el servicio local cae, solo esa función se afecta.</text>
+    <text x="720" y="1546">✔ Menores de 6 años: sin niveles por dominio, se avisa.</text>
+    <text x="720" y="1576">✔ Es un <tspan font-weight="700">borrador de apoyo</tspan>: no sustituye el</text>
+    <text x="742" y="1596">certificado oficial del RLCPD.</text>
+    <text x="720" y="1626" class="s">El médico es siempre quien decide.</text>
+  </g>
+
+  <!-- PIE -->
+  <text x="60" y="1684" class="s">Fuentes: CIF-IA (OMS, 2011) · Anexo Técnico de la Resolución 1239 del 21 de julio de 2022 · Backlog HU-07 (HU-07a a HU-07e).</text>
+  <text x="60" y="1704" class="s">Los códigos de ejemplo se verificaron en la CIF-IA. El PDF y el texto extraído de la OMS no se publican en el repositorio.</text>
+</svg>
