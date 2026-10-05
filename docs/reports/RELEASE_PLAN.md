@@ -19,7 +19,7 @@
 
 **Total del proyecto:** 138 pts · **Completado:** 87 pts (63.0%) · **Pendiente:** 51 pts (37.0%)
 
-> **Nota (05-oct-2026):** HU-07 se reestimó de 21 a 25 pts tras revisar el Anexo Técnico de la Resolución 1239 de 2022. El Momento 3 pasó de 47 a 51 pts y el total del proyecto de 134 a 138 pts. Las cifras de los reportes anteriores (Insights 1–4, estado del Momento 1) son instantáneas históricas y no se modifican.
+> **Nota (05-oct-2026):** HU-07 se reestimó de 21 a 25 pts tras revisar el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022. El Momento 3 pasó de 47 a 51 pts y el total del proyecto de 134 a 138 pts. Las cifras de los reportes anteriores (Insights 1–4, estado del Momento 1) son instantáneas históricas y no se modifican.
 
 ---
 
@@ -92,7 +92,7 @@
 | HU | Descripción | Puntos | Sprint |
 |----|-------------|--------|--------|
 | DEUDA-TÉCNICA-01 | Resolver bottleneck de rendimiento API (ver §5) — *prerrequisito antes de sumar carga del LLM* | — (ver `BACKLOG.md`) | Inicio Sprint 8 |
-| HU-07 | Perfil Funcional ICF con RAG y LLM local para sugerencia de códigos CIF-IA según el Anexo Técnico de la Resolución 1239 de 2022 — sub-historias 07a (servidor y catálogo, 5), 07b (motor y evaluación, 8), 07c (backend, 5), 07d (frontend, 5), 07e (pruebas y docs, 2) | 25 (reestimado desde 21, 05-oct-2026) | Sprint 8-9 |
+| HU-07 | Perfil Funcional ICF con RAG y LLM local para sugerencia de códigos CIF-IA según el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022 — sub-historias 07a (servidor y catálogo, 5), 07b (motor y evaluación, 8), 07c (backend, 5), 07d (frontend, 5), 07e (pruebas y docs, 2) | 25 (reestimado desde 21, 05-oct-2026) | Sprint 8-9 |
 | HU-08 | Dashboard de Análisis y Exportación | 13 | Sprint 10-11 |
 | HU-09 | Pruebas Completas y Feedback de Usuarios (UAT) | 8 | Sprint 11 |
 | HU-10 | Despliegue Final y Generación de Manuales | 5 | Sprint 12 |
