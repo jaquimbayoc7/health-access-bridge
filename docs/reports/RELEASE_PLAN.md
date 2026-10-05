@@ -1,8 +1,8 @@
 # Release Plan — Health Access Bridge (HAB)
 
 **Proyecto:** Health Access Bridge
-**Metodología:** SCRUM · 3 Momentos Integradores · 27 semanas · 134 story points
-**Última actualización:** Septiembre 2026
+**Metodología:** SCRUM · 3 Momentos Integradores · 27 semanas · 138 story points
+**Última actualización:** Octubre 2026 (HU-07 reestimada el 05-oct-2026)
 **Documentos relacionados:** [`BACKLOG.md`](../../BACKLOG.md) · [`PROJECT_STATUS.md`](./PROJECT_STATUS.md) · [`PROJECT_STATUS_M2.md`](./PROJECT_STATUS_M2.md) · [`AGILE_PRACTICES.md`](./AGILE_PRACTICES.md) · [`test-report.md`](../test-report.md)
 
 > Este documento formaliza el Release Plan que figuraba como pendiente desde la Épica 1 ([Issue #11](https://github.com/jaquimbayoc7/health-access-bridge/issues/11)). No introduce alcance nuevo: consolida en un solo artefacto las fechas, puntos y decisiones ya publicadas en el backlog maestro y los reportes de estado de cada Momento.
@@ -15,9 +15,11 @@
 |---------|---------|---------|-------------------|-------|--------|--------|
 | **R1 — MVP Clínico** | Momento 1 | 1-9 | [Milestone 1](https://github.com/jaquimbayoc7/health-access-bridge/milestone/1) | [EPICA-01 #11](https://github.com/jaquimbayoc7/health-access-bridge/issues/11) | 63 pts | ✅ Entregado |
 | **R2 — Usabilidad y Calidad** | Momento 2 | 10-18 | [Milestone 2](https://github.com/jaquimbayoc7/health-access-bridge/milestone/2) | [EPICA-02 #12](https://github.com/jaquimbayoc7/health-access-bridge/issues/12) | 24 pts | ✅ Entregado |
-| **R3 — IA Generativa y Cierre** | Momento 3 | 19-27 | [Milestone 3](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) | [EPICA-03 #13](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) | 47 pts | 🔴 Planificado |
+| **R3 — IA Generativa y Cierre** | Momento 3 | 19-27 | [Milestone 3](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) | [EPICA-03 #13](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) | 51 pts | 🔴 Planificado |
 
-**Total del proyecto:** 134 pts · **Completado:** 87 pts (64.9%) · **Pendiente:** 47 pts (35.1%)
+**Total del proyecto:** 138 pts · **Completado:** 87 pts (63.0%) · **Pendiente:** 51 pts (37.0%)
+
+> **Nota (05-oct-2026):** HU-07 se reestimó de 21 a 25 pts tras revisar el Anexo Técnico de la Resolución 1239 de 2022. El Momento 3 pasó de 47 a 51 pts y el total del proyecto de 134 a 138 pts. Las cifras de los reportes anteriores (Insights 1–4, estado del Momento 1) son instantáneas históricas y no se modifican.
 
 ---
 
@@ -90,7 +92,7 @@
 | HU | Descripción | Puntos | Sprint |
 |----|-------------|--------|--------|
 | DEUDA-TÉCNICA-01 | Resolver bottleneck de rendimiento API (ver §5) — *prerrequisito antes de sumar carga del LLM* | — (ver `BACKLOG.md`) | Inicio Sprint 8 |
-| HU-07 | Perfil Funcional ICF con RAG y LLM local para sugerencia de códigos CIF-IA según el Anexo Técnico de la Resolución 1239 de 2022 — sub-historias 07a (servidor y catálogo, 5), 07b (motor y evaluación, 8), 07c (backend, 5), 07d (frontend, 5), 07e (pruebas y docs, 2) | 21 (25 propuestos, pendiente de aprobación) | Sprint 8-9 |
+| HU-07 | Perfil Funcional ICF con RAG y LLM local para sugerencia de códigos CIF-IA según el Anexo Técnico de la Resolución 1239 de 2022 — sub-historias 07a (servidor y catálogo, 5), 07b (motor y evaluación, 8), 07c (backend, 5), 07d (frontend, 5), 07e (pruebas y docs, 2) | 25 (reestimado desde 21, 05-oct-2026) | Sprint 8-9 |
 | HU-08 | Dashboard de Análisis y Exportación | 13 | Sprint 10-11 |
 | HU-09 | Pruebas Completas y Feedback de Usuarios (UAT) | 8 | Sprint 11 |
 | HU-10 | Despliegue Final y Generación de Manuales | 5 | Sprint 12 |
