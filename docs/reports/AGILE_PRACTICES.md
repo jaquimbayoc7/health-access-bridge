@@ -38,7 +38,7 @@
 |-----------|-----------------|-----------|
 | **Product Backlog** | Lista priorizada y ordenada de épicas e historias con story points | [`BACKLOG.md`](../../BACKLOG.md) |
 | **Sprint Backlog** | Tareas técnicas desglosadas por HU dentro de cada sprint | Sección "Tareas" de cada HU en `BACKLOG.md` |
-| **Incremento** | Software potencialmente entregable al final de cada sprint, verificado con despliegue real + pruebas automatizadas | 3 ambientes activos en Render + 87/134 pts con demo funcional |
+| **Incremento** | Software potencialmente entregable al final de cada sprint, verificado con despliegue real + pruebas automatizadas | 3 ambientes activos en Render + 87/138 pts con demo funcional |
 | **Definition of Done (DoD)** | Criterio de cierre explícito por HU (código en main, pruebas pasando, documentación) | Campo "DoD" en cada HU de `BACKLOG.md` |
 | **Definition of Ready (DoR)** | Criterio de entrada al sprint: historia + criterios de aceptación + estimación + sin dependencias bloqueantes | Sección "Definition of Ready" en `BACKLOG.md` |
 | **Burndown / Tablero Kanban** | Estado visual Done / En Progreso / Backlog por HU y story points | Tabla "Tablero Kanban" en `BACKLOG.md` + GitHub Project board ([`projects/1`](https://github.com/users/jaquimbayoc7/projects/1)) |
@@ -52,7 +52,7 @@
 |---------|-------|--------|
 | **Velocity promedio** | 14.5 SP/sprint | Sección "Seguimiento de Sprints" en `docs/presentation/index.html` |
 | **Sprint efficiency** | 100% (SP planificados = SP completados en M1 y M2) | `docs/presentation/index.html` §sprints |
-| **Story points completados** | 87 / 134 (64.9%) | `BACKLOG.md`, `RELEASE_PLAN.md` |
+| **Story points completados** | 87 / 138 (63.0%) | `BACKLOG.md`, `RELEASE_PLAN.md` |
 | **HUs + épicas cerradas** | 11 de 16 issues de GitHub | `INSIGHTS_REPORT3.md` §1 |
 | **Distribución de commits (Conventional Commits)** | `fix` 32.8% · `docs` 28.9% · `feat` 25.8% · `chore` 7.0% · otros 5.5% | `INSIGHTS_REPORT3.md` §3.2 |
 | **Cobertura de pruebas automatizadas** | Backend 44/44 (83% cobertura) · Frontend 16/16 · E2E 7 specs | `PROJECT_STATUS_M2.md`, `docs/test-report.md` |
