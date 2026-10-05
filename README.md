@@ -25,7 +25,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 | **Frontend** | React 18 · TypeScript · Vite · TailwindCSS · shadcn/ui · Recharts · React Query |
 | **Autenticación** | JWT con claims de rol (Admin, Médico) · Bcrypt |
 | **IA Predictiva** | HybridModelDisability (modelo ML embebido) |
-| **Servidor Local ICF** | Servicio on-premise (Ollama + PostgreSQL/pgvector) que, mediante RAG sobre el catálogo CIF-IA y sin fine-tuning, sugiere códigos CIF según el Anexo Técnico de la Resolución 1239 de 2022; el médico acepta, edita o rechaza *(HU-07 — futuro)* |
+| **Servidor Local ICF** | Servicio on-premise (Ollama + PostgreSQL/pgvector) que, mediante RAG sobre el catálogo CIF-IA y sin fine-tuning, sugiere códigos CIF según el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022 (aplicable a toda la población con discapacidad de Colombia); el médico acepta, edita o rechaza *(HU-07 — futuro)* |
 | **Despliegue** | Render · Web Service · PostgreSQL managed |
 | **CI/CD** | GitHub Actions · 3 workflows (dev/qa/prod) |
 

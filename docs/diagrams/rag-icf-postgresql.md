@@ -2,7 +2,7 @@
 
 **Proyecto:** Health Access Bridge · **Momento 3 · HU-07**
 **Objetivo:** que un LLM pequeño (Qwen 3.5 / Gemma 4, ~3B parámetros) sugiera códigos CIF/ICF a partir de los datos del paciente, **sin entrenarlo**, usando solo el estándar CIF como fuente de conocimiento. El médico acepta o edita la sugerencia.
-**Marco normativo:** Anexo Técnico de la Resolución 1239 de 2022 (certificación de discapacidad), que usa la **CIF-IA** (versión infancia y adolescencia, OMS 2011). El perfil de funcionamiento oficial tiene **3 códigos por componente** (funciones b, estructuras s, actividades y participación d), cada uno con calificador. HAB genera un **borrador de apoyo**: el certificado lo emite el equipo multidisciplinario en el aplicativo RLCPD.
+**Marco normativo:** Anexo Técnico de la **Resolución 1239 del 21 de julio de 2022** (procedimiento de certificación de discapacidad y Registro de Localización y Caracterización de Personas con Discapacidad, RLCPD), de aplicación para toda la población con discapacidad de Colombia, que usa la **CIF-IA** (versión infancia y adolescencia, OMS 2011). El perfil de funcionamiento oficial tiene **3 códigos por componente** (funciones b, estructuras s, actividades y participación d), cada uno con calificador. HAB genera un **borrador de apoyo**: el certificado lo emite el equipo multidisciplinario en el aplicativo RLCPD.
 
 ---
 
@@ -218,7 +218,7 @@ El servicio revisa la respuesta del LLM:
 | Estructuras (s) | s750.388 | Estructura de la extremidad inferior | Magnitud 3; naturaleza y localización sin especificar | … | … |
 | … | … | … | … | … | … |
 
-Máximo 3 filas por componente. El reporte indica que es un **borrador de apoyo** (no sustituye el certificado del RLCPD) y cita la Resolución 1239 de 2022.
+Máximo 3 filas por componente. El reporte indica que es un **borrador de apoyo** (no sustituye el certificado del RLCPD) y cita la Resolución 1239 del 21 de julio de 2022.
 
 ---
 
@@ -353,7 +353,7 @@ Revisión de [`BACKLOG.md`](../../BACKLOG.md), sección *Momento 3*:
 2. Se agregó la pantalla "Perfil Funcional ICF" con el flujo de **aceptar/editar/rechazar** del médico.
 3. **Privacidad:** los datos identificables no salen de Render; al servidor local solo viajan datos sin nombre, documento ni orientación sexual. La conexión es por **túnel autenticado** (Cloudflare Tunnel o Tailscale).
 4. HU-07 se dividió en sub-historias 07a–07e.
-5. **Ajustes por el Anexo Técnico de la Resolución 1239 de 2022:** catálogo **CIF-IA** hasta el tercer nivel; salida de **3 códigos por componente (b, s, d)**; **estructuras (s)** con magnitud y naturaleza/localización en 8 por defecto; mapeo explícito de los niveles de HAB (se mantienen) con los dominios oficiales; **diagnóstico CIE y notas opcionales**; lista oficial de causa de deficiencia; aviso para menores de 6 años; y leyenda de borrador de apoyo.
+5. **Ajustes por el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022:** catálogo **CIF-IA** hasta el tercer nivel; salida de **3 códigos por componente (b, s, d)**; **estructuras (s)** con magnitud y naturaleza/localización en 8 por defecto; mapeo explícito de los niveles de HAB (se mantienen) con los dominios oficiales; **diagnóstico CIE y notas opcionales**; lista oficial de causa de deficiencia; aviso para menores de 6 años; y leyenda de borrador de apoyo.
 
 **Limitación conocida:** HAB captura 2 de las 7 categorías de discapacidad del Anexo (física y psicosocial), así que la sugerencia cubrirá mejor lo físico y lo psicosocial que lo visual, auditivo o intelectual.
 
@@ -363,7 +363,7 @@ Revisión de [`BACKLOG.md`](../../BACKLOG.md), sección *Momento 3*:
 
 | Término | Qué es |
 |---|---|
-| **CIF / ICF** | Clasificación Internacional del Funcionamiento, de la Discapacidad y de la Salud (OMS). En Colombia se usa en el procedimiento de certificación de discapacidad (Anexo Técnico de la Resolución 1239 de 2022). |
+| **CIF / ICF** | Clasificación Internacional del Funcionamiento, de la Discapacidad y de la Salud (OMS). En Colombia se usa en el procedimiento de certificación de discapacidad (Resolución 1239 del 21 de julio de 2022, aplicable a toda la población con discapacidad de Colombia). |
 | **CIF-IA** | Versión de la CIF para la infancia y la adolescencia (OMS, 2011); es la referencia que exige el Anexo. |
 | **RLCPD** | Registro de Localización y Caracterización de Personas con Discapacidad; el certificado oficial se genera ahí, no en HAB. |
 | **Perfil de funcionamiento** | Parte del certificado: 3 códigos CIF-IA por componente (funciones, estructuras, actividades y participación), cada uno con calificador. |
