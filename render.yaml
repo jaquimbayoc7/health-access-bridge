@@ -84,6 +84,7 @@ services:
   # ─────────────────────────────────────────
   - type: web
     name: hab-backend-qa
+    autoDeploy: false
     runtime: python
     region: ohio
     branch: staging
@@ -126,6 +127,7 @@ services:
   # ─────────────────────────────────────────
   - type: web
     name: hab-frontend-qa
+    autoDeploy: false
     runtime: static
     branch: staging
     buildCommand: cd frontend && npm ci && npm run build
@@ -145,6 +147,7 @@ services:
   # ─────────────────────────────────────────
   - type: web
     name: hab-backend
+    autoDeploy: false
     runtime: python
     region: ohio
     branch: master
@@ -204,6 +207,7 @@ services:
   # ─────────────────────────────────────────
   - type: web
     name: hab-frontend
+    autoDeploy: false
     runtime: static
     branch: master
     buildCommand: cd frontend && npm ci && npm run build
