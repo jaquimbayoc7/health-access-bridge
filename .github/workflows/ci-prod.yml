@@ -15,11 +15,12 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  workflow_dispatch:
 
 jobs:
   backend-test:
     name: Backend Tests (Prod)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 
     services:
       postgres:
@@ -56,7 +57,7 @@ jobs:
 
   frontend-build:
     name: Frontend Build (Prod)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 
     steps:
       - uses: actions/checkout@v4
@@ -90,7 +91,7 @@ jobs:
 
   deploy-approval:
     name: "🔐 Approval Gate — Deploy to Production"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment: production
     needs: [backend-test, frontend-build]
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
@@ -105,7 +106,7 @@ jobs:
 
   api-smoke-tests-prod:
     name: API Smoke Tests — Render PROD
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [deploy-approval]
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
 

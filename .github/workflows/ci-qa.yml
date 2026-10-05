@@ -16,11 +16,12 @@ on:
     branches: [staging]
   pull_request:
     branches: [staging]
+  workflow_dispatch:
 
 jobs:
   backend-test:
     name: Backend Tests (QA)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment: qa
 
     services:
@@ -64,7 +65,7 @@ jobs:
 
   frontend-build:
     name: Frontend Build (QA)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment: qa
 
     steps:
@@ -99,7 +100,7 @@ jobs:
 
   api-smoke-tests:
     name: API Smoke Tests — Render QA
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [backend-test]
     if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
 
@@ -157,7 +158,7 @@ jobs:
 
   e2e-tests:
     name: E2E Tests (QA)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [frontend-build, api-smoke-tests]
     if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
 
@@ -179,7 +180,7 @@ jobs:
 
   promote-to-production-gate:
     name: "🔐 Approval Gate — Promote QA → Production"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [backend-test, frontend-build, api-smoke-tests, e2e-tests]
     environment: qa-to-prod-approval
     if: github.ref == 'refs/heads/staging' && github.event_name == 'push'

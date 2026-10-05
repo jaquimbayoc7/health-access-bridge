@@ -12,11 +12,12 @@ on:
     branches: [develop]
   pull_request:
     branches: [develop]
+  workflow_dispatch:
 
 jobs:
   backend-test:
     name: Backend Tests (Dev)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment: development
 
     services:
@@ -54,7 +55,7 @@ jobs:
 
   frontend-build:
     name: Frontend Build (Dev)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment: development
 
     steps:
@@ -89,7 +90,7 @@ jobs:
 
   notify-dev-ready:
     name: Notify DEV deploy ready
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [backend-test, frontend-build]
     if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
 
