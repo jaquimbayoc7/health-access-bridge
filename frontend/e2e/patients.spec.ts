@@ -41,9 +41,21 @@ test.describe('Pacientes', () => {
     await page.locator('#fecha_nacimiento').fill('1990-01-01');
     await page.locator('#orientacion_sexual').fill('Heterosexual');
 
+    // El backend QA es una instancia real compartida (Render free tier) y puede
+    // tardar en responder (cold start); se espera explícitamente la respuesta
+    // de creación antes de verificar que el diálogo se cierre.
+    const createResponse = page.waitForResponse(
+      (res) => res.url().includes('/patients/') && res.request().method() === 'POST',
+      { timeout: 30000 }
+    );
     await page.getByRole('button', { name: /guardar|save/i }).click();
+    await createResponse;
 
-    await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 10000 });
-    await expect(page.getByText(documentNumber)).toBeVisible({ timeout: 10000 });
+    // El toast de éxito confirma que la creación se completó del lado del backend
+    // antes que el cierre del diálogo, que puede demorar por el re-render de la
+    // lista (el backend QA compartido acumula muchos pacientes de corridas previas).
+    await expect(page.getByText(/paciente creado|patient created/i)).toBeVisible({ timeout: 15000 });
+    await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 15000 });
+    await expect(page.getByText(documentNumber)).toBeVisible({ timeout: 15000 });
   });
 });

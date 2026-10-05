@@ -16,9 +16,10 @@ criterio de rendimiento (`p95 < 200ms` bajo **200 usuarios concurrentes** simula
 El criterio de latencia **no se cumplió** (p95 real ≈ 55s) — ver hallazgo y
 recomendaciones de escalado en la sección 4.
 
-Durante el desarrollo de esta HU se encontraron y corrigieron **4 bugs reales**
+Durante el desarrollo de esta HU se encontraron y corrigieron **5 bugs reales**
 detectados por las nuevas pruebas de integración (ver sección "Bugs encontrados y
-corregidos").
+corregidos"), incluyendo un hallazgo post-cierre (24-sep-2026) de falsos negativos
+intermitentes en la suite E2E.
 
 ### Métricas actualizadas
 
@@ -28,7 +29,7 @@ corregidos").
 | **Cobertura de código backend** | 83% (`--cov-fail-under=80` ✅) |
 | **Pruebas E2E (Playwright)** | 7 specs nuevos — login, pacientes, predicciones |
 | **Prueba de carga (k6)** | **Ejecutada** contra QA — rampa 0→200 usuarios concurrentes, `p95` real ≈ 55s (❌ no cumple `<200ms`), `error rate` 0.98% (✅ cumple `<1%`) |
-| **Bugs críticos encontrados y corregidos** | 4 |
+| **Bugs críticos encontrados y corregidos** | 5 (1 hallado post-cierre, 24-sep-2026) |
 
 ---
 
@@ -94,6 +95,26 @@ implementado (admin con acceso de supervisión a `GET /patients/`, `403` en vez 
 `404` para pacientes de otro médico, y `204` en vez de `200` para `DELETE`), sin
 modificar el modelo de permisos vigente.
 
+### 🐛 Bug 5 — Falsos negativos intermitentes en E2E por `OnboardingModal` (hallazgo 24-sep-2026)
+**Archivo:** `frontend/e2e/utils.ts`
+`patients.spec.ts` fallaba de forma intermitente en CI contra QA con
+`expect(getByRole('dialog')).not.toBeVisible()` reportando el diálogo siempre
+visible, incluso en el flujo de solo abrir/cancelar (sin backend de por medio).
+Investigado en vivo contra `hab-frontend-qa.onrender.com`: `App.tsx` monta un
+`OnboardingModal` global que abre su propio `Dialog` de bienvenida 600ms después de
+cada carga completa de página (`localStorage.hab_onboarding_done` vacío en cada
+contexto nuevo de Playwright). Como cada test hace `page.goto()` (recarga dura, no
+navegación SPA), ese temporizador se reinicia en cada test; si el flujo tardaba más
+de 600ms, el modal de bienvenida aparecía y `getByRole('dialog')` — que no distingue
+entre diálogos — empezaba a matchear ese modal en vez del diálogo real, que nunca se
+cerraba porque el test no interactuaba con él.  
+**Fix:** se fuerza `localStorage.setItem('hab_onboarding_done', 'true')` vía
+`page.addInitScript()` antes de cada navegación en el helper `loginAsMedico`
+(`frontend/e2e/utils.ts`), deshabilitando el modal para toda la sesión de test.
+Validado con 2 corridas completas y consecutivas del pipeline de QA sin fallos
+(antes: 3/7 tests con reintentos, 12-17s cada uno; después: 7/7 sin reintentos,
+~2s cada uno).
+
 ---
 
 ## 3. Pruebas E2E (Playwright)
@@ -116,9 +137,12 @@ npm run test:e2e
 Integrado en `ci-qa.yml` (job `e2e-tests`), se ejecuta contra
 `https://hab-frontend-qa.onrender.com` tras cada push a `staging`.
 
-> **Nota:** estos specs no pudieron ejecutarse en este entorno de desarrollo (sin
-> Node/Playwright instalado); quedan listos para ejecutarse en CI o localmente. Se
-> recomienda validarlos una vez el pipeline de QA corra por primera vez con esta HU.
+### 3.1 Validación en CI (24-sep-2026)
+
+Tras corregir el hallazgo del `OnboardingModal` (Bug 5, sección 2), el pipeline de
+QA se re-ejecutó **dos veces consecutivas desde cero** (`gh run rerun`) contra el
+backend y frontend reales de QA: **7/7 specs pasando ambas veces**, sin reintentos.
+Se considera la suite E2E validada y estable en CI.
 
 ---
 
@@ -230,8 +254,9 @@ Aun estando exactamente al límite del pool (30 VUs = 30 conexiones), sin cola d
 | Criterio | Estado |
 |---|---|
 | Pruebas automatizadas de integración pasan al 100% | ✅ 44/44 backend |
+| Suite E2E (Playwright) pasa al 100% en CI | ✅ 7/7 specs, validado en 2 corridas consecutivas (24-sep-2026, ver sección 3.1) |
 | API responde en menos de 200ms bajo carga simulada (200 usuarios concurrentes) | ❌ **No cumple** — p95 real: 54.6s (ver sección 4) |
-| No hay bugs críticos bloqueantes | ✅ 4 bugs encontrados y corregidos (ver sección 2) |
+| No hay bugs críticos bloqueantes | ✅ 5 bugs encontrados y corregidos (ver sección 2) |
 | Reporte de pruebas generado y documentado | ✅ Este documento |
 
 > El criterio de rendimiento bajo carga **no se cumple** en la infraestructura actual

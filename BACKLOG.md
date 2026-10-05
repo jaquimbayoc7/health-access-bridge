@@ -3,7 +3,7 @@
 **Proyecto:** Health Access Bridge  
 **Metodología:** SCRUM  
 **Duración Total:** 27 Semanas  
-**Última actualización:** Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada) · DEUDA-01 cerrada con riesgo aceptado (23-sep-2026) · Protección de rama y flujo de PR activados (23-sep-2026) · Ver [`docs/reports/INSIGHTS_REPORT4.md`](docs/reports/INSIGHTS_REPORT4.md) para el detalle completo de esta sesión.
+**Última actualización:** Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada) · DEUDA-01 cerrada con riesgo aceptado (23-sep-2026) · Protección de rama y flujo de PR activados (23-sep-2026) · Hallazgo post-cierre de flakiness E2E corregido y validado en CI (24-sep-2026) · HU-07 redefinida con RAG y dividida en 07a–07e para iniciar Momento 3 (05-oct-2026) · Ver [`docs/reports/INSIGHTS_REPORT4.md`](docs/reports/INSIGHTS_REPORT4.md) para el detalle completo de esta sesión.
 
 ---
 
@@ -21,7 +21,7 @@
 |---------|---------------|-----------|
 | EPICA-01 Estructuración y Diseño | DEUDA-01 Escalado de Rendimiento API (ver §5 Release Plan) | EPICA-03 IA Generativa y Cierre |
 | HU-01 Autenticación y Roles (8 pts) | — | EPICA-03 IA Generativa y Cierre |
-| HU-02 Registro y Precarga de Pacientes (13 pts) | — | HU-07 Servidor Local con LLM Ajustado para Códigos ICF (21 pts) |
+| HU-02 Registro y Precarga de Pacientes (13 pts) | — | HU-07 Perfil Funcional ICF con RAG y LLM local (21 pts, sub-historias 07a–07e) |
 | HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | — |
 | HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | — |
 | — | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
@@ -322,6 +322,7 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 3. ✅ `docs/reports/PROJECT_STATUS_M2.md` generado — Estado del Proyecto para Momento Integrador II posterior a la prueba de carga.
 4. ✅ Prueba de carga repetida a **30 usuarios concurrentes** (límite real del pool) contra QA, 23-sep-2026 — confirma que la CPU, no el pool, es el limitante dominante.
 5. ✅ `docs/reports/INSIGHTS_REPORT4.md` generado — cierre de DEUDA-01, activación de flujo de PR/protección de rama, check de CI de lockfile, sincronización de ramas develop/staging/master.
+6. ✅ **Hallazgo post-cierre (24-sep-2026):** suite E2E (`patients.spec.ts`) fallaba de forma intermitente en CI por un `OnboardingModal` global que compite por `role="dialog"` con los diálogos bajo prueba. Corregido deshabilitando el modal en `frontend/e2e/utils.ts` (Bug 5, ver `docs/test-report.md` §2 y §3.1); validado con 2 corridas completas y consecutivas del pipeline de QA — 7/7 specs sin reintentos.
 
 **DoD:** Reporte de pruebas (`docs/test-report.md`), corrección de bugs críticos.  
 **Estimación:** 8 puntos.  
@@ -363,38 +364,53 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 
 ### Sprint 8 & 9: Servidor Local y Codificación ICF (Semanas 19-22)
 
-#### HU-07: Alistamiento de Servidor Local Físico con LLM Ajustado para Sugerencia de Códigos ICF (Colombia)
-- **Como** Médico / Administrador de TI en sede clínica
-- **Deseo** contar con un servidor físico local, con un modelo LLM instalado y ajustado (fine-tuned) para esta misión, que reciba los datos capturados del paciente y sugiera los códigos de la Clasificación Internacional del Funcionamiento (CIF/ICF) bajo el estándar adoptado en Colombia
-- **Para** operar de forma confiable en sedes con conectividad limitada, mantener el procesamiento de datos clínicos sensibles dentro de la infraestructura local, y obtener sugerencias de codificación con razonamiento en lenguaje natural en vez de un simple mapeo de reglas.
+#### HU-07: Perfil Funcional ICF con RAG y LLM local para Sugerencia de Códigos CIF (Colombia)
+- **Como** Médico
+- **Deseo** generar desde la pantalla "Perfil Funcional ICF" una sugerencia de códigos CIF/ICF a partir de los datos del paciente, sus niveles de actividad D1–D6 y la predicción de barreras, y poder **aceptar, editar o rechazar** cada código sugerido
+- **Para** documentar el perfil funcional bajo el estándar CIF adoptado en Colombia (Resolución 113 de 2020) con razonamiento en lenguaje natural, manteniendo el criterio clínico del médico como decisión final y el procesamiento de IA en un servidor propio.
+
+**Diseño:** [`docs/diagrams/rag-icf-postgresql.md`](docs/diagrams/rag-icf-postgresql.md) — RAG sobre PostgreSQL/pgvector, sin entrenar el modelo.
 
 **Detalles:**
-- **Infraestructura:** Aprovisionar y configurar el servidor físico (SO, GPU/CPU con capacidad de inferencia, dependencias, contenedores) en la sede clínica.
-- **Modelo LLM local:** Instalar un LLM open-weight ejecutable on-premise (ej. vía Ollama / vLLM) y ajustarlo (fine-tuning o RAG con el manual oficial CIF-Colombia) para la tarea específica de sugerir códigos/calificadores ICF a partir de los niveles D1–D6 y la nota clínica del paciente.
-- **Backend local:** Servicio que recibe los datos ICF capturados en HAB, arma el prompt/contexto para el LLM local y devuelve el código/calificador sugerido con su justificación.
-- **Sincronización:** Definir estrategia de sincronización o modo standalone entre el servidor local y el backend en la nube (Render); el LLM y los datos sensibles nunca salen de la red local.
-- **Referencia:** Cargar la tabla oficial de codificación ICF/CIF como catálogo/contexto local para el modelo (RAG) y como respaldo de reglas.
+- **Enfoque (decisión 05-oct-2026):** **RAG sin fine-tuning.** No hay datos etiquetados para entrenar y un modelo de ~3B solo inventaría códigos. En cada consulta se buscan en PostgreSQL los códigos CIF candidatos y se entregan al LLM, que solo puede elegir entre ellos.
+- **Reglas fijas (sin LLM):** los niveles D1–D6 de HAB equivalen a los capítulos d1–d6 de la CIF. El código decide qué capítulos revisar (nivel ≥ 5) y calcula el calificador 0–4 (0–4 → 0, 5–24 → 1, 25–49 → 2, 50–95 → 3, 96–100 → 4). El LLM no decide la gravedad.
+- **Servicio local (`icf-service/`):** FastAPI + Ollama (modelos de generación Qwen y Gemma disponibles en el servidor, más un modelo de embeddings) + PostgreSQL con pgvector y la tabla `icf_codes` (catálogo CIF oficial). Salida del LLM en JSON con lista cerrada de códigos y `temperature 0`; el título de cada código sale del catálogo, nunca del LLM.
+- **Backend en Render:** nueva tabla `icf_suggestions` (columnas simples, compatible con SQLite de los tests), cliente HTTP hacia el servicio local y endpoints para generar, consultar y decidir (aceptar/editar/rechazar) cada sugerencia, con la misma regla de acceso que pacientes (médico solo los suyos, admin supervisa).
+- **Conexión (decisión 05-oct-2026):** túnel autenticado (Cloudflare Tunnel o Tailscale) con token compartido entre Render y el servidor local.
+- **Privacidad:** los datos identificables (nombre, documento) permanecen en Render. Al servicio local solo viajan edad, género, causa, categorías física/psicosocial, niveles D1–D6 y perfil de barreras. Esto reemplaza el criterio anterior de que "los datos nunca salen de la red local".
+- **Frontend:** nueva página `FunctionalProfile` (ruta `/functional-profile`) según el mockup: selector de paciente, datos, niveles, predicción y botón "Generar Perfil Funcional"; panel de reporte con tabla de códigos, calificador y justificación, acciones aceptar/editar/rechazar por fila, y Copiar/Descargar con encabezado "Resolución 113 de 2020".
+- **Fuente del catálogo:** CIF oficial en español (OMS/MinSalud) en PDF/Excel, disponible; se carga con un script único.
+- **Fuera de alcance:** fine-tuning, y usar casos aceptados como ejemplos en el prompt (mejora posterior).
 
 **Criterios de Aceptación:**
-- El servidor local queda operativo y accesible en la red interna de la sede, con el LLM cargado y sirviendo inferencias.
-- Dado un registro de paciente con niveles D1–D6, el LLM local sugiere el código ICF/CIF correspondiente según el estándar colombiano, con una justificación breve.
-- Funciona sin depender de conexión a internet (modelo e inferencia 100% on-premise).
-- Tiempo de respuesta de la inferencia dentro de un umbral aceptable para uso clínico (a definir en pruebas).
-- Documentación de instalación, ajuste del modelo y mantenimiento del servidor.
+- El servidor local queda operativo con el LLM y el catálogo cargados, y es accesible desde el backend de Render solo mediante el túnel autenticado (token inválido → 401).
+- Dado un paciente con niveles D1–D6, el sistema sugiere códigos CIF con calificador y una justificación breve; **100 % de las respuestas con JSON válido y 0 códigos que no existan en el catálogo** sobre el set de referencia validado por un médico.
+- El título de cada código proviene del catálogo oficial y el calificador del cálculo por reglas (ej. d450 se muestra siempre como "Andar").
+- La petición al servicio local **no incluye nombre ni documento** del paciente.
+- El médico puede aceptar, editar o rechazar cada código y la decisión queda guardada con el modelo que la sugirió.
+- Si el servicio local no responde, la pantalla muestra un aviso claro y el resto de la aplicación sigue funcionando.
+- Latencia de la sugerencia dentro de un umbral aceptable para uso clínico (a fijar con el médico durante 07b).
+- Documentación de instalación y mantenimiento del servidor.
 
-**Tareas:**
-- Aprovisionar y configurar el servidor físico (hardware, SO, dependencias, runtime de inferencia).
-- Seleccionar y desplegar el LLM local (ej. Ollama/vLLM con un modelo open-weight adecuado al hardware disponible).
-- Ajustar el modelo para la tarea (fine-tuning y/o RAG) usando el estándar oficial CIF-Colombia como base de conocimiento.
-- Implementar el servicio/endpoint que arma el prompt con los niveles D1–D6 y consulta al LLM local para sugerir el código ICF/CIF.
-- Cargar el catálogo oficial de códigos ICF/CIF-Colombia como contexto/referencia del modelo.
-- Definir y probar la estrategia de sincronización con el backend en la nube.
-- Pruebas de precisión de las sugerencias, disponibilidad y latencia en red local.
-- Documentar instalación, ajuste del modelo y mantenimiento del servidor.
+**Sub-historias (división de HU-07, Sprint 8 & 9):**
 
-**DoD:** Servidor local operativo con el LLM ajustado, sugerencia de códigos ICF/CIF funcionando con datos reales y justificación del modelo, documentación de instalación y ajuste.  
+| ID | Alcance | Pts | Depende de |
+|----|---------|-----|-----------|
+| **HU-07a** | **Servidor local y catálogo:** directorio `icf-service/` con docker-compose (Ollama + PostgreSQL/pgvector), modelos Qwen/Gemma y de embeddings, tabla `icf_codes` y script de carga del catálogo CIF (mínimo d1–d6 completos y funciones corporales b de las causas del seed), túnel autenticado con token | 5 | — |
+| **HU-07b** | **Motor de sugerencia y evaluación (spike de calidad):** reglas de capítulo/calificador, búsqueda híbrida SQL + pgvector, llamada a Ollama con JSON Schema y lista cerrada, validación contra catálogo; set de referencia de 20–30 casos validado por un médico; comparación Qwen vs. Gemma (precisión, JSON válido, códigos inexistentes, latencia p50/p95) y decisión documentada del modelo | 5 | 07a |
+| **HU-07c** | **Backend en Render:** modelo y esquemas `IcfSuggestion`, CRUD, `services/icf_client.py` (túnel, token, timeout, sin nombre/documento), router `icf` con generar/consultar/decidir, variables de entorno por ambiente en `render.yaml`, respuesta 503 si el servicio local no responde, pruebas pytest con cliente mockeado | 5 | 07b (puede avanzar en paralelo con un mock) |
+| **HU-07d** | **Frontend "Perfil Funcional ICF":** página `FunctionalProfile.tsx`, tabla de códigos con aceptar/editar/rechazar, Copiar/Descargar (jsPDF) con encabezado Resolución 113 de 2020, ruta, menú lateral, breadcrumb, claves es/en, servicio de API, estados de carga/error/sin predicción | 4 | contrato de 07c |
+| **HU-07e** | **Pruebas y documentación:** pruebas Vitest de la pantalla, spec E2E con respuesta del servicio mockeada (`page.route`, porque el servicio local no existe en QA/CI), documentación de instalación/mantenimiento, actualización de reportes y página principal | 2 | 07c, 07d |
+
+**Riesgos y supuestos de HU-07:**
+- Los niveles de HAB son por capítulo y la CIF califica por categoría; el calificador de cada categoría se toma del capítulo (aproximación). Por eso el médico puede editarlo.
+- El set de referencia requiere validación médica; sin ella no se puede medir la calidad del motor.
+- Un paciente sin predicción puede generar sugerencias igual (se omite el perfil de barreras del prompt).
+- Si el servidor local o el túnel caen, solo esta función queda afectada.
+
+**DoD:** Servidor local operativo con RAG sobre el catálogo CIF, sugerencias funcionando de punta a punta (frontend, backend, servicio local) con aceptar/editar/rechazar, set de referencia validado por un médico, pruebas en verde en CI y documentación de instalación y mantenimiento.  
 **Estimación:** 21 puntos.
-**Decisión de alcance confirmada (23-sep-2026):** se usará **Ollama** sobre un servidor físico ya disponible (no se comprará hardware nuevo), con un modelo open-weight gratuito (a seleccionar según capacidad del servidor) ajustado vía RAG/fine-tuning con el estándar CIF-Colombia. Esta decisión reduce el riesgo de presupuesto de hardware señalado en `docs/reports/INSIGHTS_REPORT3.md` §11 (punto 5) y desacopla el cómputo del LLM del Web Service de Render (ver nota de DEUDA-01 arriba).
+**Decisión de alcance confirmada (23-sep-2026, refinada el 05-oct-2026):** se usará **Ollama** sobre un servidor físico ya disponible (no se comprará hardware nuevo), con un modelo open-weight gratuito (Qwen o Gemma, a elegir en HU-07b según la evaluación) usando **RAG sobre el estándar CIF-Colombia, sin fine-tuning**. Esta decisión reduce el riesgo de presupuesto de hardware señalado en `docs/reports/INSIGHTS_REPORT3.md` §11 (punto 5) y desacopla el cómputo del LLM del Web Service de Render (ver nota de DEUDA-01 arriba).
 
 ---
 
