@@ -48,7 +48,7 @@ def _start_fake_ollama():
         def do_POST(self):
             body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
             if self.path == "/api/embed":
-                payload = {"embeddings": [[0.01] * 1024]}
+                payload = {"embeddings": [[0.01] * 1024 for _ in body["input"]]}
             else:
                 fmt, content = body.get("format"), {"d": ["d4501"]}
                 if isinstance(fmt, dict):
@@ -101,10 +101,18 @@ def test_evaluate_and_benchmark_scripts_run_end_to_end(conn, monkeypatch, capsys
         assert "--- Resumen ---" in out and "JSON valido del modelo: " in out
         assert "desglose medio ms" in out and "codigos fuera del catalogo: 0" in out
 
+        monkeypatch.setattr(sys, "argv", ["embed_catalog.py", "--rich"])
+        assert _load_script("embed_catalog").main() == 0
+        capsys.readouterr()
+        rich, level2 = conn.execute(
+            "SELECT count(embedding_rich), count(*) FILTER (WHERE level = 2) FROM icf_codes"
+        ).fetchone()
+        assert rich == level2 > 100  # solo los codigos de nivel 2 llevan embedding enriquecido
+
         monkeypatch.setattr(sys, "argv", ["probe_retrieval.py"])
         assert _load_script("probe_retrieval").main() == 0
         out = capsys.readouterr().out
-        assert "Cobertura de las pistas" in out and "expandido" in out and "diverso" in out
+        assert "Cobertura de las pistas" in out and "n2_rico" in out and "b@12" in out and "AVISO" not in out
 
         monkeypatch.setattr(sys, "argv", ["benchmark_llm.py"])
         assert _load_script("benchmark_llm").main() == 0
@@ -141,6 +149,16 @@ def test_vector_search_respects_component_and_level(conn):
         found = repo.search(component, [0.01] * 1024, 8)
         assert len(found) == 8
         assert all(code.startswith(component) and len(code) in (4, 5) for code, _ in found)
+
+
+def test_search_by_level_and_column(conn):
+    from icf.repository import PgRepo
+
+    repo = PgRepo(conn)
+    level2 = repo.search("b", [0.01] * 1024, 10, levels=(2,))
+    assert len(level2) == 10 and all(len(code) == 4 for code, _ in level2)  # 'b730': solo 3 digitos
+    with pytest.raises(ValueError):
+        repo.search("b", [0.01] * 1024, 5, column="embedding; DROP TABLE icf_codes")
 
 
 def test_vector_search_filters_by_chapter_inside_the_query(conn):

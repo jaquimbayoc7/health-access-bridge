@@ -16,6 +16,9 @@ CREATE TABLE IF NOT EXISTS icf_codes (
     embedding   vector(1024)  -- bge-m3
 );
 
+-- Embedding enriquecido de los codigos de nivel 2: titulo + titulos de sus hijos (scripts/embed_catalog.py --rich)
+ALTER TABLE icf_codes ADD COLUMN IF NOT EXISTS embedding_rich vector(1024);
+
 CREATE INDEX IF NOT EXISTS icf_codes_component_chapter_idx ON icf_codes (component, chapter);
 
 -- Mapeo explicito niveles D1-D6 de HAB -> capitulo CIF-IA -> dominio oficial del Anexo 1239
