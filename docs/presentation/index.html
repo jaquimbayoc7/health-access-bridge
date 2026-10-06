@@ -84,7 +84,7 @@ html{scroll-behavior:smooth}
       <p class="text-slate-500 text-base leading-relaxed mb-6 max-w-md">Herramienta para profesionales de la salud que facilita la predicción de barreras de acceso en personas con discapacidad en zonas rurales de Colombia, mediante inteligencia artificial.</p>
       <div class="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-200">
         <div class="flex justify-between text-xs font-medium text-slate-500 mb-2">
-          <span>Avance del proyecto</span><span class="text-primary font-bold">63% completado</span>
+          <span>Avance del proyecto</span><span class="text-primary font-bold">69% completado</span>
         </div>
         <div class="h-3 bg-slate-200 rounded-full overflow-hidden">
           <div id="pbar" class="h-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-1000" style="width:0%"></div>
@@ -92,7 +92,7 @@ html{scroll-behavior:smooth}
         <div class="flex justify-between text-xs text-slate-400 mt-2">
           <span>M1: 100% (63 pts)</span>
           <span class="text-green-600 font-semibold">M2: 100% (24/24 pts) ✅</span>
-          <span>Total: 138 pts</span>
+          <span>M3: 13/57 pts · Total: 144 pts</span>
         </div>
       </div>
       <div class="flex flex-wrap gap-3">
@@ -109,8 +109,8 @@ html{scroll-behavior:smooth}
     </div>
     <div class="grid grid-cols-2 gap-4">
       <div class="bg-primary rounded-2xl p-5 text-white col-span-2">
-        <div class="text-4xl font-bold">87 <span class="text-blue-200 text-xl font-normal">/ 138 pts</span></div>
-        <div class="text-blue-200 text-sm mt-1">Story Points completados — Momento 1 y 2</div>
+        <div class="text-4xl font-bold">100 <span class="text-blue-200 text-xl font-normal">/ 144 pts</span></div>
+        <div class="text-blue-200 text-sm mt-1">Story Points completados — Momentos 1 y 2, y HU-07a y 07b del Momento 3</div>
         <div class="mt-3 flex gap-2 flex-wrap text-xs">
           <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">10 HUs + 2 épicas completadas</span>
           <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">Momento 2 100% ✅</span>
@@ -279,7 +279,7 @@ html{scroll-behavior:smooth}
           <!-- On-Premise LLM Server -->
           <rect x="340" y="436" width="260" height="62" rx="8" fill="#1E293B" stroke="#334155"/>
           <text x="470" y="455" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="white" font-weight="700">🖥️ Servidor ICF On-Premise</text>
-          <text x="470" y="469" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#CBD5E1">Qwen · Ollama + pgvector (RAG)</text>
+          <text x="470" y="469" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#CBD5E1">pgvector (RAG) · Claude Sonnet 5.5 (API)</text>
           <text x="470" y="483" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#CBD5E1">Sugiere códigos CIF-IA (b, s, d) · el médico valida</text>
         </svg>
       </div>
@@ -1204,7 +1204,7 @@ html{scroll-behavior:smooth}
 <section id="roadmap" class="py-16">
   <div class="max-w-7xl mx-auto px-6">
     <h2 class="text-2xl font-bold mb-2 section-title">Roadmap del Proyecto</h2>
-    <p class="text-slate-500 text-sm mb-10 mt-4">27 semanas · 3 Momentos · 138 Story Points</p>
+    <p class="text-slate-500 text-sm mb-10 mt-4">27 semanas · 3 Momentos · 144 Story Points</p>
     <div class="space-y-4">
       <div class="bg-white rounded-xl border-2 border-green-300 p-5 card">
         <div class="flex flex-wrap items-center justify-between mb-3">
@@ -1235,18 +1235,21 @@ html{scroll-behavior:smooth}
       <div class="bg-white rounded-xl border border-slate-200 p-5 opacity-75">
         <div class="flex flex-wrap items-center justify-between mb-3">
           <div><h3 class="font-bold text-slate-800">M3 — Trabajo Integrador III</h3><div class="text-xs text-slate-400">Semanas 19-27</div></div>
-          <div class="flex items-center gap-2"><span class="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full">📋 Pendiente</span><span class="text-slate-500 font-bold">51 pts</span></div>
+          <div class="flex items-center gap-2"><span class="bg-cyan-100 text-cyan-700 text-xs px-3 py-1 rounded-full">🟡 En progreso · 13 completados</span><span class="text-slate-500 font-bold">57 pts</span></div>
         </div>
         <div class="flex flex-wrap gap-1.5 text-xs">
           <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ DEUDA-01 Rendimiento API — cerrada 23-sep (riesgo aceptado)</span>
           <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ E2E estabilizado — flakiness de OnboardingModal corregida 24-sep</span>
           <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ Decisiones 05-oct: Res. 1239 del 21-jul-2022 · niveles HAB con mapeo explícito · estructuras (s) · diagnóstico CIE y notas opcionales</span>
-          <span class="bg-cyan-50 text-cyan-700 px-2 py-0.5 rounded">HU-07 Perfil Funcional ICF — RAG + LLM local (25 pts)</span>
-          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">07a Servidor + catálogo CIF-IA (5)</span>
-          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">07b Motor RAG + evaluación (8)</span>
+          <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ 06-oct: pruebas con servidor físico y Qwen — el modelo local no mejora la selección (24–46 s) → modelo externo Claude Sonnet 5.5</span>
+          <span class="bg-cyan-50 text-cyan-700 px-2 py-0.5 rounded">HU-07 Perfil Funcional ICF — RAG + LLM externo (31 pts)</span>
+          <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ 07a Servidor + catálogo CIF-IA (5)</span>
+          <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ 07b Motor RAG + evaluación (8)</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">07c Backend (5)</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">07d Frontend (5)</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">07e Pruebas y docs (2)</span>
+          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">07f Modelo externo + comparación (3)</span>
+          <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">07g Validación clínica (3)</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-08 Dashboard+ (13)</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-09 UAT (8)</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-10 Deploy Final (5)</span>
@@ -1814,7 +1817,7 @@ html{scroll-behavior:smooth}
       </div>
       <div class="bg-white rounded-xl p-5 border border-slate-200 card">
         <div class="font-semibold text-slate-800 mb-2">Cómo lo trabajamos en HAB</div>
-        <div class="text-slate-600">Reglas fijas calculan capítulo y calificador a partir de D1–D6. Una búsqueda sobre el catálogo propone candidatos y un LLM local elige solo entre ellos. El médico acepta, edita o rechaza cada código.</div>
+        <div class="text-slate-600">Reglas fijas calculan capítulo y calificador a partir de D1–D6. Una búsqueda sobre el catálogo propone candidatos y un LLM externo (Claude Sonnet 5.5) elige solo entre ellos; las pruebas con un modelo local de 3B no mejoraron la selección. El médico acepta, edita o rechaza cada código.</div>
       </div>
       <div class="bg-white rounded-xl p-5 border border-slate-200 card">
         <div class="font-semibold text-slate-800 mb-2">Límites claros</div>
@@ -1882,7 +1885,7 @@ html{scroll-behavior:smooth}
 <script>
   // Progress bar animation
   window.addEventListener('load', () => {
-    setTimeout(() => { document.getElementById('pbar').style.width = '63%'; }, 300);
+    setTimeout(() => { document.getElementById('pbar').style.width = '69%'; }, 300);
   });
 
   // Chart.js language donut
