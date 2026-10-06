@@ -89,6 +89,11 @@ def test_evaluate_and_benchmark_scripts_run_end_to_end(conn, monkeypatch, capsys
         monkeypatch.setenv("ICF_DATABASE_URL", URL)
         monkeypatch.setenv("OLLAMA_URL", f"http://127.0.0.1:{server.server_port}")
 
+        monkeypatch.setattr(sys, "argv", ["evaluate.py", "--ids", "C02,C03", "--verbose"])
+        assert _load_script("evaluate").main() == 0
+        out = capsys.readouterr().out
+        assert "casos: 2" in out and "actividades" in out and "Andar" in out or "Permanecer" in out
+
         monkeypatch.setattr(sys, "argv", ["evaluate.py", "--limit", "6"])
         assert _load_script("evaluate").main() == 0
         out = capsys.readouterr().out

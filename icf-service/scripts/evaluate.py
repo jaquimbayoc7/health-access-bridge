@@ -45,6 +45,8 @@ def main() -> int:
     ap.add_argument("--cases", type=Path, default=DEFAULT_CASES)
     ap.add_argument("--output", type=Path, help="guarda el informe completo en JSON")
     ap.add_argument("--limit", type=int, help="solo los primeros N casos")
+    ap.add_argument("--ids", help="solo estos casos, separados por coma (ej. C02,C03)")
+    ap.add_argument("--verbose", action="store_true", help="muestra codigo, titulo y calificador de cada sugerencia")
     args = ap.parse_args()
 
     settings = load_settings()
@@ -52,6 +54,9 @@ def main() -> int:
         print("Falta ICF_DATABASE_URL", file=sys.stderr)
         return 2
     cases = json.loads(args.cases.read_text(encoding="utf-8"))["cases"]
+    if args.ids:
+        wanted = {i.strip() for i in args.ids.split(",")}
+        cases = [c for c in cases if c["id"] in wanted]
     if args.limit:
         cases = cases[: args.limit]
 
@@ -105,6 +110,13 @@ def main() -> int:
             print(f"{case['id']:<4} {res.latency_ms:>6} ms [{detail}] {flag:<8} {summary or res.message or '-'}")
             if res.llm_error:
                 print(f"       error del modelo: {res.llm_error}")
+            if args.verbose:
+                p = case["patient"]
+                print(f"       {case.get('description', '')} | dx: {p.get('diag_cie', '-')} | niveles: {p.get('levels')}")
+                for comp, label in (("d", "actividades"), ("b", "funciones"), ("s", "estructuras")):
+                    for item in by_comp[comp]:
+                        q = item.qualifier if item.qualifier is not None else "?"
+                        print(f"         {label:<11} {item.code:<7} .{q}  {item.title}  [{item.origin}]")
 
     invoked = llm_ok + llm_failed
     print("\n--- Resumen ---")
