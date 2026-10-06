@@ -1,7 +1,7 @@
 # Cómo funciona la sugerencia de códigos CIF/ICF con RAG en PostgreSQL
 
 **Proyecto:** Health Access Bridge · **Momento 3 · HU-07**
-**Objetivo:** que un LLM pequeño (Qwen 3.5 / Gemma 4, ~3B parámetros) sugiera códigos CIF/ICF a partir de los datos del paciente, **sin entrenarlo**, usando solo el estándar CIF como fuente de conocimiento. El médico acepta o edita la sugerencia.
+**Objetivo:** que un LLM pequeño (Qwen `qwen2.5:3b`, ~3B parámetros) sugiera códigos CIF/ICF a partir de los datos del paciente, **sin entrenarlo**, usando solo el estándar CIF como fuente de conocimiento. El médico acepta o edita la sugerencia.
 **Marco normativo:** Anexo Técnico de la **Resolución 1239 del 21 de julio de 2022** (procedimiento de certificación de discapacidad y Registro de Localización y Caracterización de Personas con Discapacidad, RLCPD), de aplicación para toda la población con discapacidad de Colombia, que usa la **CIF-IA** (versión infancia y adolescencia, OMS 2011). El perfil de funcionamiento oficial tiene **3 códigos por componente** (funciones b, estructuras s, actividades y participación d), cada uno con calificador. HAB genera un **borrador de apoyo**: el certificado lo emite el equipo multidisciplinario en el aplicativo RLCPD.
 
 ---
@@ -37,7 +37,7 @@ flowchart TB
             CAT[("tabla icf_codes<br/>catálogo CIF-IA (hasta nivel 3)<br/>+ embeddings")]
         end
         EMB["Ollama<br/>modelo de embeddings<br/>(bge-m3)"]
-        LLM["Ollama<br/>LLM Qwen 3.5 / Gemma 4"]
+        LLM["Ollama<br/>LLM Qwen qwen2.5:3b"]
         VAL["⑤ Validación<br/>contra catálogo"]
     end
 
@@ -295,7 +295,7 @@ erDiagram
         int qualifier_cl "solo s: localización, 8 por defecto"
         text justification "texto del LLM"
         string status "sugerido, aceptado, editado, rechazado"
-        string model "qwen3.5 o gemma4, para auditoría"
+        string model "qwen2.5:3b, para auditoría"
         string diag_cie "instantánea de entrada, opcional"
         text clinical_notes "instantánea de entrada, opcional"
         datetime created_at
