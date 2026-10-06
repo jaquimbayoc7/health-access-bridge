@@ -73,7 +73,8 @@ def main() -> int:
             patient = PatientContext(**case["patient"])
             fns = OllamaFns(settings)
             res = suggest(
-                patient, repo, fns.embed, fns.chat, settings.llm_model, stats=fns.stats, use_llm=settings.use_llm
+                patient, repo, fns.embed, fns.chat, settings.llm_model, stats=fns.stats, use_llm=settings.use_llm,
+                body_candidates=settings.body_candidates, justify=settings.justify,
             )
             if res.applicable:
                 latencies.append(res.latency_ms)
@@ -121,7 +122,11 @@ def main() -> int:
     invoked = llm_ok + llm_failed
     print("\n--- Resumen ---")
     print(f"casos: {len(cases)} | aplicables: {len(latencies)}")
-    print(f"modo: {'con modelo (b y s)' if settings.use_llm else 'solo similitud (ICF_USE_LLM=false)'}")
+    print(
+        f"modo: {settings.mode} ({settings.body_candidates} candidatos, "
+        f"{'con justificacion' if settings.justify else 'solo codigos'})"
+        + ("" if settings.use_llm else " | SIN modelo (ICF_USE_LLM=false)")
+    )
     print(f"JSON valido del modelo: {llm_ok}/{invoked}" + (f" ({llm_ok / invoked:.0%})" if invoked else ""))
     print(f"codigos fuera del catalogo: {invalid_codes}")
     if latencies:

@@ -46,4 +46,5 @@ def post_suggest(patient: PatientContext):
         return suggest(
             patient, PgRepo(conn), fns.embed, fns.chat, settings.llm_model,
             stats=fns.stats, use_llm=settings.use_llm,
+            body_candidates=settings.body_candidates, justify=settings.justify,
         )

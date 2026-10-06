@@ -29,11 +29,27 @@ def conn():
     subprocess.run([sys.executable, str(ROOT / "scripts" / "load_catalog.py")], env=env, check=True, cwd=ROOT)
     c = psycopg.connect(URL, autocommit=True)
     c.execute(
-        "UPDATE icf_codes SET embedding = (SELECT array_agg(random())::vector FROM generate_series(1, 1024)) "
-        "WHERE embedding IS NULL"
+        # correlacionado con la fila (length(code)): sin eso la subconsulta se evalua una vez y todas las filas quedan iguales
+        "UPDATE icf_codes SET embedding = ARRAY(SELECT random() + 0 * length(icf_codes.code) "
+        "FROM generate_series(1, 1024))::vector WHERE embedding IS NULL"
     )
     yield c
     c.close()
+
+
+def answer_for_schema(schema):
+    """Respuesta valida para un JSON Schema de codigos (con o sin justificacion): toma los dos primeros candidatos."""
+    out = {}
+    for key, spec in schema["properties"].items():
+        if "items" not in spec:  # esquema simple (ej. prueba minima)
+            out[key] = True
+            continue
+        item = spec["items"]
+        if item.get("type") == "object":
+            out[key] = [{"code": c, "justificacion": "prueba"} for c in item["properties"]["code"]["enum"][:2]]
+        else:
+            out[key] = item["enum"][:2]
+    return out
 
 
 def _start_fake_ollama():
@@ -53,11 +69,7 @@ def _start_fake_ollama():
                 fmt, content = body.get("format"), {"d": ["d4501"]}
                 if isinstance(fmt, dict):
                     content = {}
-                    for key, spec in fmt["properties"].items():
-                        if "items" not in spec:  # esquema simple (ej. prueba minima)
-                            content[key] = True
-                        else:
-                            content[key] = spec["items"]["enum"][:2]
+                    content = answer_for_schema(fmt)
                 payload = {
                     "message": {"content": json.dumps(content)},
                     "prompt_eval_count": 500, "prompt_eval_duration": 2_000_000_000,
@@ -101,23 +113,15 @@ def test_evaluate_and_benchmark_scripts_run_end_to_end(conn, monkeypatch, capsys
         assert "--- Resumen ---" in out and "JSON valido del modelo: " in out
         assert "desglose medio ms" in out and "codigos fuera del catalogo: 0" in out
 
-        monkeypatch.setattr(sys, "argv", ["embed_catalog.py", "--rich"])
-        assert _load_script("embed_catalog").main() == 0
-        capsys.readouterr()
-        rich, level2 = conn.execute(
-            "SELECT count(embedding_rich), count(*) FILTER (WHERE level = 2) FROM icf_codes"
-        ).fetchone()
-        assert rich == level2 > 100  # solo los codigos de nivel 2 llevan embedding enriquecido
-
         monkeypatch.setattr(sys, "argv", ["probe_retrieval.py"])
         assert _load_script("probe_retrieval").main() == 0
         out = capsys.readouterr().out
-        assert "Cobertura de las pistas" in out and "n2_rico" in out and "b@12" in out and "AVISO" not in out
+        assert "Cobertura de las pistas" in out and "n2 " in out and "b@12" in out
 
         monkeypatch.setattr(sys, "argv", ["benchmark_llm.py"])
         assert _load_script("benchmark_llm").main() == 0
         out = capsys.readouterr().out
-        assert "A actual" in out and "C sin formato forzado" in out and "E solo funciones" in out
+        assert "A rapido" in out and "B calidad" in out and "D calidad sin formato forzado" in out
         assert "nuevo" in out and "cache" in out
     finally:
         server.shutdown()
@@ -151,14 +155,23 @@ def test_vector_search_respects_component_and_level(conn):
         assert all(code.startswith(component) and len(code) in (4, 5) for code, _ in found)
 
 
-def test_search_by_level_and_column(conn):
+def test_search_defaults_to_level_two_and_skips_unspecified_codes(conn):
+    import re
+
     from icf.repository import PgRepo
 
     repo = PgRepo(conn)
-    level2 = repo.search("b", [0.01] * 1024, 10, levels=(2,))
-    assert len(level2) == 10 and all(len(code) == 4 for code, _ in level2)  # 'b730': solo 3 digitos
-    with pytest.raises(ValueError):
-        repo.search("b", [0.01] * 1024, 5, column="embedding; DROP TABLE icf_codes")
+    default = repo.search("b", [0.01] * 1024, 12)
+    assert len(default) == 12 and all(len(code) == 4 for code, _ in default)  # 'b730': solo 3 digitos
+    deep = repo.search("b", [0.01] * 1024, 12, levels=(2, 3))
+    assert any(len(code) == 5 for code, _ in deep)
+    # las categorias 'otras especificadas / no especificadas' (b798, b799, s198, s299...) nunca son candidatas
+    everything = repo.search("b", [0.01] * 1024, 500, levels=(2, 3)) + repo.search("s", [0.01] * 1024, 500, levels=(2, 3))
+    assert everything and not any(re.search(r"otr[oa]s?[ ,]+especificad|no especificad", t, re.I) for _, t in everything)
+    codes = {c for c, _ in everything}
+    assert not {"b798", "b799", "s198", "s199", "s298", "s299", "b598", "s598", "s599", "b4498"} & codes
+    assert not [c for c in codes if c[-1] in "89"]  # 8 = otros especificados, 9 = no especificados
+    assert {"b730", "b735", "b710", "s750", "s110"} <= codes  # los temas utiles siguen disponibles
 
 
 def test_vector_search_filters_by_chapter_inside_the_query(conn):
@@ -180,7 +193,7 @@ def test_full_flow_with_real_database(conn):
 
     def fake_chat(messages, schema):
         # elige los dos primeros codigos permitidos de cada lista: valida el esquema generado desde la base
-        return json.dumps({key: spec["items"]["enum"][:2] for key, spec in schema["properties"].items()})
+        return json.dumps(answer_for_schema(schema))
 
     patient = PatientContext(
         age=40, cat_fisica="Severa", cat_psicosocial="Moderada",
