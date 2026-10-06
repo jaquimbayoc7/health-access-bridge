@@ -77,9 +77,10 @@ Evaluación con el set de referencia (`reference/cases.json`, 25 casos sintétic
 sudo docker run --rm --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/evaluate.py --output informe.json
 ```
 
-Calidad de la búsqueda de funciones y estructuras: compara 4 formas de armar el texto de búsqueda (actual, solo lo clínico, expandido por el modelo y diverso por capítulo) y mide cuántas de las pistas orientativas de `reference/retrieval_hints.json` quedan entre los 6 candidatos (no es precisión clínica; las pistas no están validadas por un médico):
+Calidad de la búsqueda de funciones y estructuras: compara 4 formas de buscar (texto actual, solo lo clínico, solo códigos de 3 dígitos y 3 dígitos con embedding enriquecido con los títulos de sus hijos) y mide cuántas de las pistas orientativas de `reference/retrieval_hints.json` quedan entre los 6 y los 12 primeros candidatos (no es precisión clínica; las pistas no están validadas por un médico). Primero hay que calcular el embedding enriquecido (unos 150 códigos, menos de un minuto):
 
 ```bash
+sudo docker run --rm --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/embed_catalog.py --rich
 sudo docker run --rm --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/probe_retrieval.py
 ```
 
