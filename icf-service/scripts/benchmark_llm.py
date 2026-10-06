@@ -59,13 +59,15 @@ def main() -> int:
             t0 = time.perf_counter()
             text = ollama.chat_json(s.ollama_url, s.llm_model, msgs, schema, s.keep_alive, 180, stats=stats, num_ctx=num_ctx)
             wall = round((time.perf_counter() - t0) * 1000)
+            ev = stats.get("eval_ms") or 1
+            # 1.a llamada = prompt nuevo (lo que ve un paciente real); 2.a = Ollama reutiliza el prompt en cache.
+            label = "nuevo" if attempt == 1 else "cache"
+            print(
+                f"{name:<34} {label:<5} total {wall:>6} ms | lee {stats.get('prompt_eval_count', '?'):>4} tok en {stats.get('prompt_eval_ms', '?'):>6} ms"
+                f" | escribe {stats.get('eval_count', '?'):>4} tok en {stats.get('eval_ms', '?'):>6} ms"
+                f" ({round(stats.get('eval_count', 0) / (ev / 1000), 1)} tok/s) | carga {stats.get('load_ms', '?')} ms"
+            )
             if attempt == 2:
-                ev = stats.get("eval_ms") or 1
-                print(
-                    f"{name:<34} total {wall:>6} ms | prompt {stats.get('prompt_eval_count', '?'):>4} tok en {stats.get('prompt_eval_ms', '?'):>6} ms"
-                    f" | salida {stats.get('eval_count', '?'):>4} tok en {stats.get('eval_ms', '?'):>6} ms"
-                    f" ({round(stats.get('eval_count', 0) / (ev / 1000), 1)} tok/s) | carga {stats.get('load_ms', '?')} ms"
-                )
                 return text
 
     ident = lambda sc: sc  # noqa: E731

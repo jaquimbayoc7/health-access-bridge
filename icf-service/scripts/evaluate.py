@@ -94,6 +94,12 @@ def main() -> int:
             summary = ", ".join(f"{c}:" + "/".join(i.code for i in items) for c, items in by_comp.items() if items)
             flag = "LLM" if res.llm_used else ("sin-LLM" if res.applicable else "n/a")
             detail = " ".join(f"{k}={v}" for k, v in res.timings.items())
+            st = res.llm_stats
+            if st:
+                detail += (
+                    f" | lee {st.get('prompt_eval_count')}t en {st.get('prompt_eval_ms')}ms"
+                    f" | escribe {st.get('eval_count')}t en {st.get('eval_ms')}ms | carga {st.get('load_ms')}ms"
+                )
             print(f"{case['id']:<4} {res.latency_ms:>6} ms [{detail}] {flag:<8} {summary or res.message or '-'}")
             if res.llm_error:
                 print(f"       error del modelo: {res.llm_error}")
