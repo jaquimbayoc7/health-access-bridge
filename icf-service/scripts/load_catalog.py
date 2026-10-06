@@ -31,7 +31,7 @@ def main() -> int:
     codes = parse_catalog(args.catalog)
     problems = validate(codes)
     known = {c.code for c in codes}
-    missing = [code for _, code in ANNEX_CANDIDATES if code not in known]
+    missing = [code for _, code, _ in ANNEX_CANDIDATES if code not in known]
     problems += [f"candidato del Anexo ausente del catalogo: {code}" for code in missing]
     print(f"{len(codes)} codigos leidos de {args.catalog}")
     if problems:
@@ -73,10 +73,11 @@ def main() -> int:
                 [(d.hab_domain, d.chapter_code, d.chapter_name, d.official_domain, d.note) for d in HAB_DOMAINS],
             )
             cur.executemany(
-                """INSERT INTO icf_domain_map (official_domain, code, hab_domain)
-                   VALUES (%s, %s, %s)
-                   ON CONFLICT (official_domain, code) DO UPDATE SET hab_domain = EXCLUDED.hab_domain""",
-                [(dom, code, hab_domain_of(code)) for dom, code in ANNEX_CANDIDATES],
+                """INSERT INTO icf_domain_map (official_domain, code, hab_domain, ages)
+                   VALUES (%s, %s, %s, %s)
+                   ON CONFLICT (official_domain, code) DO UPDATE SET
+                     hab_domain = EXCLUDED.hab_domain, ages = EXCLUDED.ages""",
+                [(dom, code, hab_domain_of(code), ages) for dom, code, ages in ANNEX_CANDIDATES],
             )
         conn.commit()
         n = conn.execute("SELECT count(*) FROM icf_codes").fetchone()[0]

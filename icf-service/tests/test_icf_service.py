@@ -92,4 +92,18 @@ def test_real_catalog_is_consistent():
     # d450 siempre es "Andar" (el error del mockup que el RAG debe evitar).
     assert by_code["d450"].title == "Andar"
     # Todos los candidatos del Anexo ya confirmados existen.
-    assert all(code in by_code for _, code in ANNEX_CANDIDATES)
+    assert all(code in by_code for _, code, _ in ANNEX_CANDIDATES)
+    # El perfil solo lleva b, s y d: no hay factores ambientales entre los candidatos.
+    assert all(not code.startswith("e") for _, code, _ in ANNEX_CANDIDATES)
+
+
+def test_annex_candidates_structure():
+    assert len(ANNEX_CANDIDATES) == len({(d, c) for d, c, _ in ANNEX_CANDIDATES})
+    assert {a for _, _, a in ANNEX_CANDIDATES} == {"both", "6-17", "18+"}
+    assert {d for d, _, _ in ANNEX_CANDIDATES} == {
+        "Cognicion", "Movilidad", "Cuidado personal", "Relaciones",
+        "Actividades cotidianas", "Participacion",
+    }
+    by_age = {a: [c for _, c, x in ANNEX_CANDIDATES if x == a] for a in ("6-17", "18+")}
+    assert by_age["6-17"] == ["d520", "d740"]
+    assert by_age["18+"] == ["d7702", "d850", "d570", "d879", "d940"]

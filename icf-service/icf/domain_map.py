@@ -26,21 +26,50 @@ HAB_DOMAINS: List[HabDomain] = [
     HabDomain("D6", "d6", "Vida domestica", "Actividades cotidianas", "d640 (tareas domesticas)"),
 ]
 
-# Candidatos del Anexo 1239 ya confirmados (dominio oficial, codigo).
-# PENDIENTE: transcribir el resto de las tablas 7-9 y 11 del Anexo revisando el original.
-ANNEX_CANDIDATES: List[Tuple[str, str]] = [
-    ("Movilidad", "d4154"),
-    ("Movilidad", "d4104"),
-    ("Movilidad", "d4600"),
-    ("Movilidad", "d4602"),
-    ("Movilidad", "d4501"),
-    ("Cognicion", "b1400"),
-    ("Cognicion", "d161"),
-    ("Cognicion", "b144"),
-    ("Cognicion", "d175"),
-    ("Cognicion", "d155"),
-    ("Cognicion", "d310"),
-    ("Cognicion", "d350"),
+# Candidatos del Anexo 1239 por dominio oficial: codigos CIF-IA de las preguntas de las tablas 9
+# (6 a 17 anios) y 11 (WHODAS, 18 anios o mas), transcritos del original (resolucion del 21-jul-2022,
+# hojas 29-33). Ages: "6-17" solo tabla 9, "18+" solo tabla 11, "both" en ambas.
+# No se incluyen codigos de factores ambientales (e150, e155, e4): quedan fuera del perfil (solo b, s, d).
+# Las tablas 7 y 8 (0-5 anios) no aplican: para menores de 6 anios no se calculan niveles por dominio.
+ANNEX_CANDIDATES: List[Tuple[str, str, str]] = [
+    # D1 Cognicion
+    ("Cognicion", "b1400", "both"),
+    ("Cognicion", "d161", "both"),
+    ("Cognicion", "b144", "both"),
+    ("Cognicion", "d175", "both"),
+    ("Cognicion", "d155", "both"),
+    ("Cognicion", "d310", "both"),
+    ("Cognicion", "d350", "both"),
+    # D2 Movilidad
+    ("Movilidad", "d4154", "both"),
+    ("Movilidad", "d4104", "both"),
+    ("Movilidad", "d4600", "both"),
+    ("Movilidad", "d4602", "both"),
+    ("Movilidad", "d4501", "both"),
+    # D3 Cuidado personal
+    ("Cuidado personal", "d510", "both"),
+    ("Cuidado personal", "d520", "6-17"),
+    ("Cuidado personal", "d540", "both"),
+    ("Cuidado personal", "d550", "both"),
+    ("Cuidado personal", "d598", "both"),
+    # D4 Relaciones
+    ("Relaciones", "d730", "both"),
+    ("Relaciones", "d7500", "both"),
+    ("Relaciones", "d760", "both"),
+    ("Relaciones", "d740", "6-17"),
+    ("Relaciones", "d7702", "18+"),
+    # D5 Actividades cotidianas (tareas domesticas, escuela y trabajo)
+    ("Actividades cotidianas", "d640", "both"),
+    ("Actividades cotidianas", "d820", "both"),
+    ("Actividades cotidianas", "d825", "both"),
+    ("Actividades cotidianas", "d830", "both"),
+    ("Actividades cotidianas", "d850", "18+"),
+    # D6 Participacion
+    ("Participacion", "d910", "both"),
+    ("Participacion", "d920", "both"),
+    ("Participacion", "d570", "18+"),
+    ("Participacion", "d879", "18+"),
+    ("Participacion", "d940", "18+"),
 ]
 
 

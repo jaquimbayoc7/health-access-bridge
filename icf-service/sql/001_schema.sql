@@ -34,3 +34,5 @@ CREATE TABLE IF NOT EXISTS icf_domain_map (
     hab_domain      CHAR(2) REFERENCES icf_hab_domains (hab_domain),
     PRIMARY KEY (official_domain, code)
 );
+-- Grupo de edad del instrumento del Anexo donde aparece el codigo: '6-17', '18+' o 'both'
+ALTER TABLE icf_domain_map ADD COLUMN IF NOT EXISTS ages TEXT NOT NULL DEFAULT 'both';
