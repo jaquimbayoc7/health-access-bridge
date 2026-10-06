@@ -54,16 +54,10 @@ def _start_fake_ollama():
                 if isinstance(fmt, dict):
                     content = {}
                     for key, spec in fmt["properties"].items():
-                        if "items" not in spec:  # esquema simple de la linea base
+                        if "items" not in spec:  # esquema simple (ej. prueba minima)
                             content[key] = True
-                            continue
-                        item = spec["items"]
-                        if key == "d":
-                            content["d"] = item["enum"][:2]
-                        elif item.get("type") == "string":
-                            content[key] = item["enum"][:2]
                         else:
-                            content[key] = [{"code": item["properties"]["code"]["enum"][0], "justificacion": "x"}]
+                            content[key] = spec["items"]["enum"][:2]
                 payload = {
                     "message": {"content": json.dumps(content)},
                     "prompt_eval_count": 500, "prompt_eval_duration": 2_000_000_000,
@@ -104,7 +98,8 @@ def test_evaluate_and_benchmark_scripts_run_end_to_end(conn, monkeypatch, capsys
         monkeypatch.setattr(sys, "argv", ["benchmark_llm.py"])
         assert _load_script("benchmark_llm").main() == 0
         out = capsys.readouterr().out
-        assert "A actual" in out and "F sin formato forzado" in out and "linea base" in out
+        assert "A actual" in out and "C sin formato forzado" in out and "E solo funciones" in out
+        assert "nuevo" in out and "cache" in out
     finally:
         server.shutdown()
 
@@ -143,14 +138,8 @@ def test_full_flow_with_real_database(conn):
     from icf.suggest import suggest
 
     def fake_chat(messages, schema):
-        # elige el primer codigo permitido de cada lista: valida el esquema generado desde la base
-        out = {}
-        for key, spec in schema["properties"].items():
-            if key == "d":
-                out["d"] = spec["items"]["enum"][:2]
-            else:
-                out[key] = [{"code": spec["items"]["properties"]["code"]["enum"][0], "justificacion": "prueba"}]
-        return json.dumps(out)
+        # elige los dos primeros codigos permitidos de cada lista: valida el esquema generado desde la base
+        return json.dumps({key: spec["items"]["enum"][:2] for key, spec in schema["properties"].items()})
 
     patient = PatientContext(
         age=40, cat_fisica="Severa", cat_psicosocial="Moderada",
@@ -163,3 +152,19 @@ def test_full_flow_with_real_database(conn):
     for item in res.activities + res.functions + res.structures:
         assert item.code in known and item.title
     assert all(1 <= a.qualifier <= 4 for a in res.activities)
+    # d sale de la lista del Anexo (D4 y D5 para este paciente), con calificador mas alto primero
+    assert res.activities[0].qualifier == 3 and res.activities[0].origin == "similarity"
+    assert res.timings.keys() >= {"embed", "rank", "search", "llm"}
+
+
+def test_rank_codes_orders_by_distance_and_keeps_missing_last(conn):
+    from icf.repository import PgRepo
+
+    repo = PgRepo(conn)
+    conn.execute("UPDATE icf_codes SET embedding = NULL WHERE code = 'd4154'")
+    conn.execute(
+        "UPDATE icf_codes SET embedding = (SELECT array_agg(0.5)::vector FROM generate_series(1, 1024)) WHERE code = 'd4501'"
+    )
+    ranked = repo.rank_codes(["d4154", "d4600", "d4501"], [0.5] * 1024)
+    assert ranked[0] == "d4501" and ranked[-1] == "d4154" and set(ranked) == {"d4154", "d4600", "d4501"}
+    assert repo.rank_codes([], [0.5] * 1024) == []

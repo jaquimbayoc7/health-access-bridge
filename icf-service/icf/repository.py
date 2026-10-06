@@ -11,6 +11,8 @@ class Repo(Protocol):
 
     def search(self, component: str, embedding: Sequence[float], limit: int) -> List[Pair]: ...
 
+    def rank_codes(self, codes: Sequence[str], embedding: Sequence[float]) -> List[str]: ...
+
 
 class PgRepo:
     def __init__(self, conn):
@@ -37,6 +39,20 @@ class PgRepo:
             (chapter,),
         ).fetchall()
         return [(code, title) for code, title in rows]
+
+    def rank_codes(self, codes: Sequence[str], embedding: Sequence[float]) -> List[str]:
+        """Ordena los codigos dados por cercania al vector; los que no tienen embedding quedan al final."""
+        if not codes:
+            return []
+        vector = "[" + ",".join(str(x) for x in embedding) + "]"
+        rows = self.conn.execute(
+            """SELECT code FROM icf_codes
+               WHERE code = ANY(%s) AND embedding IS NOT NULL
+               ORDER BY embedding <=> %s::vector""",
+            (list(codes), vector),
+        ).fetchall()
+        ranked = [code for (code,) in rows]
+        return ranked + [code for code in codes if code not in ranked]
 
     def search(self, component: str, embedding: Sequence[float], limit: int) -> List[Pair]:
         """Categorias de nivel 2 y 3 mas cercanas al vector (distancia coseno)."""

@@ -16,6 +16,7 @@ D4 = [
     ("d4501", "Andar distancias largas"),
 ]
 D1 = [("d155", "Adquisicion de habilidades"), ("d161", "Dirigir la atencion"), ("d175", "Resolver problemas")]
+D5 = [("d510", "Lavarse"), ("d540", "Vestirse")]
 D2_CHAPTER = [("d210", "Llevar a cabo una tarea unica"), ("d220", "Llevar a cabo tareas multiples")]
 B = [
     ("b730", "Funciones relacionadas con la fuerza muscular"),
@@ -28,11 +29,13 @@ S = [("s750", "Estructura de la extremidad inferior"), ("s730", "Estructura de l
 
 
 class FakeRepo:
-    def __init__(self):
+    def __init__(self, similarity_order=None):
         self.searches = []
+        self.ranked = []
+        self.similarity_order = similarity_order  # codigos d de mayor a menor similitud
 
     def annex_candidates(self, chapters, age_group):
-        table = {4: D4, 1: D1}
+        table = {4: D4, 1: D1, 5: D5}
         return [pair for ch in chapters for pair in table.get(ch, [])]
 
     def chapter_codes(self, chapter):
@@ -41,6 +44,13 @@ class FakeRepo:
     def search(self, component, embedding, limit):
         self.searches.append(component)
         return {"b": B, "s": S}[component][:limit]
+
+    def rank_codes(self, codes, embedding):
+        self.ranked.append(list(codes))
+        if not self.similarity_order:
+            return list(codes)
+        first = [c for c in self.similarity_order if c in codes]
+        return first + [c for c in codes if c not in first]
 
 
 def patient(**overrides):
@@ -64,77 +74,97 @@ def embed(_text):
     return [0.1, 0.2, 0.3]
 
 
-def run(p, chat, repo=None):
-    return suggest(p, repo or FakeRepo(), embed, chat, "qwen2.5:3b")
+def run(p, chat, repo=None, **kwargs):
+    return suggest(p, repo or FakeRepo(), embed, chat, "qwen2.5:3b", **kwargs)
 
 
-GOOD = {
-    "d": ["d4501", "d4600"],
-    "b": [{"code": "b730", "justificacion": "Compromiso de la fuerza"}],
-    "s": [{"code": "s750", "justificacion": "Amputacion de pierna"}],
-}
+GOOD = {"b": ["b730"], "s": ["s750"]}
 
 
 def test_under_six_not_applicable():
     res = run(patient(age=5), chat_returning(GOOD))
     assert res.applicable is False
-    assert "6 anios" in res.message
+    assert "6 años" in res.message
     assert not (res.functions or res.structures or res.activities)
 
 
 def test_happy_path_titles_from_catalog_and_qualifiers_from_rules():
     res = run(patient(), chat_returning(GOOD))
     assert res.applicable and res.llm_used and res.llm_error is None
-    # d: orden del LLM, calificador del nivel D4 = 60 -> 3
-    assert [a.code for a in res.activities] == ["d4501", "d4600"]
-    assert all(a.qualifier == 3 and a.origin == "llm" for a in res.activities)
-    assert res.activities[0].title == "Andar distancias largas"
+    # d: calificador del nivel D4 = 60 -> 3; titulo del catalogo
+    assert res.activities and all(a.qualifier == 3 for a in res.activities)
+    assert {a.code for a in res.activities} <= {c for c, _ in D4 + D5}
+    top = next(a for a in res.activities if a.code == "d4154")
+    assert top.title == "Permanecer de pie"
     # b: categoria fisica Severa -> 3
     assert res.functions[0].code == "b730" and res.functions[0].qualifier == 3
     assert res.functions[0].title == "Funciones relacionadas con la fuerza muscular"
+    assert res.functions[0].origin == "llm"
     # s: magnitud 3, naturaleza y localizacion en 8
     s = res.structures[0]
     assert (s.qualifier, s.qualifier_cn, s.qualifier_cl) == (3, 8, 8)
 
 
-def test_timings_and_llm_stats_are_reported():
-    stats = {"prompt_eval_count": 500, "eval_count": 40}
-    res = suggest(patient(), FakeRepo(), embed, chat_returning(GOOD), "qwen2.5:3b", stats=stats)
-    assert set(res.timings) == {"embed", "search", "llm"}
-    assert all(isinstance(v, int) and v >= 0 for v in res.timings.values())
-    assert res.llm_stats == stats
+def test_activities_never_call_the_llm():
+    calls = []
+
+    def chat(messages, schema):
+        calls.append(schema)
+        return json.dumps(GOOD)
+
+    run(patient(), chat)
+    assert len(calls) == 1
+    assert "d" not in calls[0]["properties"]  # el esquema solo cubre b y s
+    assert "d4501" not in json.dumps(calls[0]) and "d4501" not in json.dumps(calls)
 
 
-def test_llm_never_controls_titles():
-    payload = dict(GOOD, d=["d4501"])
-    payload["b"] = [{"code": "b730", "justificacion": "x", "title": "TITULO INVENTADO"}]
-    res = run(patient(), chat_returning(payload))
-    assert res.functions[0].title == "Funciones relacionadas con la fuerza muscular"
+def test_activities_ordered_by_qualifier_then_similarity():
+    levels = {"D1": 30, "D4": 70, "D5": 10}  # D4 -> calificador 3, D1 -> 2, D5 -> 1
+    repo = FakeRepo(similarity_order=["d175", "d4501", "d4600", "d510"])
+    res = run(patient(levels=levels), chat_returning(GOOD), repo)
+    # calificador 3 primero (d4501, d4600 por similitud), luego d4154 (q3), y recien despues D1
+    assert [a.code for a in res.activities] == ["d4501", "d4600", "d4154"]
+    assert [a.qualifier for a in res.activities] == [3, 3, 3]
+    assert all(a.origin == "similarity" for a in res.activities)
+    # una sola consulta de orden con todos los candidatos
+    assert len(repo.ranked) == 1 and set(repo.ranked[0]) == {c for c, _ in D4 + D1 + D5}
+
+
+def test_lower_chapter_comes_after_higher_qualifier():
+    levels = {"D1": 30, "D4": 70}
+    repo = FakeRepo(similarity_order=["d175", "d155", "d161"])  # D1 es lo mas similar
+    res = run(patient(levels=levels), chat_returning(GOOD), repo)
+    assert [a.code for a in res.activities][:3] == ["d4154", "d4104", "d4600"]  # D4 (q3) antes que D1 (q2)
 
 
 def test_invalid_codes_are_dropped():
-    payload = {"d": ["d9999", "d4501"], "b": [{"code": "b999", "justificacion": "x"}], "s": []}
+    payload = {"b": ["b999", "b730"], "s": ["s0000"]}
     res = run(patient(), chat_returning(payload))
     assert res.llm_used
-    assert [a.code for a in res.activities] == ["d4501"]
-    # el unico codigo b del LLM era invalido: b cae a similitud
-    assert all(f.origin == "similarity" for f in res.functions)
+    assert [f.code for f in res.functions] == ["b730"]
+    # el unico codigo s del LLM era invalido: s cae a similitud
+    assert all(s.origin == "similarity" for s in res.structures)
 
 
 def test_duplicates_and_max_three():
-    payload = {"d": ["d4501", "d4501", "d4600", "d4602", "d4104"], "b": [], "s": []}
+    payload = {"b": ["b730", "b730", "b710", "b280", "b134"], "s": []}
     res = run(patient(), chat_returning(payload))
-    assert [a.code for a in res.activities] == ["d4501", "d4600", "d4602"]
+    assert [f.code for f in res.functions] == ["b730", "b710", "b280"]
 
 
-@pytest.mark.parametrize("bad", ["no es json", "[]", '{"d": []}', "{}"])
-def test_llm_garbage_falls_back_to_rules(bad):
+def test_objects_with_code_are_tolerated():
+    res = run(patient(), chat_returning({"b": [{"code": "b730", "justificacion": "x"}], "s": []}))
+    assert res.llm_used and res.functions[0].code == "b730"
+
+
+@pytest.mark.parametrize("bad", ["no es json", "[]", '{"b": []}', "{}"])
+def test_llm_garbage_falls_back_to_similarity(bad):
     res = run(patient(), chat_returning(bad))
     assert res.llm_used is False and res.llm_error
-    assert res.activities and all(a.origin == "rules" for a in res.activities)
-    assert all(f.origin == "similarity" for f in res.functions)
-    assert len(res.activities) <= 3
-    assert any("no respondio de forma valida" in w for w in res.warnings)
+    assert res.activities  # las actividades no dependen del modelo
+    assert res.functions and all(f.origin == "similarity" for f in res.functions)
+    assert len(res.functions) <= 3
+    assert any("no respondió de forma válida" in w for w in res.warnings)
 
 
 def test_llm_exception_falls_back():
@@ -143,7 +173,17 @@ def test_llm_exception_falls_back():
 
     res = run(patient(), boom)
     assert res.llm_used is False and "TimeoutError" in res.llm_error
-    assert res.activities  # el motor siempre entrega algo por reglas
+    assert res.activities and res.functions
+
+
+def test_use_llm_false_skips_the_model():
+    def never(messages, schema):
+        raise AssertionError("no debe llamarse al modelo")
+
+    res = run(patient(), never, use_llm=False)
+    assert res.llm_used is False and res.llm_error is None
+    assert res.functions and all(f.origin == "similarity" for f in res.functions)
+    assert "llm" not in res.timings
 
 
 def test_no_body_components_when_categories_are_ninguna():
@@ -156,9 +196,8 @@ def test_no_body_components_when_categories_are_ninguna():
 
 
 def test_mental_functions_use_psychosocial_category():
-    # b152 es b1 (mental): con psicosocial 'Ninguna' se excluye; b730 usa la fisica 'Severa'.
-    repo = FakeRepo()
-    res = run(patient(cat_psicosocial="Ninguna"), chat_returning({"b": [{"code": "b730", "justificacion": "x"}]}), repo)
+    # b152 y b134 son b1 (mentales): con psicosocial 'Ninguna' se excluyen; b730 usa la fisica 'Severa'.
+    res = run(patient(cat_psicosocial="Ninguna"), chat_returning({"b": ["b730"]}))
     codes = [f.code for f in res.functions]
     assert "b730" in codes and "b152" not in codes and "b134" not in codes
 
@@ -171,14 +210,14 @@ def test_unrecognized_category_leaves_qualifier_unspecified():
 
 def test_generic_warning_without_clinical_text():
     res = run(patient(diag_cie=None, clinical_notes=None), chat_returning(GOOD))
-    assert any("genericas" in w for w in res.warnings)
+    assert any("genéricas" in w for w in res.warnings)
 
 
 def test_chapter_without_annex_codes_uses_chapter_fallback():
     p = patient(levels={"D2": 40}, cat_fisica="Ninguna", cat_psicosocial="Ninguna")
-    res = run(p, chat_returning({"d": ["d210"]}))
-    assert [a.code for a in res.activities] == ["d210"]
-    assert res.activities[0].qualifier == 2
+    res = run(p, chat_returning(GOOD))
+    assert {a.code for a in res.activities} == {"d210", "d220"}
+    assert all(a.qualifier == 2 for a in res.activities)
 
 
 def test_no_levels_over_threshold():
@@ -187,30 +226,40 @@ def test_no_levels_over_threshold():
     assert any("nivel >= 5" in w for w in res.warnings)
 
 
-def test_embedding_failure_keeps_activities():
+def test_embedding_failure_keeps_activities_by_rules():
     def bad_embed(_):
         raise ConnectionError("ollama caido")
 
-    res = suggest(patient(), FakeRepo(), bad_embed, chat_returning({"d": ["d4501"]}), "qwen2.5:3b")
-    assert [a.code for a in res.activities] == ["d4501"]
+    res = suggest(patient(), FakeRepo(), bad_embed, chat_returning(GOOD), "qwen2.5:3b")
+    assert res.activities and all(a.origin == "rules" for a in res.activities)
     assert not res.functions and not res.structures
-    assert any("funciones y estructuras" in w for w in res.warnings)
+    assert any("funciones y estructuras omitidas" in w for w in res.warnings)
+
+
+def test_timings_and_llm_stats_are_reported():
+    stats = {"prompt_eval_count": 250, "eval_count": 40}
+    res = suggest(patient(), FakeRepo(), embed, chat_returning(GOOD), "qwen2.5:3b", stats=stats)
+    assert set(res.timings) == {"embed", "rank", "search", "llm"}
+    assert all(isinstance(v, int) and v >= 0 for v in res.timings.values())
+    assert res.llm_stats == stats
 
 
 def test_schema_only_allows_candidate_codes():
-    schema = llm.build_schema(["d4501"], ["b730"], ["s750"])
-    assert schema["properties"]["d"]["items"]["enum"] == ["d4501"]
-    assert schema["properties"]["b"]["items"]["properties"]["code"]["enum"] == ["b730"]
+    schema = llm.build_schema(["b730"], ["s750"])
+    assert schema["properties"]["b"]["items"] == {"type": "string", "enum": ["b730"]}
     assert schema["properties"]["s"]["maxItems"] == 3
-    assert llm.build_schema([], ["b730"], [])["required"] == ["b"]
+    assert schema["required"] == ["b", "s"]
+    assert llm.build_schema(["b730"], [])["required"] == ["b"]
 
 
-def test_prompt_lists_only_candidates_and_no_identifiers():
-    msgs = llm.build_messages("Paciente de 30 anios.", D4, B[:1], [])
-    text = msgs[1]["content"]
-    assert "d4501: Andar distancias largas" in text and "b730" in text
-    assert "ESTRUCTURAS" not in text
-    assert msgs[0]["role"] == "system"
+def test_prompt_is_short_static_prefix_first_and_has_no_identifiers():
+    msgs = llm.build_messages("Paciente 30 anios.", B[:2], S[:1])
+    assert msgs[0]["role"] == "system" and msgs[0]["content"] == llm.SYSTEM_PROMPT  # prefijo fijo
+    user = msgs[1]["content"]
+    assert user.startswith("Paciente 30 anios.")
+    assert "b730 Funciones relacionadas con la fuerza muscular" in user and "s750" in user
+    assert "d4" not in user  # las actividades no viajan al modelo
+    assert len(llm.SYSTEM_PROMPT) < 260
 
 
 def test_levels_and_qualifier_rules():
