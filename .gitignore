@@ -39,3 +39,6 @@ Thumbs.db
 
 # Alembic
 alembic/versions/*.pyc
+
+# Datos con copyright (catalogo CIF-IA de la OMS): solo local
+data/private/
