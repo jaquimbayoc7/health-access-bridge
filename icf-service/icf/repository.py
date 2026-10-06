@@ -15,8 +15,7 @@ class Repo(Protocol):
         embedding: Sequence[float],
         limit: int,
         chapters: Optional[Sequence[int]] = None,
-        levels: Sequence[int] = (2, 3),
-        column: str = "embedding",
+        levels: Sequence[int] = (2,),
     ) -> List[Pair]: ...
 
     def rank_codes(self, codes: Sequence[str], embedding: Sequence[float]) -> List[str]: ...
@@ -62,31 +61,32 @@ class PgRepo:
         ranked = [code for (code,) in rows]
         return ranked + [code for code in codes if code not in ranked]
 
-    EMBEDDING_COLUMNS = ("embedding", "embedding_rich")  # lista cerrada: el nombre va en el SQL
-
     def search(
         self,
         component: str,
         embedding: Sequence[float],
         limit: int,
         chapters: Optional[Sequence[int]] = None,
-        levels: Sequence[int] = (2, 3),
-        column: str = "embedding",
+        levels: Sequence[int] = (2,),
     ) -> List[Pair]:
         """Categorias mas cercanas al vector (distancia coseno), de los niveles y capitulos indicados.
-        El filtro va dentro de la consulta: filtrar despues puede dejar la lista vacia.
-        `column`: 'embedding' (titulo) o 'embedding_rich' (titulo + titulos de sus hijos, solo nivel 2)."""
-        if column not in self.EMBEDDING_COLUMNS:
-            raise ValueError(f"columna de embedding no permitida: {column}")
+
+        Por defecto solo nivel 2 (codigos de 3 digitos, ej. b730): medido con las pistas de referencia, buscar
+        entre los de 4 y 5 digitos llena la lista de hermanos casi identicos (b2800, b2801, b2802...) y deja
+        fuera los temas generales. Se excluyen las categorias 'otras especificadas / no especificadas', que
+        no aportan: en la CIF los codigos terminados en 8 son 'otros especificados' y en 9 'no especificados'
+        (los titulos del catalogo vienen truncados por el OCR, por eso no basta con filtrar por titulo). El filtro de capitulos va dentro de la consulta: filtrar despues puede dejar la lista vacia."""
         if chapters is not None and not chapters:
             return []
         vector = "[" + ",".join(str(x) for x in embedding) + "]"
         chap = list(chapters) if chapters is not None else None
         rows = self.conn.execute(
-            f"""SELECT code, title FROM icf_codes
-               WHERE component = %s AND level = ANY(%s::int[]) AND {column} IS NOT NULL
+            """SELECT code, title FROM icf_codes
+               WHERE component = %s AND level = ANY(%s::int[]) AND embedding IS NOT NULL
                  AND (%s::int[] IS NULL OR chapter = ANY(%s::int[]))
-               ORDER BY {column} <=> %s::vector LIMIT %s""",
+                 AND code !~ '[89]$'
+                 AND title !~* '(otr[oa]s?[ ,]+especificad|no especificad)'
+               ORDER BY embedding <=> %s::vector LIMIT %s""",
             (component, list(levels), chap, chap, vector, limit),
         ).fetchall()
         return [(code, title) for code, title in rows]

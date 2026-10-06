@@ -6,10 +6,8 @@ cuantos candidatos conviene pasarle al modelo.
 Variantes (todas buscan con el texto 'clinico': diagnostico sin codigo CIE + notas):
   actual     texto con causa, categorias, diagnostico con codigo CIE y notas; codigos de nivel 2 y 3
   clinico    texto clinico; codigos de nivel 2 y 3
-  n2         texto clinico; solo codigos de 3 digitos (nivel 2)
-  n2_rico    texto clinico; solo nivel 2, con el embedding enriquecido (titulo + titulos de sus hijos)
+  n2         texto clinico; solo codigos de 3 digitos (nivel 2)  <- la busqueda que usa el motor
 
-Requiere haber calculado el embedding enriquecido:  python scripts/embed_catalog.py --rich
 Uso (en el servidor):  python scripts/probe_retrieval.py [--verbose]
 """
 import argparse
@@ -34,10 +32,9 @@ SIZES = (6, 12)
 
 # variante -> (texto, niveles, columna de embedding)
 VARIANTS = {
-    "actual": ("actual", (2, 3), "embedding"),
+    "actual": ("actual", (2, 3), "embedding"),  # = la busqueda inicial (niveles 2 y 3, texto con todo)
     "clinico": ("clinico", (2, 3), "embedding"),
     "n2": ("clinico", (2,), "embedding"),
-    "n2_rico": ("clinico", (2,), "embedding_rich"),
 }
 
 
@@ -57,9 +54,6 @@ def main() -> int:
 
     with psycopg.connect(s.database_url, autocommit=True) as conn:
         repo = PgRepo(conn)
-        rich = conn.execute("SELECT count(embedding_rich) FROM icf_codes").fetchone()[0]
-        if not rich:
-            print("AVISO: embedding_rich vacio. Ejecuta primero: python scripts/embed_catalog.py --rich\n")
         for case_id, hint in hints.items():
             case = cases[case_id]
             p = PatientContext(**case["patient"])
@@ -73,12 +67,12 @@ def main() -> int:
             texts["clinico"] = rules.clinical_query(p.diag_cie, p.clinical_notes) or texts["actual"]
             print(f"{case_id} {case['description']}")
             vectors = {name: embed(text) for name, text in texts.items()}
-            for variant, (text_name, levels, column) in VARIANTS.items():
+            for variant, (text_name, levels, _unused) in VARIANTS.items():
                 line = []
                 for comp in ("b", "s"):
                     wanted = set(hint[comp])
                     chapters = rules.body_chapters(comp, p.cat_fisica, p.cat_psicosocial)
-                    found = repo.search(comp, vectors[text_name], max(SIZES), chapters, levels, column)
+                    found = repo.search(comp, vectors[text_name], max(SIZES), chapters, levels)
                     codes = [c for c, _ in found]
                     cells = []
                     for k in SIZES:

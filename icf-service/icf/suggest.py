@@ -19,7 +19,7 @@ Pair = Tuple[str, str]
 EmbedFn = Callable[[str], Sequence[float]]
 ChatFn = Callable[[List[Dict[str, str]], dict], str]
 
-BODY_CANDIDATES = 6  # candidatos por busqueda semantica para b y s (menos tokens = menos espera)
+BODY_CANDIDATES = 12  # candidatos por busqueda semantica para b y s (con 6 se pierde cobertura; ver README)
 UNSPECIFIED = 8  # "no especificada" en los calificadores de estructuras
 
 _CHAPTER_NAME = {int(d.chapter_code[1]): d.chapter_name for d in HAB_DOMAINS}
@@ -49,12 +49,12 @@ def _patient_summary(patient: PatientContext, plan: List[Tuple[int, int, int]]) 
 
 def _body_items(
     component: str,
-    chosen: List[Tuple[str, str]],  # (code, origin)
+    chosen: List[Tuple[str, str, str]],  # (code, origin, justificacion del modelo o vacia)
     titles: Dict[str, str],
     patient: PatientContext,
 ) -> Tuple[List[SuggestedCode], bool]:
     items, unspecified = [], False
-    for code, origin in chosen:
+    for code, origin, why in chosen:
         qualifier = rules.body_qualifier(code, patient.cat_fisica, patient.cat_psicosocial)
         unspecified = unspecified or qualifier is None
         items.append(
@@ -64,7 +64,7 @@ def _body_items(
                 qualifier=qualifier,
                 qualifier_cn=UNSPECIFIED if component == "s" else None,
                 qualifier_cl=UNSPECIFIED if component == "s" else None,
-                justification=_WHY_LLM if origin == "llm" else _WHY_SIMILARITY,
+                justification=(why or _WHY_LLM) if origin == "llm" else _WHY_SIMILARITY,
                 origin=origin,
             )
         )
@@ -79,6 +79,8 @@ def suggest(
     model: str,
     stats: Optional[Dict[str, int]] = None,
     use_llm: bool = True,
+    body_candidates: int = BODY_CANDIDATES,
+    justify: bool = False,
 ) -> SuggestionResult:
     started = time.perf_counter()
     result = SuggestionResult(applicable=True, model=model)
@@ -168,16 +170,16 @@ def suggest(
         # Solo cuentan b y s con calificador >= 1: los capitulos de una categoria 'Ninguna' se excluyen
         # dentro de la busqueda (filtrar despues dejaba la lista vacia, ej. esquizofrenia sin deficiencia fisica).
         t0 = time.perf_counter()
-        b_pairs = repo.search("b", vector, BODY_CANDIDATES, rules.body_chapters("b", patient.cat_fisica, patient.cat_psicosocial))
-        s_pairs = repo.search("s", vector, BODY_CANDIDATES, rules.body_chapters("s", patient.cat_fisica, patient.cat_psicosocial))
+        b_pairs = repo.search("b", vector, body_candidates, rules.body_chapters("b", patient.cat_fisica, patient.cat_psicosocial))
+        s_pairs = repo.search("s", vector, body_candidates, rules.body_chapters("s", patient.cat_fisica, patient.cat_psicosocial))
         result.timings["search"] = round((time.perf_counter() - t0) * 1000)
     b_titles, s_titles = dict(b_pairs), dict(s_pairs)
 
-    parsed: Optional[Dict[str, List[str]]] = None
+    parsed: Optional[Dict[str, List[Tuple[str, str]]]] = None
     if use_llm and (b_pairs or s_pairs):
         try:
-            schema = llm.build_schema([c for c, _ in b_pairs], [c for c, _ in s_pairs])
-            messages = llm.build_messages(_patient_summary(patient, plan), b_pairs, s_pairs)
+            schema = llm.build_schema([c for c, _ in b_pairs], [c for c, _ in s_pairs], justify)
+            messages = llm.build_messages(_patient_summary(patient, plan), b_pairs, s_pairs, justify)
             text = timed("llm", chat_fn, messages, schema)
             parsed = llm.parse_response(text, [c for c, _ in b_pairs], [c for c, _ in s_pairs])
             result.llm_used = True
@@ -191,9 +193,9 @@ def suggest(
         ("s", s_pairs, s_titles, result.structures),
     ):
         if parsed and parsed[component]:
-            chosen = [(code, "llm") for code in parsed[component]]
+            chosen = [(code, "llm", why) for code, why in parsed[component]]
         else:
-            chosen = [(code, "similarity") for code, _ in pairs[: rules.MAX_PER_COMPONENT]]
+            chosen = [(code, "similarity", "") for code, _ in pairs[: rules.MAX_PER_COMPONENT]]
         items, flag = _body_items(component, chosen, titles, patient)
         target.extend(items)
         unspecified = unspecified or flag

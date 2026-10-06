@@ -31,6 +31,7 @@ S = [("s750", "Estructura de la extremidad inferior"), ("s730", "Estructura de l
 class FakeRepo:
     def __init__(self, similarity_order=None):
         self.searches = []
+        self.limits = []
         self.ranked = []
         self.similarity_order = similarity_order  # codigos d de mayor a menor similitud
 
@@ -41,7 +42,8 @@ class FakeRepo:
     def chapter_codes(self, chapter):
         return D2_CHAPTER if chapter == 2 else []
 
-    def search(self, component, embedding, limit, chapters=None):
+    def search(self, component, embedding, limit, chapters=None, levels=(2,)):
+        self.limits.append(limit)
         self.searches.append((component, None if chapters is None else list(chapters)))
         pairs = {"b": B, "s": S}[component]
         if chapters is not None:
@@ -156,8 +158,9 @@ def test_duplicates_and_max_three():
 
 
 def test_objects_with_code_are_tolerated():
-    res = run(patient(), chat_returning({"b": [{"code": "b730", "justificacion": "x"}], "s": []}))
+    res = run(patient(), chat_returning({"b": [{"code": "b730", "justificacion": "Debilidad por la amputacion"}], "s": []}))
     assert res.llm_used and res.functions[0].code == "b730"
+    assert res.functions[0].justification == "Debilidad por la amputacion"  # la del modelo, si la trae
 
 
 @pytest.mark.parametrize("bad", ["no es json", "[]", '{"b": []}', "{}"])
@@ -282,6 +285,38 @@ def test_timings_and_llm_stats_are_reported():
     assert set(res.timings) == {"embed", "rank", "search", "llm"}
     assert all(isinstance(v, int) and v >= 0 for v in res.timings.values())
     assert res.llm_stats == stats
+
+
+def test_justify_mode_uses_objects_in_schema_and_a_different_system_prompt():
+    schema = llm.build_schema(["b730"], ["s750"], justify=True)
+    item = schema["properties"]["b"]["items"]
+    assert item["properties"]["code"] == {"type": "string", "enum": ["b730"]}
+    assert item["required"] == ["code", "justificacion"]
+    msgs = llm.build_messages("Paciente 30 anios.", B[:1], S[:1], justify=True)
+    assert msgs[0]["content"] == llm.SYSTEM_PROMPT_JUSTIFY and "justificacion" in msgs[0]["content"]
+    assert llm.build_messages("x", B[:1], S[:1])[0]["content"] == llm.SYSTEM_PROMPT  # el modo rapido no cambia
+
+
+def test_engine_passes_justify_and_candidate_count():
+    seen = {}
+
+    def chat(messages, schema):
+        seen["system"], seen["schema"] = messages[0]["content"], schema
+        return json.dumps({
+            "b": [{"code": "b730", "justificacion": "Fuerza afectada por la amputacion"}],
+            "s": [{"code": "s750", "justificacion": "Pierna amputada"}],
+        })
+
+    repo = FakeRepo()
+    res = suggest(patient(), repo, embed, chat, "qwen2.5:3b", body_candidates=12, justify=True)
+    assert repo.limits == [12, 12]
+    assert seen["system"] == llm.SYSTEM_PROMPT_JUSTIFY
+    assert seen["schema"]["properties"]["b"]["items"]["type"] == "object"
+    assert res.functions[0].justification == "Fuerza afectada por la amputacion"
+    assert res.structures[0].justification == "Pierna amputada"
+    fast = FakeRepo()
+    suggest(patient(), fast, embed, chat_returning(GOOD), "qwen2.5:3b", body_candidates=6)
+    assert fast.limits == [6, 6]
 
 
 def test_schema_only_allows_candidate_codes():
