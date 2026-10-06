@@ -1,0 +1,25 @@
+# HU-07a: base de datos del servicio ICF (PostgreSQL + pgvector).
+# Ollama NO va en este compose: corre instalado de forma nativa en el servidor.
+# Uso (desde icf-service/, con un .env copiado de .env.example):  docker compose up -d
+
+services:
+  icf-db:
+    image: pgvector/pgvector:pg16
+    container_name: icf-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${ICF_DB_USER:-icf_user}
+      POSTGRES_PASSWORD: ${ICF_DB_PASSWORD:?define ICF_DB_PASSWORD en .env}
+      POSTGRES_DB: ${ICF_DB_NAME:-icf}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - icf_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${ICF_DB_USER:-icf_user} -d ${ICF_DB_NAME:-icf}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  icf_pgdata:
