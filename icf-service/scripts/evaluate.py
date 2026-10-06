@@ -118,6 +118,7 @@ def main() -> int:
                     for item in by_comp[comp]:
                         q = item.qualifier if item.qualifier is not None else "?"
                         print(f"         {label:<11} {item.code:<7} .{q}  {item.title}  [{item.origin}]")
+                        print(f"                                  -> {item.justification}")
 
     invoked = llm_ok + llm_failed
     print("\n--- Resumen ---")

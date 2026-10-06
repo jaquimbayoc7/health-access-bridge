@@ -106,6 +106,15 @@ def test_evaluate_and_benchmark_scripts_run_end_to_end(conn, monkeypatch, capsys
         out = capsys.readouterr().out
         assert "casos: 2" in out
         assert "actividades" in out and "funciones" in out and "[similarity]" in out and "[llm]" in out
+        assert "-> " in out  # --verbose tambien muestra la justificacion de cada codigo
+
+        monkeypatch.setattr(sys, "argv", ["compare_modes.py", "--ids", "C02,C03"])
+        assert _load_script("compare_modes").main() == 0
+        out = capsys.readouterr().out
+        for mode in ("similitud", "rapido", "calidad"):
+            assert mode in out
+        assert "Comparacion de modos" in out and "b: precision" in out and "latencia media" in out
+        assert "AVISO" not in out  # el modelo simulado responde valido en los dos modos con modelo
 
         monkeypatch.setattr(sys, "argv", ["evaluate.py", "--limit", "6"])
         assert _load_script("evaluate").main() == 0
@@ -142,7 +151,10 @@ def test_annex_candidates_by_chapter_and_age(conn):
     assert "d520" in d5_young and "d520" not in d5_adult
     # D2 no tiene candidatos del Anexo: se usa el capitulo
     assert repo.annex_candidates([2], "18+") == []
-    assert {c for c, _ in repo.chapter_codes(2)} >= {"d210", "d220"}
+    fallback = {c for c, _ in repo.chapter_codes(2)}
+    assert fallback >= {"d210", "d220"}
+    assert not {"d298", "d299"} & fallback  # 'otras / no especificadas' no son sugerencias utiles
+    assert not [c for c in fallback if c[-1] in "89"]
 
 
 def test_vector_search_respects_component_and_level(conn):
