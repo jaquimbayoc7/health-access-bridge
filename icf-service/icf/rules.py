@@ -1,4 +1,5 @@
 """Reglas fijas del motor (sin LLM): grupo de edad, calificadores y capitulos a revisar."""
+import re
 import unicodedata
 from typing import Dict, List, Optional, Tuple
 
@@ -60,6 +61,36 @@ def body_components_apply(cat_fisica: Optional[str], cat_psicosocial: Optional[s
     """El Anexo solo cuenta funciones y estructuras con calificador >= 1: si ambas categorias son 'Ninguna', no aplican."""
     fisica, psico = category_qualifier(cat_fisica), category_qualifier(cat_psicosocial)
     return not (fisica == 0 and psico == 0)
+
+
+def body_chapters(component: str, cat_fisica: Optional[str], cat_psicosocial: Optional[str]) -> List[int]:
+    """Capitulos donde buscar funciones (b) o estructuras (s), segun las categorias de HAB.
+
+    b1 (funciones mentales) depende de la categoria psicosocial; b2-b8 y todas las estructuras (s),
+    de la fisica. Una categoria 'Ninguna' excluye sus capitulos; si no es reconocible, se incluyen."""
+    physical = category_qualifier(cat_fisica) != 0
+    mental = category_qualifier(cat_psicosocial) != 0
+    if component == "s":
+        return list(range(1, 9)) if physical else []
+    return ([1] if mental else []) + (list(range(2, 9)) if physical else [])
+
+
+_CIE_PREFIX = re.compile(r"^\s*[A-Z]\d{2}(\.\d+)?\s*[:\-]?\s*", re.IGNORECASE)
+
+
+def clean_diagnosis(text: Optional[str]) -> str:
+    """Quita los codigos CIE ('G80.9 Paralisis cerebral; I50 Insuficiencia' -> 'Paralisis cerebral; Insuficiencia')."""
+    if not text:
+        return ""
+    parts = [_CIE_PREFIX.sub("", part).strip() for part in re.split(r"[;\n]", text)]
+    return "; ".join(part for part in parts if part)
+
+
+def clinical_query(diag_cie: Optional[str], clinical_notes: Optional[str]) -> Optional[str]:
+    """Texto de busqueda solo con lo clinico (diagnostico sin codigo + notas); None si el medico no escribio nada."""
+    parts = [clean_diagnosis(diag_cie), (clinical_notes or "").strip()]
+    text = ". ".join(part for part in parts if part)
+    return text or None
 
 
 def context_text(

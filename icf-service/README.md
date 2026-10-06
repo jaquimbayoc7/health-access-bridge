@@ -52,7 +52,9 @@ Pruebas (no necesitan la base): `pytest`. La prueba del catálogo real se omite 
 
 ## Servicio de sugerencia (HU-07b)
 
-`app.py` expone `POST /suggest` y `GET /health` en `127.0.0.1:8100`. Flujo: reglas fijas (edad, calificador, capítulos con nivel ≥ 5) → candidatos (Anexo para **d**; búsqueda con pgvector para **b** y **s**) → `qwen2.5:3b` elige y ordena entre los candidatos, con un JSON Schema donde los códigos candidatos son un `enum` → validación contra el catálogo. Los títulos salen del catálogo y los calificadores de las reglas, nunca del modelo. Si el modelo falla, devuelve igual una sugerencia por reglas y similitud, marcada con su origen (`rules`, `similarity` o `llm`). La entrada rechaza cualquier campo que no sea de la lista (nombre, documento y orientación sexual no pueden llegar).
+`app.py` expone `POST /suggest` y `GET /health` en `127.0.0.1:8100`. Flujo: reglas fijas (edad, calificador, capítulos con nivel ≥ 5) → un embedding del contexto clínico → **d** (actividades): lista cerrada del Anexo, ordenada por calificador y por similitud, **sin modelo de generación** → **b** y **s** (funciones y estructuras): los 6 candidatos más cercanos por pgvector, y `qwen2.5:3b` elige y ordena entre ellos devolviendo solo códigos (JSON Schema donde los candidatos son un `enum`) → validación contra el catálogo. Los títulos salen del catálogo y los calificadores de las reglas, nunca del modelo. Si el modelo falla, devuelve igual los códigos más cercanos, marcados con su origen (`rules`, `similarity` o `llm`).
+
+**Por qué este diseño (medido en el servidor, i3 sin GPU):** leer el prompt cuesta ~0,05 s por token (21 tok/s) y escribir la respuesta ~0,1 s por token (10 tok/s). La primera versión mandaba 760 tokens y pedía 167 de salida: ~55 s por sugerencia. Ahora el modelo solo trabaja en b y s, con un prompt corto cuya parte fija va primero (Ollama la reutiliza entre peticiones) y salida solo de códigos. Con `ICF_USE_LLM=false` el servicio funciona sin el modelo de generación (b y s por similitud), en un par de segundos. La entrada rechaza cualquier campo que no sea de la lista (nombre, documento y orientación sexual no pueden llegar).
 
 Levantar el servicio en el servidor (después de cargar el catálogo y los embeddings):
 
@@ -75,13 +77,19 @@ Evaluación con el set de referencia (`reference/cases.json`, 25 casos sintétic
 sudo docker run --rm --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/evaluate.py --output informe.json
 ```
 
+Calidad de la búsqueda de funciones y estructuras: compara 4 formas de armar el texto de búsqueda (actual, solo lo clínico, expandido por el modelo y diverso por capítulo) y mide cuántas de las pistas orientativas de `reference/retrieval_hints.json` quedan entre los 6 candidatos (no es precisión clínica; las pistas no están validadas por un médico):
+
+```bash
+sudo docker run --rm --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/probe_retrieval.py
+```
+
 Diagnóstico de velocidad (dónde se va el tiempo y qué variante de prompt es más rápida; compara salida con y sin justificación, formato JSON Schema, contexto reducido y menos candidatos):
 
 ```bash
 sudo docker run --rm --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/benchmark_llm.py
 ```
 
-Variables opcionales del servicio: `ICF_LLM_NUM_PREDICT` (tope de tokens de salida, 400), `ICF_LLM_NUM_CTX` (contexto, 2048) e `ICF_SERVICE_LLM_TIMEOUT_S` (90).
+Variables opcionales del servicio (en el `.env`; reiniciar el contenedor al cambiarlas): `ICF_USE_LLM` (`true`/`false`), `ICF_LLM_NUM_PREDICT` (tope de tokens de salida, 120), `ICF_LLM_NUM_CTX` (contexto, 1024) e `ICF_SERVICE_LLM_TIMEOUT_S` (90).
 
 ## Túnel autenticado (Caddy + Tailscale Funnel)
 
