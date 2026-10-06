@@ -59,6 +59,17 @@ services:
         sync: false
       - key: LLM_MODEL
         value: gpt-3.5-turbo
+      # Servicio ICF local (HU-07): URL del tunel Tailscale Funnel y token se cargan en el panel de Render
+      - key: ICF_LLM_URL
+        sync: false
+      - key: ICF_LLM_TOKEN
+        sync: false
+      - key: ICF_LLM_MODEL
+        value: qwen2.5:3b
+      - key: ICF_LLM_TIMEOUT_S
+        value: "20"
+      - key: ICF_LLM_KEEP_ALIVE
+        value: 30m
 
   # ─────────────────────────────────────────
   # FRONTEND - DEVELOPMENT (rama: develop)
@@ -120,6 +131,17 @@ services:
         sync: false
       - key: LLM_MODEL
         value: gpt-3.5-turbo
+      # Servicio ICF local (HU-07): URL del tunel Tailscale Funnel y token se cargan en el panel de Render
+      - key: ICF_LLM_URL
+        sync: false
+      - key: ICF_LLM_TOKEN
+        sync: false
+      - key: ICF_LLM_MODEL
+        value: qwen2.5:3b
+      - key: ICF_LLM_TIMEOUT_S
+        value: "20"
+      - key: ICF_LLM_KEEP_ALIVE
+        value: 30m
 
   # ─────────────────────────────────────────
   # FRONTEND - QA / STAGING (rama: staging)
@@ -181,6 +203,17 @@ services:
         sync: false
       - key: LLM_MODEL
         value: gpt-4
+      # Servicio ICF local (HU-07): URL del tunel Tailscale Funnel y token se cargan en el panel de Render
+      - key: ICF_LLM_URL
+        sync: false
+      - key: ICF_LLM_TOKEN
+        sync: false
+      - key: ICF_LLM_MODEL
+        value: qwen2.5:3b
+      - key: ICF_LLM_TIMEOUT_S
+        value: "20"
+      - key: ICF_LLM_KEEP_ALIVE
+        value: 30m
 
   # ─────────────────────────────────────────
   # DOCS SITE — presentación + portal HCI
