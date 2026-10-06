@@ -45,6 +45,8 @@ def main() -> int:
     ap.add_argument("--cases", type=Path, default=DEFAULT_CASES)
     ap.add_argument("--output", type=Path, help="guarda el informe completo en JSON")
     ap.add_argument("--limit", type=int, help="solo los primeros N casos")
+    ap.add_argument("--ids", help="solo estos casos, separados por coma (ej. C02,C03)")
+    ap.add_argument("--verbose", action="store_true", help="muestra codigo, titulo y calificador de cada sugerencia")
     args = ap.parse_args()
 
     settings = load_settings()
@@ -52,11 +54,14 @@ def main() -> int:
         print("Falta ICF_DATABASE_URL", file=sys.stderr)
         return 2
     cases = json.loads(args.cases.read_text(encoding="utf-8"))["cases"]
+    if args.ids:
+        wanted = {i.strip() for i in args.ids.split(",")}
+        cases = [c for c in cases if c["id"] in wanted]
     if args.limit:
         cases = cases[: args.limit]
 
     report, latencies = [], []
-    stage = {"embed": [], "search": [], "llm": []}
+    stage = {"embed": [], "rank": [], "search": [], "llm": []}
     tok_in, tok_out, gen_rate = [], [], []
     llm_ok = llm_failed = invalid_codes = 0
     hits = {"b": [0, 0], "s": [0, 0], "d": [0, 0]}  # [aciertos, sugeridos] solo en casos validados
@@ -67,7 +72,9 @@ def main() -> int:
         for case in cases:
             patient = PatientContext(**case["patient"])
             fns = OllamaFns(settings)
-            res = suggest(patient, repo, fns.embed, fns.chat, settings.llm_model, stats=fns.stats)
+            res = suggest(
+                patient, repo, fns.embed, fns.chat, settings.llm_model, stats=fns.stats, use_llm=settings.use_llm
+            )
             if res.applicable:
                 latencies.append(res.latency_ms)
                 for key in stage:
@@ -103,10 +110,18 @@ def main() -> int:
             print(f"{case['id']:<4} {res.latency_ms:>6} ms [{detail}] {flag:<8} {summary or res.message or '-'}")
             if res.llm_error:
                 print(f"       error del modelo: {res.llm_error}")
+            if args.verbose:
+                p = case["patient"]
+                print(f"       {case.get('description', '')} | dx: {p.get('diag_cie', '-')} | niveles: {p.get('levels')}")
+                for comp, label in (("d", "actividades"), ("b", "funciones"), ("s", "estructuras")):
+                    for item in by_comp[comp]:
+                        q = item.qualifier if item.qualifier is not None else "?"
+                        print(f"         {label:<11} {item.code:<7} .{q}  {item.title}  [{item.origin}]")
 
     invoked = llm_ok + llm_failed
     print("\n--- Resumen ---")
     print(f"casos: {len(cases)} | aplicables: {len(latencies)}")
+    print(f"modo: {'con modelo (b y s)' if settings.use_llm else 'solo similitud (ICF_USE_LLM=false)'}")
     print(f"JSON valido del modelo: {llm_ok}/{invoked}" + (f" ({llm_ok / invoked:.0%})" if invoked else ""))
     print(f"codigos fuera del catalogo: {invalid_codes}")
     if latencies:
@@ -115,7 +130,8 @@ def main() -> int:
             f"media={mean(latencies)} max={max(latencies)}"
         )
         print(
-            f"desglose medio ms: embedding={mean(stage['embed'])} busqueda={mean(stage['search'])} modelo={mean(stage['llm'])}"
+            f"desglose medio ms: embedding={mean(stage['embed'])} orden d={mean(stage['rank'])} "
+            f"busqueda b/s={mean(stage['search'])} modelo={mean(stage['llm'])}"
         )
     if tok_in:
         print(f"tokens: prompt medio={mean(tok_in)} | salida media={mean(tok_out)} | velocidad de salida={round(statistics.mean(gen_rate), 1) if gen_rate else '?'} tok/s")

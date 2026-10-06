@@ -1,11 +1,11 @@
-"""Diagnostico de velocidad: donde se va el tiempo de una sugerencia y que variante de prompt es mas rapida.
+"""Diagnostico de velocidad del paso con modelo (funciones b y estructuras s).
 
-Usa el mismo prompt real del motor (candidatos de la base) y lo envia a Ollama en varias variantes,
-cada una dos veces (la primera calienta el modelo). Muestra los tokens y las duraciones que reporta Ollama.
+Usa el prompt real del motor (candidatos de la base) y lo envia a Ollama en varias variantes. Cada una se
+manda dos veces: la 1.a con prompt nuevo (lo que vive un paciente real) y la 2.a identica (Ollama la
+reutiliza en cache). Muestra los tokens y las duraciones que reporta Ollama.
 
 Uso (en el servidor, con las variables del .env):  python scripts/benchmark_llm.py
 """
-import copy
 import sys
 import time
 from pathlib import Path
@@ -19,7 +19,7 @@ from icf import llm, ollama, rules  # noqa: E402
 from icf.config import load_settings  # noqa: E402
 from icf.repository import PgRepo  # noqa: E402
 from icf.schemas import PatientContext  # noqa: E402
-from icf.suggest import _patient_summary  # noqa: E402
+from icf.suggest import BODY_CANDIDATES, _patient_summary  # noqa: E402
 
 PATIENT = PatientContext(
     age=35, cause="Accidente de transito", cat_fisica="Severa", cat_psicosocial="Moderada",
@@ -27,67 +27,46 @@ PATIENT = PatientContext(
 )
 
 
-def codes_only(schema):
-    """Misma estructura pero b y s como listas de codigos, sin justificacion generada por el modelo."""
-    out = copy.deepcopy(schema)
-    for key in ("b", "s"):
-        if key in out["properties"]:
-            enum = out["properties"][key]["items"]["properties"]["code"]["enum"]
-            out["properties"][key]["items"] = {"type": "string", "enum": enum}
-    return out
-
-
 def main() -> int:
     s = load_settings()
-    started = time.perf_counter()
-    vector = ollama.embed(s.ollama_url, s.embed_model, "Diagnostico: S78 Amputacion traumatica. Deficiencia fisica: Severa", s.keep_alive)
-    print(f"embedding (bge-m3): {round((time.perf_counter() - started) * 1000)} ms\n")
-
+    t0 = time.perf_counter()
+    context = rules.context_text(
+        PATIENT.cause, PATIENT.cat_fisica, PATIENT.cat_psicosocial, PATIENT.diag_cie, None, ["Movilidad", "Autocuidado"]
+    )
+    vector = ollama.embed(s.ollama_url, s.embed_model, context, s.keep_alive)
+    print(f"embedding (bge-m3): {round((time.perf_counter() - t0) * 1000)} ms")
     with psycopg.connect(s.database_url, autocommit=True) as conn:
         repo = PgRepo(conn)
-        plan = rules.activity_plan(PATIENT.levels)
-        d = []
-        for ch, _, _ in plan:
-            d += repo.annex_candidates([ch], "18+") or repo.chapter_codes(ch)
-        b, sx = repo.search("b", vector, 8), repo.search("s", vector, 8)
+        t0 = time.perf_counter()
+        b, sx = repo.search("b", vector, BODY_CANDIDATES), repo.search("s", vector, BODY_CANDIDATES)
+        print(f"busqueda b y s: {round((time.perf_counter() - t0) * 1000)} ms -> modo solo similitud ~ embedding + busqueda\n")
+    plan = rules.activity_plan(PATIENT.levels)
+    print(f"candidatos: b={len(b)} s={len(sx)} | num_ctx={s.num_ctx} num_predict={s.num_predict}\n")
 
-    def variant(name, d_, b_, s_, schema_fn, num_ctx=2048):
-        msgs = llm.build_messages(_patient_summary(PATIENT, plan), d_, b_, s_)
-        schema = schema_fn(llm.build_schema([c for c, _ in d_], [c for c, _ in b_], [c for c, _ in s_]))
+    def variant(name, b_, s_, schema_fn, num_ctx=None):
+        msgs = llm.build_messages(_patient_summary(PATIENT, plan), b_, s_)
+        schema = schema_fn(llm.build_schema([c for c, _ in b_], [c for c, _ in s_]))
         for attempt in (1, 2):
             stats = {}
-            t0 = time.perf_counter()
-            text = ollama.chat_json(s.ollama_url, s.llm_model, msgs, schema, s.keep_alive, 180, stats=stats, num_ctx=num_ctx)
-            wall = round((time.perf_counter() - t0) * 1000)
+            t = time.perf_counter()
+            ollama.chat_json(
+                s.ollama_url, s.llm_model, msgs, schema, s.keep_alive, 180,
+                num_predict=s.num_predict, stats=stats, num_ctx=num_ctx or s.num_ctx,
+            )
+            wall = round((time.perf_counter() - t) * 1000)
             ev = stats.get("eval_ms") or 1
-            # 1.a llamada = prompt nuevo (lo que ve un paciente real); 2.a = Ollama reutiliza el prompt en cache.
             label = "nuevo" if attempt == 1 else "cache"
             print(
-                f"{name:<34} {label:<5} total {wall:>6} ms | lee {stats.get('prompt_eval_count', '?'):>4} tok en {stats.get('prompt_eval_ms', '?'):>6} ms"
+                f"{name:<30} {label:<5} total {wall:>6} ms | lee {stats.get('prompt_eval_count', '?'):>4} tok en {stats.get('prompt_eval_ms', '?'):>6} ms"
                 f" | escribe {stats.get('eval_count', '?'):>4} tok en {stats.get('eval_ms', '?'):>6} ms"
-                f" ({round(stats.get('eval_count', 0) / (ev / 1000), 1)} tok/s) | carga {stats.get('load_ms', '?')} ms"
+                f" ({round(stats.get('eval_count', 0) / (ev / 1000), 1)} tok/s)"
             )
-            if attempt == 2:
-                return text
 
-    ident = lambda sc: sc  # noqa: E731
-    print(f"candidatos: d={len(d)} b={len(b)} s={len(sx)}\n")
-    variant("A actual (schema, con justificacion)", d, b, sx, ident)
-    variant("B formato json simple", d, b, sx, lambda sc: "json")
-    variant("C schema, b/s solo codigos", d, b, sx, codes_only)
-    variant("D C + 5 candidatos por lista", d[:5], b[:5], sx[:5], codes_only)
-    variant("E C + contexto 1024", d, b, sx, codes_only, num_ctx=1024)
-    variant("F sin formato forzado", d, b, sx, lambda sc: None)
-
-    # Linea base del servidor: prompt minimo (el mismo de la prueba del 05-oct: 4,1 s).
-    stats = {}
-    for _ in (1, 2):
-        stats = {}
-        ollama.chat_json(
-            s.ollama_url, s.llm_model, [{"role": "user", "content": "Responde solo JSON con campo ok true."}],
-            {"type": "object", "properties": {"ok": {"type": "boolean"}}, "required": ["ok"]}, s.keep_alive, 120, stats=stats,
-        )
-    print(f"\nlinea base (prompt minimo): total {stats.get('total_ms')} ms | salida {stats.get('eval_count')} tok en {stats.get('eval_ms')} ms")
+    variant("A actual (schema, codigos)", b, sx, lambda sc: sc)
+    variant("B formato json simple", b, sx, lambda sc: "json")
+    variant("C sin formato forzado", b, sx, lambda sc: None)
+    variant("D 4 candidatos por lista", b[:4], sx[:4], lambda sc: sc)
+    variant("E solo funciones (b)", b, [], lambda sc: sc)
     return 0
 
 

@@ -43,4 +43,7 @@ def health():
 def post_suggest(patient: PatientContext):
     fns = OllamaFns(settings)
     with _connect() as conn:
-        return suggest(patient, PgRepo(conn), fns.embed, fns.chat, settings.llm_model, stats=fns.stats)
+        return suggest(
+            patient, PgRepo(conn), fns.embed, fns.chat, settings.llm_model,
+            stats=fns.stats, use_llm=settings.use_llm,
+        )
