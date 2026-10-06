@@ -50,6 +50,31 @@ Si el servidor no tiene Git, Compose ni `python3-venv` (caso del servidor actual
 
 Pruebas (no necesitan la base): `pytest`. La prueba del catálogo real se omite si el TSV no está.
 
+## Servicio de sugerencia (HU-07b)
+
+`app.py` expone `POST /suggest` y `GET /health` en `127.0.0.1:8100`. Flujo: reglas fijas (edad, calificador, capítulos con nivel ≥ 5) → candidatos (Anexo para **d**; búsqueda con pgvector para **b** y **s**) → `qwen2.5:3b` elige y ordena entre los candidatos, con un JSON Schema donde los códigos candidatos son un `enum` → validación contra el catálogo. Los títulos salen del catálogo y los calificadores de las reglas, nunca del modelo. Si el modelo falla, devuelve igual una sugerencia por reglas y similitud, marcada con su origen (`rules`, `similarity` o `llm`). La entrada rechaza cualquier campo que no sea de la lista (nombre, documento y orientación sexual no pueden llegar).
+
+Levantar el servicio en el servidor (después de cargar el catálogo y los embeddings):
+
+```bash
+cd ~/health-access-bridge/icf-service
+sudo docker build -t icf-service .
+sudo docker run -d --name icf-service --restart unless-stopped --network host --env-file .env icf-service
+curl -s http://127.0.0.1:8100/health      # debe mostrar codes y codes_with_embedding en 1593
+```
+
+Actualizar el Caddyfile con el bloque de la sección siguiente y reiniciar Caddy. Prueba de extremo a extremo (el primer intento tarda más porque carga los modelos):
+
+```bash
+curl -s http://127.0.0.1:8100/suggest -H 'Content-Type: application/json' -d '{"age":35,"cat_fisica":"Severa","cat_psicosocial":"Moderada","cause":"Accidente de transito","levels":{"D1":10,"D4":60,"D5":55},"diag_cie":"S78 Amputacion traumatica"}'
+```
+
+Evaluación con el set de referencia (`reference/cases.json`, 25 casos sintéticos): mide JSON válido, códigos fuera del catálogo y latencia p50/p95; la precisión se calcula cuando el médico completa `expected` y marca `validated`:
+
+```bash
+sudo docker run --rm --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/evaluate.py --output informe.json
+```
+
 ## Túnel autenticado (Caddy + Tailscale Funnel)
 
 Funnel publica en internet y Ollama no tiene autenticación, así que **Funnel siempre apunta a Caddy (11435), nunca a Ollama (11434)**.
@@ -59,11 +84,17 @@ Funnel publica en internet y Ollama no tiene autenticación, así que **Funnel s
 ```
 :11435 {
     bind 127.0.0.1
-    @sintoken not header Authorization "Bearer TOKEN"
-    respond @sintoken "No autorizado" 401
-    reverse_proxy 127.0.0.1:11434
+    route {
+        @sintoken not header Authorization "Bearer TOKEN"
+        respond @sintoken "No autorizado" 401
+        @servicio path /suggest /health
+        reverse_proxy @servicio 127.0.0.1:8100
+        reverse_proxy 127.0.0.1:11434
+    }
 }
 ```
+
+El bloque `route` es obligatorio: fija el orden de las directivas y garantiza que **el token se exige antes de cualquier ruta**. Sin él, Caddy puede atender `/suggest` sin pedir el token (probado). `/suggest` y `/health` van al servicio ICF (puerto 8100); todo lo demás va a Ollama.
 
 ```bash
 sudo caddy validate --config /etc/caddy/Caddyfile && sudo systemctl restart caddy
