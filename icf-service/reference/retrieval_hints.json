@@ -1,0 +1,26 @@
+{
+  "about": "Pistas ORIENTATIVAS y NO validadas por un medico: codigos de funciones (b) y estructuras (s) que, por la logica de la CIF, probablemente deben aparecer entre los candidatos de cada caso. Sirven solo para comparar formas de armar la busqueda (scripts/probe_retrieval.py) con una medida de cobertura; NO miden precision clinica. La precision real se mide con 'expected' validado por el medico en cases.json.",
+  "hints": {
+    "C02": {"b": ["b730", "b735", "b760", "b770"], "s": ["s110"]},
+    "C03": {"b": ["b770", "b730", "b710", "b280"], "s": ["s750"]},
+    "C04": {"b": ["b730", "b735", "b167", "b770"], "s": ["s110"]},
+    "C05": {"b": ["b156", "b160", "b122", "b152"], "s": []},
+    "C06": {"b": ["b117", "b167", "b122"], "s": []},
+    "C07": {"b": ["b710", "b715", "b280", "b740"], "s": ["s730", "s750", "s770"]},
+    "C08": {"b": ["b730", "b735", "b760", "b620", "b525"], "s": ["s120", "s760"]},
+    "C09": {"b": ["b122", "b140", "b167", "b152"], "s": []},
+    "C11": {"b": ["b735", "b765", "b770", "b760"], "s": ["s110"]},
+    "C12": {"b": ["b710", "b715", "b280"], "s": ["s750"]},
+    "C13": {"b": ["b152", "b130", "b134", "b126"], "s": []},
+    "C14": {"b": ["b730", "b740", "b735"], "s": ["s750", "s730"]},
+    "C15": {"b": ["b770", "b710", "b152", "b134"], "s": ["s750"]},
+    "C16": {"b": ["b230", "b240"], "s": ["s260"]},
+    "C17": {"b": ["b730", "b735", "b620", "b525"], "s": ["s120", "s760"]},
+    "C18": {"b": ["b110", "b140", "b144"], "s": ["s110"]},
+    "C21": {"b": ["b152", "b134", "b140"], "s": []},
+    "C22": {"b": ["b144", "b114", "b117"], "s": ["s110"]},
+    "C23": {"b": ["b765", "b735", "b760", "b730"], "s": ["s110"]},
+    "C24": {"b": ["b440"], "s": ["s430"]},
+    "C25": {"b": ["b280", "b710", "b730"], "s": ["s760"]}
+  }
+}

@@ -101,6 +101,11 @@ def test_evaluate_and_benchmark_scripts_run_end_to_end(conn, monkeypatch, capsys
         assert "--- Resumen ---" in out and "JSON valido del modelo: " in out
         assert "desglose medio ms" in out and "codigos fuera del catalogo: 0" in out
 
+        monkeypatch.setattr(sys, "argv", ["probe_retrieval.py"])
+        assert _load_script("probe_retrieval").main() == 0
+        out = capsys.readouterr().out
+        assert "Cobertura de las pistas" in out and "expandido" in out and "diverso" in out
+
         monkeypatch.setattr(sys, "argv", ["benchmark_llm.py"])
         assert _load_script("benchmark_llm").main() == 0
         out = capsys.readouterr().out
@@ -136,6 +141,18 @@ def test_vector_search_respects_component_and_level(conn):
         found = repo.search(component, [0.01] * 1024, 8)
         assert len(found) == 8
         assert all(code.startswith(component) and len(code) in (4, 5) for code, _ in found)
+
+
+def test_vector_search_filters_by_chapter_inside_the_query(conn):
+    from icf.repository import PgRepo
+
+    repo = PgRepo(conn)
+    mental = repo.search("b", [0.01] * 1024, 6, chapters=[1])
+    assert len(mental) == 6 and all(code.startswith("b1") for code, _ in mental)  # siempre llena la lista
+    body = repo.search("b", [0.01] * 1024, 6, chapters=list(range(2, 9)))
+    assert len(body) == 6 and all(not code.startswith("b1") for code, _ in body)
+    assert repo.search("s", [0.01] * 1024, 6, chapters=[]) == []
+    assert len(repo.search("s", [0.01] * 1024, 6)) == 6  # sin filtro: todo el componente
 
 
 def test_full_flow_with_real_database(conn):

@@ -41,9 +41,12 @@ class FakeRepo:
     def chapter_codes(self, chapter):
         return D2_CHAPTER if chapter == 2 else []
 
-    def search(self, component, embedding, limit):
-        self.searches.append(component)
-        return {"b": B, "s": S}[component][:limit]
+    def search(self, component, embedding, limit, chapters=None):
+        self.searches.append((component, None if chapters is None else list(chapters)))
+        pairs = {"b": B, "s": S}[component]
+        if chapters is not None:
+            pairs = [(c, t) for c, t in pairs if int(c[1]) in chapters]
+        return pairs[:limit]
 
     def rank_codes(self, codes, embedding):
         self.ranked.append(list(codes))
@@ -190,7 +193,7 @@ def test_no_body_components_when_categories_are_ninguna():
     repo = FakeRepo()
     res = run(patient(cat_fisica="Ninguna", cat_psicosocial="Ninguna"), chat_returning(GOOD), repo)
     assert not res.functions and not res.structures
-    assert repo.searches == []
+    assert repo.searches == []  # ni siquiera se busca
     assert any("Ninguna" in w for w in res.warnings)
     assert res.activities  # las actividades siguen
 
@@ -200,6 +203,43 @@ def test_mental_functions_use_psychosocial_category():
     res = run(patient(cat_psicosocial="Ninguna"), chat_returning({"b": ["b730"]}))
     codes = [f.code for f in res.functions]
     assert "b730" in codes and "b152" not in codes and "b134" not in codes
+
+
+def test_psychosocial_only_patient_gets_mental_functions_and_no_structures():
+    """Caso C05 (esquizofrenia): sin deficiencia fisica solo aplican b1 y ninguna estructura."""
+    repo = FakeRepo()
+    res = run(patient(cat_fisica="Ninguna", cat_psicosocial="Severa", diag_cie="F20 Esquizofrenia"),
+              chat_returning({"b": ["b152"]}), repo)
+    assert [f.code for f in res.functions] == ["b152"] and res.functions[0].qualifier == 3
+    assert res.structures == []
+    assert ("b", [1]) in repo.searches and ("s", []) in repo.searches
+
+
+def test_physical_only_patient_gets_no_mental_functions():
+    repo = FakeRepo()
+    res = run(patient(cat_fisica="Severa", cat_psicosocial="Ninguna"), chat_returning(GOOD), repo)
+    assert ("b", list(range(2, 9))) in repo.searches
+    assert all(not f.code.startswith("b1") for f in res.functions)
+
+
+def test_body_chapters_rules():
+    assert rules.body_chapters("b", "Severa", "Leve") == list(range(1, 9))
+    assert rules.body_chapters("b", "Ninguna", "Severa") == [1]
+    assert rules.body_chapters("b", "Severa", "Ninguna") == list(range(2, 9))
+    assert rules.body_chapters("s", "Ninguna", "Severa") == []
+    assert rules.body_chapters("s", "Si", "No") == list(range(1, 9))  # no reconocible: no se excluye nada
+
+
+def test_clinical_query_drops_cie_codes_and_keeps_text():
+    assert rules.clean_diagnosis("G80.9 Paralisis cerebral infantil") == "Paralisis cerebral infantil"
+    assert rules.clean_diagnosis("S98 Amputacion traumatica del pie; F43.1 Trastorno de estres postraumatico") == (
+        "Amputacion traumatica del pie; Trastorno de estres postraumatico"
+    )
+    assert rules.clean_diagnosis("Parkinson") == "Parkinson"
+    assert rules.clinical_query("G20 Enfermedad de Parkinson", "Temblor en reposo") == (
+        "Enfermedad de Parkinson. Temblor en reposo"
+    )
+    assert rules.clinical_query(None, None) is None and rules.clinical_query("  ", "") is None
 
 
 def test_unrecognized_category_leaves_qualifier_unspecified():

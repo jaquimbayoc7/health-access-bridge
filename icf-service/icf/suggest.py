@@ -165,13 +165,11 @@ def suggest(
     b_pairs: List[Pair] = []
     s_pairs: List[Pair] = []
     if body_applies and vector is not None:
-        keep = lambda pairs: [  # noqa: E731 - solo calificador >= 1 cuenta en b y s
-            (c, t) for c, t in pairs
-            if rules.body_qualifier(c, patient.cat_fisica, patient.cat_psicosocial) != 0
-        ]
+        # Solo cuentan b y s con calificador >= 1: los capitulos de una categoria 'Ninguna' se excluyen
+        # dentro de la busqueda (filtrar despues dejaba la lista vacia, ej. esquizofrenia sin deficiencia fisica).
         t0 = time.perf_counter()
-        b_pairs = keep(repo.search("b", vector, BODY_CANDIDATES))
-        s_pairs = keep(repo.search("s", vector, BODY_CANDIDATES))
+        b_pairs = repo.search("b", vector, BODY_CANDIDATES, rules.body_chapters("b", patient.cat_fisica, patient.cat_psicosocial))
+        s_pairs = repo.search("s", vector, BODY_CANDIDATES, rules.body_chapters("s", patient.cat_fisica, patient.cat_psicosocial))
         result.timings["search"] = round((time.perf_counter() - t0) * 1000)
     b_titles, s_titles = dict(b_pairs), dict(s_pairs)
 

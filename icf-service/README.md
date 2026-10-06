@@ -77,6 +77,12 @@ Evaluación con el set de referencia (`reference/cases.json`, 25 casos sintétic
 sudo docker run --rm --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/evaluate.py --output informe.json
 ```
 
+Calidad de la búsqueda de funciones y estructuras: compara 4 formas de armar el texto de búsqueda (actual, solo lo clínico, expandido por el modelo y diverso por capítulo) y mide cuántas de las pistas orientativas de `reference/retrieval_hints.json` quedan entre los 6 candidatos (no es precisión clínica; las pistas no están validadas por un médico):
+
+```bash
+sudo docker run --rm --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/probe_retrieval.py
+```
+
 Diagnóstico de velocidad (dónde se va el tiempo y qué variante de prompt es más rápida; compara salida con y sin justificación, formato JSON Schema, contexto reducido y menos candidatos):
 
 ```bash
