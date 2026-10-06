@@ -46,6 +46,8 @@ python scripts/load_catalog.py             # carga icf_codes, mapeo D1-D6 y cand
 python scripts/embed_catalog.py            # calcula embeddings (reanudable)
 ```
 
+Si el servidor no tiene Git, Compose ni `python3-venv` (caso del servidor actual): descarga el proyecto como zip desde GitHub, crea la base con `docker run -d --name icf-db --restart unless-stopped -e POSTGRES_USER=... -e POSTGRES_PASSWORD=... -e POSTGRES_DB=icf -p 127.0.0.1:5433:5432 -v icf_pgdata:/var/lib/postgresql/data pgvector/pgvector:pg16` y ejecuta los scripts dentro de `python:3.11-slim` con `--network host --env-file .env`.
+
 Pruebas (no necesitan la base): `pytest`. La prueba del catálogo real se omite si el TSV no está.
 
 ## Túnel autenticado (Caddy + Tailscale Funnel)
