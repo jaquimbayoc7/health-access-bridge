@@ -92,7 +92,8 @@ def test_evaluate_and_benchmark_scripts_run_end_to_end(conn, monkeypatch, capsys
         monkeypatch.setattr(sys, "argv", ["evaluate.py", "--ids", "C02,C03", "--verbose"])
         assert _load_script("evaluate").main() == 0
         out = capsys.readouterr().out
-        assert "casos: 2" in out and "actividades" in out and "Andar" in out or "Permanecer" in out
+        assert "casos: 2" in out
+        assert "actividades" in out and "funciones" in out and "[similarity]" in out and "[llm]" in out
 
         monkeypatch.setattr(sys, "argv", ["evaluate.py", "--limit", "6"])
         assert _load_script("evaluate").main() == 0
