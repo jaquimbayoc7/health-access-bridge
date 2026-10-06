@@ -1,18 +1,16 @@
-"""Calcula con Ollama (bge-m3) el embedding de cada codigo del catalogo y lo guarda en icf_codes.
+"""Calcula con Ollama (bge-m3) el embedding de cada codigo del catalogo y lo guarda en icf_codes.embedding.
 
 Uso (desde icf-service/), despues de `ollama pull bge-m3` y de load_catalog.py:
-    python scripts/embed_catalog.py          # embedding del titulo de todos los codigos (reanudable)
-    python scripts/embed_catalog.py --rich   # embedding_rich de los codigos de nivel 2: titulo + titulos de sus hijos
+    python scripts/embed_catalog.py
 Variables: ICF_DATABASE_URL, OLLAMA_URL (por defecto http://127.0.0.1:11434), ICF_EMBED_MODEL (por defecto bge-m3).
+Es reanudable: solo procesa los codigos que aun no tienen embedding.
 """
-import argparse
 import json
 import os
 import sys
 from urllib import request
 
 BATCH = 32
-MAX_CHILDREN = 12  # titulos de hijos que se agregan al texto enriquecido
 
 
 def embed(texts, base_url, model):
@@ -24,15 +22,7 @@ def embed(texts, base_url, model):
         return json.loads(resp.read().decode("utf-8"))["embeddings"]
 
 
-def to_vector(values):
-    return "[" + ",".join(str(x) for x in values) + "]"
-
-
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--rich", action="store_true", help="calcula embedding_rich (nivel 2, titulo + hijos)")
-    args = ap.parse_args()
-
     import psycopg
 
     url = os.environ.get("ICF_DATABASE_URL")
@@ -43,39 +33,26 @@ def main() -> int:
     model = os.environ.get("ICF_EMBED_MODEL", "bge-m3")
 
     with psycopg.connect(url) as conn:
-        if args.rich:
-            conn.execute("ALTER TABLE icf_codes ADD COLUMN IF NOT EXISTS embedding_rich vector(1024)")
-            conn.commit()
-            rows = conn.execute(
-                """SELECT p.code, p.title, array_remove(array_agg(c.title ORDER BY c.code), NULL)
-                   FROM icf_codes p LEFT JOIN icf_codes c ON c.parent = p.code
-                   WHERE p.level = 2 AND p.embedding_rich IS NULL
-                   GROUP BY p.code, p.title ORDER BY p.code"""
-            ).fetchall()
-            items = [
-                (code, f"{title}. Incluye: " + "; ".join(children[:MAX_CHILDREN]) if children else title)
-                for code, title, children in rows
-            ]
-            column = "embedding_rich"
-        else:
-            rows = conn.execute(
-                """SELECT c.code, c.title, p.title
-                   FROM icf_codes c LEFT JOIN icf_codes p ON p.code = c.parent
-                   WHERE c.embedding IS NULL ORDER BY c.code"""
-            ).fetchall()
-            # Titulo del codigo, con el del padre como contexto en los niveles inferiores.
-            items = [(code, f"{title}. {parent}" if parent else title) for code, title, parent in rows]
-            column = "embedding"
-        print(f"{len(items)} codigos sin {column} (modelo {model})")
+        rows = conn.execute(
+            """SELECT c.code, c.title, p.title
+               FROM icf_codes c LEFT JOIN icf_codes p ON p.code = c.parent
+               WHERE c.embedding IS NULL ORDER BY c.code"""
+        ).fetchall()
+        print(f"{len(rows)} codigos sin embedding (modelo {model})")
         done = 0
-        for i in range(0, len(items), BATCH):
-            chunk = items[i : i + BATCH]
-            vectors = embed([text for _, text in chunk], base_url, model)
-            for (code, _), vec in zip(chunk, vectors):
-                conn.execute(f"UPDATE icf_codes SET {column} = %s::vector WHERE code = %s", (to_vector(vec), code))
+        for i in range(0, len(rows), BATCH):
+            chunk = rows[i : i + BATCH]
+            # Texto del codigo: titulo, con el titulo del padre como contexto en los niveles inferiores.
+            texts = [f"{title}. {parent}" if parent else title for _, title, parent in chunk]
+            vectors = embed(texts, base_url, model)
+            for (code, _, _), vec in zip(chunk, vectors):
+                conn.execute(
+                    "UPDATE icf_codes SET embedding = %s::vector WHERE code = %s",
+                    ("[" + ",".join(str(x) for x in vec) + "]", code),
+                )
             conn.commit()
             done += len(chunk)
-            print(f"  {done}/{len(items)}")
+            print(f"  {done}/{len(rows)}")
     return 0
 
 
