@@ -79,6 +79,13 @@ Evaluación con el set de referencia (`reference/cases.json`, 25 casos sintétic
 sudo docker run --rm --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/evaluate.py --output informe.json
 ```
 
+¿El modelo elige mejor que la similitud sola? `compare_modes.py` corre los 21 casos con pistas en tres modos (`similitud` sin modelo, `rapido` y `calidad`) y compara precisión, cobertura y latencia (las pistas son orientativas y no están validadas por un médico: sirven para comparar modos, no como precisión clínica). Tarda unos 20 minutos, así que conviene correrlo en segundo plano:
+
+```bash
+sudo docker run -d --name icf-compare --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/compare_modes.py --output comparacion.json
+sudo docker logs -f icf-compare      # Ctrl+C para dejar de mirar; el proceso sigue
+```
+
 Calidad de la búsqueda de funciones y estructuras: compara 3 formas de buscar (texto con todo, solo lo clínico, y solo códigos de 3 dígitos —la que usa el motor—) y mide cuántas de las pistas orientativas de `reference/retrieval_hints.json` quedan entre los 6 y los 12 primeros candidatos (no es precisión clínica; las pistas no están validadas por un médico):
 
 ```bash

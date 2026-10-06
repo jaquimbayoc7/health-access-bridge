@@ -40,9 +40,12 @@ class PgRepo:
         return [(code, title) for code, title in rows]
 
     def chapter_codes(self, chapter: int) -> List[Pair]:
-        """Categorias de segundo nivel de un capitulo d (respaldo cuando el Anexo no trae candidatos)."""
+        """Categorias de segundo nivel de un capitulo d (respaldo cuando el Anexo no trae candidatos).
+        Sin los 'otros especificados / no especificados' (terminados en 8 y 9, ej. d298 y d299): no aportan."""
         rows = self.conn.execute(
-            "SELECT code, title FROM icf_codes WHERE component = 'd' AND chapter = %s AND level = 2 ORDER BY code",
+            """SELECT code, title FROM icf_codes
+               WHERE component = 'd' AND chapter = %s AND level = 2 AND code !~ '[89]$'
+               ORDER BY code""",
             (chapter,),
         ).fetchall()
         return [(code, title) for code, title in rows]
