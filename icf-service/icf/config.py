@@ -11,6 +11,8 @@ class Settings:
     embed_model: str
     keep_alive: str
     llm_timeout_s: float
+    num_predict: int = 400
+    num_ctx: int = 2048
 
 
 def load_settings() -> Settings:
@@ -21,4 +23,6 @@ def load_settings() -> Settings:
         embed_model=os.environ.get("ICF_EMBED_MODEL", "bge-m3"),
         keep_alive=os.environ.get("ICF_LLM_KEEP_ALIVE", "30m"),
         llm_timeout_s=float(os.environ.get("ICF_SERVICE_LLM_TIMEOUT_S", "90")),
+        num_predict=int(os.environ.get("ICF_LLM_NUM_PREDICT", "400")),
+        num_ctx=int(os.environ.get("ICF_LLM_NUM_CTX", "2048")),
     )

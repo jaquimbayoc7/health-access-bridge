@@ -97,6 +97,14 @@ def test_happy_path_titles_from_catalog_and_qualifiers_from_rules():
     assert (s.qualifier, s.qualifier_cn, s.qualifier_cl) == (3, 8, 8)
 
 
+def test_timings_and_llm_stats_are_reported():
+    stats = {"prompt_eval_count": 500, "eval_count": 40}
+    res = suggest(patient(), FakeRepo(), embed, chat_returning(GOOD), "qwen2.5:3b", stats=stats)
+    assert set(res.timings) == {"embed", "search", "llm"}
+    assert all(isinstance(v, int) and v >= 0 for v in res.timings.values())
+    assert res.llm_stats == stats
+
+
 def test_llm_never_controls_titles():
     payload = dict(GOOD, d=["d4501"])
     payload["b"] = [{"code": "b730", "justificacion": "x", "title": "TITULO INVENTADO"}]

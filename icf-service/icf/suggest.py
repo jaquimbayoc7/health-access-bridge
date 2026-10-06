@@ -80,13 +80,22 @@ def suggest(
     embed_fn: EmbedFn,
     chat_fn: ChatFn,
     model: str,
+    stats: Optional[Dict[str, int]] = None,
 ) -> SuggestionResult:
     started = time.perf_counter()
     result = SuggestionResult(applicable=True, model=model)
 
     def finish() -> SuggestionResult:
         result.latency_ms = round((time.perf_counter() - started) * 1000)
+        result.llm_stats = dict(stats or {})
         return result
+
+    def timed(stage: str, fn, *args):
+        t0 = time.perf_counter()
+        try:
+            return fn(*args)
+        finally:
+            result.timings[stage] = round((time.perf_counter() - t0) * 1000)
 
     group = rules.age_group(patient.age)
     if group is None:
@@ -126,14 +135,16 @@ def suggest(
             [_CHAPTER_NAME[ch] for ch, _, _ in plan],
         )
         try:
-            vector = embed_fn(context)
+            vector = timed("embed", embed_fn, context)
             keep = lambda pairs: [  # noqa: E731 - solo calificador >= 1 cuenta en b y s
                 (c, t)
                 for c, t in pairs
                 if rules.body_qualifier(c, patient.cat_fisica, patient.cat_psicosocial) != 0
             ]
+            t0 = time.perf_counter()
             b_pairs = keep(repo.search("b", vector, BODY_CANDIDATES))
             s_pairs = keep(repo.search("s", vector, BODY_CANDIDATES))
+            result.timings["search"] = round((time.perf_counter() - t0) * 1000)
         except Exception as exc:  # embeddings o base no disponibles: se sigue solo con actividades
             result.warnings.append(f"No se pudieron buscar funciones y estructuras ({type(exc).__name__}).")
     else:
@@ -148,7 +159,7 @@ def suggest(
         try:
             schema = llm.build_schema([c for c, _ in d_pairs], [c for c, _ in b_pairs], [c for c, _ in s_pairs])
             messages = llm.build_messages(_patient_summary(patient, plan), d_pairs, b_pairs, s_pairs)
-            text = chat_fn(messages, schema)
+            text = timed("llm", chat_fn, messages, schema)
             parsed = llm.parse_response(
                 text, [c for c, _ in d_pairs], [c for c, _ in b_pairs], [c for c, _ in s_pairs]
             )

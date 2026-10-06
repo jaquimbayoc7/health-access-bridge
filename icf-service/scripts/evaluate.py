@@ -5,14 +5,13 @@ Uso (en el servidor, con ICF_DATABASE_URL y OLLAMA_URL definidos; ver README):
     python scripts/evaluate.py --output informe.json
 
 Metricas que NO necesitan validacion medica: respuestas con JSON valido del modelo, codigos fuera del
-catalogo y latencia p50/p95. La precision solo se calcula en los casos con "validated": true y "expected"
-(codigos esperados por componente, completados por el medico).
+catalogo, latencia p50/p95 y su desglose (embedding, busqueda, modelo). La precision solo se calcula en
+los casos con "validated": true y "expected" (codigos esperados por componente, completados por el medico).
 """
 import argparse
 import json
 import statistics
 import sys
-import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -20,9 +19,9 @@ sys.path.insert(0, str(ROOT))
 
 import psycopg  # noqa: E402
 
-from icf import ollama  # noqa: E402
 from icf.config import load_settings  # noqa: E402
 from icf.repository import PgRepo  # noqa: E402
+from icf.runtime import OllamaFns  # noqa: E402
 from icf.schemas import PatientContext  # noqa: E402
 from icf.suggest import suggest  # noqa: E402
 
@@ -37,10 +36,15 @@ def percentile(values, pct):
     return ordered[index]
 
 
+def mean(values):
+    return round(statistics.mean(values)) if values else None
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--cases", type=Path, default=DEFAULT_CASES)
     ap.add_argument("--output", type=Path, help="guarda el informe completo en JSON")
+    ap.add_argument("--limit", type=int, help="solo los primeros N casos")
     args = ap.parse_args()
 
     settings = load_settings()
@@ -48,16 +52,12 @@ def main() -> int:
         print("Falta ICF_DATABASE_URL", file=sys.stderr)
         return 2
     cases = json.loads(args.cases.read_text(encoding="utf-8"))["cases"]
-
-    def embed_fn(text):
-        return ollama.embed(settings.ollama_url, settings.embed_model, text, settings.keep_alive, settings.llm_timeout_s)
-
-    def chat_fn(messages, schema):
-        return ollama.chat_json(
-            settings.ollama_url, settings.llm_model, messages, schema, settings.keep_alive, settings.llm_timeout_s
-        )
+    if args.limit:
+        cases = cases[: args.limit]
 
     report, latencies = [], []
+    stage = {"embed": [], "search": [], "llm": []}
+    tok_in, tok_out, gen_rate = [], [], []
     llm_ok = llm_failed = invalid_codes = 0
     hits = {"b": [0, 0], "s": [0, 0], "d": [0, 0]}  # [aciertos, sugeridos] solo en casos validados
 
@@ -66,11 +66,18 @@ def main() -> int:
         repo = PgRepo(conn)
         for case in cases:
             patient = PatientContext(**case["patient"])
-            started = time.perf_counter()
-            res = suggest(patient, repo, embed_fn, chat_fn, settings.llm_model)
-            elapsed = round((time.perf_counter() - started) * 1000)
+            fns = OllamaFns(settings)
+            res = suggest(patient, repo, fns.embed, fns.chat, settings.llm_model, stats=fns.stats)
             if res.applicable:
-                latencies.append(elapsed)
+                latencies.append(res.latency_ms)
+                for key in stage:
+                    if key in res.timings:
+                        stage[key].append(res.timings[key])
+                if "prompt_eval_count" in res.llm_stats:
+                    tok_in.append(res.llm_stats["prompt_eval_count"])
+                if res.llm_stats.get("eval_count") and res.llm_stats.get("eval_ms"):
+                    tok_out.append(res.llm_stats["eval_count"])
+                    gen_rate.append(res.llm_stats["eval_count"] / (res.llm_stats["eval_ms"] / 1000))
             if res.llm_used:
                 llm_ok += 1
             elif res.llm_error:
@@ -83,10 +90,13 @@ def main() -> int:
                     expected = set(case["expected"].get(comp, []))
                     hits[comp][0] += sum(1 for item in items if item.code in expected)
                     hits[comp][1] += len(items)
-            report.append({"id": case["id"], "ms": elapsed, "result": res.model_dump()})
+            report.append({"id": case["id"], "result": res.model_dump()})
             summary = ", ".join(f"{c}:" + "/".join(i.code for i in items) for c, items in by_comp.items() if items)
             flag = "LLM" if res.llm_used else ("sin-LLM" if res.applicable else "n/a")
-            print(f"{case['id']:<6} {elapsed:>6} ms  {flag:<8} {summary or res.message or '-'}")
+            detail = " ".join(f"{k}={v}" for k, v in res.timings.items())
+            print(f"{case['id']:<4} {res.latency_ms:>6} ms [{detail}] {flag:<8} {summary or res.message or '-'}")
+            if res.llm_error:
+                print(f"       error del modelo: {res.llm_error}")
 
     invoked = llm_ok + llm_failed
     print("\n--- Resumen ---")
@@ -95,9 +105,14 @@ def main() -> int:
     print(f"codigos fuera del catalogo: {invalid_codes}")
     if latencies:
         print(
-            f"latencia ms: p50={percentile(latencies, 50)} p95={percentile(latencies, 95)} "
-            f"media={round(statistics.mean(latencies))} max={max(latencies)}"
+            f"latencia total ms: p50={percentile(latencies, 50)} p95={percentile(latencies, 95)} "
+            f"media={mean(latencies)} max={max(latencies)}"
         )
+        print(
+            f"desglose medio ms: embedding={mean(stage['embed'])} busqueda={mean(stage['search'])} modelo={mean(stage['llm'])}"
+        )
+    if tok_in:
+        print(f"tokens: prompt medio={mean(tok_in)} | salida media={mean(tok_out)} | velocidad de salida={round(statistics.mean(gen_rate), 1) if gen_rate else '?'} tok/s")
     validated = sum(1 for c in cases if c.get("validated") and c.get("expected"))
     if validated:
         for comp, (ok, total) in hits.items():

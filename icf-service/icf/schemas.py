@@ -51,6 +51,8 @@ class SuggestionResult(BaseModel):
     llm_used: bool = False  # True solo si el LLM respondio un JSON valido y se uso
     llm_error: Optional[str] = None
     latency_ms: int = 0
+    timings: Dict[str, int] = Field(default_factory=dict)  # ms por etapa: embed, search, llm
+    llm_stats: Dict[str, int] = Field(default_factory=dict)  # tokens y duraciones que reporta Ollama
     functions: List[SuggestedCode] = Field(default_factory=list)
     structures: List[SuggestedCode] = Field(default_factory=list)
     activities: List[SuggestedCode] = Field(default_factory=list)

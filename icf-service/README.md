@@ -75,6 +75,14 @@ Evaluación con el set de referencia (`reference/cases.json`, 25 casos sintétic
 sudo docker run --rm --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/evaluate.py --output informe.json
 ```
 
+Diagnóstico de velocidad (dónde se va el tiempo y qué variante de prompt es más rápida; compara salida con y sin justificación, formato JSON Schema, contexto reducido y menos candidatos):
+
+```bash
+sudo docker run --rm --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/benchmark_llm.py
+```
+
+Variables opcionales del servicio: `ICF_LLM_NUM_PREDICT` (tope de tokens de salida, 400), `ICF_LLM_NUM_CTX` (contexto, 2048) e `ICF_SERVICE_LLM_TIMEOUT_S` (90).
+
 ## Túnel autenticado (Caddy + Tailscale Funnel)
 
 Funnel publica en internet y Ollama no tiene autenticación, así que **Funnel siempre apunta a Caddy (11435), nunca a Ollama (11434)**.
