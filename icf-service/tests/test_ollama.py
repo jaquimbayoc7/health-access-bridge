@@ -28,7 +28,11 @@ def fake_ollama():
             payload = (
                 {"embeddings": [[0.5, 0.25]]}
                 if self.path == "/api/embed"
-                else {"message": {"content": '{"d": ["d450"]}'}}
+                else {
+                    "message": {"content": '{"d": ["d450"]}'},
+                    "prompt_eval_count": 7, "eval_count": 9, "load_duration": 5_000_000,
+                    "prompt_eval_duration": 70_000_000, "eval_duration": 90_000_000, "total_duration": 200_000_000,
+                }
             )
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -57,6 +61,15 @@ def test_chat_uses_schema_and_deterministic_options(fake_ollama):
     _, body = calls[0]
     assert body["format"] == schema and body["stream"] is False
     assert body["options"]["temperature"] == 0
+
+
+def test_chat_fills_stats_and_supports_no_format(fake_ollama):
+    url, calls, _ = fake_ollama
+    stats = {}
+    ollama.chat_json(url, "qwen2.5:3b", [{"role": "user", "content": "hola"}], None, stats=stats, num_ctx=1024)
+    _, body = calls[0]
+    assert "format" not in body and body["options"]["num_ctx"] == 1024
+    assert stats == {"prompt_eval_count": 7, "eval_count": 9, "load_ms": 5, "prompt_eval_ms": 70, "eval_ms": 90, "total_ms": 200}
 
 
 def test_chat_retries_with_plain_json_when_schema_is_rejected(fake_ollama):

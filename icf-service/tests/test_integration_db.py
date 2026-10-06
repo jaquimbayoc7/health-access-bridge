@@ -36,6 +36,79 @@ def conn():
     c.close()
 
 
+def _start_fake_ollama():
+    """Ollama simulado: embeddings fijos y un chat que respeta el esquema y reporta estadisticas."""
+    import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self, *args):
+            pass
+
+        def do_POST(self):
+            body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+            if self.path == "/api/embed":
+                payload = {"embeddings": [[0.01] * 1024]}
+            else:
+                fmt, content = body.get("format"), {"d": ["d4501"]}
+                if isinstance(fmt, dict):
+                    content = {}
+                    for key, spec in fmt["properties"].items():
+                        if "items" not in spec:  # esquema simple de la linea base
+                            content[key] = True
+                            continue
+                        item = spec["items"]
+                        if key == "d":
+                            content["d"] = item["enum"][:2]
+                        elif item.get("type") == "string":
+                            content[key] = item["enum"][:2]
+                        else:
+                            content[key] = [{"code": item["properties"]["code"]["enum"][0], "justificacion": "x"}]
+                payload = {
+                    "message": {"content": json.dumps(content)},
+                    "prompt_eval_count": 500, "prompt_eval_duration": 2_000_000_000,
+                    "eval_count": 40, "eval_duration": 4_000_000_000,
+                    "load_duration": 1_000_000, "total_duration": 6_100_000_000,
+                }
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(payload).encode())
+
+    server = HTTPServer(("127.0.0.1", 0), Handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    return server
+
+
+def _load_script(name):
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(name, ROOT / "scripts" / f"{name}.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_evaluate_and_benchmark_scripts_run_end_to_end(conn, monkeypatch, capsys):
+    server = _start_fake_ollama()
+    try:
+        monkeypatch.setenv("ICF_DATABASE_URL", URL)
+        monkeypatch.setenv("OLLAMA_URL", f"http://127.0.0.1:{server.server_port}")
+
+        monkeypatch.setattr(sys, "argv", ["evaluate.py", "--limit", "6"])
+        assert _load_script("evaluate").main() == 0
+        out = capsys.readouterr().out
+        assert "--- Resumen ---" in out and "JSON valido del modelo: " in out
+        assert "desglose medio ms" in out and "codigos fuera del catalogo: 0" in out
+
+        monkeypatch.setattr(sys, "argv", ["benchmark_llm.py"])
+        assert _load_script("benchmark_llm").main() == 0
+        out = capsys.readouterr().out
+        assert "A actual" in out and "F sin formato forzado" in out and "linea base" in out
+    finally:
+        server.shutdown()
+
+
 def test_annex_candidates_by_chapter_and_age(conn):
     from icf.repository import PgRepo
 

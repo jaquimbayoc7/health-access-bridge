@@ -5,9 +5,9 @@ import logging
 import psycopg
 from fastapi import FastAPI, HTTPException
 
-from icf import ollama
 from icf.config import load_settings
 from icf.repository import PgRepo
+from icf.runtime import OllamaFns
 from icf.schemas import PatientContext, SuggestionResult
 from icf.suggest import suggest
 
@@ -41,20 +41,6 @@ def health():
 
 @app.post("/suggest", response_model=SuggestionResult)
 def post_suggest(patient: PatientContext):
-    def embed_fn(text):
-        return ollama.embed(
-            settings.ollama_url, settings.embed_model, text, settings.keep_alive, settings.llm_timeout_s
-        )
-
-    def chat_fn(messages, schema):
-        return ollama.chat_json(
-            settings.ollama_url,
-            settings.llm_model,
-            messages,
-            schema,
-            settings.keep_alive,
-            settings.llm_timeout_s,
-        )
-
+    fns = OllamaFns(settings)
     with _connect() as conn:
-        return suggest(patient, PgRepo(conn), embed_fn, chat_fn, settings.llm_model)
+        return suggest(patient, PgRepo(conn), fns.embed, fns.chat, settings.llm_model, stats=fns.stats)
