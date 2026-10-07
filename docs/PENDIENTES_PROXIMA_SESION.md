@@ -93,3 +93,4 @@
 | Operación del servicio ICF | `docs/MANUAL_OPERACION_ICF.md`, `icf-service/deploy/windows/README.md` |
 | Diseño del RAG | `docs/diagrams/rag-icf-postgresql.md` |
 | Presentación | `docs/presentation/index.html` (publicada desde `master`), brief para Kimi: `docs/presentation/KIMI_BRIEF_M3.md` |
+| Animaciones (Archify): arquitectura y recorridos del médico y del administrador | `docs/presentation/animaciones/` (ver su `README.md` para regenerarlas) |

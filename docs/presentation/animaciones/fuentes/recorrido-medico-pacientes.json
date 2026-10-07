@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Recorrido del médico (1 de 2): acceso, pacientes y predicción de barreras",
+    "output": "recorrido-medico-pacientes.html",
+    "viewBox": [
+      1080,
+      590
+    ],
+    "column_fit": "spread",
+    "animation": "trace",
+    "quality_profile": "showcase"
+  },
+  "participants": [
+    {
+      "id": "medico",
+      "type": "external",
+      "label": "Médico",
+      "sublabel": "profesional de salud"
+    },
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "Frontend",
+      "sublabel": "React · es/en"
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Backend",
+      "sublabel": "FastAPI · JWT"
+    },
+    {
+      "id": "db",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "pacientes y sugerencias"
+    },
+    {
+      "id": "ml",
+      "type": "backend",
+      "label": "Predictor",
+      "sublabel": "K-Means + GB"
+    }
+  ],
+  "segments": [
+    {
+      "from": 150,
+      "to": 257,
+      "label": "1 · Acceso"
+    },
+    {
+      "from": 267,
+      "to": 345,
+      "label": "2 · Registro de pacientes"
+    },
+    {
+      "from": 355,
+      "to": 487,
+      "label": "3 · Predicción de barreras"
+    }
+  ],
+  "messages": [
+    {
+      "id": "login",
+      "from": "medico",
+      "to": "web",
+      "y": 165,
+      "label": "inicia sesión",
+      "variant": "default"
+    },
+    {
+      "id": "login-api",
+      "from": "web",
+      "to": "api",
+      "y": 193,
+      "label": "POST /users/login",
+      "variant": "emphasis"
+    },
+    {
+      "id": "login-db",
+      "from": "api",
+      "to": "db",
+      "y": 221,
+      "label": "valida usuario",
+      "variant": "security"
+    },
+    {
+      "id": "jwt",
+      "from": "api",
+      "to": "web",
+      "y": 249,
+      "label": "JWT con rol médico",
+      "variant": "return"
+    },
+    {
+      "id": "paciente",
+      "from": "medico",
+      "to": "web",
+      "y": 279,
+      "label": "registra paciente",
+      "variant": "default"
+    },
+    {
+      "id": "paciente-api",
+      "from": "web",
+      "to": "api",
+      "y": 307,
+      "label": "POST /patients/",
+      "variant": "emphasis"
+    },
+    {
+      "id": "paciente-db",
+      "from": "api",
+      "to": "db",
+      "y": 335,
+      "label": "guarda (solo suyos)",
+      "variant": "default"
+    },
+    {
+      "id": "predice",
+      "from": "medico",
+      "to": "web",
+      "y": 365,
+      "label": "ejecuta predicción",
+      "variant": "default"
+    },
+    {
+      "id": "predice-api",
+      "from": "web",
+      "to": "api",
+      "y": 393,
+      "label": "POST …/predict",
+      "variant": "emphasis"
+    },
+    {
+      "id": "predice-ml",
+      "from": "api",
+      "to": "ml",
+      "y": 421,
+      "label": "perfil de barreras",
+      "variant": "default"
+    },
+    {
+      "id": "predice-ret",
+      "from": "ml",
+      "to": "api",
+      "y": 449,
+      "label": "perfil 0 / 1 / 2",
+      "variant": "return"
+    },
+    {
+      "id": "predice-web",
+      "from": "api",
+      "to": "web",
+      "y": 477,
+      "label": "perfil y guía",
+      "variant": "return"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Acceso con roles",
+      "items": [
+        "El backend valida la cuenta y emite un JWT con el rol de médico",
+        "Cada médico solo ve y modifica sus propios pacientes"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Registro",
+      "items": [
+        "Niveles D1–D6, categorías y causa oficial de la deficiencia (21 opciones del Anexo)"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Predicción",
+      "items": [
+        "El modelo híbrido clasifica el perfil de barreras: 0 (bajas), 1 (mixtas) o 2 (altas)",
+        "La Guía Predictiva ayuda a interpretar cada perfil"
+      ]
+    }
+  ]
+}

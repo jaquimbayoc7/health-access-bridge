@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Animaciones del proyecto · Health Access Bridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#F6F7F9;--fg:#2B303B;--muted:#676F7E;--border:#E5E7EB;--primary:#3C83F6;--ok:#21C45D;--warn:#F59F0A;--cian:#06B6D4;--violeta:#AF57DB}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--fg)}
+  header{background:linear-gradient(135deg,#3C83F6,#1D4ED8);color:#fff;padding:40px 24px}
+  header .in,main{max-width:1180px;margin:0 auto}
+  h1{margin:0 0 8px;font-size:30px;font-weight:800}
+  header p{margin:0;max-width:760px;line-height:1.55;color:#DBEAFE}
+  main{padding:32px 24px 56px}
+  h2{font-size:20px;margin:32px 0 6px}
+  .sub{color:var(--muted);margin:0 0 18px;font-size:14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+  .card{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;flex-direction:column}
+  .card video{width:100%;display:block;background:#F0F2F4;aspect-ratio:16/9;object-fit:cover;object-position:top}
+  .card .b{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .tag{align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;color:#fff}
+  .card h3{margin:0;font-size:16px}
+  .card p{margin:0;font-size:13px;color:var(--muted);line-height:1.5}
+  .card a.go{margin-top:auto;font-weight:600;font-size:13px;color:var(--primary);text-decoration:none}
+  .card a.go:hover{text-decoration:underline}
+  .nota{margin-top:36px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;font-size:13px;color:var(--muted);line-height:1.6}
+  .nota b{color:var(--fg)}
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>Health Access Bridge: el proyecto en movimiento</h1>
+  <p>Cuatro diagramas animados hechos con Archify: la arquitectura completa y los recorridos del médico y del administrador, desde que inician sesión hasta el Perfil Funcional ICF con IA local. Haz clic en una tarjeta para explorarla (buscar nodos, trazar una ruta, cambiar de tema, exportar).</p>
+</div></header>
+<main>
+  <h2>Visión general</h2>
+  <p class="sub">Qué piezas tiene el sistema y cómo se hablan.</p>
+  <div class="grid">
+    <div class="card">
+      <video src="video/arquitectura-hab.webm" autoplay loop muted playsinline></video>
+      <div class="b">
+        <span class="tag" style="background:var(--primary)">Arquitectura</span>
+        <h3>Arquitectura completa</h3>
+        <p>Médico y administrador, frontend y backend en Render, el modelo predictivo, la base de datos, el túnel autenticado hacia el PC propio con el servicio ICF, Ollama y pgvector, y el flujo de CI/CD.</p>
+        <a class="go" href="arquitectura-hab.html">Abrir la animación interactiva →</a>
+      </div>
+    </div>
+  </div>
+
+  <h2>Perspectiva del médico</h2>
+  <p class="sub">Dos recorridos: del acceso a la predicción de barreras, y del Perfil Funcional ICF a la decisión y el reporte.</p>
+  <div class="grid">
+    <div class="card">
+      <video src="video/recorrido-medico-pacientes.webm" autoplay loop muted playsinline></video>
+      <div class="b">
+        <span class="tag" style="background:var(--cian)">Médico · 1 de 2</span>
+        <h3>Acceso, pacientes y predicción</h3>
+        <p>Inicia sesión con rol de médico, registra pacientes con niveles D1–D6 y causa oficial, y ejecuta la predicción del perfil de barreras (0, 1 o 2).</p>
+        <a class="go" href="recorrido-medico-pacientes.html">Abrir la animación interactiva →</a>
+      </div>
+    </div>
+    <div class="card">
+      <video src="video/recorrido-medico-icf.webm" autoplay loop muted playsinline></video>
+      <div class="b">
+        <span class="tag" style="background:var(--cian)">Médico · 2 de 2</span>
+        <h3>Perfil Funcional ICF con IA local</h3>
+        <p>Escribe diagnóstico y notas, el servicio privado sugiere códigos CIF-IA con calificador, y el médico acepta, edita o rechaza antes de copiar o descargar el borrador de apoyo.</p>
+        <a class="go" href="recorrido-medico-icf.html">Abrir la animación interactiva →</a>
+      </div>
+    </div>
+  </div>
+
+  <h2>Perspectiva del administrador</h2>
+  <p class="sub">Gestión de cuentas, límites de acceso y salud del servicio de IA.</p>
+  <div class="grid">
+    <div class="card">
+      <video src="video/recorrido-administrador.webm" autoplay loop muted playsinline></video>
+      <div class="b">
+        <span class="tag" style="background:var(--violeta)">Administrador</span>
+        <h3>Usuarios, límites y salud de la IA</h3>
+        <p>Crea, activa y desactiva cuentas de médicos; no ve pacientes (403); consulta el estado del servicio de IA sin ver la URL ni el token.</p>
+        <a class="go" href="recorrido-administrador.html">Abrir la animación interactiva →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="nota">
+    <b>Cómo se hicieron.</b> Con <a href="https://github.com/tt-a1i/archify">Archify</a> (licencia MIT): cada diagrama se describe en JSON (carpeta <code>fuentes/</code>) y <code>construir.mjs</code> lo valida y genera un HTML autosuficiente con animación de trazas, que se abre sin instalar nada. Los videos de esta página (<code>video/</code>) son grabaciones de 14 s de esas animaciones para usar en presentaciones. Todos los datos son sintéticos; no hay información de pacientes.
+  </div>
+</main>
+</body>
+</html>

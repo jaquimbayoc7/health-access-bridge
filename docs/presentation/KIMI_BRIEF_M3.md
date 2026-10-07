@@ -427,3 +427,4 @@ URLs: repositorio https://github.com/jaquimbayoc7/health-access-bridge · págin
 8. Gráfica **burndown y velocity** de la página oficial (ya están actualizadas en `docs/presentation/index.html`).
 9. Salida de `pytest` (75 del servicio ICF) y de `vitest` (38).
 10. `/icf/health` en QA con `configured`, `reachable` y `model_available` en verdadero (sin URL ni token).
+11. **Animaciones del proyecto** (opcional, para las diapositivas 9, 18 y 19): videos de 14 s en `docs/presentation/animaciones/video/` (`arquitectura-hab.webm`, `recorrido-medico-pacientes.webm`, `recorrido-medico-icf.webm`, `recorrido-administrador.webm`) y sus versiones interactivas en `docs/presentation/animaciones/index.html`. Muestran la arquitectura completa y los recorridos del médico y del administrador.

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "sequence",
+  "quality": "showcase",
+  "specification": {
+    "path": "/work/.build/recorrido-administrador.json",
+    "sha256": "5c1e59fa1f35e144e61f05e1e286b3d5c4ff43d88de43c3820da52c8da0c3e2a",
+    "bytes": 33656
+  },
+  "artifact": {
+    "path": "/work/recorrido-administrador.html",
+    "sha256": "c76060609291e69e70886a82713b0a16e30c33ff2e133f5997321be9f71dd246",
+    "bytes": 764014
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "/work/recorrido-administrador.finalize.json",
+    "summaryReceipt": "/work/recorrido-administrador.finalize-summary.json",
+    "browserCheckReceipt": "/work/recorrido-administrador.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.0.1",
+    "availableVersion": "3.0.1",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-07T22:40:46.415Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1724
+}
