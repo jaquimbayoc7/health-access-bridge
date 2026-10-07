@@ -1,8 +1,8 @@
 # app/schemas.py
 
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
-from typing import Optional
-from datetime import date
+from typing import List, Optional
+from datetime import date, datetime
 from enum import Enum
 
 class Role(str, Enum):
@@ -84,3 +84,63 @@ class PredictionInput(BaseModel):
 class PredictionOutput(BaseModel):
     profile: int
     description: str
+
+
+# ----------------------------------------------------------------------
+# HU-07c: sugerencias de codigos CIF-IA
+# ----------------------------------------------------------------------
+class IcfStatus(str, Enum):
+    sugerido = "sugerido"
+    aceptado = "aceptado"
+    editado = "editado"
+    rechazado = "rechazado"
+
+
+class IcfGenerateRequest(BaseModel):
+    """Datos clinicos opcionales que escribe el medico. No admite nada mas (ni nombre ni documento)."""
+    model_config = ConfigDict(extra="forbid")
+
+    diag_cie: Optional[str] = Field(default=None, max_length=300)
+    clinical_notes: Optional[str] = Field(default=None, max_length=2000)
+
+
+class IcfDecision(BaseModel):
+    """Decision del medico sobre un codigo. `editado` permite cambiar calificadores y, con codigo y titulo
+    juntos, el codigo. `aceptado` y `rechazado` no cambian el contenido."""
+    model_config = ConfigDict(extra="forbid")
+
+    status: IcfStatus
+    qualifier: Optional[int] = Field(default=None, ge=0, le=4)
+    qualifier_cn: Optional[int] = Field(default=None, ge=0, le=9)
+    qualifier_cl: Optional[int] = Field(default=None, ge=0, le=9)
+    code: Optional[str] = Field(default=None, pattern=r"^[bsd][0-9]{3,5}$")
+    title: Optional[str] = Field(default=None, min_length=1, max_length=300)
+
+
+class IcfSuggestionItem(BaseModel):
+    id: int
+    component: str
+    code: str
+    title: str
+    qualifier: Optional[int] = None
+    qualifier_cn: Optional[int] = None
+    qualifier_cl: Optional[int] = None
+    justification: Optional[str] = None
+    origin: str
+    status: str
+    original_code: Optional[str] = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+class IcfSuggestionSet(BaseModel):
+    """Una generacion completa: los codigos agrupados por componente y los datos de la corrida."""
+    patient_id: int
+    batch_id: Optional[str] = None
+    model: Optional[str] = None
+    llm_used: bool = False
+    created_at: Optional[datetime] = None
+    latency_ms: Optional[int] = None  # solo en la respuesta de generar
+    warnings: List[str] = Field(default_factory=list)  # solo en la respuesta de generar
+    functions: List[IcfSuggestionItem] = Field(default_factory=list)
+    structures: List[IcfSuggestionItem] = Field(default_factory=list)
+    activities: List[IcfSuggestionItem] = Field(default_factory=list)

@@ -103,7 +103,7 @@ Los resultados de calidad con solo CPU (5 casos) son consistentes con los de GPU
 | **B. Solo CPU** | CPU moderna de **8 núcleos o más** (como el i5-13450HX), **16 GB de RAM** (modelo 6,6 GB + `bge-m3` + base de datos + sistema), SSD | ~15 s (modo calidad) o ~9 s (rápido) | Medida en un CPU de 10 núcleos; un CPU más débil será más lento |
 | C. El servidor i3 de 12 GB sin GPU | — | Estimación: más de 40 s | **No sirve:** el modelo de 6,6 GB deja poca RAM libre y el CPU es mucho más lento; es una estimación, no una medición |
 
-**Qué cubre cada opción.** La opción B es utilizable si el médico acepta esperar unos 15 s (se puede mostrar la sugerencia por similitud al instante y la del modelo cuando llegue). La opción A es cómoda para el uso interactivo. En ambas, el servicio mantiene la similitud como respaldo. **No hay presupuesto aprobado**: el equipo de pruebas actual ya cumple la opción A, así que el siguiente paso de HU-07h es definir si basta con un equipo de esa clase y qué alternativas existen, sin comprar nada todavía. Esta tabla no incluye precios porque no se verificaron.
+**Qué cubre cada opción.** La opción B es utilizable si el médico acepta esperar unos 15 s (se puede mostrar la sugerencia por similitud al instante y la del modelo cuando llegue). La opción A es cómoda para el uso interactivo. En ambas, el servicio mantiene la similitud como respaldo. **Decisión del 07-oct-2026:** el PC de pruebas pasa a ser la máquina de producción (opción A), así que no se compra hardware; HU-07h documenta su despliegue y operación. Esta tabla no incluye precios porque no se verificaron.
 
 **Alcance de la propuesta.** Es el mínimo **encontrado en esta escalera parcial**, no el mejor modelo posible. Para uno o pocos médicos a la vez, la opción A no se saturaría; con concurrencia alta habría que medirlo (no se midió).
 
@@ -130,7 +130,7 @@ Los resultados de calidad con solo CPU (5 casos) son consistentes con los de GPU
 | 07d | Pantalla «Perfil Funcional ICF»; si la latencia es de ~15 s, mostrar primero la similitud y luego la sugerencia del modelo |
 | 07e | Pruebas y manual de operación: instalación de Ollama y de `gemma4:e4b`, y los requisitos de la máquina de este informe |
 | 07g | Revisión del médico sobre los 25 casos y definición del umbral |
-| 07h | Recomendación de la máquina de producción con alternativas y rango de costos (sin presupuesto aprobado) |
+| 07h | Despliegue y operación en el PC de producción (sin compra de hardware) |
 
 ---
 

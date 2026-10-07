@@ -25,7 +25,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad y el aná
 | **Frontend** | React 18 · TypeScript · Vite · TailwindCSS · shadcn/ui · Recharts · React Query |
 | **Autenticación** | JWT con claims de rol (Admin, Médico) · Bcrypt |
 | **IA Predictiva** | HybridModelDisability (modelo ML embebido) |
-| **Servicio ICF** | Servicio en servidor propio (PostgreSQL/pgvector + embeddings con Ollama) que, mediante RAG sobre el catálogo CIF-IA y sin fine-tuning, sugiere códigos CIF según el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022 (aplicable a toda la población con discapacidad de Colombia). La selección la asiste un modelo local de pesos abiertos, sin APIs externas por privacidad (Qwen 3B no mejoró la selección en el servidor i3; se prueban Gemma 4 y MedGemma en un PC con GPU: ver [`docs/reports/PRUEBAS_HU07_SERVIDOR_FISICO.md`](docs/reports/PRUEBAS_HU07_SERVIDOR_FISICO.md)); el médico acepta, edita o rechaza *(HU-07 — en curso: 07a, 07b y 07f completadas)* |
+| **Servicio ICF** | Servicio en servidor propio (PostgreSQL/pgvector + embeddings con Ollama) que, mediante RAG sobre el catálogo CIF-IA y sin fine-tuning, sugiere códigos CIF según el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022 (aplicable a toda la población con discapacidad de Colombia). La selección la asiste un modelo local de pesos abiertos, sin APIs externas por privacidad (Qwen 3B no mejoró la selección en el servidor i3; se prueban Gemma 4 y MedGemma en un PC con GPU: ver [`docs/reports/PRUEBAS_HU07_SERVIDOR_FISICO.md`](docs/reports/PRUEBAS_HU07_SERVIDOR_FISICO.md)); el médico acepta, edita o rechaza *(HU-07 — en curso: 07a, 07b, 07c, 07d y 07f completadas)* |
 | **Despliegue** | Render · Web Service · PostgreSQL managed |
 | **CI/CD** | GitHub Actions · 3 workflows (dev/qa/prod) |
 
@@ -146,7 +146,7 @@ Documentación de arquitectura en cuatro niveles siguiendo el [C4 Model](https:/
 
 | Issue | Título | Sprint | Pts | Estado |
 |-------|--------|--------|-----|--------|
-| [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7) | [HU-07] Perfil Funcional ICF con RAG y LLM local para Sugerencia de Códigos CIF (Colombia) — 07a, 07b y 07f ✅; 07c–07e, 07g y 07h pendientes | Sprint 8-9 (Sem. 19-22) | 33 | 🟡 En progreso |
+| [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7) | [HU-07] Perfil Funcional ICF con RAG y LLM local para Sugerencia de Códigos CIF (Colombia) — 07a, 07b, 07c, 07d y 07f ✅; 07e, 07g y 07h pendientes | Sprint 8-9 (Sem. 19-22) | 33 | 🟡 En progreso |
 | [#8](https://github.com/jaquimbayoc7/health-access-bridge/issues/8) | [HU-08] Dashboard de Análisis y Exportación | Sprint 10-11 (Sem. 23-26) | 13 | 📋 Backlog |
 | [#9](https://github.com/jaquimbayoc7/health-access-bridge/issues/9) | [HU-09] Pruebas Completas y Feedback de Usuarios | Sprint 11 (Sem. 25-26) | 8 | 📋 Backlog |
 | [#10](https://github.com/jaquimbayoc7/health-access-bridge/issues/10) | [HU-10] Despliegue Final y Generación de Manuales | Sprint 12 (Sem. 27) | 5 | 📋 Backlog |
