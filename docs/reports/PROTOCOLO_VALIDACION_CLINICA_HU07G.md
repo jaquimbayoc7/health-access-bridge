@@ -1,7 +1,7 @@
 # Protocolo de validación clínica del Perfil Funcional ICF (HU-07g)
 
 **Fecha:** 7 de octubre de 2026
-**Estado:** instrumento listo; **pendiente la revisión de la profesional de salud** (Emilly Maria Celis).
+**Estado:** instrumento listo y **umbrales aprobados por el responsable el 7 de octubre de 2026**; **pendiente la revisión de la profesional de salud** (Emilly Maria Celis), con quien se reúne la próxima semana (fecha por definir).
 **Para quién:** la revisora y el responsable del proyecto.
 
 ## 1. Qué se mide y por qué
@@ -34,7 +34,7 @@ Qué tener en cuenta: el calificador sale de los niveles D1–D6 del paciente po
 
 ## 4. Métricas y umbrales
 
-| Métrica | Cómo se calcula | Umbral propuesto |
+| Métrica | Cómo se calcula | Umbral aprobado |
 |---|---|---|
 | Casos revisados | casos con al menos una valoración | ≥ 20 de 24 |
 | Precisión estricta b+s | «Adecuado» / códigos b y s valorados | ≥ 60 % |
@@ -45,7 +45,7 @@ Qué tener en cuenta: el calificador sale de los niveles D1–D6 del paciente po
 
 Los códigos se comparan por su forma de 3 dígitos (`b730`); si la revisora escribe uno más específico (`b7301`), cuenta para `b730`.
 
-**Los umbrales son una propuesta mía y deben confirmarse** con la revisora y el responsable antes de usarlos como criterio. Se cambian en `THRESHOLDS` de `icf-service/icf/review.py`.
+**Umbrales aprobados por el responsable del proyecto el 7 de octubre de 2026.** Se presentan a la revisora en la reunión de la próxima semana; si ella plantea un ajuste clínico, se cambia en `THRESHOLDS` de `icf-service/icf/review.py` y se documenta aquí.
 
 **Veredicto:** `CUMPLE` si se alcanzan todos los criterios; `NO CUMPLE` si alguno falla; `INCOMPLETO` si falta algún dato.
 
@@ -67,10 +67,10 @@ python scripts/review_sheet.py score hoja_revision_llena.xlsx --apply-expected  
 - **24 casos sintéticos**: dan una idea de la calidad, no una garantía en pacientes reales. Los casos de audición, visión y discapacidad intelectual son pocos porque el sistema captura sobre todo discapacidad física y psicosocial.
 - **Sesgo de anclaje**: por eso existe la Fase A a ciegas.
 - **El caso C10 (menor de 6 años)** se omite: el sistema responde «no aplica» por diseño.
-- Los umbrales son propuestos, no una norma.
+- Los umbrales los fijó el responsable del proyecto; no son una norma clínica y la revisora puede proponer ajustes.
 
 ## 7. Pendientes
 
-1. Confirmar los umbrales (responsable y revisora).
+1. Presentar los umbrales a la revisora en la reunión de la próxima semana (ya aprobados por el responsable).
 2. Entregar `hoja_revision.xlsx` a la revisora por un canal privado.
 3. Recibir la hoja llena, correr `score` y documentar el resultado en este archivo y en `BACKLOG.md`. Con eso se completa HU-07g.

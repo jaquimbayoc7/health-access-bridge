@@ -33,7 +33,7 @@
 | [#6 HU-06](https://github.com/jaquimbayoc7/health-access-bridge/issues/6) Pruebas de Integración y Rendimiento (8 pts) | — | — |
 
 **Puntos completados: 117 pts · Puntos pendientes: 29 pts · Total: 146 pts** *(HU-07 reestimada de 21 a 25 pts el 05-oct-2026 y de 25 a 33 pts el 06-oct-2026 por los hallazgos de las pruebas en el servidor físico; HU-07a y HU-07b completadas el 06-oct-2026 y HU-07c, HU-07d, HU-07e, HU-07f y HU-07h el 07-oct-2026: +30 pts)*  
-**Avance general: 77% · Momento 1 100% completado (Sprint 3.5 incluido) · Momento 2 100% completado**
+**Avance general: 80% (117 de 146 pts) · Momento 1 100% completado (Sprint 3.5 incluido) · Momento 2 100% completado · Momento 3 en curso: 30 de 59 pts (50,8 %)**
 
 ---
 
@@ -217,7 +217,7 @@ Una HU entra a un sprint solo si cumple:
 
 ---
 
-## MOMENTO 2: TRABAJO INTEGRADOR II (Semanas 10-18) - Avance parcial 🟡
+## MOMENTO 2: TRABAJO INTEGRADOR II (Semanas 10-18) - Avance 100% ✅
 
 ### Sprint 4 & 5: Inteligencia Predictiva (Semanas 10-13) ✅ Done (adelantado en M1)
 
@@ -330,7 +330,7 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 
 ---
 
-## MOMENTO 3: TRABAJO INTEGRADOR III (Semanas 19-27) - Avance 0% 🔴
+## MOMENTO 3: TRABAJO INTEGRADOR III (Semanas 19-27) - Avance 51% (30 de 59 pts) 🟡
 
 ### Sprint 8: Deuda Técnica de Rendimiento (previo a Sprint 8 & 9)
 
@@ -440,7 +440,7 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 
 **Cierre de HU-07e (07-oct-2026), pruebas y documentación:** `frontend/e2e/functional-profile.spec.ts` tiene 5 casos de Playwright (generar con diagnóstico y notas, enlaces de la CIE y ejemplos, aceptar y rechazar, falla 503 del servicio y la guía); el login es real y la lista de pacientes y los endpoints ICF se simulan con `page.route`, porque el servicio ICF corre en un PC propio y los pacientes de QA son compartidos. Se verificó 5/5 contra el frontend DEV en un contenedor de Playwright 1.63 (el primer intento falló por asumir el idioma de la interfaz y se corrigió). Las pruebas de `icf-service` (62 pasan y 8 se omiten porque necesitan el catálogo local, que tiene derechos de la OMS) corren ahora en el CI de los tres ambientes con el job `icf-service-test`, del que dependen los despliegues y la compuerta de QA. Se escribió el manual de operación (`docs/MANUAL_OPERACION_ICF.md`: requisitos de la máquina, Ollama y modelos, variables, operación diaria, fallas, seguridad) y se actualizaron `TEST_CASES.md` (suites 8 a 11), `TESTING_REPORT.md`, `PROJECT_STATUS_M3.md`, `INSIGHTS_REPORT5.md` (segunda adenda) y la presentación. Cifras: backend 105, frontend 38, servicio ICF 70, E2E 12. **HU-07e queda completada (2 pts).** **Pendiente de HU-07:** solo 07g (validación clínica con Emilly Maria Celis, 3 pts): el instrumento está listo y falta su revisión.
 
-**Avance de HU-07g (07-oct-2026), instrumento de validación clínica listo:** `icf-service/scripts/review_sheet.py generate` produce un Excel con los 24 casos aplicables del set de referencia (el C10, menor de 6 años, no aplica) y la sugerencia actual de `gemma4:e4b`; la revisora trabaja en dos fases: **Fase A a ciegas** (escribe los códigos de funciones y estructuras que ella elegiría, sin ver la sugerencia, para evitar el sesgo de anclaje) y **Fase B** (valora cada código como Adecuado, Aceptable o No adecuado, si el calificador es correcto, y lista los códigos que faltan). `score` calcula la precisión estricta y flexible, la cobertura a ciegas y los calificadores correctos, los compara con umbrales y da un veredicto (CUMPLE, NO CUMPLE o INCOMPLETO); `--apply-expected` copia la Fase A a `reference/cases.json` para medir precisión real con `evaluate.py`. La lógica está en `icf/review.py` con 5 pruebas nuevas (servicio ICF: 75 pruebas, 67 en CI). La hoja generada (`data/private/icf/review/hoja_revision.xlsx`) no se publica porque trae títulos del catálogo de la OMS. Protocolo, guía de la revisora, umbrales y límites: [`docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md). **Los umbrales son una propuesta y deben confirmarse** con la revisora y el responsable. **HU-07g no se da por completada** (sus 3 pts no se acreditan) hasta que la revisora devuelva la hoja y se documente el resultado.
+**Avance de HU-07g (07-oct-2026), instrumento de validación clínica listo:** `icf-service/scripts/review_sheet.py generate` produce un Excel con los 24 casos aplicables del set de referencia (el C10, menor de 6 años, no aplica) y la sugerencia actual de `gemma4:e4b`; la revisora trabaja en dos fases: **Fase A a ciegas** (escribe los códigos de funciones y estructuras que ella elegiría, sin ver la sugerencia, para evitar el sesgo de anclaje) y **Fase B** (valora cada código como Adecuado, Aceptable o No adecuado, si el calificador es correcto, y lista los códigos que faltan). `score` calcula la precisión estricta y flexible, la cobertura a ciegas y los calificadores correctos, los compara con umbrales y da un veredicto (CUMPLE, NO CUMPLE o INCOMPLETO); `--apply-expected` copia la Fase A a `reference/cases.json` para medir precisión real con `evaluate.py`. La lógica está en `icf/review.py` con 5 pruebas nuevas (servicio ICF: 75 pruebas, 67 en CI). La hoja generada (`data/private/icf/review/hoja_revision.xlsx`) no se publica porque trae títulos del catálogo de la OMS. Protocolo, guía de la revisora, umbrales y límites: [`docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md). **Umbrales aprobados por el responsable el 07-oct-2026** (precisión estricta ≥ 60 %, precisión flexible ≥ 80 %, cobertura a ciegas ≥ 60 % y calificadores correctos ≥ 80 %); se presentan a la revisora en la reunión de la próxima semana (fecha por definir). **HU-07g no se da por completada** (sus 3 pts no se acreditan) hasta que la revisora devuelva la hoja y se documente el resultado.
 
 **Verificación de licencias (07-oct-2026):** [`docs/reports/LICENCIAS_COMPONENTES_ICF.md`](docs/reports/LICENCIAS_COMPONENTES_ICF.md). Gemma 4 (`gemma4:e4b`) se publica bajo **Apache 2.0** desde abril de 2026, que permite el uso en producción, incluido el comercial; bge-m3, Ollama, Caddy y pgvector son de licencia permisiva (MIT, Apache 2.0 y licencia PostgreSQL). **MedGemma** se rige por los términos de Health AI Developer Foundations, que prohíben el uso clínico (diagnóstico o tratamiento, incluso en investigación) sin autorización regulatoria: no se usa y se descarta para este fin. **Qwen2.5 3B** tiene licencia de investigación y ya estaba descartado por calidad. El catálogo CIF-IA tiene derechos de la OMS y no se publica. Queda como recomendación consultar al INVIMA si el software podría considerarse dispositivo médico antes de un uso clínico real; mientras tanto se presenta como borrador de apoyo.
 
