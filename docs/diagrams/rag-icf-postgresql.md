@@ -1,7 +1,7 @@
 # Cómo funciona la sugerencia de códigos CIF/ICF con RAG en PostgreSQL
 
 **Proyecto:** Health Access Bridge · **Momento 3 · HU-07**
-**Objetivo:** que un LLM sugiera códigos CIF/ICF a partir de los datos del paciente, **sin entrenarlo**, usando solo el estándar CIF como fuente de conocimiento. El modelo es **externo (Claude Sonnet 5.5, por API)** desde el 06-oct-2026: las pruebas con un modelo local de ~3B (`qwen2.5:3b`) en el servidor físico no mejoraron la selección ni la velocidad (ver [§10](#10-resultados-de-las-pruebas-con-el-servidor-físico-y-qwen-06-oct-2026)). El médico acepta o edita la sugerencia.
+**Objetivo:** que un LLM sugiera códigos CIF/ICF a partir de los datos del paciente, **sin entrenarlo**, usando solo el estándar CIF como fuente de conocimiento. El modelo es **local, de pesos abiertos y sin APIs externas** (decisión del 06-oct-2026 por privacidad): las pruebas con un modelo de ~3B (`qwen2.5:3b`) en el servidor físico (i3, sin GPU) no mejoraron la selección ni la velocidad (ver [§10](#10-resultados-de-las-pruebas-con-el-servidor-físico-y-qwen-06-oct-2026)), por lo que se prueban modelos más grandes de Google (Gemma 4 y MedGemma) en un PC con GPU para hallar el mínimo viable (HU-07f). El médico acepta o edita la sugerencia.
 **Marco normativo:** Anexo Técnico de la **Resolución 1239 del 21 de julio de 2022** (procedimiento de certificación de discapacidad y Registro de Localización y Caracterización de Personas con Discapacidad, RLCPD), de aplicación para toda la población con discapacidad de Colombia, que usa la **CIF-IA** (versión infancia y adolescencia, OMS 2011). El perfil de funcionamiento oficial tiene **3 códigos por componente** (funciones b, estructuras s, actividades y participación d), cada uno con calificador. HAB genera un **borrador de apoyo**: el certificado lo emite el equipo multidisciplinario en el aplicativo RLCPD.
 
 ---
@@ -36,12 +36,9 @@ flowchart TB
         subgraph PG["PostgreSQL + pgvector"]
             CAT[("tabla icf_codes<br/>catálogo CIF-IA<br/>+ embeddings")]
         end
-        EMB["Ollama<br/>solo embeddings<br/>(bge-m3)"]
+        EMB["Ollama<br/>embeddings (bge-m3)"]
+        LLM["Modelo local (Ollama)<br/>Gemma / MedGemma<br/>selección de b y s"]
         VAL["⑤ Validación<br/>contra catálogo<br/>+ respaldo por similitud"]
-    end
-
-    subgraph EXT["🌐 API externa"]
-        LLM["Claude Sonnet 5.5<br/>(selección de b y s)"]
     end
 
     FE -->|"1. Médico pulsa<br/>'Generar Perfil Funcional'"| BE
@@ -61,9 +58,9 @@ flowchart TB
 **Qué se queda en cada lugar:**
 
 - **Render (nube):** los pacientes y lo que el médico decide sobre cada sugerencia. Todo esto ya existe hoy, salvo la tabla `icf_suggestions`.
-- **Servidor propio:** el catálogo CIF con su base pgvector, Ollama solo para calcular embeddings, el servicio que arma la consulta y el respaldo por similitud.
-- **API externa (Claude Sonnet 5.5):** recibe la lista de candidatos de funciones y estructuras y los datos clínicos mínimos (sin nombre ni documento), y devuelve los códigos elegidos. ⚠️ **Estos datos salen de la infraestructura propia:** ver la nota de privacidad de §8.
-- **Hacia el servidor propio ni hacia la API externa nunca viaja** el nombre ni el documento del paciente. Solo viajan edad, género, causa, categorías, niveles D1–D6, la predicción de barreras y, si el médico los escribe, el diagnóstico CIE y las notas clínicas. **No se envía la orientación sexual** (no aporta a la codificación). Como las notas son texto libre, la pantalla advierte no incluir datos identificables.
+- **Servidor propio:** el catálogo CIF con su base pgvector, Ollama para calcular embeddings y ejecutar el modelo de selección (según la fase, en un PC de pruebas con GPU o en la máquina de producción), el servicio que arma la consulta y el respaldo por similitud.
+- **Modelo de selección (local):** recibe la lista de candidatos de funciones y estructuras y los datos clínicos mínimos (sin nombre ni documento), y devuelve los códigos elegidos. Corre con Ollama en infraestructura propia (hoy en un PC de pruebas con GPU; mañana en la máquina de producción que dimensione HU-07h): **ningún dato sale de la infraestructura propia**.
+- **Hacia el servidor propio ni hacia el modelo nunca viaja** el nombre ni el documento del paciente. Solo viajan edad, género, causa, categorías, niveles D1–D6, la predicción de barreras y, si el médico los escribe, el diagnóstico CIE y las notas clínicas. **No se envía la orientación sexual** (no aporta a la codificación). Como las notas son texto libre, la pantalla advierte no incluir datos identificables.
 
 ---
 
@@ -142,11 +139,11 @@ LIMIT 12;                                      -- 6 en el modo rápido
 
 El filtro por capítulo va **dentro de la consulta**: aplicarlo después de buscar dejaba la lista vacía en casos como la esquizofrenia sin deficiencia física. Y se busca solo entre los códigos de 3 dígitos porque, medido con 21 casos (ver [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](../reports/PRUEBAS_HU07_SERVIDOR_FISICO.md) §4), buscar entre los de 4 y 5 dígitos llenaba la lista de hermanos casi idénticos (`b2800`, `b2801`, `b2802`) y dejaba fuera los temas generales: la cobertura de las pistas orientativas pasó de 11 % a 40 % en funciones y de 48 % a 86 % en estructuras con 12 candidatos. Ejemplos de candidatos: `b710 Movilidad de las articulaciones`, `b730 Fuerza muscular`, `b280 Sensación de dolor`, `s750 Estructura de la extremidad inferior`. El perfil llega entonces con un nivel menos de detalle (`b730` y no `b7300`); el médico puede afinarlo.
 
-> Con **12 candidatos** por componente la cobertura es bastante mayor que con 6; ese es el costo extra que compra calidad. Para el modelo externo, la lista completa de las 154 categorías de nivel 2 (unos 2.500 tokens) cabe en el prompt y se evaluará en HU-07f.
+> Con **12 candidatos** por componente la cobertura es bastante mayor que con 6; ese es el costo extra que compra calidad. La lista completa de las 154 categorías de nivel 2 (unos 2.500 tokens) cabe en el prompt y se evaluará en HU-07f, aunque con modelos locales leer más prompt cuesta más tiempo.
 
 ### ④ El LLM elige y justifica funciones y estructuras (la "G" de RAG)
 
-**Qué modelo.** Desde el 06-oct-2026 el modelo es **externo: Claude Sonnet 5.5**, llamado desde el servicio ICF con la API de Anthropic (HU-07f). Las pruebas con un modelo local de ~3B en el servidor físico no sirvieron: no mejoró la selección frente a la similitud sola y tardó de 24 a 46 s (ver [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](../reports/PRUEBAS_HU07_SERVIDOR_FISICO.md)). El proveedor es **intercambiable** (`anthropic`, `ollama` o `none`) y la similitud sola es el respaldo si la llamada falla.
+**Qué modelo.** Un **modelo local de pesos abiertos** servido con Ollama (decisión del 06-oct-2026: sin APIs externas por privacidad). `qwen2.5:3b` en el servidor físico (i3, sin GPU) no sirvió: no mejoró la selección frente a la similitud sola y tardó de 24 a 46 s (ver [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](../reports/PRUEBAS_HU07_SERVIDOR_FISICO.md)). Se prueba una escalera de modelos de Google (`medgemma:4b`, `gemma4:e2b`, `gemma4:e4b`, `gemma4:12b`, `gemma4:26b`, `medgemma:27b` y `gemma4:31b`) en un PC con GPU para hallar el **modelo mínimo viable** (HU-07f). El modelo se configura con `ICF_LLM_MODEL` y la similitud sola es el respaldo si la llamada falla.
 
 **Solo funciones (b) y estructuras (s).** Las actividades (d) no pasan por el modelo (ver ② y ③). El prompt le entrega:
 - los datos del paciente (sin nombre ni documento) y, si el médico los escribió, el diagnóstico CIE y las notas clínicas;
@@ -188,7 +185,7 @@ Para que el modelo **no pueda inventar**, se usa la **salida estructurada** (JSO
 }
 ```
 
-**Determinismo.** Con el modelo local se fijaba `temperature: 0`. Claude Sonnet 5.5 no admite valores de muestreo distintos de los predeterminados, así que **la misma entrada puede dar respuestas ligeramente distintas**. Por eso cada resultado se guarda en `icf_suggestions` junto con el modelo que lo generó, y la decisión final es siempre del médico.
+**Determinismo.** Se fija `temperature: 0` para que la misma entrada dé la misma respuesta; aun así, cada resultado se guarda en `icf_suggestions` junto con el modelo que lo generó, y la decisión final es siempre del médico.
 
 ### ⑤ Validación antes de devolver
 
@@ -224,8 +221,8 @@ sequenceDiagram
     participant BE as Backend (Render)
     participant S as Servicio ICF (servidor propio)
     participant PG as PostgreSQL + pgvector (servidor propio)
-    participant O as Ollama (solo embeddings)
-    participant C as Claude Sonnet 5.5 (API externa)
+    participant O as Ollama (embeddings)
+    participant C as Modelo local (Gemma/MedGemma, por Ollama)
 
     M->>FE: Selecciona paciente y pulsa "Generar Perfil Funcional"
     FE->>BE: POST /patients/{id}/icf-suggestions
@@ -289,7 +286,7 @@ erDiagram
         int qualifier_cl "solo s: localización, 8 por defecto"
         text justification "texto del LLM"
         string status "sugerido, aceptado, editado, rechazado"
-        string model "claude-sonnet-5-5, similarity o rules, para auditoría"
+        string model "nombre del modelo, similarity o rules, para auditoría"
         string diag_cie "instantánea de entrada, opcional"
         text clinical_notes "instantánea de entrada, opcional"
         datetime created_at
@@ -320,16 +317,16 @@ El modelo sigue siendo el mismo y nunca se reentrena, pero las sugerencias mejor
 
 ## 7. Controles frente a los errores de un LLM
 
-Estos controles aplican con cualquier proveedor. Se diseñaron pensando en un modelo pequeño (3B) y se mantienen con el modelo externo, porque ninguno es infalible.
+Estos controles aplican con cualquier proveedor. Se diseñaron pensando en un modelo pequeño (3B) y se mantienen con modelos más grandes, porque ninguno es infalible.
 
 | Riesgo de un modelo de lenguaje | Cómo se controla |
 |---|---|
 | Inventa códigos que no existen | `enum` en el JSON Schema + validación contra los candidatos y contra `icf_codes` |
 | Pone el título equivocado a un código | El título sale de la base de datos, nunca del LLM |
 | Se equivoca en la gravedad | El calificador se calcula por reglas, no lo decide el LLM |
-| Elige peor que una búsqueda simple | Se midió: Qwen 3B empeoró la selección frente a la similitud sola (ver §10), por eso se cambió de modelo y la similitud queda como respaldo; con Sonnet 5.5 se repite la comparación (HU-07f) |
-| Es lento | Qwen local: 24 a 46 s. Se reduce lo que se le envía: las actividades no pasan por el modelo y solo recibe candidatos de b y s |
-| Da respuestas distintas cada vez | Con Qwen se fijaba `temperature: 0`; Sonnet 5.5 no admite muestreo distinto del predeterminado, así que se guarda cada resultado con el modelo que lo generó |
+| Elige peor que una búsqueda simple | Se midió: Qwen 3B empeoró la selección frente a la similitud sola (ver §10), por eso la similitud queda como respaldo y se prueban modelos mayores con la misma comparación (HU-07f) |
+| Es lento | Qwen 3B en el i3: 24 a 46 s; los modelos de la escalera se miden en el PC con GPU (HU-07f). Se reduce lo que se le envía: las actividades no pasan por el modelo y solo recibe candidatos de b y s |
+| Da respuestas distintas cada vez | Se fija `temperature: 0` y se guarda cada resultado con el modelo que lo generó |
 | Responde en texto libre difícil de procesar | Salida estructurada en JSON (JSON Schema) |
 | Falla, se cae o responde con error | Respaldo automático a la selección por similitud, marcada con su origen |
 | Poca información clínica para funciones y estructuras | Campos opcionales de diagnóstico CIE y notas; sin ellos, las sugerencias de b y s son genéricas y así se indica |
@@ -341,21 +338,21 @@ Estos controles aplican con cualquier proveedor. Se diseñaron pensando en un mo
 
 Revisión de [`BACKLOG.md`](../../BACKLOG.md), sección *Momento 3*:
 
-- **DEUDA-01** (Sprint 8) ya está ✅ cerrada, así que **la primera tarea abierta del Momento 3 es HU-07** (31 pts tras la reestimación del 06-oct-2026; eran 25 el 05-oct y 21 al inicio).
+- **DEUDA-01** (Sprint 8) ya está ✅ cerrada, así que **la primera tarea abierta del Momento 3 es HU-07** (33 pts tras la reestimación del 06-oct-2026; eran 25 el 05-oct y 21 al inicio).
 - **HU-07a** (servidor, catálogo, embeddings, túnel) y **HU-07b** (motor y evaluación) están ✅ completadas (06-oct-2026).
-- La decisión del 23-sep-2026 de usar **Ollama con un modelo open-weight gratuito** para la generación quedó **reemplazada el 06-oct-2026** por un modelo externo (Claude Sonnet 5.5) tras las pruebas del §10. El servidor propio se mantiene para el catálogo, los embeddings y la búsqueda.
+- La decisión del 23-sep-2026 de usar **Ollama con un modelo open-weight gratuito** se mantiene (sin APIs externas), pero tras las pruebas del §10 el servidor actual (i3, sin GPU) no alcanza para la generación: se prueban modelos de Gemma 4 y MedGemma en un PC con GPU (HU-07f) y se dimensiona la máquina de producción (HU-07h, sin presupuesto aprobado). El servidor propio sigue sirviendo el catálogo, los embeddings, la búsqueda y la similitud como respaldo.
 
 **Ajustes aplicados al backlog (05-oct-2026):**
 
 1. Se eligió **RAG** (sin fine-tuning), porque no hay datos etiquetados para entrenar.
 2. Se agregó la pantalla "Perfil Funcional ICF" con el flujo de **aceptar/editar/rechazar** del médico.
 3. **Privacidad:** los datos identificables no salen de Render; al servidor local solo viajan datos sin nombre, documento ni orientación sexual. La conexión es por **túnel autenticado** (implementado con Tailscale Funnel y Caddy con token).
-4. HU-07 se dividió en sub-historias 07a–07e (y el 06-oct-2026 se agregaron 07f y 07g).
+4. HU-07 se dividió en sub-historias 07a–07e (y el 06-oct-2026 se agregaron 07f, 07g y 07h).
 5. **Ajustes por el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022:** catálogo **CIF-IA** hasta el tercer nivel; salida de **3 códigos por componente (b, s, d)**; **estructuras (s)** con magnitud y naturaleza/localización en 8 por defecto; mapeo explícito de los niveles de HAB (se mantienen) con los dominios oficiales; **diagnóstico CIE y notas opcionales**; lista oficial de causa de deficiencia; aviso para menores de 6 años; y leyenda de borrador de apoyo.
 
-**Ajustes aplicados tras las pruebas con el servidor físico (06-oct-2026):** modelo de selección externo (Claude Sonnet 5.5) en lugar de Qwen local; búsqueda de funciones y estructuras solo entre códigos de 3 dígitos y con 12 candidatos; actividades desde la lista cerrada del Anexo, sin modelo; dos modos (`calidad` y `rápido`); validación clínica con un médico (07g) para medir la confiabilidad real.
+**Ajustes aplicados tras las pruebas con el servidor físico (06-oct-2026):** se descarta el modelo externo por privacidad y se prueban modelos abiertos más grandes (Gemma/MedGemma) en lugar de Qwen 3B; búsqueda de funciones y estructuras solo entre códigos de 3 dígitos y con 12 candidatos; actividades desde la lista cerrada del Anexo, sin modelo; dos modos (`calidad` y `rápido`); validación clínica con un médico (07g) para medir la confiabilidad real.
 
-**Nota de privacidad (modelo externo).** Con el modelo externo, el diagnóstico, las notas y los datos clínicos mínimos de la petición **salen de la infraestructura propia hacia la API de Anthropic**. Aunque no se envían nombre, documento ni orientación sexual, el diagnóstico junto con la edad y las notas en texto libre pueden permitir reidentificar a una persona, y los datos de salud son sensibles (Ley 1581 de 2012). Propuesta, **pendiente de confirmar por el responsable del proyecto**: usar el proveedor externo solo con datos sintéticos (desarrollo y QA) hasta contar con revisión legal o ética, mantener el modo de solo similitud en producción con pacientes reales, y revisar los términos de retención y uso de datos del proveedor en su documentación oficial.
+**Nota de privacidad.** Al no usar APIs externas, el diagnóstico, las notas y los datos clínicos mínimos de la petición **no salen de la infraestructura propia** (Ley 1581 de 2012). El PC de pruebas solo usa casos sintéticos. Pendiente: verificar las licencias de uso de Gemma y MedGemma antes de producción.
 
 **Limitación conocida:** HAB captura 2 de las 7 categorías de discapacidad del Anexo (física y psicosocial), así que la sugerencia cubrirá mejor lo físico y lo psicosocial que lo visual, auditivo o intelectual.
 
@@ -375,8 +372,8 @@ Revisión de [`BACKLOG.md`](../../BACKLOG.md), sección *Momento 3*:
 | **RAG** | Buscar información relevante en una base de datos y dársela al LLM junto con la pregunta. |
 | **Embedding** | Representación numérica (vector) del significado de un texto. Permite buscar "por parecido" y no solo por palabras exactas. |
 | **pgvector** | Extensión de PostgreSQL que guarda embeddings y busca por similitud (`<=>`). |
-| **Ollama** | Programa que ejecuta modelos localmente en el servidor, sin internet. En HAB se usa solo para calcular embeddings (`bge-m3`). |
-| **Claude Sonnet 5.5** | Modelo de lenguaje externo de Anthropic, usado por API para elegir y justificar funciones y estructuras entre los candidatos. |
+| **Ollama** | Programa que ejecuta modelos localmente en el servidor, sin internet. En HAB calcula los embeddings (`bge-m3`) y ejecuta el modelo de selección. |
+| **Gemma 4 / MedGemma** | Familias de modelos abiertos de Google que se prueban (con Ollama) para elegir y justificar funciones y estructuras entre los candidatos. |
 | **Salida estructurada** | Obligar al LLM a responder en un JSON con un formato fijo. |
 | **Pistas orientativas** | Códigos que, por la lógica de la CIF, se esperarían en un caso de prueba; no están validados por un médico y sirven solo para comparar variantes del motor. |
 
@@ -390,4 +387,4 @@ Resumen; el detalle, el entorno y las tablas completas están en [`docs/reports/
 - **Latencia con Qwen (`qwen2.5:3b`):** 55,6 s en la primera versión; 22,9 s tras reducir lo que se le envía; 24 s (modo rápido) y 46 s (modo calidad) en la comparación final. La similitud sola responde en 0,6 s.
 - **Calidad (pistas orientativas, 21 casos):** el modelo local empeoró la selección. Precisión en funciones: 29 % con similitud sola, 23 % con el modo rápido y 20 % con el de calidad; cobertura de estructuras: 67 %, 57 % y 48 %.
 - **Búsqueda:** buscar solo entre los códigos de 3 dígitos subió la cobertura de las pistas de 11 % a 40 % en funciones y de 48 % a 86 % en estructuras (con 12 candidatos).
-- **Decisión:** modelo externo (Claude Sonnet 5.5) para la selección; el catálogo y la búsqueda siguen en el servidor propio; la similitud es el respaldo. La confiabilidad clínica real la mide un médico (HU-07g).
+- **Decisión (revisada):** sin APIs externas por privacidad; se prueban Gemma 4 y MedGemma en un PC con GPU para hallar el modelo mínimo viable (HU-07f) y dimensionar la máquina (HU-07h). El catálogo y la búsqueda siguen en el servidor propio; la similitud es el respaldo. La confiabilidad clínica real la mide un médico (HU-07g).

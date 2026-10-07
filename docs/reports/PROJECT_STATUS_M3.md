@@ -1,7 +1,7 @@
 # Estado del Proyecto Health Access Bridge — Momento Integrador III (corte parcial)
 
 **Última actualización:** 6 de octubre de 2026
-**Momento actual:** Momento 3 - Trabajo Integrador III (en progreso: HU-07a y HU-07b completadas)
+**Momento actual:** Momento 3 - Trabajo Integrador III (en progreso: HU-07a y HU-07b completadas; HU-07f en preparación)
 
 > Este documento continúa a [`PROJECT_STATUS_M2.md`](./PROJECT_STATUS_M2.md) (cierre del Momento 2, septiembre de 2026). Es un **corte parcial**: el Momento 3 va a la mitad de HU-07 y las HU-08, HU-09 y HU-10 no han empezado. Para el análisis de lo ocurrido con el modelo local Qwen, ver [`INSIGHTS_REPORT5.md`](./INSIGHTS_REPORT5.md) y [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](./PRUEBAS_HU07_SERVIDOR_FISICO.md).
 
@@ -9,11 +9,11 @@
 
 ## Resumen Ejecutivo
 
-El proyecto lleva **100 de 144 puntos (69,4 %)**. En el Momento 3 se completaron **HU-07a** (servidor propio, túnel, catálogo y embeddings) y **HU-07b** (motor de sugerencia de códigos CIF y herramientas de evaluación), 13 de los 57 puntos del momento.
+El proyecto lleva **100 de 146 puntos (68,5 %)**. En el Momento 3 se completaron **HU-07a** (servidor propio, túnel, catálogo y embeddings) y **HU-07b** (motor de sugerencia de códigos CIF y herramientas de evaluación), 13 de los 59 puntos del momento.
 
-El hallazgo central del período es que **el modelo local `qwen2.5:3b` no sirve para seleccionar códigos**: en el servidor físico (Intel i3, 12 GB, sin GPU) tardó de 24 a 46 s por sugerencia y **eligió peor que la búsqueda por similitud sola**, que responde en 0,6 s. Por eso, el 6 de octubre se decidió que la selección pase a un **modelo externo (Claude Sonnet 5.5)**, manteniendo el catálogo, los embeddings y la búsqueda en el servidor propio. Esa decisión **reemplaza** la tomada el 23 de septiembre (modelo open-weight gratuito en servidor propio) y reestima HU-07 de 25 a **31 puntos**, con dos sub-historias nuevas: proveedor externo y comparación (07f) y validación clínica con un médico (07g).
+El hallazgo central del período es que **el modelo local `qwen2.5:3b` no sirve para seleccionar códigos**: en el servidor físico (Intel i3, 12 GB, sin GPU) tardó de 24 a 46 s por sugerencia y **eligió peor que la búsqueda por similitud sola**, que responde en 0,6 s. Se evaluó pasar a un modelo externo por API (Claude Sonnet 5.5) y **se descartó por privacidad**: los datos de salud son sensibles (Ley 1581 de 2012) y todo debe quedar en infraestructura propia. La decisión del 6 de octubre es **buscar el modelo abierto mínimo viable**: probar la escalera Gemma 4 y MedGemma en un PC de pruebas con GPU (i5-13450HX, 32 GB de RAM, RTX 5050 de 8 GB) y, con esas medidas, recomendar la máquina de producción. HU-07 se reestima de 25 a **33 puntos**, con tres sub-historias nuevas: escalera de modelos abiertos (07f, 2 pts), validación clínica con un médico (07g, 3 pts) y dimensionamiento de la máquina (07h, 3 pts). **No hay presupuesto aprobado** para comprar equipo; la recomendación es un insumo para esa decisión.
 
-Hay un tema **abierto y sin resolver**: con un modelo externo, los datos clínicos salen de la infraestructura propia (datos de salud sensibles, Ley 1581 de 2012). La propuesta es usarlo solo con datos sintéticos hasta contar con revisión legal o ética; **está pendiente de confirmar por el responsable del proyecto**.
+Quedan por confirmar las **licencias de uso** de Gemma y MedGemma antes de llevarlos a producción.
 
 ---
 
@@ -22,7 +22,7 @@ Hay un tema **abierto y sin resolver**: con un modelo externo, los datos clínic
 ### 🟡 EPICA-03: IA Generativa, Dashboards y Cierre (EN PROGRESO)
 
 **Periodo:** Semanas 19-27
-**Puntos:** 57 pts (HU-07 31 + HU-08 13 + HU-09 8 + HU-10 5) — **13 pts completados (22,8 %)**
+**Puntos:** 59 pts (HU-07 33 + HU-08 13 + HU-09 8 + HU-10 5) — **13 pts completados (22,0 %)**
 
 > **Nota de seguimiento:** el milestone «Momento 3» de GitHub muestra 0 % porque las sub-historias de HU-07 viven en el `BACKLOG.md` y no como issues. El avance real es el de este documento.
 
@@ -30,8 +30,8 @@ Hay un tema **abierto y sin resolver**: con un modelo externo, los datos clínic
 
 ## Estado por Historias de Usuario
 
-### 🟡 HU-07: Perfil Funcional ICF con RAG y LLM externo
-**Sprint:** 8-9 | **Puntos:** 31 (reestimada de 21 → 25 → 31) | **Estado:** 🟡 EN PROGRESO — 13 de 31 pts
+### 🟡 HU-07: Perfil Funcional ICF con RAG y LLM local
+**Sprint:** 8-9 | **Puntos:** 33 (reestimada de 21 → 25 → 33) | **Estado:** 🟡 EN PROGRESO — 13 de 33 pts
 
 | Sub-historia | Alcance | Pts | Estado |
 |---|---|---|---|
@@ -39,9 +39,10 @@ Hay un tema **abierto y sin resolver**: con un modelo externo, los datos clínic
 | **07b** | Motor de sugerencia, búsqueda, modos calidad y rápido, 25 casos de referencia y herramientas de evaluación; evaluación de Qwen | 8 | ✅ Completada 6-oct |
 | 07c | Backend en Render hacia el servicio ICF (timeout de 90 s, tabla `icf_suggestions`, aceptar/editar/rechazar) | 5 | 📋 Pendiente |
 | 07d | Pantalla «Perfil Funcional ICF» | 5 | 📋 Pendiente |
-| 07e | Pruebas, manual de operación (clave y costos) y reportes | 2 | 📋 Pendiente |
-| 07f | Proveedor de LLM externo (Claude Sonnet 5.5), candidatos ampliados y comparación | 3 | 📋 Pendiente (**nueva**) |
+| 07e | Pruebas, manual de operación (Ollama, modelos y requisitos de la máquina) y reportes | 2 | 📋 Pendiente |
+| 07f | Escalera de modelos abiertos locales (Gemma 4 / MedGemma) en el PC de pruebas y modelo mínimo viable | 2 | 📋 Pendiente (**nueva**) |
 | 07g | Validación clínica con un médico y umbral de confiabilidad | 3 | 📋 Pendiente (**nueva**) |
+| 07h | Dimensionamiento y recomendación de la máquina de producción (sin presupuesto aprobado) | 3 | 📋 Pendiente (**nueva**) |
 
 **Logros técnicos del período:**
 - Catálogo CIF-IA de **1.593 códigos** extraído de un PDF escaneado con OCR y revisado (3 códigos sin definición en el libro quedan fuera, pendientes de resolver).
@@ -50,7 +51,7 @@ Hay un tema **abierto y sin resolver**: con un modelo externo, los datos clínic
 - **Motor:** reglas fijas (edad, calificador, capítulos), actividades desde la lista cerrada del Anexo (32 códigos), funciones y estructuras por búsqueda semántica entre los códigos de 3 dígitos, validación contra el catálogo y respaldo por similitud.
 - **Mediciones:** latencia, calidad de la búsqueda y comparación de tres modos, documentadas con su método y sus limitaciones.
 
-**Pendiente de la HU:** medir un modelo externo, medir la confiabilidad con un médico y construir backend y pantalla.
+**Pendiente de la HU:** medir la escalera de modelos abiertos en el PC de pruebas, medir la confiabilidad con un médico, recomendar la máquina de producción y construir backend y pantalla.
 
 ### 📋 HU-08, HU-09, HU-10
 Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y feedback de usuarios (8 pts) y Despliegue final y manuales (5 pts). HU-10 suma el manual de operación del servicio ICF.
@@ -76,7 +77,7 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 |---|---|---|
 | 1 | **Modelo local descartado como selector** | Peor que la similitud sola y de 24 a 46 s por sugerencia (ver `PRUEBAS_HU07_SERVIDOR_FISICO.md`) |
 | 2 | **La calidad depende de la búsqueda** | Buscar solo en códigos de 3 dígitos subió la cobertura de las pistas de 11 % a 40 % (funciones) y de 48 % a 86 % (estructuras) con 12 candidatos |
-| 3 | **Modelo externo: Claude Sonnet 5.5** | Reemplaza la decisión del 23-sep; costo estimado de menos de un centavo de dólar por sugerencia (por confirmar en 07f) |
+| 3 | **Sin APIs externas; probar modelos abiertos** | Se descartó Claude Sonnet 5.5 por privacidad. La escalera Gemma 4 / MedGemma se prueba en un PC con GPU para hallar el modelo mínimo viable (07f) y dimensionar la máquina de producción (07h) |
 | 4 | **Anexo Técnico de la Resolución 1239** | HU-07 se ajustó: 3 códigos por componente, estructuras con 3 calificadores, mapeo de dominios y campos de diagnóstico y notas |
 | 5 | **Catálogo no publicable** | Los derechos de autor de la OMS impiden subirlo al repositorio; vive en `data/private/` (ignorado por git) |
 | 6 | **Defectos corregidos al leer salidas reales** | Filtro por categoría posterior a la búsqueda, códigos «otros/no especificados» y una ruta de Caddy sin token |
@@ -88,12 +89,12 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 | Métrica | Valor |
 |---------|-------|
 | **Puntos completados** | 100 pts |
-| **Puntos pendientes** | 44 pts |
-| **Total del proyecto** | 144 pts |
-| **Avance general** | 69,4 % |
+| **Puntos pendientes** | 46 pts |
+| **Total del proyecto** | 146 pts |
+| **Avance general** | 68,5 % |
 | **Momento 1** | ✅ 100 % (63 pts) |
 | **Momento 2** | ✅ 100 % (24 pts) |
-| **Momento 3** | 🟡 22,8 % (13 de 57 pts) |
+| **Momento 3** | 🟡 22,0 % (13 de 59 pts) |
 | **Commits (`master`)** | 221 en 21 días activos (0,99 por día; 65 de ellos el 5 y 6 de octubre) |
 | **Pull Requests mergeados** | 42 (39 en este período, 16 solo el 6 de octubre) |
 | **Pruebas automáticas** | backend 52 · frontend 16 · servicio ICF 68 · **136 en total**; E2E 7 specs |
@@ -107,9 +108,9 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 
 | Riesgo | Estado |
 |---|---|
-| **Privacidad con el modelo externo** (datos de salud sensibles, Ley 1581 de 2012) | 🔴 Pendiente de decisión del responsable; propuesta: solo datos sintéticos hasta la revisión legal o ética |
+| **Privacidad:** con modelo local los datos no salen de la infraestructura propia (Ley 1581 de 2012) | 🟢 Mitigado por diseño; quedan por verificar las licencias de Gemma y MedGemma |
 | **Confiabilidad clínica sin medir:** las cifras actuales usan pistas no validadas por un médico | 🟡 Se mide en HU-07g |
-| **Dependencia, costo y clave de un servicio externo** | 🟡 Límite de gasto mensual, clave solo en el servidor, respaldo por similitud |
+| **Hardware de producción sin presupuesto aprobado:** el modelo mínimo viable puede exigir GPU o más RAM | 🟡 Se dimensiona en HU-07h con alternativas y rango de costos |
 | **Las 68 pruebas del servicio ICF no se ejecutan en CI** (hoy corren solo en local) | 🟡 Se agregan al pipeline en HU-07e |
 | **Protección de rama eludida** (17 bypass del propietario) y exceso de PRs de promoción | 🟡 Pendiente decidir la política |
 | **Seguimiento en GitHub desfasado** (milestone en 0 %, issue #7 con el alcance viejo) | 🟡 Crear las sub-historias como issues |
@@ -119,8 +120,8 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 
 ## Próximos Pasos
 
-1. **Decisiones previas (responsable del proyecto):** política de privacidad para el modelo externo, creación de la clave de API con límite de gasto, y confirmar la reestimación de HU-07 a 31 pts.
-2. **HU-07f:** proveedor externo con respaldo por similitud, comparación contra la similitud y Qwen con las mismas pistas, medición de costo y latencia, y decisión del diseño de candidatos.
+1. **Hecho (6-oct):** se confirmó el enfoque local sin APIs y la reestimación de HU-07 a 33 pts. Sin presupuesto aprobado para hardware.
+2. **HU-07f:** el usuario instala Ollama en el PC de pruebas y descarga los modelos; luego se prepara la base pgvector local, se cargan el catálogo y los embeddings y se corre `compare_modes` con cada modelo para medir calidad, latencia y memoria; se decide el modelo mínimo viable.
 3. **HU-07g (en paralelo parcial):** hoja de revisión para el médico, medición de la confiabilidad clínica y definición del umbral de uso.
 4. **HU-07c, HU-07d y HU-07e:** backend, pantalla y cierre con documentación.
 5. **HU-08, HU-09 y HU-10** según el orden de `BACKLOG.md`.

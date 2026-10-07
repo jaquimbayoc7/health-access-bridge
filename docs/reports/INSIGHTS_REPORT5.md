@@ -78,7 +78,7 @@ Este reporte tiene un tema central: **lo que pasó con el modelo local `qwen2.5:
 | Fecha | # Commits | Actividad principal |
 |-------|-----------|---------------------|
 | **5 Oct 2026** | 35 | Migración de los workflows a Ubuntu 26, `workflow_dispatch`, rediseño del despliegue a Render (y su corrección), revisión del Anexo 1239 y de la CIF-IA, extracción del catálogo de 1.593 códigos por OCR, diagrama y apartado «Códigos CIF» de la presentación |
-| **6 Oct 2026** | 30 | HU-07a (servidor, túnel, catálogo, embeddings), HU-07b (motor, evaluación, pruebas con Qwen), decisión de pasar a un modelo externo, y actualización de documentos |
+| **6 Oct 2026** | 30 | HU-07a (servidor, túnel, catálogo, embeddings), HU-07b (motor, evaluación, pruebas con Qwen), decisión de descartar Qwen en el i3 y de probar modelos abiertos más grandes sin APIs externas, y actualización de documentos |
 
 ---
 
@@ -94,9 +94,9 @@ Este reporte tiene un tema central: **lo que pasó con el modelo local `qwen2.5:
 |-----------|----------|----------|------------------|-------------|
 | Momento 1 | 7 | 0 | ✅ 100 % | ✅ 100 % |
 | Momento 2 | 4 | 0 | ✅ 100 % | ✅ 100 % |
-| Momento 3 | 0 | 5 | 🔴 0 % | 🟡 **13 de 57 pts (23 %)** |
+| Momento 3 | 0 | 5 | 🔴 0 % | 🟡 **13 de 59 pts (22 %)** |
 
-> **Insight (brecha de seguimiento):** GitHub dice que el Momento 3 va en 0 %, pero HU-07a y HU-07b (13 pts) están completadas. La causa es que las sub-historias 07a–07g **viven solo en el `BACKLOG.md`, no como issues**; el milestone solo ve las 5 issues grandes. Además, el issue [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7) todavía dice «LLM local» y 25 pts. Es la misma clase de desfase que los reportes anteriores corrigieron (R2 y R3).
+> **Insight (brecha de seguimiento):** GitHub dice que el Momento 3 va en 0 %, pero HU-07a y HU-07b (13 pts) están completadas. La causa es que las sub-historias 07a–07h **viven solo en el `BACKLOG.md`, no como issues**; el milestone solo ve las 5 issues grandes. Además, el issue [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7) todavía dice «LLM local» y 25 pts. Es la misma clase de desfase que los reportes anteriores corrigieron (R2 y R3).
 
 ---
 
@@ -104,10 +104,10 @@ Este reporte tiene un tema central: **lo que pasó con el modelo local `qwen2.5:
 
 ```
 R4 (23 Sep): ██████████████████████████░░░░  87 / 138 pts  (63.0 %)
-R5 (6 Oct):  ████████████████████████████░░  100 / 144 pts (69.4 %)
+R5 (6 Oct):  ████████████████████████████░░  100 / 146 pts (68.5 %)
 ```
 
-El avance subió **+13 pts** (HU-07a 5 y HU-07b 8), y el alcance creció **+6 pts** (HU-07f y HU-07g, consecuencia directa de lo medido con Qwen). El proyecto tiene 44 pts pendientes.
+El avance subió **+13 pts** (HU-07a 5 y HU-07b 8), y el alcance creció **+8 pts** (HU-07f, HU-07g y HU-07h, consecuencia directa de lo medido con Qwen). El proyecto tiene 46 pts pendientes.
 
 ---
 
@@ -157,11 +157,11 @@ Se montó el servidor físico (Intel i3, 12 GB, sin GPU) con Ollama (`qwen2.5:3b
 3. **Un modelo pequeño no compensa una mala lista de opciones.** El modelo solo elige lo que la búsqueda le da; la calidad se decidió en la búsqueda, no en la generación.
 4. **No se debe presentar como precisión lo que no lo es.** Las pistas las puso el desarrollador, no un médico: sirven para comparar variantes, y así se documentó. La confiabilidad clínica solo la mide la revisión médica (HU-07g).
 5. **Descartar rápido fue barato.** Dos días de trabajo bastaron para saber que el modelo local no servía, antes de construir backend y pantalla sobre él.
-6. **El diseño modular permitió el giro.** El servicio ya aislaba el proveedor del modelo, así que pasar a un modelo externo no obliga a rehacer el motor, y la similitud quedó como respaldo.
+6. **El diseño modular permitió el giro.** El servicio ya aislaba el proveedor del modelo, así que cambiar de modelo (o probar varios) no obliga a rehacer el motor, y la similitud quedó como respaldo.
 
 ### 6.6 Decisión resultante
 
-El modelo de selección pasa a ser **externo (Claude Sonnet 5.5)**; el catálogo, los embeddings, la búsqueda y las reglas siguen en el servidor propio. Esto **reemplaza la decisión del Reporte 4 §6.4** («Ollama sobre servidor propio y modelo open-weight gratuito»), que se tomó antes de medir. Consecuencia nueva y abierta: con un modelo externo, los datos clínicos salen de la infraestructura propia, lo que exige revisión legal o ética (Ley 1581 de 2012) antes de usarlo con pacientes reales.
+Se evaluó un modelo externo (Claude Sonnet 5.5, por API) y **se descartó por privacidad**: el responsable del proyecto no quiere que los datos de salud salgan de la infraestructura propia (Ley 1581 de 2012) ni depender de APIs. La decisión es **seguir con modelos locales de pesos abiertos y buscar el mínimo viable**: la escalera Gemma 4 / MedGemma se prueba en un PC con GPU (i5-13450HX, 32 GB de RAM, RTX 5050 de 8 GB) y esas medidas sirven para recomendar la máquina de producción; no hay presupuesto aprobado. El catálogo, los embeddings, la búsqueda y las reglas siguen en el servidor propio. Esto **reemplaza en parte la decisión del Reporte 4 §6.4** («Ollama sobre servidor propio y modelo open-weight gratuito»): se mantiene lo local y gratuito, pero ese servidor (i3, sin GPU) no alcanza para la generación y se necesita otra máquina. Queda por verificar la licencia de uso de Gemma y MedGemma.
 
 ---
 
@@ -205,10 +205,10 @@ El modelo de selección pasa a ser **externo (Claude Sonnet 5.5)**; el catálogo
 |---|---------|---------|----------|
 | 1 | **El modelo local Qwen no sirve como selector**: peor que la similitud sola y de 24 a 46 s por sugerencia | 🟡 Cambia la arquitectura de HU-07 | ✨ Nuevo |
 | 2 | **La calidad se decide en la búsqueda de candidatos**, no en el modelo (11 % → 40 % de cobertura al buscar solo en códigos de 3 dígitos) | 🟢 Mejora real y barata | ✨ Nuevo |
-| 3 | **HU-07 pasa a modelo externo (Claude Sonnet 5.5)**: reemplaza la decisión del R4 §6.4 | 🟡 Nueva dependencia externa y de costo | ✨ Nuevo |
-| 4 | **Privacidad: los datos clínicos saldrían de la infraestructura propia** (Ley 1581 de 2012) | 🔴 Pendiente de decisión del responsable | ✨ Nuevo |
+| 3 | **Se descarta el modelo externo por privacidad y se prueban modelos abiertos (Gemma/MedGemma) en un PC con GPU**: ajusta la decisión del R4 §6.4 | 🟡 Cambia el hardware necesario; sin presupuesto aprobado | ✨ Nuevo |
+| 4 | **Privacidad resuelta por diseño: ningún dato clínico sale de la infraestructura propia** (Ley 1581 de 2012); quedan por verificar las licencias de los modelos | 🟢 Resuelto por la decisión | ✨ Nuevo |
 | 5 | **Servidor propio, túnel y catálogo operativos** (QA verificado: `/icf/health` en 943 ms) | 🟢 Positivo | ✨ Nuevo |
-| 6 | **13 pts completados, +6 pts de alcance** (HU-07f y HU-07g); 100 / 144 pts (69,4 %) | 🟢 Positivo | ✨ Nuevo |
+| 6 | **13 pts completados, +8 pts de alcance** (HU-07f, HU-07g y HU-07h); 100 / 146 pts (68,5 %) | 🟢 Positivo | ✨ Nuevo |
 | 7 | **Confiabilidad clínica aún sin medir**: las cifras usan pistas no validadas por un médico | 🟡 Limitación documentada | ✨ Nuevo |
 | 8 | **Brecha de seguimiento**: el milestone del M3 marca 0 % con 13 pts hechos; el issue #7 está desactualizado | 🟡 Desfase de GitHub | ✨ Nuevo |
 | 9 | **Protección de rama eludida 17 veces** (bypass del propietario) y 16 PRs de promoción en un día | 🟡 Hallazgo de proceso | ✨ Nuevo |
@@ -223,23 +223,23 @@ El modelo de selección pasa a ser **externo (Claude Sonnet 5.5)**; el catálogo
 | Total commits | 43 | 65 | 128 | 146 | 221 | +75 |
 | Issues + PRs numerados | 13 | 16 | 16 | 19 | 59 | +40 |
 | Story Points completados | 47 | 63 | 87 | 87 | 100 | +13 |
-| Total del proyecto (pts) | — | — | 134 | 134 → 138 | 144 | +6 |
-| Avance del proyecto | 40.9 % | 48.1 % | 64.9 % | 64.9 % | 69.4 % | +4.5 pp |
+| Total del proyecto (pts) | — | — | 134 | 134 → 138 | 146 | +8 |
+| Avance del proyecto | 40.9 % | 48.1 % | 64.9 % | 64.9 % | 68.5 % | +5.5 pp |
 | Tests (backend + frontend + servicio ICF) | 32 | 53 | 60 | 60 | 136 | +76 |
 | PRs mergeados (acumulado) | 0 | 0 | 0 | 3 | 42 | +39 |
 | Tamaño repo (KB) | — | 4,521 | 7,617 | 7,759 | 8,140 | +381 |
 | Servicios desplegables | 2 | 2 | 2 | 2 | 2 + servicio ICF en servidor propio | +1 |
 
-*Nota:* el avance de R4 (64.9 %) se calculó sobre 134 pts; sobre el total actual de 144 sería 60,4 %. El total subió por la reestimación de HU-07 (21 → 25 → 31 pts), no por trabajo nuevo fuera de ella.
+*Nota:* el avance de R4 (64.9 %) se calculó sobre 134 pts; sobre el total actual de 146 sería 59,6 %. El total subió por la reestimación de HU-07 (21 → 25 → 33 pts), no por trabajo nuevo fuera de ella.
 
 ---
 
 ## 11. Recomendaciones
 
-1. **Aprobar el plan de HU-07f a HU-07e** (modelo externo con comparación, validación clínica, backend, pantalla y cierre), con la decisión de privacidad y la clave de API como requisitos previos.
-2. **Resolver la privacidad antes de usar datos reales:** revisión legal o ética, y hasta entonces el modelo externo solo con datos sintéticos.
+1. **Ejecutar el plan de HU-07f a HU-07h y HU-07c a HU-07e** (escalera de modelos abiertos en el PC de pruebas, validación clínica, dimensionamiento de la máquina, backend, pantalla y cierre). Plan aprobado el 6-oct-2026.
+2. **Verificar las licencias de Gemma y MedGemma** antes de llevarlos a producción, y mantener el PC de pruebas solo con datos sintéticos.
 3. **Medir con un médico.** Es lo único que convierte las cifras orientativas en confiabilidad clínica y permite fijar el umbral de uso (HU-07g).
-4. **Crear las sub-historias 07a–07g como issues** y actualizar el issue #7, para que el milestone refleje el avance real.
+4. **Crear las sub-historias 07a–07h como issues** y actualizar el issue #7, para que el milestone refleje el avance real.
 5. **Decidir la política de la protección de rama:** o se restringe el bypass del propietario, o se acepta que con un solo desarrollador la regla es indicativa y se documenta así.
 6. **Agrupar las promociones** `develop` → `staging` → `master` (por ejemplo, una por hito) en lugar de una por cambio.
 7. **Integrar las pruebas del servicio ICF al pipeline de CI** (las que no necesitan base de datos corren sin servicios; las 3 de integración requieren un PostgreSQL con pgvector).

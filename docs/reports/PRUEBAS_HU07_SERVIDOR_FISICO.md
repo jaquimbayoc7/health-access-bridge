@@ -2,7 +2,7 @@
 
 **Proyecto:** Health Access Bridge · **Momento 3 · HU-07a / HU-07b**
 **Fecha de las pruebas:** 5 y 6 de octubre de 2026
-**Resultado en una frase:** un modelo local de ~3B parámetros (`qwen2.5:3b`) en el servidor físico del proyecto **no mejora la selección de códigos CIF sobre la búsqueda por similitud sola, y tarda de 24 a 46 segundos por sugerencia**; por eso HU-07 pasa a usar un modelo externo (Claude Sonnet 5.5) para la selección, manteniendo el catálogo y la búsqueda en el servidor propio.
+**Resultado en una frase:** un modelo local de ~3B parámetros (`qwen2.5:3b`) en el servidor físico del proyecto **no mejora la selección de códigos CIF sobre la búsqueda por similitud sola, y tarda de 24 a 46 segundos por sugerencia**; por eso se descarta ese modelo en ese equipo. Se evaluó pasar a un modelo externo por API y **se descartó por privacidad**; la siguiente fase prueba modelos abiertos más grandes (Gemma 4 y MedGemma) en un PC con GPU para hallar el modelo mínimo viable y la máquina que lo soporta, manteniendo todo en infraestructura propia.
 
 Este documento reemplaza, en lo que se refiere al modelo de generación de HU-07, la decisión registrada en `INSIGHTS_REPORT4.md` §6.3 (Ollama sobre servidor propio con un modelo open-weight gratuito). Los informes de los momentos anteriores se conservan como fueron escritos.
 
@@ -122,27 +122,28 @@ Otras variantes medidas solo con 6 candidatos: pedirle a Qwen que describiera el
 - **Las pistas no son criterio clínico** (ver §1). Los porcentajes absolutos no son la confiabilidad del sistema.
 - **La similitud tiene un sesgo:** para casi cualquier caso físico devuelve `s750 s770 s730`, y varios aciertos de estructuras se deben a que esos códigos de extremidades coinciden con las pistas, no a que el buscador entienda el diagnóstico. En funciones salen con frecuencia `b280`, `b147` y `b117`.
 - El perfil resultante llega con un nivel menos de detalle en funciones y estructuras (por ejemplo `b730` en lugar de `b7300`).
-- Se evaluó un solo modelo local (`qwen2.5:3b`). El modelo de 9,6 GB instalado en el servidor no cabe junto con el otro en 12 GB y no se evaluó (decisión del 06-oct-2026 de no comparar modelos locales).
+- Se evaluó un solo modelo local (`qwen2.5:3b`). El modelo de 9,6 GB instalado en el servidor no cabe junto con el otro en 12 GB y no se evaluó (en ese momento se decidió no comparar modelos locales; la decisión se revisó después y la escalera Gemma/MedGemma se prueba en HU-07f).
 
 ---
 
 ## 8. Decisión y siguientes pasos
 
-**Decisión (06-oct-2026):** el modelo que selecciona y justifica las funciones y estructuras pasa a ser **externo: Claude Sonnet 5.5**, llamado desde el servicio ICF del servidor propio. El catálogo, los embeddings, la búsqueda, las reglas y el respaldo por similitud siguen en el servidor propio.
+**Decisión (06-oct-2026, revisada el mismo día):** tras ver que Qwen 3B no sirve en el i3, se consideró un modelo externo (Claude Sonnet 5.5, por API) y **se descartó**: los datos de salud son sensibles (Ley 1581 de 2012) y el responsable del proyecto no quiere que salgan de la infraestructura propia ni depender de APIs. El catálogo, los embeddings, la búsqueda, las reglas y el respaldo por similitud siguen en el servidor propio.
 
-**Costo estimado** (precios de la documentación oficial de Anthropic consultada el 6-oct-2026: Sonnet 5.5 a 2 USD por millón de tokens de entrada y 10 USD por millón de salida): unos 0,003 USD por sugerencia con una lista corta de candidatos y unos 0,0065 USD con la lista completa de 154 categorías de nivel 2; es decir, menos de un centavo de dólar por sugerencia. **Latencia esperada de 2 a 6 s: es una estimación, no una medición** (se mide en HU-07f).
+**Nueva ruta: modelos abiertos de Google, probados en un PC con GPU.** El servidor i3 con 12 GB no puede correr modelos de Gemma 4 o MedGemma útiles, pero el PC de pruebas del proyecto (Intel i5-13450HX de 10 núcleos, 32 GB de RAM, NVIDIA RTX 5050 Laptop con 8 GB de VRAM, 311 GB libres) sí puede, con descarga parcial a la RAM en los modelos grandes. Se mide la calidad (con las mismas 21 pistas y los mismos scripts), la latencia y la memoria de la escalera `medgemma:4b`, `gemma4:e2b`, `gemma4:e4b`, `gemma4:12b`, `gemma4:26b`, `medgemma:27b` y `gemma4:31b`, con `qwen2.5:3b` y la similitud como referencia. Las velocidades por modelo son por ahora estimaciones; se miden en HU-07f. Ese PC sirve además de referencia para la recomendación de compra de la máquina de producción (HU-07h); **no hay presupuesto aprobado**, así que la recomendación es un insumo para la decisión.
 
-**Condición pendiente — privacidad.** Con un modelo externo, el diagnóstico, las notas y los datos clínicos mínimos salen de la infraestructura propia. Los datos de salud son sensibles (Ley 1581 de 2012) y la combinación de diagnóstico, edad y notas libres puede permitir reidentificar a una persona. Propuesta, pendiente de confirmar por el responsable del proyecto: usar el proveedor externo **solo con datos sintéticos** (desarrollo y QA) hasta contar con revisión legal o ética y la autorización correspondiente, mantener el modo de solo similitud para producción con pacientes reales, y revisar los términos de retención y uso de datos del proveedor en su documentación oficial.
+**Privacidad.** Al no usar APIs externas, ningún dato clínico sale de la infraestructura propia; el PC de pruebas solo usa los 25 casos sintéticos y el catálogo se mantiene fuera del repositorio. **Pendiente:** verificar las licencias de uso de Gemma 4 y MedGemma (términos de uso de salud) antes de llevarlos a producción.
 
 **Trabajo siguiente** (detalle en `BACKLOG.md`, HU-07):
 
 | HU | Qué | Puntos |
 |---|---|---|
-| 07f | Proveedor de LLM externo (Sonnet 5.5) con respaldo a similitud, candidatos ampliados, y comparación contra similitud y Qwen con las mismas pistas, midiendo costo y latencia | 3 |
+| 07f | Escalera de modelos abiertos locales (Gemma 4 / MedGemma) en el PC de pruebas: calidad, latencia y memoria contra la similitud y Qwen con las mismas pistas; modelo mínimo viable | 2 |
 | 07g | Hoja de revisión para el médico y definición del umbral de confiabilidad clínica | 3 |
+| 07h | Dimensionamiento y recomendación de la máquina de producción (sin presupuesto aprobado) | 3 |
 | 07c | Backend en Render hacia el servicio ICF (timeout de 90 s) | 5 |
 | 07d | Pantalla «Perfil Funcional ICF» | 5 |
-| 07e | Pruebas y documentación (incluye gestión de la clave y costos) | 2 |
+| 07e | Pruebas y documentación (incluye instalación de Ollama y de los modelos) | 2 |
 
 ---
 
