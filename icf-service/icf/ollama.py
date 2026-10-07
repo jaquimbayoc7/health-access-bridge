@@ -1,5 +1,6 @@
 """Cliente minimo de Ollama con la libreria estandar (embeddings y chat con salida estructurada)."""
 import json
+import os
 from typing import Any, Dict, List, Optional, Union
 from urllib import error, request
 
@@ -44,6 +45,12 @@ def chat_json(
     }
     if schema is None:  # sin formato forzado (solo para diagnostico de velocidad)
         payload.pop("format")
+    think = os.environ.get("ICF_LLM_THINK", "").strip().lower()  # modelos con razonamiento (Gemma 4): "false" lo apaga
+    if think in ("true", "false"):
+        payload["think"] = think == "true"
+    num_gpu = os.environ.get("ICF_LLM_NUM_GPU", "").strip()  # "0" fuerza CPU (dimensionar equipos sin GPU)
+    if num_gpu.lstrip("-").isdigit():
+        payload["options"]["num_gpu"] = int(num_gpu)
     try:
         data = _post(base_url, "/api/chat", payload, timeout)
     except error.HTTPError as exc:

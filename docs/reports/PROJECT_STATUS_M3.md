@@ -1,7 +1,7 @@
 # Estado del Proyecto Health Access Bridge — Momento Integrador III (corte parcial)
 
-**Última actualización:** 6 de octubre de 2026
-**Momento actual:** Momento 3 - Trabajo Integrador III (en progreso: HU-07a y HU-07b completadas; HU-07f en preparación)
+**Última actualización:** 7 de octubre de 2026
+**Momento actual:** Momento 3 - Trabajo Integrador III (en progreso: HU-07a, HU-07b y HU-07f completadas)
 
 > Este documento continúa a [`PROJECT_STATUS_M2.md`](./PROJECT_STATUS_M2.md) (cierre del Momento 2, septiembre de 2026). Es un **corte parcial**: el Momento 3 va a la mitad de HU-07 y las HU-08, HU-09 y HU-10 no han empezado. Para el análisis de lo ocurrido con el modelo local Qwen, ver [`INSIGHTS_REPORT5.md`](./INSIGHTS_REPORT5.md) y [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](./PRUEBAS_HU07_SERVIDOR_FISICO.md).
 
@@ -9,11 +9,13 @@
 
 ## Resumen Ejecutivo
 
-El proyecto lleva **100 de 146 puntos (68,5 %)**. En el Momento 3 se completaron **HU-07a** (servidor propio, túnel, catálogo y embeddings) y **HU-07b** (motor de sugerencia de códigos CIF y herramientas de evaluación), 13 de los 59 puntos del momento.
+El proyecto lleva **102 de 146 puntos (69,9 %)**. En el Momento 3 se completaron **HU-07a** (servidor propio, túnel, catálogo y embeddings) y **HU-07b** (motor de sugerencia de códigos CIF y herramientas de evaluación), 13 de los 59 puntos del momento. El 7 de octubre se completó **HU-07f** (escalera de modelos abiertos): **15 de 59**.
 
 El hallazgo central del período es que **el modelo local `qwen2.5:3b` no sirve para seleccionar códigos**: en el servidor físico (Intel i3, 12 GB, sin GPU) tardó de 24 a 46 s por sugerencia y **eligió peor que la búsqueda por similitud sola**, que responde en 0,6 s. Se evaluó pasar a un modelo externo por API (Claude Sonnet 5.5) y **se descartó por privacidad**: los datos de salud son sensibles (Ley 1581 de 2012) y todo debe quedar en infraestructura propia. La decisión del 6 de octubre es **buscar el modelo abierto mínimo viable**: probar la escalera Gemma 4 y MedGemma en un PC de pruebas con GPU (i5-13450HX, 32 GB de RAM, RTX 5050 de 8 GB) y, con esas medidas, recomendar la máquina de producción. HU-07 se reestima de 25 a **33 puntos**, con tres sub-historias nuevas: escalera de modelos abiertos (07f, 2 pts), validación clínica con un médico (07g, 3 pts) y dimensionamiento de la máquina (07h, 3 pts). **No hay presupuesto aprobado** para comprar equipo; la recomendación es un insumo para esa decisión.
 
 Quedan por confirmar las **licencias de uso** de Gemma y MedGemma antes de llevarlos a producción.
+
+**Resultado de HU-07f (7 de octubre):** en el PC de pruebas, `gemma4:e4b` (6,6 GB) mejora la selección sobre la similitud sola (funciones: precisión 43 % contra 29 %; estructuras: cobertura 86 % contra 67 %, contra las pistas orientativas no validadas por un médico) y responde en ~3,4 s con una GPU de 8 GB o ~15 s solo con CPU de 10 núcleos. Los otros modelos probados (`gemma4:e2b`, `medgemma:4b`, `qwen2.5:3b`) no la superan de forma útil. **Mínimo viable provisional: `gemma4:e4b`**; máquina mínima con GPU de 8 GB, 16 GB de RAM y 6 núcleos, o solo CPU de 8 núcleos con 16 GB de RAM. Los modelos de 12B a 31B no se midieron. Al medir se corrigieron dos defectos del motor con Gemma 4 (JSON en bloque de código y razonamiento previo). Detalle en [`PRUEBAS_HU07F_MODELOS_ABIERTOS.md`](./PRUEBAS_HU07F_MODELOS_ABIERTOS.md).
 
 ---
 
@@ -22,7 +24,7 @@ Quedan por confirmar las **licencias de uso** de Gemma y MedGemma antes de lleva
 ### 🟡 EPICA-03: IA Generativa, Dashboards y Cierre (EN PROGRESO)
 
 **Periodo:** Semanas 19-27
-**Puntos:** 59 pts (HU-07 33 + HU-08 13 + HU-09 8 + HU-10 5) — **13 pts completados (22,0 %)**
+**Puntos:** 59 pts (HU-07 33 + HU-08 13 + HU-09 8 + HU-10 5) — **15 pts completados (25,4 %)**
 
 > **Nota de seguimiento:** el milestone «Momento 3» de GitHub muestra 0 % porque las sub-historias de HU-07 viven en el `BACKLOG.md` y no como issues. El avance real es el de este documento.
 
@@ -31,7 +33,7 @@ Quedan por confirmar las **licencias de uso** de Gemma y MedGemma antes de lleva
 ## Estado por Historias de Usuario
 
 ### 🟡 HU-07: Perfil Funcional ICF con RAG y LLM local
-**Sprint:** 8-9 | **Puntos:** 33 (reestimada de 21 → 25 → 33) | **Estado:** 🟡 EN PROGRESO — 13 de 33 pts
+**Sprint:** 8-9 | **Puntos:** 33 (reestimada de 21 → 25 → 33) | **Estado:** 🟡 EN PROGRESO — 15 de 33 pts
 
 | Sub-historia | Alcance | Pts | Estado |
 |---|---|---|---|
@@ -40,7 +42,7 @@ Quedan por confirmar las **licencias de uso** de Gemma y MedGemma antes de lleva
 | 07c | Backend en Render hacia el servicio ICF (timeout de 90 s, tabla `icf_suggestions`, aceptar/editar/rechazar) | 5 | 📋 Pendiente |
 | 07d | Pantalla «Perfil Funcional ICF» | 5 | 📋 Pendiente |
 | 07e | Pruebas, manual de operación (Ollama, modelos y requisitos de la máquina) y reportes | 2 | 📋 Pendiente |
-| 07f | Escalera de modelos abiertos locales (Gemma 4 / MedGemma) en el PC de pruebas y modelo mínimo viable | 2 | 📋 Pendiente (**nueva**) |
+| 07f | Escalera de modelos abiertos (Gemma 4 / MedGemma) en el PC de pruebas y modelo mínimo viable: `gemma4:e4b` | 2 | ✅ Completada 7-oct |
 | 07g | Validación clínica con un médico y umbral de confiabilidad | 3 | 📋 Pendiente (**nueva**) |
 | 07h | Dimensionamiento y recomendación de la máquina de producción (sin presupuesto aprobado) | 3 | 📋 Pendiente (**nueva**) |
 
@@ -51,7 +53,7 @@ Quedan por confirmar las **licencias de uso** de Gemma y MedGemma antes de lleva
 - **Motor:** reglas fijas (edad, calificador, capítulos), actividades desde la lista cerrada del Anexo (32 códigos), funciones y estructuras por búsqueda semántica entre los códigos de 3 dígitos, validación contra el catálogo y respaldo por similitud.
 - **Mediciones:** latencia, calidad de la búsqueda y comparación de tres modos, documentadas con su método y sus limitaciones.
 
-**Pendiente de la HU:** medir la escalera de modelos abiertos en el PC de pruebas, medir la confiabilidad con un médico, recomendar la máquina de producción y construir backend y pantalla.
+**Pendiente de la HU:** medir la confiabilidad con un médico, recomendar la máquina de producción (borrador en el informe de HU-07f) y construir backend y pantalla.
 
 ### 📋 HU-08, HU-09, HU-10
 Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y feedback de usuarios (8 pts) y Despliegue final y manuales (5 pts). HU-10 suma el manual de operación del servicio ICF.
@@ -88,16 +90,16 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 
 | Métrica | Valor |
 |---------|-------|
-| **Puntos completados** | 100 pts |
-| **Puntos pendientes** | 46 pts |
+| **Puntos completados** | 102 pts |
+| **Puntos pendientes** | 44 pts |
 | **Total del proyecto** | 146 pts |
-| **Avance general** | 68,5 % |
+| **Avance general** | 69,9 % |
 | **Momento 1** | ✅ 100 % (63 pts) |
 | **Momento 2** | ✅ 100 % (24 pts) |
-| **Momento 3** | 🟡 22,0 % (13 de 59 pts) |
+| **Momento 3** | 🟡 25,4 % (15 de 59 pts) |
 | **Commits (`master`)** | 221 en 21 días activos (0,99 por día; 65 de ellos el 5 y 6 de octubre) |
 | **Pull Requests mergeados** | 42 (39 en este período, 16 solo el 6 de octubre) |
-| **Pruebas automáticas** | backend 52 · frontend 16 · servicio ICF 68 · **136 en total**; E2E 7 specs |
+| **Pruebas automáticas** | backend 52 · frontend 16 · servicio ICF 70 · **138 en total**; E2E 7 specs |
 | **Tamaño del repositorio** | 8.140 KB (TypeScript 63 %, Python 34 %) |
 
 *Las cifras del R4 y de `PROJECT_STATUS_M2.md` son instantáneas históricas y no se modifican.*
@@ -121,7 +123,7 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 ## Próximos Pasos
 
 1. **Hecho (6-oct):** se confirmó el enfoque local sin APIs y la reestimación de HU-07 a 33 pts. Sin presupuesto aprobado para hardware.
-2. **HU-07f:** el usuario instala Ollama en el PC de pruebas y descarga los modelos; luego se prepara la base pgvector local, se cargan el catálogo y los embeddings y se corre `compare_modes` con cada modelo para medir calidad, latencia y memoria; se decide el modelo mínimo viable.
+2. **HU-07f (hecho, 7-oct):** `gemma4:e4b` es el mínimo viable provisional (ver `PRUEBAS_HU07F_MODELOS_ABIERTOS.md`); los modelos grandes se miden solo si la validación clínica lo exige.
 3. **HU-07g (en paralelo parcial):** hoja de revisión para el médico, medición de la confiabilidad clínica y definición del umbral de uso.
 4. **HU-07c, HU-07d y HU-07e:** backend, pantalla y cierre con documentación.
 5. **HU-08, HU-09 y HU-10** según el orden de `BACKLOG.md`.
@@ -137,6 +139,7 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 - [Plan de release](./RELEASE_PLAN.md)
 - [Insight Report 5](./INSIGHTS_REPORT5.md) — el episodio del modelo local Qwen y el proceso del período
 - [Pruebas de HU-07 con el servidor físico](./PRUEBAS_HU07_SERVIDOR_FISICO.md)
+- [Pruebas de HU-07f con modelos abiertos](./PRUEBAS_HU07F_MODELOS_ABIERTOS.md)
 - [Diseño del RAG](../diagrams/rag-icf-postgresql.md)
 - [Servicio ICF](../../icf-service/README.md)
 - [Estado del Proyecto — Momento 2](./PROJECT_STATUS_M2.md)

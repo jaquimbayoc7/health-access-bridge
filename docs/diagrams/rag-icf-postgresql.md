@@ -143,7 +143,7 @@ El filtro por capítulo va **dentro de la consulta**: aplicarlo después de busc
 
 ### ④ El LLM elige y justifica funciones y estructuras (la "G" de RAG)
 
-**Qué modelo.** Un **modelo local de pesos abiertos** servido con Ollama (decisión del 06-oct-2026: sin APIs externas por privacidad). `qwen2.5:3b` en el servidor físico (i3, sin GPU) no sirvió: no mejoró la selección frente a la similitud sola y tardó de 24 a 46 s (ver [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](../reports/PRUEBAS_HU07_SERVIDOR_FISICO.md)). Se prueba una escalera de modelos de Google (`medgemma:4b`, `gemma4:e2b`, `gemma4:e4b`, `gemma4:12b`, `gemma4:26b`, `medgemma:27b` y `gemma4:31b`) en un PC con GPU para hallar el **modelo mínimo viable** (HU-07f). El modelo se configura con `ICF_LLM_MODEL` y la similitud sola es el respaldo si la llamada falla.
+**Qué modelo.** Un **modelo local de pesos abiertos** servido con Ollama (decisión del 06-oct-2026: sin APIs externas por privacidad). `qwen2.5:3b` en el servidor físico (i3, sin GPU) no sirvió: no mejoró la selección frente a la similitud sola y tardó de 24 a 46 s (ver [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](../reports/PRUEBAS_HU07_SERVIDOR_FISICO.md)). Se prueba una escalera de modelos de Google (`medgemma:4b`, `gemma4:e2b`, `gemma4:e4b`, `gemma4:12b`, `gemma4:26b`, `medgemma:27b` y `gemma4:31b`) en un PC con GPU para hallar el **modelo mínimo viable** (HU-07f); el resultado fue `gemma4:e4b` con `ICF_LLM_THINK=false` (ver [`PRUEBAS_HU07F_MODELOS_ABIERTOS.md`](../reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md)). El modelo se configura con `ICF_LLM_MODEL` y la similitud sola es el respaldo si la llamada falla.
 
 **Solo funciones (b) y estructuras (s).** Las actividades (d) no pasan por el modelo (ver ② y ③). El prompt le entrega:
 - los datos del paciente (sin nombre ni documento) y, si el médico los escribió, el diagnóstico CIE y las notas clínicas;
@@ -339,7 +339,7 @@ Estos controles aplican con cualquier proveedor. Se diseñaron pensando en un mo
 Revisión de [`BACKLOG.md`](../../BACKLOG.md), sección *Momento 3*:
 
 - **DEUDA-01** (Sprint 8) ya está ✅ cerrada, así que **la primera tarea abierta del Momento 3 es HU-07** (33 pts tras la reestimación del 06-oct-2026; eran 25 el 05-oct y 21 al inicio).
-- **HU-07a** (servidor, catálogo, embeddings, túnel) y **HU-07b** (motor y evaluación) están ✅ completadas (06-oct-2026).
+- **HU-07a** (servidor, catálogo, embeddings, túnel) y **HU-07b** (motor y evaluación) están ✅ completadas (06-oct-2026), y **HU-07f** (modelo mínimo viable `gemma4:e4b`) el 07-oct-2026.
 - La decisión del 23-sep-2026 de usar **Ollama con un modelo open-weight gratuito** se mantiene (sin APIs externas), pero tras las pruebas del §10 el servidor actual (i3, sin GPU) no alcanza para la generación: se prueban modelos de Gemma 4 y MedGemma en un PC con GPU (HU-07f) y se dimensiona la máquina de producción (HU-07h, sin presupuesto aprobado). El servidor propio sigue sirviendo el catálogo, los embeddings, la búsqueda y la similitud como respaldo.
 
 **Ajustes aplicados al backlog (05-oct-2026):**
@@ -387,4 +387,5 @@ Resumen; el detalle, el entorno y las tablas completas están en [`docs/reports/
 - **Latencia con Qwen (`qwen2.5:3b`):** 55,6 s en la primera versión; 22,9 s tras reducir lo que se le envía; 24 s (modo rápido) y 46 s (modo calidad) en la comparación final. La similitud sola responde en 0,6 s.
 - **Calidad (pistas orientativas, 21 casos):** el modelo local empeoró la selección. Precisión en funciones: 29 % con similitud sola, 23 % con el modo rápido y 20 % con el de calidad; cobertura de estructuras: 67 %, 57 % y 48 %.
 - **Búsqueda:** buscar solo entre los códigos de 3 dígitos subió la cobertura de las pistas de 11 % a 40 % en funciones y de 48 % a 86 % en estructuras (con 12 candidatos).
+- **Modelos abiertos en un PC con GPU de 8 GB (07-oct-2026):** `gemma4:e4b` mejora la selección (funciones: precisión 43 % contra 29 % de la similitud; estructuras: cobertura 86 % contra 67 %) en ~3,4 s con GPU o ~15 s solo con CPU; `gemma4:e2b`, `medgemma:4b` y `qwen2.5:3b` no la superan de forma útil. Detalle en [`PRUEBAS_HU07F_MODELOS_ABIERTOS.md`](../reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md).
 - **Decisión (revisada):** sin APIs externas por privacidad; se prueban Gemma 4 y MedGemma en un PC con GPU para hallar el modelo mínimo viable (HU-07f) y dimensionar la máquina (HU-07h). El catálogo y la búsqueda siguen en el servidor propio; la similitud es el respaldo. La confiabilidad clínica real la mide un médico (HU-07g).
