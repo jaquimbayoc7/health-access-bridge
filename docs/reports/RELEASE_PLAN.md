@@ -17,7 +17,7 @@
 | **R2 — Usabilidad y Calidad** | Momento 2 | 10-18 | [Milestone 2](https://github.com/jaquimbayoc7/health-access-bridge/milestone/2) | [EPICA-02 #12](https://github.com/jaquimbayoc7/health-access-bridge/issues/12) | 24 pts | ✅ Entregado |
 | **R3 — IA Generativa y Cierre** | Momento 3 | 19-27 | [Milestone 3](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) | [EPICA-03 #13](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) | 59 pts | 🟡 En progreso (HU-07a, HU-07b, HU-07c, HU-07d y HU-07f completadas) |
 
-**Total del proyecto:** 146 pts · **Completado:** 112 pts (76,7%) · **Pendiente:** 34 pts (23,3%)
+**Total del proyecto:** 146 pts · **Completado:** 115 pts (78,8%) · **Pendiente:** 31 pts (21,2%)
 
 > **Nota (05-oct-2026):** HU-07 se reestimó de 21 a 25 pts tras revisar el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022. El Momento 3 pasó de 47 a 51 pts y el total del proyecto de 134 a 138 pts. Las cifras de los reportes anteriores (Insights 1–4, estado del Momento 1) son instantáneas históricas y no se modifican.
 

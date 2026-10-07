@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, Check, ClipboardCopy, Download, Loader2, Pencil, Sparkles, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { AlertTriangle, BookOpen, Check, ClipboardCopy, Download, ExternalLink, Loader2, Pencil, Sparkles, X } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { toast } from 'sonner';
@@ -35,6 +36,15 @@ import {
   qualifierText,
   reportSections,
 } from '@/lib/icfReport';
+
+import {
+  CIE_EXAMPLES,
+  CIE_HELP,
+  CIE_LINKS,
+  NOTES_DISCLAIMER,
+  NOTE_EXAMPLES,
+  NOTE_TIPS,
+} from '@/lib/icfGuideContent';
 
 const MIN_AGE = 6;
 const DOMAIN_LABELS: Array<[keyof Patient, string]> = [
@@ -383,6 +393,36 @@ export default function FunctionalProfile() {
                 placeholder="G80 Parálisis cerebral"
                 onChange={(e) => setDiag(e.target.value)}
               />
+              <p className="text-xs text-muted-foreground">{CIE_HELP[language]}</p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                {CIE_LINKS.map((link) => (
+                  <a
+                    key={link.key}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-primary underline"
+                  >
+                    {link.label[language]}
+                    <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                  </a>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-1" aria-label={L('Diagnósticos CIE frecuentes', 'Common ICD diagnoses')}>
+                {CIE_EXAMPLES.map((ex) => (
+                  <Button
+                    key={ex.code}
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="h-6 px-2 text-xs"
+                    title={ex.text}
+                    onClick={() => setDiag(`${ex.code} ${ex.text}`)}
+                  >
+                    {ex.code}
+                  </Button>
+                ))}
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="fp-notes">{L('Notas clínicas (opcional)', 'Clinical notes (optional)')}</Label>
@@ -399,6 +439,42 @@ export default function FunctionalProfile() {
                   'Do not include identifying data (name, ID, address, phone). Without a diagnosis or notes, functions and structures will be generic.'
                 )}
               </p>
+              <details className="rounded-md border p-3 text-sm" data-testid="note-examples">
+                <summary className="cursor-pointer font-medium">{L('Ejemplos de notas clínicas', 'Clinical note examples')}</summary>
+                <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-muted-foreground">
+                  {NOTE_TIPS[language].map((tip) => (
+                    <li key={tip}>{tip}</li>
+                  ))}
+                </ul>
+                <div className="mt-3 space-y-2">
+                  {NOTE_EXAMPLES[language].map((ex) => (
+                    <div key={ex.title} className="rounded bg-muted p-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-medium">{ex.title}</span>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="secondary"
+                          className="h-7 text-xs"
+                          onClick={() => {
+                            setDiag(ex.diag);
+                            setNotes(ex.note);
+                          }}
+                        >
+                          {L('Usar este ejemplo', 'Use this example')}
+                        </Button>
+                      </div>
+                      <p className="mt-1 text-xs"><strong>{ex.diag}</strong></p>
+                      <p className="text-xs text-muted-foreground">{ex.note}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">{NOTES_DISCLAIMER[language]}</p>
+              </details>
+              <Link to="/predictive-guide?section=icf" className="inline-flex items-center gap-1 text-xs text-primary underline">
+                <BookOpen className="h-3 w-3" aria-hidden="true" />
+                {L('¿Cómo funciona el Perfil Funcional ICF?', 'How does the ICF Functional Profile work?')}
+              </Link>
             </div>
 
             <Button className="w-full gap-2" onClick={handleGenerate} disabled={!patient || tooYoung || generating}>

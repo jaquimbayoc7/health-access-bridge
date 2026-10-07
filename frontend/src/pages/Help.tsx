@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { BookOpen, Users, Activity, HelpCircle, ChevronDown, ChevronUp, Keyboard, AlertCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { BookOpen, Users, Activity, HelpCircle, ChevronDown, ChevronUp, Keyboard, AlertCircle, ClipboardList } from 'lucide-react';
+import { IcfProgress } from '@/components/IcfGuide';
+import { GUIDE_INTRO, PROGRESS_TITLE } from '@/lib/icfGuideContent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -122,6 +125,28 @@ export default function Help() {
                 </div>
               </div>
             ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Perfil Funcional ICF: avance */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ClipboardList className="h-5 w-5 text-primary" />
+            {PROGRESS_TITLE[language]}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">{GUIDE_INTRO[language]}</p>
+          <IcfProgress />
+          <div className="flex flex-wrap gap-4 text-sm">
+            <Link to="/functional-profile" className="text-primary underline">
+              {language === 'es' ? 'Abrir el Perfil Funcional ICF' : 'Open the ICF Functional Profile'}
+            </Link>
+            <Link to="/predictive-guide?section=icf" className="text-primary underline">
+              {language === 'es' ? 'Cómo funciona el Perfil Funcional ICF' : 'How the ICF Functional Profile works'}
+            </Link>
           </div>
         </CardContent>
       </Card>

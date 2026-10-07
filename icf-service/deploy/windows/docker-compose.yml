@@ -1,0 +1,69 @@
+# HU-07h: produccion del servicio ICF en el PC propio (Windows + Docker Desktop + Ollama nativo con GPU).
+#
+# Uso (desde esta carpeta). Los secretos viven en %USERPROFILE%\.hab-icf\.env (fuera de OneDrive y de git),
+# creado por init-env.ps1:
+#   docker compose --env-file "$env:USERPROFILE\.hab-icf\.env" up -d --build
+#
+# Ollama NO va aqui: corre instalado en Windows para usar la GPU (RTX 5050). Los contenedores lo alcanzan
+# por host.docker.internal:11434. Nada de esto se expone a internet salvo Caddy (con token) por Tailscale Funnel.
+name: hab-icf
+
+services:
+  icf-db:
+    image: pgvector/pgvector:pg16
+    container_name: icf-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: icf_user
+      POSTGRES_PASSWORD: ${ICF_DB_PASSWORD:?define ICF_DB_PASSWORD en .env (ejecuta init-env.ps1)}
+      POSTGRES_DB: icf
+    ports:
+      - "127.0.0.1:5433:5432" # solo este equipo (administracion y scripts)
+    volumes:
+      - icf_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U icf_user -d icf"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  icf-service:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    image: icf-service:latest
+    container_name: icf-service
+    restart: unless-stopped
+    depends_on:
+      icf-db:
+        condition: service_healthy
+    environment:
+      ICF_DATABASE_URL: postgresql://icf_user:${ICF_DB_PASSWORD}@icf-db:5432/icf
+      OLLAMA_URL: http://host.docker.internal:11434
+      ICF_LLM_MODEL: ${ICF_LLM_MODEL:-gemma4:e4b}
+      ICF_LLM_THINK: "false" # Gemma 4 razona antes de responder; se apaga
+      ICF_EMBED_MODEL: bge-m3
+      ICF_LLM_KEEP_ALIVE: 30m
+      ICF_MODE: ${ICF_MODE:-calidad}
+      ICF_SERVICE_LLM_TIMEOUT_S: "120"
+    # Dentro del contenedor escucha en todas las interfaces, pero NO se publica en el host:
+    # solo Caddy (misma red de compose) puede llegar a el.
+    command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8100"]
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: icf-caddy
+    restart: unless-stopped
+    depends_on:
+      - icf-service
+    environment:
+      ICF_TOKEN: ${ICF_TOKEN:?define ICF_TOKEN en .env (ejecuta init-env.ps1)}
+    ports:
+      - "127.0.0.1:11435:11435" # Tailscale Funnel apunta aqui
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+
+volumes:
+  icf_pgdata:
+    external: true
+    name: icf_pgdata
