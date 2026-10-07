@@ -97,8 +97,8 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 | **Momento 1** | ✅ 100 % (63 pts) |
 | **Momento 2** | ✅ 100 % (24 pts) |
 | **Momento 3** | 🟡 50,8 % (30 de 59 pts) |
-| **Commits (`master`)** | 221 en 21 días activos (0,99 por día; 65 de ellos el 5 y 6 de octubre) |
-| **Pull Requests mergeados** | 42 (39 en este período, 16 solo el 6 de octubre) |
+| **Commits** | 222 en `develop` (151 en `master`, producción, hasta la próxima promoción) en 22 días activos; 55 de ellos el 5 y 6 de octubre (65 si se cuenta el 7) |
+| **Pull Requests mergeados** | 53 de 54 abiertos (corte 7-oct-2026) |
 | **Pruebas automáticas** | backend 105 · frontend 38 · servicio ICF 75 (67 en CI) · **218 en total**; E2E 12 casos |
 | **Tamaño del repositorio** | 8.140 KB (TypeScript 63 %, Python 34 %) |
 
