@@ -1,6 +1,6 @@
 # Pendientes y punto de partida para la próxima sesión
 
-**Corte:** 7 de octubre de 2026 · rama `develop` en el commit `b6cae29` (222 commits; `master` tiene 151).
+**Corte:** 7 de octubre de 2026 · `develop`, `staging` y `master` quedaron sincronizadas por los PR #75 a #80 que hizo el responsable ese día (`master`: 249 commits). Solo falta promover los documentos añadidos después (este archivo, el brief de Kimi y la actualización del Release Plan).
 **Uso:** abrir este archivo al empezar la sesión siguiente y seguir en orden. Complementa [`BACKLOG.md`](../BACKLOG.md) (fuente de verdad del alcance) y [`reports/PROJECT_STATUS_M3.md`](reports/PROJECT_STATUS_M3.md).
 
 ---
@@ -24,7 +24,7 @@
 | # | Qué | Detalle |
 |---|---|---|
 | 1 | **Reunión con la revisora** (Emilly Maria Celis, profesional en salud), la próxima semana | Entregar `data/private/icf/review/hoja_revision.xlsx` **por un canal privado** (trae títulos del catálogo de la OMS) y explicarle la guía de [`reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md). Presentarle los umbrales ya aprobados: precisión estricta ≥ 60 %, flexible ≥ 80 %, cobertura a ciegas ≥ 60 %, calificadores correctos ≥ 80 %. Si propone un ajuste clínico, se cambia `THRESHOLDS` en `icf-service/icf/review.py`. |
-| 2 | **Promoción `develop` → `staging` → `master`** | **No se ha hecho.** `master` está 71 commits atrás y la página oficial (`/presentation`, se publica desde `master`) muestra datos viejos. Promover despliega HU-07 completa en producción (las variables de Render de PROD ya están puestas). Hay que decidir cuándo; la sugerencia de la sesión fue hacerlo en dos PRs (a `staging`, probar QA, luego a `master`). |
+| 2 | **Promoción de los últimos documentos** `develop` → `staging` → `master` | La promoción grande **ya se hizo** (PR #75 a #80, 7-oct): HU-07 completa está en `staging` y `master`, y la página oficial se publica desde `master`. Quedan pendientes solo los commits de documentación posteriores; agruparlos en un PR cuando haya más cambios. Tras promover, **revisar que la página oficial muestre las cifras actuales** (los contadores de commits cambian con cada merge). |
 | 3 | Tablero de proyectos de GitHub | El token de `gh` no tiene el permiso `read:project`; no se pudo revisar ni actualizar. Ejecutar `gh auth refresh -s read:project` (interactivo) si se usa el tablero. |
 | 4 | Consulta regulatoria | Preguntar al INVIMA o a un asesor jurídico si el software podría considerarse dispositivo médico antes de un uso clínico real. Mientras tanto la pantalla lo presenta como **borrador de apoyo**. |
 | 5 | Catálogo de la OMS | Confirmar si mostrar a los médicos los títulos del catálogo CIF-IA dentro de la aplicación requiere permiso explícito en un despliegue real. |
@@ -59,7 +59,7 @@
 
 ## 5. Cuidados recurrentes (para no repetir errores)
 
-- **Cifras que se desactualizan solas:** la presentación tiene números fijos (commits, PRs, issues, lenguajes, puntos). Revisar `docs/presentation/index.html` en cada cierre; los commits se cuentan con `git rev-list --count develop`.
+- **Cifras que se desactualizan solas:** la presentación tiene números fijos (commits, PRs, issues, lenguajes, puntos). Revisar `docs/presentation/index.html` en cada cierre; los commits se cuentan con `git rev-list --count origin/master` (la rama oficial; cada PR de promoción agrega merges).
 - **Nunca** imprimir el token ni la clave de la base. Los secretos viven en `%USERPROFILE%\.hab-icf\.env` (fuera de OneDrive y de git).
 - Los reportes con títulos del catálogo de la OMS **no se suben** a git (`data/private/` está ignorado).
 - `render.yaml`: `ICF_LLM_TIMEOUT_S` figura en 20 s en los tres ambientes mientras el backend espera hasta 90 s para la sugerencia (`ICF_SUGGEST_TIMEOUT_S`); verificar si el valor de 20 s afecta `/icf/health`.

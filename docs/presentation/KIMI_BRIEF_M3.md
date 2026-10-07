@@ -72,7 +72,7 @@ La página oficial del proyecto (`docs/presentation/index.html`, publicada en `h
 | Metodología | SCRUM, 27 semanas, 3 Momentos, 146 story points |
 | Equipo | Un desarrollador (Product Owner y Dev Team) + médicos entrevistados como stakeholders; una profesional de salud como revisora clínica del Momento 3 |
 | Ambientes | DEV (`develop`), QA (`staging`), PROD (`master`) en Render; el servicio de IA corre en un PC propio |
-| Repositorio | 222 commits en `develop` (151 en `master`), 22 días activos, 26 feb a 7 oct 2026; 53 PRs mergeados; 72 issues y PRs cerrados |
+| Repositorio | 249 commits en `master` (rama oficial; 56 son merges de promoción), 22 días activos, 26 feb a 7 oct 2026; 55 PRs mergeados; 74 issues y PRs cerrados |
 
 ### 3.2 Avance por Momento
 
@@ -144,20 +144,20 @@ Lectura: el burndown real baja por debajo de la línea ideal desde el Sprint 3 y
 ```
 DATOS commits_por_dia (barras, días con actividad)
 2026-09-11: 12   2026-09-18: 17   2026-09-23: 12   2026-09-24: 1
-2026-10-05: 35   2026-10-06: 20   2026-10-07: 11
-(Antes de septiembre: feb-jun, 114 commits en 15 días activos; total 222 en 22 días.)
+2026-10-05: 35   2026-10-06: 35   2026-10-07: 23
+(Antes de septiembre: feb-jun, 114 commits en 15 días activos; total 249 en 22 días. El 6 y 7 de octubre incluyen los merges de promoción.)
 
-DATOS commits_por_tipo (dona; total 222)
-docs 62 · fix 58 · feat 52 · merge 29 · chore 10 · ci 5 · otros 6 (test 2, perf 2, sin prefijo 2)
+DATOS commits_por_tipo (dona; total 249)
+docs 62 · fix 58 · merge 56 · feat 52 · chore 10 · ci 5 · otros 6 (test 2, perf 2, sin prefijo 2)
 
 DATOS comparativo_reportes_insights (líneas o barras; R6 = 7 oct)
 metrica,                     R1(20 mar), R2(16 abr), R3(18 sep), R4(23 sep), R5(6 oct), hoy(7 oct)
-Commits totales,             43,         65,         128,        146,        221,       222
-Issues + PRs numerados,      13,         16,         16,         19,         59,        78
+Commits totales,             43,         65,         128,        146,        221,       249
+Issues + PRs numerados,      13,         16,         16,         19,         59,        80
 Story points completados,    47,         63,         87,         87,         100,       117
 Avance del proyecto (%),     40,9,       48,1,       64,9,       64,9,       68,5,      80,1
 Tests (backend+front+ICF),   32,         53,         60,         60,         136,       218
-PRs mergeados (acumulado),   0,          0,          0,          3,          42,        53
+PRs mergeados (acumulado),   0,          0,          0,          3,          42,        55
 Servicios desplegables,      2,          2,          2,          2,          3,         3
 ```
 Nota: el total del proyecto subió de 134 a 146 pts por la reestimación de HU-07 (21 → 25 → 33), no por trabajo nuevo fuera de ella; el avance de R4 sobre 146 pts sería 59,6 %.
