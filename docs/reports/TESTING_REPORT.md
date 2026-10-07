@@ -2,7 +2,7 @@
 
 **Proyecto:** Health Access Bridge  
 **Periodo:** Momento 1 - Trabajo Integrador I (Semanas 1-9)  
-**Fecha del reporte:** Abril 2026  
+**Fecha del reporte:** Abril 2026 (actualizado el 7 de octubre de 2026 con HU-07, Momento 3)  
 **Historias de Usuario evaluadas:** HU-01, HU-02, HU-03, [HU-11 #14](https://github.com/jaquimbayoc7/health-access-bridge/issues/14), [HU-12 #15](https://github.com/jaquimbayoc7/health-access-bridge/issues/15), [HU-13 #16](https://github.com/jaquimbayoc7/health-access-bridge/issues/16) (todas completadas en Momento 1)
 
 ---
@@ -15,13 +15,15 @@ El proyecto Health Access Bridge ha implementado un conjunto completo de **prueb
 
 | Métrica | Valor |
 |---------|-------|
-| **Total de pruebas backend** | 35 casos de prueba |
-| **Total de pruebas frontend** | 16 casos (HU-13) — 16/16 ✅ pasando |
-| **Cobertura de HUs** | HU-01, HU-02, HU-03, HU-11, HU-12, HU-13 (todas ✅) |
+| **Total de pruebas backend** | 105 casos de prueba (35 del Momento 1; el resto, predicciones e ICF) |
+| **Total de pruebas frontend** | 38 casos — 38/38 ✅ pasando (16 de HU-13 y 22 de HU-07) |
+| **Pruebas del servicio ICF** | 70 casos — 62 pasan en CI y 8 se omiten (requieren el catálogo local) |
+| **Pruebas E2E (Playwright)** | 12 casos (2 login, 3 pacientes, 2 predicciones, 5 Perfil Funcional ICF) |
+| **Cobertura de HUs** | HU-01, HU-02, HU-03, HU-11, HU-12, HU-13 (todas ✅) y HU-07 (ver sección propia) |
 | **Framework backend** | pytest + FastAPI TestClient |
 | **Framework frontend** | Vitest + React Testing Library + jsdom |
 | **Base de datos de prueba** | SQLite en memoria (aislamiento total) |
-| **CI/CD** | GitHub Actions (3 workflows — incluye frontend tests) |
+| **CI/CD** | GitHub Actions (3 workflows — incluye frontend tests y tests del servicio ICF) |
 | **Smoke tests en producción** | Automáticos post-deploy |
 
 ---
@@ -451,6 +453,51 @@ Con la implementación de HU-13, el frontend cuenta con **16 pruebas unitarias a
 - ✅ CRUD de pacientes funciona end-to-end
 - ✅ Búsqueda de pacientes funciona con debounce
 - ✅ Exportación a Excel y PDF funciona
+
+---
+
+## HU-07 — Perfil Funcional ICF con RAG y LLM local (Momento 3)
+
+**Historia:** [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7) · sub-historias 07a a 07h
+**Fecha de ejecución:** 7 de octubre de 2026
+**Casos Gherkin:** `TEST_CASES.md`, suites 8 a 11
+
+### Resultado de ejecución
+
+| Capa | Archivos | Resultado |
+|------|----------|-----------|
+| Servicio ICF (pytest) | `icf-service/tests/` | **62 pasan, 8 omitidas** (70 en total) |
+| Backend (pytest) | `backend/app/tests/` (`test_icf_suggestions.py` 39, `test_icf_causes.py` 6, `test_icf_health.py` 8) | **105 pasan** en total (53 de ICF), cobertura 89 % |
+| Frontend unitarias (Vitest) | `FunctionalProfile.test.tsx` 15, `IcfGuide.test.tsx` 7 | **38 pasan** en total (22 de ICF) |
+| E2E (Playwright, Chromium) | `frontend/e2e/functional-profile.spec.ts` | **5 de 5** contra el frontend DEV |
+| Calidad estática | `tsc --noEmit`, `npm run build` | sin errores |
+| Lint | `eslint src` | 0 errores en los archivos de HU-07; 5 errores heredados en `Login.test.tsx`, `command.tsx`, `textarea.tsx`, `useJWTExpiry.ts` y `api.ts` |
+
+Las 8 pruebas omitidas del servicio ICF son de integración con PostgreSQL + pgvector (7) y de casos de referencia con catálogo (1). Necesitan el catálogo CIF-IA, que tiene derechos de la OMS y no está en el repositorio, así que se omiten en CI y se corren en el PC de producción o de pruebas con `ICF_TEST_DATABASE_URL`.
+
+### Qué se verifica
+
+- **Reglas del Anexo 1239:** escala de calificadores 0–4, máximo 3 códigos por componente, estructuras con tres calificadores, actividades de la lista cerrada, menores de 6 años no aplica.
+- **El modelo no inventa códigos:** el esquema JSON solo admite candidatos; códigos inválidos, duplicados o sobrantes se descartan; los títulos salen del catálogo.
+- **Respaldo:** si el modelo falla o responde basura, se usa la similitud con una advertencia; si el servicio cae, el backend responde 503 sin filtrar URL ni token.
+- **Privacidad:** el payload nunca lleva nombre, documento ni orientación sexual; el servicio rechaza esos campos; el prompt no contiene identificadores.
+- **Acceso:** un médico no ve ni decide sobre pacientes de otro; el administrador sí puede; `/icf/health` es solo para administrador.
+- **Decisiones:** aceptar, editar (calificador, naturaleza, localización, código con el original conservado) y rechazar; historial de lotes.
+- **Pantalla y ayudas:** generación, enlaces a la CIE-10 en pestaña nueva, códigos y notas de ejemplo, reporte sin rechazados, Guía Predictiva en dos secciones, avance en Ayuda, contenido en español e inglés.
+
+### E2E (HU-07e)
+
+El login es real; la lista de pacientes y los endpoints ICF se simulan con `page.route`, porque el servicio ICF corre en un PC propio y los pacientes de QA son compartidos. Cubre generar, ayudas de la CIE, aceptar/rechazar, falla 503 y la guía. En el CI de QA corre junto a los E2E de HU-06 (`npx playwright test`). Se verificó contra DEV en un contenedor de Playwright 1.63; un primer intento falló por asumir el idioma de la interfaz (el texto salió en inglés) y se corrigió aceptando ambos idiomas.
+
+### CI
+
+Se agregó el job `icf-service-test` (Python 3.11, `pytest`) a `ci-dev.yml`, `ci-qa.yml` y `ci-prod.yml`; los jobs de despliegue y la compuerta de aprobación de QA dependen de él. Los tres YAML se validaron.
+
+### Limitaciones
+
+- La **confiabilidad clínica** de los códigos sugeridos no está medida: las cifras de precisión usan pistas orientativas, no validadas por un médico. Se mide en HU-07g con una profesional de salud.
+- No hay prueba automática del modelo real en CI (requiere GPU). La calidad del modelo se midió a mano (`PRUEBAS_HU07F_MODELOS_ABIERTOS.md`) y el servicio se verifica en producción con `check.ps1 -Public -Suggest`.
+- El E2E no ejercita el servicio ICF real; esa ruta se prueba en QA con `/icf/health` y una sugerencia desde la pantalla (HU-07h, hecho el 07-oct-2026).
 
 ---
 
