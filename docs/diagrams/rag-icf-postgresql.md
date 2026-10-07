@@ -1,7 +1,7 @@
 # Cómo funciona la sugerencia de códigos CIF/ICF con RAG en PostgreSQL
 
 **Proyecto:** Health Access Bridge · **Momento 3 · HU-07**
-**Objetivo:** que un LLM pequeño (Qwen `qwen2.5:3b`, ~3B parámetros) sugiera códigos CIF/ICF a partir de los datos del paciente, **sin entrenarlo**, usando solo el estándar CIF como fuente de conocimiento. El médico acepta o edita la sugerencia.
+**Objetivo:** que un LLM sugiera códigos CIF/ICF a partir de los datos del paciente, **sin entrenarlo**, usando solo el estándar CIF como fuente de conocimiento. El modelo es **local, de pesos abiertos y sin APIs externas** (decisión del 06-oct-2026 por privacidad): las pruebas con un modelo de ~3B (`qwen2.5:3b`) en el servidor físico (i3, sin GPU) no mejoraron la selección ni la velocidad (ver [§10](#10-resultados-de-las-pruebas-con-el-servidor-físico-y-qwen-06-oct-2026)), por lo que se prueban modelos más grandes de Google (Gemma 4 y MedGemma) en un PC con GPU para hallar el mínimo viable (HU-07f). El médico acepta o edita la sugerencia.
 **Marco normativo:** Anexo Técnico de la **Resolución 1239 del 21 de julio de 2022** (procedimiento de certificación de discapacidad y Registro de Localización y Caracterización de Personas con Discapacidad, RLCPD), de aplicación para toda la población con discapacidad de Colombia, que usa la **CIF-IA** (versión infancia y adolescencia, OMS 2011). El perfil de funcionamiento oficial tiene **3 códigos por componente** (funciones b, estructuras s, actividades y participación d), cada uno con calificador. HAB genera un **borrador de apoyo**: el certificado lo emite el equipo multidisciplinario en el aplicativo RLCPD.
 
 ---
@@ -13,7 +13,7 @@
 | Enfoque | Qué requiere | ¿Aplica aquí? |
 |---|---|---|
 | **Fine-tuning** (entrenar) | Miles de casos etiquetados por médicos + GPU para entrenar | ❌ No hay datos etiquetados |
-| **Solo prompt** (preguntarle al modelo "¿qué código CIF es?") | Nada | ❌ Un modelo de 3B **inventa códigos** |
+| **Solo prompt** (preguntarle al modelo "¿qué código CIF es?") | Nada | ❌ Un modelo sin lista cerrada **inventa códigos** (más aún uno de 3B) |
 | **RAG** (buscar + dar contexto + restringir la respuesta) | El catálogo CIF cargado en PostgreSQL | ✅ **Enfoque elegido** |
 
 RAG significa *Retrieval-Augmented Generation*: generación de texto aumentada con información recuperada de una base de datos.
@@ -30,15 +30,15 @@ flowchart TB
         DBP[("PostgreSQL Render<br/>tabla patients<br/>tabla icf_suggestions")]
     end
 
-    subgraph LOCAL["🏥 Servidor local (sede clínica)"]
+    subgraph LOCAL["🏥 Servidor propio (sede clínica)"]
         SVC["Servicio ICF<br/>(FastAPI pequeño)"]
         RULES["① Reglas fijas<br/>capítulos + calificador"]
         subgraph PG["PostgreSQL + pgvector"]
-            CAT[("tabla icf_codes<br/>catálogo CIF-IA (hasta nivel 3)<br/>+ embeddings")]
+            CAT[("tabla icf_codes<br/>catálogo CIF-IA<br/>+ embeddings")]
         end
-        EMB["Ollama<br/>modelo de embeddings<br/>(bge-m3)"]
-        LLM["Ollama<br/>LLM Qwen qwen2.5:3b"]
-        VAL["⑤ Validación<br/>contra catálogo"]
+        EMB["Ollama<br/>embeddings (bge-m3)"]
+        LLM["Modelo local (Ollama)<br/>Gemma / MedGemma<br/>selección de b y s"]
+        VAL["⑤ Validación<br/>contra catálogo<br/>+ respaldo por similitud"]
     end
 
     FE -->|"1. Médico pulsa<br/>'Generar Perfil Funcional'"| BE
@@ -47,7 +47,7 @@ flowchart TB
     SVC --> RULES
     RULES -->|"② Capítulos a revisar"| EMB
     EMB -->|"③ Vector de la consulta"| CAT
-    CAT -->|"③ Top códigos candidatos"| LLM
+    CAT -->|"③ Candidatos (12 por componente)"| LLM
     LLM -->|"④ JSON con códigos + justificación"| VAL
     VAL -->|"4. Sugerencia validada"| BE
     BE -->|"5. Guarda estado 'sugerido'"| DBP
@@ -58,8 +58,9 @@ flowchart TB
 **Qué se queda en cada lugar:**
 
 - **Render (nube):** los pacientes y lo que el médico decide sobre cada sugerencia. Todo esto ya existe hoy, salvo la tabla `icf_suggestions`.
-- **Servidor local:** el catálogo CIF (que es información pública), Ollama con los modelos y el servicio que arma la consulta.
-- **Hacia el servidor local nunca viaja** el nombre ni el documento del paciente. Solo viajan edad, género, causa, categorías, niveles D1–D6, la predicción de barreras y, si el médico los escribe, el diagnóstico CIE y las notas clínicas. **No se envía la orientación sexual** (no aporta a la codificación). Como las notas son texto libre, la pantalla advierte no incluir datos identificables.
+- **Servidor propio:** el catálogo CIF con su base pgvector, Ollama para calcular embeddings y ejecutar el modelo de selección (según la fase, en un PC de pruebas con GPU o en la máquina de producción), el servicio que arma la consulta y el respaldo por similitud.
+- **Modelo de selección (local):** recibe la lista de candidatos de funciones y estructuras y los datos clínicos mínimos (sin nombre ni documento), y devuelve los códigos elegidos. Corre con Ollama en infraestructura propia (hoy en un PC de pruebas con GPU; mañana en la máquina de producción que dimensione HU-07h): **ningún dato sale de la infraestructura propia**.
+- **Hacia el servidor propio ni hacia el modelo nunca viaja** el nombre ni el documento del paciente. Solo viajan edad, género, causa, categorías, niveles D1–D6, la predicción de barreras y, si el médico los escribe, el diagnóstico CIE y las notas clínicas. **No se envía la orientación sexual** (no aporta a la codificación). Como las notas son texto libre, la pantalla advierte no incluir datos identificables.
 
 ---
 
@@ -119,42 +120,43 @@ En María todos sus niveles están entre 50 y 95, así que **todos sus capítulo
 
 ### ② y ③ Búsqueda en PostgreSQL (la "R" de RAG)
 
-Para cada capítulo relevante, el servicio busca en la tabla `icf_codes` las categorías que más se parecen al caso del paciente. La búsqueda es híbrida:
+Se construye **un solo texto clínico** con el diagnóstico (sin el código CIE, que no le dice nada al buscador) y las notas del médico; si no escribió nada, se usa la causa y las categorías. Se convierte en un vector con el modelo de embeddings (`bge-m3`) y se usa de dos maneras distintas según el componente:
 
-1. **Pre-filtro por reglas con el Anexo:** las tablas 7–9 y 11 del Anexo ligan cada dominio con códigos CIF-IA concretos (ej. Movilidad: `d4154`, `d4104`, `d4600`, `d4602`, `d4501`; Cognición: `b1400`, `d161`, `b144`, `d175`, `d155`, `d310`, `d350`). Esos códigos se transcriben a una tabla de candidatos (`icf_domain_map`) y entran primero a la lista. El PDF escaneado se lee mal en varios códigos, por lo que se transcriben revisando el original.
-2. **Filtro exacto en SQL:** categorías del capítulo (ej. d4) de segundo y tercer nivel (de 3 y 4 caracteres, como `d450` o `b2100`; el registro oficial admite hasta el tercer nivel).
-3. **Orden por similitud semántica con pgvector:** se construye un texto con el contexto del paciente (*"enfermedad congénita, compromiso físico severo, movilidad"*), se convierte en vector con el modelo de embeddings y se ordena el catálogo por cercanía a ese vector.
+**Actividades y participación (d): lista cerrada del Anexo.** Las tablas 9 y 11 del Anexo ligan cada pregunta del instrumento con códigos CIF-IA concretos (ej. Movilidad: `d4154`, `d4104`, `d4600`, `d4602`, `d4501`). Esos 32 códigos están en la tabla `icf_domain_map`, marcados por grupo de edad (6–17 años, 18 o más, o ambos). Para los capítulos D1–D6 con nivel ≥ 5 se toman sus códigos y **se ordenan por calificador (mayor primero) y, a igual calificador, por similitud con el texto clínico**. No pasan por el modelo de generación. Si un capítulo no tiene códigos en el Anexo (D2), se usan las categorías de ese capítulo, sin las «otras» y «no especificadas».
+
+**Funciones (b) y estructuras (s): búsqueda semántica entre los códigos de 3 dígitos.**
 
 ```sql
-SELECT code, title, description
+SELECT code, title
 FROM icf_codes
-WHERE component = 'd'
-  AND chapter = 4
-  AND level IN (2, 3)
-ORDER BY embedding <=> :query_embedding   -- <=> = distancia coseno (pgvector)
-LIMIT 12;
+WHERE component = 'b'                          -- o 's'
+  AND level = 2                                -- solo códigos de 3 dígitos (ej. b730)
+  AND chapter = ANY(:capitulos_permitidos)     -- b1 solo si hay categoría psicosocial; b2-b8 y s, si hay física
+  AND code !~ '[89]$'                          -- sin «otros especificados» (8) ni «no especificados» (9)
+ORDER BY embedding <=> :query_embedding        -- <=> = distancia coseno (pgvector)
+LIMIT 12;                                      -- 6 en el modo rápido
 ```
 
-Resultado de ejemplo para D4: `d410 Cambiar las posturas corporales básicas`, `d415 Mantener la posición del cuerpo`, `d440 Uso fino de la mano`, `d450 Andar`, `d455 Desplazarse por el entorno`, `d465 Desplazarse utilizando algún tipo de equipamiento`…
+El filtro por capítulo va **dentro de la consulta**: aplicarlo después de buscar dejaba la lista vacía en casos como la esquizofrenia sin deficiencia física. Y se busca solo entre los códigos de 3 dígitos porque, medido con 21 casos (ver [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](../reports/PRUEBAS_HU07_SERVIDOR_FISICO.md) §4), buscar entre los de 4 y 5 dígitos llenaba la lista de hermanos casi idénticos (`b2800`, `b2801`, `b2802`) y dejaba fuera los temas generales: la cobertura de las pistas orientativas pasó de 11 % a 40 % en funciones y de 48 % a 86 % en estructuras con 12 candidatos. Ejemplos de candidatos: `b710 Movilidad de las articulaciones`, `b730 Fuerza muscular`, `b280 Sensación de dolor`, `s750 Estructura de la extremidad inferior`. El perfil llega entonces con un nivel menos de detalle (`b730` y no `b7300`); el médico puede afinarlo.
 
-Lo mismo se hace con **funciones corporales (b)** y **estructuras corporales (s)**, usando la categoría física y psicosocial, la causa y, si existen, el diagnóstico CIE y las notas. Por ejemplo, `b710 Movilidad de las articulaciones`, `b730 Fuerza muscular`, `b280 Sensación de dolor`, `s750 Estructura de la extremidad inferior`.
+> Con **12 candidatos** por componente la cobertura es bastante mayor que con 6; ese es el costo extra que compra calidad. La lista completa de las 154 categorías de nivel 2 (unos 2.500 tokens) cabe en el prompt y se evaluará en HU-07f, aunque con modelos locales leer más prompt cuesta más tiempo.
 
-> Con un catálogo de ~1.500 categorías y solo 6 capítulos, este filtro reduce las opciones a **30–60 candidatos**. Esa cantidad cabe cómodamente en el contexto de un modelo de 3B.
+### ④ El LLM elige y justifica funciones y estructuras (la "G" de RAG)
 
-### ④ El LLM elige y justifica (la "G" de RAG)
+**Qué modelo.** Un **modelo local de pesos abiertos** servido con Ollama (decisión del 06-oct-2026: sin APIs externas por privacidad). `qwen2.5:3b` en el servidor físico (i3, sin GPU) no sirvió: no mejoró la selección frente a la similitud sola y tardó de 24 a 46 s (ver [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](../reports/PRUEBAS_HU07_SERVIDOR_FISICO.md)). Se prueba una escalera de modelos de Google (`medgemma:4b`, `gemma4:e2b`, `gemma4:e4b`, `gemma4:12b`, `gemma4:26b`, `medgemma:27b` y `gemma4:31b`) en un PC con GPU para hallar el **modelo mínimo viable** (HU-07f). El modelo se configura con `ICF_LLM_MODEL` y la similitud sola es el respaldo si la llamada falla.
 
-El prompt le entrega al modelo:
+**Solo funciones (b) y estructuras (s).** Las actividades (d) no pasan por el modelo (ver ② y ③). El prompt le entrega:
 - los datos del paciente (sin nombre ni documento) y, si el médico los escribió, el diagnóstico CIE y las notas clínicas;
-- la lista de candidatos con su **título y descripción oficial**;
-- la instrucción: *"Elige solo de esta lista, como máximo 3 categorías por componente (funciones, estructuras, actividades y participación), ordenadas por relevancia, y justifica cada una en una frase"*.
+- la lista de candidatos de b y de s, con su **título oficial**;
+- la instrucción: *"Elige solo de estas listas, como máximo 3 códigos por lista, ordenados por relevancia para el paciente, y justifica cada uno en máximo 12 palabras"*.
 
-Para que el modelo **no pueda inventar**, se usa la **salida estructurada** de Ollama (`format` = JSON Schema). Los códigos candidatos van como `enum`, y cualquier otro valor queda fuera del formato permitido:
+Para que el modelo **no pueda inventar**, se usa la **salida estructurada** (JSON Schema). Los códigos candidatos van como `enum`, y cualquier otro valor queda fuera del formato permitido; además, el servicio descarta cualquier código que no sea candidato:
 
 ```json
 {
   "type": "object",
   "properties": {
-    "funciones": {
+    "b": {
       "type": "array",
       "maxItems": 3,
       "items": {
@@ -166,7 +168,7 @@ Para que el modelo **no pueda inventar**, se usa la **salida estructurada** de O
         "required": ["code", "justificacion"]
       }
     },
-    "estructuras": {
+    "s": {
       "type": "array",
       "maxItems": 3,
       "items": {
@@ -177,31 +179,19 @@ Para que el modelo **no pueda inventar**, se usa la **salida estructurada** de O
         },
         "required": ["code", "justificacion"]
       }
-    },
-    "actividades": {
-      "type": "array",
-      "maxItems": 3,
-      "items": {
-        "type": "object",
-        "properties": {
-          "code":          { "type": "string", "enum": ["d410", "d415", "d440", "d450", "d455", "d465"] },
-          "justificacion": { "type": "string" }
-        },
-        "required": ["code", "justificacion"]
-      }
     }
   },
-  "required": ["funciones", "estructuras", "actividades"]
+  "required": ["b", "s"]
 }
 ```
 
-La llamada se hace con `temperature: 0`, para que la misma entrada dé siempre la misma salida.
+**Determinismo.** Se fija `temperature: 0` para que la misma entrada dé la misma respuesta; aun así, cada resultado se guarda en `icf_suggestions` junto con el modelo que lo generó, y la decisión final es siempre del médico.
 
 ### ⑤ Validación antes de devolver
 
-El servicio revisa la respuesta del LLM:
-- ¿el JSON es válido?
-- ¿cada código existe en `icf_codes`?
+El servicio revisa la respuesta del LLM (solo funciones y estructuras; las actividades ya salen de la lista del Anexo):
+- ¿el JSON es válido? Si no lo es, o el proveedor no responde, se entrega la selección por **similitud** (los 3 códigos más cercanos), marcada con su origen (`llm`, `similarity` o `rules`);
+- ¿cada código es uno de los candidatos y existe en `icf_codes`? Los demás se descartan;
 - se le pega el calificador calculado en el paso ① → `d450.3`;
 - en estructuras (s) el calificador son tres dígitos (magnitud, naturaleza del cambio, localización): la magnitud sale de las reglas y naturaleza y localización quedan en **8 (no especificada)**, p. ej. `s750.388`, para que el médico los edite;
 - se descarta cualquier componente con más de 3 códigos (queda el de mayor relevancia).
@@ -229,9 +219,10 @@ sequenceDiagram
     actor M as Médico
     participant FE as Frontend
     participant BE as Backend (Render)
-    participant S as Servicio ICF (local)
-    participant PG as PostgreSQL + pgvector (local)
-    participant O as Ollama (local)
+    participant S as Servicio ICF (servidor propio)
+    participant PG as PostgreSQL + pgvector (servidor propio)
+    participant O as Ollama (embeddings)
+    participant C as Modelo local (Gemma/MedGemma, por Ollama)
 
     M->>FE: Selecciona paciente y pulsa "Generar Perfil Funcional"
     FE->>BE: POST /patients/{id}/icf-suggestions
@@ -240,11 +231,11 @@ sequenceDiagram
     S->>S: ① Capítulos a revisar + calificador por reglas
     S->>O: Embedding del contexto del paciente
     O-->>S: vector
-    S->>PG: ② ③ SELECT ... WHERE chapter ... ORDER BY embedding <=> vector
-    PG-->>S: códigos candidatos + descripción oficial
-    S->>O: ④ Prompt + candidatos + JSON Schema (enum)
-    O-->>S: JSON {code, justificacion}
-    S->>PG: ⑤ Validar que cada código existe
+    S->>PG: ② ③ d: lista del Anexo ordenada por calificador y similitud; b y s: SELECT nivel 2 ... ORDER BY embedding <=> vector
+    PG-->>S: códigos candidatos (12 por componente b y s)
+    S->>C: ④ Prompt + candidatos de b y s + JSON Schema (enum)
+    C-->>S: JSON {code, justificacion}
+    S->>PG: ⑤ Validar candidatos (o usar similitud si el modelo falla)
     S-->>BE: sugerencias validadas con calificador
     BE->>BE: Guarda en icf_suggestions (estado = sugerido)
     BE-->>FE: Reporte con sugerencias
@@ -295,7 +286,7 @@ erDiagram
         int qualifier_cl "solo s: localización, 8 por defecto"
         text justification "texto del LLM"
         string status "sugerido, aceptado, editado, rechazado"
-        string model "qwen2.5:3b, para auditoría"
+        string model "nombre del modelo, similarity o rules, para auditoría"
         string diag_cie "instantánea de entrada, opcional"
         text clinical_notes "instantánea de entrada, opcional"
         datetime created_at
@@ -306,7 +297,7 @@ erDiagram
     icf_codes ||--o{ icf_domain_map : "candidato de"
 ```
 
-- **`icf_codes`** se carga **una sola vez** con un script. El script lee el catálogo CIF-IA en español, calcula el embedding de `title + description` de cada categoría con Ollama y lo guarda en la columna `embedding`.
+- **`icf_codes`** se carga **una sola vez** con un script. El script lee el catálogo CIF-IA en español, calcula con Ollama el embedding del título de cada categoría (con el título del padre como contexto en los niveles inferiores; el catálogo no trae descripciones limpias porque se extrajo con OCR) y lo guarda en la columna `embedding`.
 - **`icf_suggestions`** guarda lo que sugirió el modelo y lo que decidió el médico. Así hay trazabilidad clínica: se sabe qué sugirió la máquina y qué aprobó el profesional.
 - **`icf_domain_map`** guarda el mapeo explícito de los niveles de HAB con los capítulos CIF-IA y los códigos candidatos transcritos del Anexo.
 - El diagnóstico CIE y las notas **no son columnas de `patients`**: se guardan como instantánea de entrada en `icf_suggestions`. El proyecto no tiene migraciones y `build.sh` solo revisa un conjunto fijo de columnas, así que las columnas nuevas de `patients` no se crearían en bases existentes.
@@ -324,16 +315,20 @@ El modelo sigue siendo el mismo y nunca se reentrena, pero las sugerencias mejor
 
 ---
 
-## 7. Por qué este diseño funciona con modelos pequeños (3B)
+## 7. Controles frente a los errores de un LLM
 
-| Riesgo de un modelo pequeño | Cómo se controla |
+Estos controles aplican con cualquier proveedor. Se diseñaron pensando en un modelo pequeño (3B) y se mantienen con modelos más grandes, porque ninguno es infalible.
+
+| Riesgo de un modelo de lenguaje | Cómo se controla |
 |---|---|
-| Inventa códigos que no existen | `enum` en el JSON Schema + validación contra `icf_codes` |
+| Inventa códigos que no existen | `enum` en el JSON Schema + validación contra los candidatos y contra `icf_codes` |
 | Pone el título equivocado a un código | El título sale de la base de datos, nunca del LLM |
 | Se equivoca en la gravedad | El calificador se calcula por reglas, no lo decide el LLM |
-| No le cabe toda la CIF en el contexto | Solo recibe 30–60 candidatos filtrados |
-| Da respuestas distintas cada vez | `temperature: 0` |
-| Responde en texto libre difícil de procesar | Salida estructurada en JSON (`format` de Ollama) |
+| Elige peor que una búsqueda simple | Se midió: Qwen 3B empeoró la selección frente a la similitud sola (ver §10), por eso la similitud queda como respaldo y se prueban modelos mayores con la misma comparación (HU-07f) |
+| Es lento | Qwen 3B en el i3: 24 a 46 s; los modelos de la escalera se miden en el PC con GPU (HU-07f). Se reduce lo que se le envía: las actividades no pasan por el modelo y solo recibe candidatos de b y s |
+| Da respuestas distintas cada vez | Se fija `temperature: 0` y se guarda cada resultado con el modelo que lo generó |
+| Responde en texto libre difícil de procesar | Salida estructurada en JSON (JSON Schema) |
+| Falla, se cae o responde con error | Respaldo automático a la selección por similitud, marcada con su origen |
 | Poca información clínica para funciones y estructuras | Campos opcionales de diagnóstico CIE y notas; sin ellos, las sugerencias de b y s son genéricas y así se indica |
 | Error clínico | **El médico siempre valida**: el sistema sugiere, no decide |
 
@@ -343,17 +338,21 @@ El modelo sigue siendo el mismo y nunca se reentrena, pero las sugerencias mejor
 
 Revisión de [`BACKLOG.md`](../../BACKLOG.md), sección *Momento 3*:
 
-- **DEUDA-01** (Sprint 8) ya está ✅ cerrada, así que **la primera tarea abierta del Momento 3 es HU-07** (25 pts tras la reestimación del 05-oct-2026; eran 21).
-- La **primera tarea listada en HU-07** es: *"Aprovisionar y configurar el servidor físico (hardware, SO, dependencias, runtime de inferencia)"*.
-- Ya está decidido (23-sep-2026) usar **Ollama sobre un servidor propio, con un modelo open-weight gratuito**.
+- **DEUDA-01** (Sprint 8) ya está ✅ cerrada, así que **la primera tarea abierta del Momento 3 es HU-07** (33 pts tras la reestimación del 06-oct-2026; eran 25 el 05-oct y 21 al inicio).
+- **HU-07a** (servidor, catálogo, embeddings, túnel) y **HU-07b** (motor y evaluación) están ✅ completadas (06-oct-2026).
+- La decisión del 23-sep-2026 de usar **Ollama con un modelo open-weight gratuito** se mantiene (sin APIs externas), pero tras las pruebas del §10 el servidor actual (i3, sin GPU) no alcanza para la generación: se prueban modelos de Gemma 4 y MedGemma en un PC con GPU (HU-07f) y se dimensiona la máquina de producción (HU-07h, sin presupuesto aprobado). El servidor propio sigue sirviendo el catálogo, los embeddings, la búsqueda y la similitud como respaldo.
 
 **Ajustes aplicados al backlog (05-oct-2026):**
 
 1. Se eligió **RAG** (sin fine-tuning), porque no hay datos etiquetados para entrenar.
 2. Se agregó la pantalla "Perfil Funcional ICF" con el flujo de **aceptar/editar/rechazar** del médico.
-3. **Privacidad:** los datos identificables no salen de Render; al servidor local solo viajan datos sin nombre, documento ni orientación sexual. La conexión es por **túnel autenticado** (Cloudflare Tunnel o Tailscale).
-4. HU-07 se dividió en sub-historias 07a–07e.
+3. **Privacidad:** los datos identificables no salen de Render; al servidor local solo viajan datos sin nombre, documento ni orientación sexual. La conexión es por **túnel autenticado** (implementado con Tailscale Funnel y Caddy con token).
+4. HU-07 se dividió en sub-historias 07a–07e (y el 06-oct-2026 se agregaron 07f, 07g y 07h).
 5. **Ajustes por el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022:** catálogo **CIF-IA** hasta el tercer nivel; salida de **3 códigos por componente (b, s, d)**; **estructuras (s)** con magnitud y naturaleza/localización en 8 por defecto; mapeo explícito de los niveles de HAB (se mantienen) con los dominios oficiales; **diagnóstico CIE y notas opcionales**; lista oficial de causa de deficiencia; aviso para menores de 6 años; y leyenda de borrador de apoyo.
+
+**Ajustes aplicados tras las pruebas con el servidor físico (06-oct-2026):** se descarta el modelo externo por privacidad y se prueban modelos abiertos más grandes (Gemma/MedGemma) en lugar de Qwen 3B; búsqueda de funciones y estructuras solo entre códigos de 3 dígitos y con 12 candidatos; actividades desde la lista cerrada del Anexo, sin modelo; dos modos (`calidad` y `rápido`); validación clínica con un médico (07g) para medir la confiabilidad real.
+
+**Nota de privacidad.** Al no usar APIs externas, el diagnóstico, las notas y los datos clínicos mínimos de la petición **no salen de la infraestructura propia** (Ley 1581 de 2012). El PC de pruebas solo usa casos sintéticos. Pendiente: verificar las licencias de uso de Gemma y MedGemma antes de producción.
 
 **Limitación conocida:** HAB captura 2 de las 7 categorías de discapacidad del Anexo (física y psicosocial), así que la sugerencia cubrirá mejor lo físico y lo psicosocial que lo visual, auditivo o intelectual.
 
@@ -373,5 +372,19 @@ Revisión de [`BACKLOG.md`](../../BACKLOG.md), sección *Momento 3*:
 | **RAG** | Buscar información relevante en una base de datos y dársela al LLM junto con la pregunta. |
 | **Embedding** | Representación numérica (vector) del significado de un texto. Permite buscar "por parecido" y no solo por palabras exactas. |
 | **pgvector** | Extensión de PostgreSQL que guarda embeddings y busca por similitud (`<=>`). |
-| **Ollama** | Programa que ejecuta LLMs localmente en el servidor, sin internet. |
+| **Ollama** | Programa que ejecuta modelos localmente en el servidor, sin internet. En HAB calcula los embeddings (`bge-m3`) y ejecuta el modelo de selección. |
+| **Gemma 4 / MedGemma** | Familias de modelos abiertos de Google que se prueban (con Ollama) para elegir y justificar funciones y estructuras entre los candidatos. |
 | **Salida estructurada** | Obligar al LLM a responder en un JSON con un formato fijo. |
+| **Pistas orientativas** | Códigos que, por la lógica de la CIF, se esperarían en un caso de prueba; no están validados por un médico y sirven solo para comparar variantes del motor. |
+
+---
+
+## 10. Resultados de las pruebas con el servidor físico y Qwen (06-oct-2026)
+
+Resumen; el detalle, el entorno y las tablas completas están en [`docs/reports/PRUEBAS_HU07_SERVIDOR_FISICO.md`](../reports/PRUEBAS_HU07_SERVIDOR_FISICO.md).
+
+- **Equipo:** i3, 12 GB, sin GPU. En él, leer un prompt cuesta ~0,05 s por token y escribir ~0,1 s por token.
+- **Latencia con Qwen (`qwen2.5:3b`):** 55,6 s en la primera versión; 22,9 s tras reducir lo que se le envía; 24 s (modo rápido) y 46 s (modo calidad) en la comparación final. La similitud sola responde en 0,6 s.
+- **Calidad (pistas orientativas, 21 casos):** el modelo local empeoró la selección. Precisión en funciones: 29 % con similitud sola, 23 % con el modo rápido y 20 % con el de calidad; cobertura de estructuras: 67 %, 57 % y 48 %.
+- **Búsqueda:** buscar solo entre los códigos de 3 dígitos subió la cobertura de las pistas de 11 % a 40 % en funciones y de 48 % a 86 % en estructuras (con 12 candidatos).
+- **Decisión (revisada):** sin APIs externas por privacidad; se prueban Gemma 4 y MedGemma en un PC con GPU para hallar el modelo mínimo viable (HU-07f) y dimensionar la máquina (HU-07h). El catálogo y la búsqueda siguen en el servidor propio; la similitud es el respaldo. La confiabilidad clínica real la mide un médico (HU-07g).
