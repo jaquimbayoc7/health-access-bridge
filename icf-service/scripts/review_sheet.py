@@ -211,7 +211,7 @@ def score(args) -> int:
         print(f"  {comp}: {m['suggested_rated']} valorados | adecuado {m['adecuado']} aceptable {m['aceptable']} no adecuado {m['no_adecuado']} | "
               f"precision estricta {m['precision_strict']} flexible {m['precision_lenient']} | faltan {m['missing_codes']} | cobertura {m['coverage']} | calificador {m['qualifier_ok']}")
     print(f"Fase A (a ciegas): {metrics['blind']}")
-    print("\nCriterios (umbrales propuestos):")
+    print("\nCriterios (umbrales aprobados):")
     for r in verdict["criterios"]:
         print(f"  {r['criterio']:<32} valor={r['valor']}  minimo={r['minimo']}  -> {r['estado']}")
     print(f"\nVEREDICTO: {verdict['veredicto']}")

@@ -15,7 +15,7 @@ RATINGS = {"adecuado": "A", "aceptable": "B", "no adecuado": "C"}
 RATING_OPTIONS = ("Adecuado", "Aceptable", "No adecuado")
 YES_NO_OPTIONS = ("Sí", "Parcial", "No")
 
-# Umbrales PROPUESTOS (a confirmar con la revisora y el responsable antes de usarlos como criterio de aprobacion).
+# Umbrales aprobados por el responsable del proyecto el 07-oct-2026; se presentan a la revisora en la reunion de la semana siguiente.
 # Se aplican a funciones y estructuras (b y s); las actividades (d) salen de una lista cerrada del Anexo y se miden aparte.
 THRESHOLDS = {
     "min_cases_reviewed": 20,  # de 24 casos aplicables
