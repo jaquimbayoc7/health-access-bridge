@@ -109,6 +109,42 @@ describe('FunctionalProfile', () => {
     );
   });
 
+  it('ofrece enlaces a la CIE que abren en pestaña nueva y un código de ejemplo rellena el diagnóstico', async () => {
+    renderPage();
+    const link = await screen.findByRole('link', { name: /CIE-10 en español/i });
+    expect(link).toHaveAttribute('href', 'https://ais.paho.org/classifications/Chapters/');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: 'G80' }));
+    expect(screen.getByLabelText(/Diagnóstico CIE/i)).toHaveValue('G80 Parálisis cerebral');
+  });
+
+  it('«Usar este ejemplo» rellena el diagnóstico y las notas, y se envían al generar', async () => {
+    (icfService.generate as ReturnType<typeof vi.fn>).mockResolvedValue(SET);
+    renderPage();
+    const user = await choosePatient(/Juan Pérez/);
+    await user.click(screen.getByText('Ejemplos de notas clínicas'));
+    await user.click(screen.getAllByRole('button', { name: 'Usar este ejemplo' })[0]);
+    expect(screen.getByLabelText(/Diagnóstico CIE/i)).toHaveValue('G80 Parálisis cerebral');
+    expect((screen.getByLabelText(/Notas clínicas/i) as HTMLTextAreaElement).value).toMatch(/Espasticidad/);
+    await user.click(screen.getByRole('button', { name: /generar perfil funcional/i }));
+    await waitFor(() =>
+      expect(icfService.generate).toHaveBeenCalledWith(
+        1,
+        expect.objectContaining({ diag_cie: 'G80 Parálisis cerebral', clinical_notes: expect.stringMatching(/Espasticidad/) })
+      )
+    );
+  });
+
+  it('enlaza a la guía de cómo funciona el Perfil Funcional ICF', async () => {
+    renderPage();
+    expect(await screen.findByRole('link', { name: /Cómo funciona el Perfil Funcional ICF/i })).toHaveAttribute(
+      'href',
+      '/predictive-guide?section=icf'
+    );
+  });
+
   it('avisa que no aplica para menores de 6 años y no deja generar', async () => {
     renderPage();
     await choosePatient(/Niña Gómez/);
