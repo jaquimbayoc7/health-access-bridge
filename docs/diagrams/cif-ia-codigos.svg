@@ -223,18 +223,19 @@
   <text x="703" y="1146" class="t">SQL + pgvector sobre</text>
   <text x="703" y="1166" class="t">el catálogo CIF-IA</text>
   <text x="703" y="1186" class="t">(tabla icf_codes,</text>
-  <text x="703" y="1206" class="t">1.593 códigos hasta</text>
-  <text x="703" y="1226" class="t">tercer nivel).</text>
+  <text x="703" y="1206" class="t">1.593 códigos; busca</text>
+  <text x="703" y="1226" class="t">en los de 3 dígitos).</text>
   <text x="703" y="1292" class="s">Reduce la lista a elegir.</text>
 
   <!-- 5 -->
   <circle cx="922" cy="1108" r="16" fill="#b7791f"/><text x="922" y="1114" class="t w" text-anchor="middle" font-weight="700">5</text>
   <text x="946" y="1114" class="h3">LLM local</text>
-  <text x="912" y="1146" class="t">Ollama (Qwen o Gemma)</text>
+  <text x="912" y="1146" class="t">Gemma / MedGemma (Ollama)</text>
   <text x="912" y="1166" class="t">elige solo entre los</text>
-  <text x="912" y="1186" class="t">candidatos, con JSON</text>
-  <text x="912" y="1206" class="t">válido y temperatura 0.</text>
+  <text x="912" y="1186" class="t">candidatos de b y s,</text>
+  <text x="912" y="1206" class="t">con JSON válido.</text>
   <text x="912" y="1236" class="t">Aporta la justificación.</text>
+  <text x="912" y="1256" class="t">Si falla: similitud.</text>
   <text x="912" y="1292" class="s">No inventa códigos.</text>
 
   <!-- 6 -->
@@ -273,9 +274,9 @@
     <text x="88" y="1586">✔ Un código sin calificador está incompleto y no se muestra.</text>
     <text x="88" y="1616">✔ Estructuras (s): naturaleza y localización en 8 por defecto.</text>
 
-    <text x="720" y="1466">✔ Al servicio local <tspan font-weight="700">no viajan nombre, documento ni</tspan></text>
+    <text x="720" y="1466">✔ Al modelo (local) <tspan font-weight="700">no viajan nombre, documento ni</tspan></text>
     <text x="742" y="1486"><tspan font-weight="700">orientación sexual</tspan>.</text>
-    <text x="720" y="1516">✔ Si el servicio local cae, solo esa función se afecta.</text>
+    <text x="720" y="1516">✔ Si el modelo local falla, se usa la similitud como respaldo.</text>
     <text x="720" y="1546">✔ Menores de 6 años: sin niveles por dominio, se avisa.</text>
     <text x="720" y="1576">✔ Es un <tspan font-weight="700">borrador de apoyo</tspan>: no sustituye el</text>
     <text x="742" y="1596">certificado oficial del RLCPD.</text>
@@ -283,6 +284,6 @@
   </g>
 
   <!-- PIE -->
-  <text x="60" y="1684" class="s">Fuentes: CIF-IA (OMS, 2011) · Anexo Técnico de la Resolución 1239 del 21 de julio de 2022 · Backlog HU-07 (HU-07a a HU-07e).</text>
+  <text x="60" y="1684" class="s">Fuentes: CIF-IA (OMS, 2011) · Anexo Técnico de la Resolución 1239 del 21 de julio de 2022 · Backlog HU-07 (HU-07a a HU-07h).</text>
   <text x="60" y="1704" class="s">Los códigos de ejemplo se verificaron en la CIF-IA. El PDF y el texto extraído de la OMS no se publican en el repositorio.</text>
 </svg>
