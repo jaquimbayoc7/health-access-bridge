@@ -357,7 +357,7 @@ Revisión de [`BACKLOG.md`](../../BACKLOG.md), sección *Momento 3*:
 
 **Ajustes aplicados tras las pruebas con el servidor físico (06-oct-2026):** se descarta el modelo externo por privacidad y se prueban modelos abiertos más grandes (Gemma/MedGemma) en lugar de Qwen 3B; búsqueda de funciones y estructuras solo entre códigos de 3 dígitos y con 12 candidatos; actividades desde la lista cerrada del Anexo, sin modelo; dos modos (`calidad` y `rápido`); validación clínica con un médico (07g) para medir la confiabilidad real.
 
-**Nota de privacidad.** Al no usar APIs externas, el diagnóstico, las notas y los datos clínicos mínimos de la petición **no salen de la infraestructura propia** (Ley 1581 de 2012). El PC de pruebas solo usa casos sintéticos. Pendiente: verificar las licencias de uso de Gemma y MedGemma antes de producción.
+**Nota de privacidad.** Al no usar APIs externas, el diagnóstico, las notas y los datos clínicos mínimos de la petición **no salen de la infraestructura propia** (Ley 1581 de 2012). El PC de pruebas solo usa casos sintéticos. Licencias verificadas el 07-oct-2026: Gemma 4 es Apache 2.0 y MedGemma no se usa (ver `docs/reports/LICENCIAS_COMPONENTES_ICF.md`).
 
 **Limitación conocida:** HAB captura 2 de las 7 categorías de discapacidad del Anexo (física y psicosocial), así que la sugerencia cubrirá mejor lo físico y lo psicosocial que lo visual, auditivo o intelectual.
 

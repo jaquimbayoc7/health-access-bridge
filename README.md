@@ -146,7 +146,7 @@ Documentación de arquitectura en cuatro niveles siguiendo el [C4 Model](https:/
 
 | Issue | Título | Sprint | Pts | Estado |
 |-------|--------|--------|-----|--------|
-| [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7) | [HU-07] Perfil Funcional ICF con RAG y LLM local para Sugerencia de Códigos CIF (Colombia) — 07a, 07b, 07c, 07d, 07f y 07h ✅; 07e y 07g pendientes | Sprint 8-9 (Sem. 19-22) | 33 | 🟡 En progreso |
+| [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7) | [HU-07] Perfil Funcional ICF con RAG y LLM local para Sugerencia de Códigos CIF (Colombia) — 07a, 07b, 07c, 07d, 07e, 07f y 07h ✅; 07g con el instrumento listo y pendiente de la revisión clínica | Sprint 8-9 (Sem. 19-22) | 33 | 🟡 En progreso |
 | [#8](https://github.com/jaquimbayoc7/health-access-bridge/issues/8) | [HU-08] Dashboard de Análisis y Exportación | Sprint 10-11 (Sem. 23-26) | 13 | 📋 Backlog |
 | [#9](https://github.com/jaquimbayoc7/health-access-bridge/issues/9) | [HU-09] Pruebas Completas y Feedback de Usuarios | Sprint 11 (Sem. 25-26) | 8 | 📋 Backlog |
 | [#10](https://github.com/jaquimbayoc7/health-access-bridge/issues/10) | [HU-10] Despliegue Final y Generación de Manuales | Sprint 12 (Sem. 27) | 5 | 📋 Backlog |

@@ -92,5 +92,5 @@ docker run --rm --network hab-icf_default `
 
 - Es un equipo personal: puede apagarse, suspenderse o perder internet. Mitigación: respaldo por similitud en el backend, arranque automático y esta guía.
 - No hay redundancia. Una sola máquina atiende a uno o pocos médicos a la vez.
-- Licencias de Gemma y MedGemma por verificar antes de uso clínico real.
+- Licencias verificadas el 07-oct-2026: Gemma 4 es Apache 2.0 (se puede usar) y MedGemma no se usa (sus términos prohíben el uso clínico). Ver `docs/reports/LICENCIAS_COMPONENTES_ICF.md`.
 - Con datos reales, las notas libres pueden contener datos identificables: la pantalla lo advierte y el servicio no los guarda.

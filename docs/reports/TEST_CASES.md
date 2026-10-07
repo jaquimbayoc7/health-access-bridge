@@ -1,8 +1,8 @@
 # Casos de Prueba — Health Access Bridge
 **Estándar:** Gherkin (BDD — Behaviour Driven Development)  
-**Última actualización:** Abril 2026  
-**Momento:** 1 (Completado)  
-**Total de pruebas:** 53 automatizadas (35 backend · 16 frontend · 2 smoke)
+**Última actualización:** 7 de octubre de 2026  
+**Momento:** 3 (en curso; las suites 1–7 son del Momento 1 y las suites 8–11 de HU-07)  
+**Total de pruebas:** 230 automatizadas: 105 backend · 38 frontend · 75 servicio ICF · 12 E2E (Playwright). Las suites 1–7 conservan los casos Gherkin originales del Momento 1; el detalle del backend completo y de los E2E de HU-06 está en `TESTING_REPORT.md`.
 
 ---
 
@@ -17,6 +17,10 @@
 | [Frontend — Login](#suite-5--página-de-login-hu-13) | HU-13 | `Login.test.tsx` | 4 |
 | [Frontend — DashboardLayout](#suite-6--dashboardlayout-hu-13) | HU-13 | `DashboardLayout.test.tsx` | 4 |
 | [Frontend — Pacientes UI](#suite-7--gestión-de-pacientes-ui-hu-13) | HU-13 | `Patients.test.tsx` | 4 |
+| [Servicio ICF](#suite-8--servicio-icf-motor-rag-y-reglas-hu-07a-hu-07b-hu-07f) | HU-07a/b/f | `icf-service/tests/` | 75 |
+| [Backend — Sugerencias CIF](#suite-9--backend-sugerencias-decisiones-causas-y-diagnóstico-hu-07c) | HU-07c | `test_icf_*.py` | 53 |
+| [Frontend — Perfil Funcional ICF](#suite-10--frontend-perfil-funcional-icf-y-guía-hu-07d) | HU-07d | `FunctionalProfile.test.tsx`, `IcfGuide.test.tsx` | 22 |
+| [E2E — Perfil Funcional ICF](#suite-11--e2e-perfil-funcional-icf-hu-07e) | HU-07e | `functional-profile.spec.ts` | 5 |
 
 ---
 
@@ -540,6 +544,204 @@ Feature: Gestión de Pacientes — Interfaz de Usuario
 
 ---
 
+## Suite 8 — Servicio ICF: motor RAG y reglas (HU-07a, HU-07b, HU-07f)
+
+**Archivos:** `icf-service/tests/test_engine.py`, `test_icf_service.py`, `test_ollama.py`, `test_app.py`, `test_reference_cases.py`, `test_integration_db.py`  
+**Framework:** pytest · FastAPI TestClient · repositorio y Ollama simulados  
+**Issues:** [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7)  
+**Total:** 75 pruebas (67 corren en CI; 8 de integración con PostgreSQL + pgvector y catálogo local se omiten en CI porque el catálogo CIF-IA no está en el repositorio)
+
+```gherkin
+Feature: Sugerencia de códigos CIF-IA (Resolución 1239 de 2022)
+  Como servicio ICF en infraestructura propia
+  Quiero proponer códigos desde un catálogo cerrado, con reglas y un modelo local
+  Para que el médico reciba un borrador sin que el modelo invente códigos
+
+  Scenario: TC-I01 — Reglas del Anexo
+    Given un paciente de 6 años o más con niveles D1–D6
+    Then el calificador sale de la escala 0–4 (≥5 leve, ≥25 moderada, ≥50 severa, ≥96 completa)
+    And los códigos de actividades salen de la lista cerrada del Anexo, ordenados por calificador
+    And hay como máximo 3 códigos por componente (b, s, d)
+    And las estructuras llevan tres calificadores con naturaleza y localización «8» por defecto
+
+  Scenario: TC-I02 — Menores de 6 años
+    Given un paciente menor de 6 años
+    Then el servicio responde «no aplica» sin consultar al modelo
+
+  Scenario: TC-I03 — El modelo solo elige entre candidatos
+    Given candidatos buscados en el catálogo por significado
+    Then el esquema JSON solo admite códigos candidatos
+    And los códigos inválidos, duplicados o de más se descartan
+    And los títulos salen siempre del catálogo, nunca del modelo
+
+  Scenario: TC-I04 — Respaldo por similitud
+    Given el modelo falla, responde basura o ICF_USE_LLM es false
+    Then los códigos se proponen por similitud, con origen «similarity» y una advertencia
+
+  Scenario: TC-I05 — Privacidad del servicio
+    Given una solicitud con nombre, documento u orientación sexual
+    Then el servicio la rechaza
+    And el prompt no contiene identificadores
+
+  Scenario: TC-I06 — Cliente de Ollama
+    Given una configuración con ICF_LLM_THINK=false
+    Then la solicitud envía think=false
+    And una respuesta JSON dentro de un bloque de código se acepta
+    And si el esquema es rechazado se reintenta con JSON simple
+
+  Scenario: TC-I07 — Integración con base real (solo local)
+    Given PostgreSQL con pgvector y el catálogo cargado
+    Then la búsqueda vectorial respeta componente, capítulo y nivel
+    And el flujo completo devuelve sugerencias
+
+  Scenario: TC-I16 — Métricas de la validación clínica (HU-07g)
+    Given una hoja de revisión llena por la profesional de salud
+    Then los códigos escritos a mano se normalizan a su forma de 3 dígitos
+    And se calculan precisión estricta y flexible, cobertura a ciegas y calificadores correctos
+    And el veredicto es CUMPLE, NO CUMPLE o INCOMPLETO según los umbrales
+    And el Excel con la Fase A, la Fase B y los faltantes se lee sin pérdida
+```
+
+---
+
+## Suite 9 — Backend: sugerencias, decisiones, causas y diagnóstico (HU-07c)
+
+**Archivos:** `backend/app/tests/test_icf_suggestions.py` (39), `test_icf_causes.py` (6), `test_icf_health.py` (8)  
+**Framework:** pytest · TestClient · SQLite en memoria · servicio ICF simulado  
+**Total:** 53 pruebas (el backend completo suma 105 con las suites 2 y 3 y predicciones)
+
+```gherkin
+Feature: Sugerencias CIF en el backend
+  Como médico autenticado
+  Quiero generar, consultar y decidir sugerencias de códigos CIF de mis pacientes
+  Para armar el perfil funcional con apoyo, sin exponer datos de otros médicos
+
+  Scenario: TC-I08 — Generar y guardar
+    Given un paciente propio de 6 años o más
+    When el médico hace POST al endpoint de sugerencias ICF del paciente
+    Then se guardan las sugerencias agrupadas en un lote, con el modelo y los datos clínicos usados
+    And se conserva el historial de lotes
+
+  Scenario: TC-I09 — Privacidad del payload
+    When se llama al servicio ICF
+    Then el payload nunca contiene nombre, documento ni orientación sexual
+    And la causa se normaliza a una de las 21 oficiales del Anexo
+
+  Scenario: TC-I10 — Acceso
+    Given una sesión sin token, o un médico que no es el dueño del paciente
+    Then la respuesta es 401 o 404/403 según el caso
+    And el administrador puede generar y decidir
+
+  Scenario: TC-I11 — Fallas del servicio
+    Given el servicio no configurado, caído, con tiempo agotado, con token rechazado o con respuesta inválida
+    Then el backend responde 503 sin filtrar la URL ni el token
+
+  Scenario: TC-I12 — Menores de 6 años
+    Then el backend responde 422 sin llamar al servicio
+
+  Scenario: TC-I13 — Aceptar, editar y rechazar
+    When el médico decide sobre un código
+    Then el estado queda aceptado, editado o rechazado
+    And al editar puede cambiar calificador, naturaleza y localización (solo en estructuras) o el código, conservando el original
+    And no se puede volver a «sugerido» ni editar sin cambios
+
+  Scenario: TC-I14 — Causas oficiales
+    Then GET /icf/causes lista 21 opciones en 3 grupos
+    And los valores ambiguos no se adivinan
+
+  Scenario: TC-I15 — Diagnóstico Render → servidor
+    Then GET /icf/health es solo para administrador
+    And distingue no configurado, modelo faltante, token rechazado e inalcanzable, sin filtrar secretos
+```
+
+---
+
+## Suite 10 — Frontend: Perfil Funcional ICF y guía (HU-07d)
+
+**Archivos:** `frontend/src/__tests__/FunctionalProfile.test.tsx` (15), `IcfGuide.test.tsx` (7)  
+**Framework:** Vitest · React Testing Library · userEvent · MemoryRouter · servicios simulados  
+**Total:** 22 pruebas (el frontend completo suma 38)
+
+```gherkin
+Feature: Pantalla Perfil Funcional ICF y guía de uso
+  Como médico
+  Quiero generar y revisar el perfil funcional con ayudas de uso
+  Para decidir cada código con criterio clínico
+
+  Scenario: TC-F17 — Aviso de borrador
+    Then la pantalla muestra «Borrador de apoyo» y cita la Resolución 1239 del 21 de julio de 2022
+
+  Scenario: TC-F18 — Generar
+    Given un paciente seleccionado
+    When pulsa «Generar Perfil Funcional»
+    Then se muestran funciones, estructuras y actividades con su calificador (b730.3, s750.388, d450.3)
+    And el diagnóstico y las notas, si se escriben, se envían
+
+  Scenario: TC-F19 — Menores de 6 años y errores
+    Then para menores de 6 años se avisa y no se puede generar
+    And si el servicio falla se muestra un aviso y la aplicación sigue funcionando
+
+  Scenario: TC-F20 — Decisiones
+    Then aceptar y rechazar guardan la decisión
+    And editar permite cambiar el calificador
+    And al elegir un paciente se carga su última sugerencia
+
+  Scenario: TC-F21 — Ayudas de la pantalla
+    Then hay enlaces a la CIE-10 (OMS y OPS) en pestaña nueva
+    And un código CIE de ejemplo rellena el diagnóstico
+    And «Usar este ejemplo» rellena diagnóstico y notas, y se envían al generar
+    And hay un enlace a la guía del Perfil Funcional ICF
+
+  Scenario: TC-F22 — Reporte y causas
+    Then el reporte copiado omite los rechazados e incluye la resolución y la leyenda de borrador
+    And la lista de causas tiene 21 opciones oficiales en 3 grupos
+
+  Scenario: TC-F23 — Guía Predictiva y Ayuda
+    Then la Guía Predictiva muestra por defecto los niveles de barrera y permite pasar al Perfil Funcional ICF (también con ?section=icf)
+    And la Ayuda muestra el avance del Perfil Funcional ICF con hechos y pendientes
+    And el contenido existe en español e inglés y los ejemplos de notas no traen datos identificables
+```
+
+---
+
+## Suite 11 — E2E: Perfil Funcional ICF (HU-07e)
+
+**Archivo:** `frontend/e2e/functional-profile.spec.ts`  
+**Framework:** Playwright (Chromium) · login real; lista de pacientes y endpoints ICF simulados con `page.route`  
+**Total:** 5 casos · verificados contra el frontend DEV el 07-oct-2026 (5/5)
+
+El servicio ICF corre en un PC propio y la lista de pacientes de QA es compartida: simular esas respuestas hace la prueba determinista y la independiza de la GPU.
+
+```gherkin
+Feature: Perfil Funcional ICF de extremo a extremo
+  Como médico autenticado
+  Quiero generar y decidir el perfil funcional desde el navegador
+
+  Scenario: TC-E01 — Generar el perfil
+    When elige un paciente, escribe diagnóstico y notas y pulsa «Generar Perfil Funcional»
+    Then ve b730.3, s750.388 y d450.3
+    And la solicitud enviada contiene diag_cie y clinical_notes
+
+  Scenario: TC-E02 — Ayudas de la CIE y ejemplos
+    Then el enlace de la CIE tiene el href de la OPS y se abre en pestaña nueva
+    And «Usar este ejemplo» rellena diagnóstico y notas
+
+  Scenario: TC-E03 — Decidir
+    When acepta b730 y rechaza d450
+    Then se envían {status: aceptado} y {status: rechazado}
+
+  Scenario: TC-E04 — Falla del servicio
+    Given el backend responde 503 a la generación
+    Then se muestra el aviso «No se pudo generar el perfil»
+    And la página de pacientes sigue funcionando
+
+  Scenario: TC-E05 — Guía Predictiva
+    When abre /predictive-guide?section=icf
+    Then ve la sección del Perfil Funcional ICF y puede volver a «Niveles de barrera»
+```
+
+---
+
 ## Trazabilidad de Pruebas
 
 | Código | Historia de Usuario | Suite | Archivo Fuente | Estado |
@@ -596,6 +798,10 @@ Feature: Gestión de Pacientes — Interfaz de Usuario
 | TC-F14 | HU-13 Frontend | Patients UI | `Patients.test.tsx` | ✅ Pasando |
 | TC-F15 | HU-13 Frontend | Patients UI | `Patients.test.tsx` | ✅ Pasando |
 | TC-F16 | HU-13 Frontend | Patients UI | `Patients.test.tsx` | ✅ Pasando |
+| TC-I01–I07, I16 | HU-07a/b/f/g Servicio ICF | Suite 8 | `icf-service/tests/` (67 en CI, 8 locales) | ✅ Pasando |
+| TC-I08–I15 | HU-07c Backend | Suite 9 | `test_icf_suggestions.py`, `test_icf_causes.py`, `test_icf_health.py` | ✅ Pasando |
+| TC-F17–F23 | HU-07d Frontend | Suite 10 | `FunctionalProfile.test.tsx`, `IcfGuide.test.tsx` | ✅ Pasando |
+| TC-E01–E05 | HU-07e E2E | Suite 11 | `functional-profile.spec.ts` | ✅ Pasando (DEV, 07-oct-2026) |
 
 ---
 
@@ -616,4 +822,9 @@ Feature: Gestión de Pacientes — Interfaz de Usuario
 | `DashboardLayout` | 4 | ✅ 100% |
 | `Patients` page UI | 4 | ✅ 100% |
 | Smoke Tests CI/CD | 2 | ✅ 100% |
-| **TOTAL** | **53** | **✅ 100%** |
+| Servicio ICF (motor, reglas, Ollama, métricas de validación) | 75 (67 en CI) | ✅ 100% de las que corren |
+| Backend sugerencias, causas y diagnóstico ICF | 53 | ✅ 100% |
+| Frontend Perfil Funcional ICF y guía | 22 | ✅ 100% |
+| E2E Perfil Funcional ICF | 5 | ✅ 100% |
+| **Suites 1–7 (Momento 1)** | **53** | **✅ 100%** |
+| **Suites 8–11 (HU-07)** | **155** | **✅ 100%** |
