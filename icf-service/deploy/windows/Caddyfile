@@ -1,0 +1,33 @@
+# Puerta de entrada del servicio ICF. Exige el token Bearer en TODAS las rutas y solo deja pasar tres:
+#   POST /suggest  y  GET /health  -> servicio ICF
+#   GET  /api/tags                 -> Ollama (lo usa el diagnostico /icf/health del backend)
+# Cualquier otra ruta (por ejemplo /api/generate o /api/chat de Ollama) responde 404.
+#
+# El bloque `route` fija el orden: primero se rechaza sin token, despues se enruta.
+{
+	auto_https off
+	admin off
+}
+
+:11435 {
+	@sin_token not header Authorization "Bearer {env.ICF_TOKEN}"
+
+	route {
+		respond @sin_token "unauthorized" 401
+
+		handle /suggest {
+			reverse_proxy icf-service:8100
+		}
+		handle /health {
+			reverse_proxy icf-service:8100
+		}
+		handle /api/tags {
+			# Ollama rechaza (403) los encabezados Host que no son locales, como el del tunel publico.
+			reverse_proxy host.docker.internal:11434 {
+				header_up Host localhost:11434
+			}
+		}
+
+		respond "not found" 404
+	}
+}

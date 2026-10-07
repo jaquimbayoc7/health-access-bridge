@@ -44,7 +44,7 @@ Quedan por confirmar las **licencias de uso** de Gemma y MedGemma antes de lleva
 | 07e | Pruebas, manual de operación (Ollama, modelos y requisitos de la máquina) y reportes | 2 | 📋 Pendiente |
 | 07f | Escalera de modelos abiertos (Gemma 4 / MedGemma) en el PC de pruebas y modelo mínimo viable: `gemma4:e4b` | 2 | ✅ Completada 7-oct |
 | 07g | Validación clínica con un médico y umbral de confiabilidad | 3 | 📋 Pendiente (**nueva**) |
-| 07h | Despliegue y operación en el PC de producción (i5-13450HX, 32 GB, RTX 5050 de 8 GB) | 3 | 📋 Pendiente (**nueva**) |
+| 07h | Despliegue y operación en el PC de producción (i5-13450HX, 32 GB, RTX 5050 de 8 GB) | 3 | 🟡 En curso: servicio y túnel operativos en el PC; falta Render y la prueba de extremo a extremo en QA |
 
 **Logros técnicos del período:**
 - Catálogo CIF-IA de **1.593 códigos** extraído de un PDF escaneado con OCR y revisado (3 códigos sin definición en el libro quedan fuera, pendientes de resolver).
