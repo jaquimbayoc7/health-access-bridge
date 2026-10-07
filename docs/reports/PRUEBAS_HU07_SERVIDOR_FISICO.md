@@ -132,7 +132,7 @@ Otras variantes medidas solo con 6 candidatos: pedirle a Qwen que describiera el
 
 **Nueva ruta: modelos abiertos de Google, probados en un PC con GPU.** El servidor i3 con 12 GB no puede correr modelos de Gemma 4 o MedGemma útiles, pero el PC de pruebas del proyecto (Intel i5-13450HX de 10 núcleos, 32 GB de RAM, NVIDIA RTX 5050 Laptop con 8 GB de VRAM, 311 GB libres) sí puede, con descarga parcial a la RAM en los modelos grandes. Se mide la calidad (con las mismas 21 pistas y los mismos scripts), la latencia y la memoria de la escalera `medgemma:4b`, `gemma4:e2b`, `gemma4:e4b`, `gemma4:12b`, `gemma4:26b`, `medgemma:27b` y `gemma4:31b`, con `qwen2.5:3b` y la similitud como referencia. Las mediciones están en [`PRUEBAS_HU07F_MODELOS_ABIERTOS.md`](./PRUEBAS_HU07F_MODELOS_ABIERTOS.md): `gemma4:e4b` resultó el mínimo viable provisional. Ese PC sirve además de referencia para la recomendación de compra de la máquina de producción (HU-07h); **no hay presupuesto aprobado**, así que la recomendación es un insumo para la decisión.
 
-**Privacidad.** Al no usar APIs externas, ningún dato clínico sale de la infraestructura propia; el PC de pruebas solo usa los 25 casos sintéticos y el catálogo se mantiene fuera del repositorio. **Pendiente:** verificar las licencias de uso de Gemma 4 y MedGemma (términos de uso de salud) antes de llevarlos a producción.
+**Privacidad.** Al no usar APIs externas, ningún dato clínico sale de la infraestructura propia; el PC de pruebas solo usa los 25 casos sintéticos y el catálogo se mantiene fuera del repositorio. **Licencias:** verificadas el 07-oct-2026 (Gemma 4 es Apache 2.0; MedGemma no se usa; ver `LICENCIAS_COMPONENTES_ICF.md`).
 
 **Trabajo siguiente** (detalle en `BACKLOG.md`, HU-07):
 

@@ -115,7 +115,7 @@ Los resultados de calidad con solo CPU (5 casos) son consistentes con los de GPU
 - **Las pistas no son criterio clínico.** Los porcentajes absolutos no son la confiabilidad del sistema; esa la mide el médico (HU-07g).
 - **No se midieron los modelos grandes** (`gemma4:12b`, `26b`, `31b`, `medgemma:27b`). En estructuras `e4b` ya alcanza el techo de los candidatos; en funciones (37 %) podría haber margen. Si la validación clínica con el médico muestra que `e4b` no alcanza el umbral, se mide la escalera superior.
 - **Una sola máquina.** Las velocidades de CPU y GPU son las de este equipo. Otra GPU o CPU dará cifras distintas.
-- **Licencias.** No se verificaron los términos de uso de Gemma ni de MedGemma para un uso clínico en producción; es un requisito antes de implementar.
+- **Licencias (verificadas el 07-oct-2026).** Gemma 4 es Apache 2.0 y se puede usar en producción; MedGemma se rige por los términos de Health AI Developer Foundations, que prohíben el uso clínico, así que no se usa. Detalle en `LICENCIAS_COMPONENTES_ICF.md`.
 - **Determinismo.** Se fija `temperature: 0`; aun así, GPU y versión de Ollama pueden dar respuestas ligeramente distintas.
 
 ---

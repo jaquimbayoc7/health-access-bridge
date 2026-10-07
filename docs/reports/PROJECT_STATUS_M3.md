@@ -13,7 +13,7 @@ El proyecto lleva **117 de 146 puntos (80,1 %)**. En el Momento 3 se completaron
 
 El hallazgo central del período es que **el modelo local `qwen2.5:3b` no sirve para seleccionar códigos**: en el servidor físico (Intel i3, 12 GB, sin GPU) tardó de 24 a 46 s por sugerencia y **eligió peor que la búsqueda por similitud sola**, que responde en 0,6 s. Se evaluó pasar a un modelo externo por API (Claude Sonnet 5.5) y **se descartó por privacidad**: los datos de salud son sensibles (Ley 1581 de 2012) y todo debe quedar en infraestructura propia. La decisión del 6 de octubre es **buscar el modelo abierto mínimo viable**: probar la escalera Gemma 4 y MedGemma en un PC de pruebas con GPU (i5-13450HX, 32 GB de RAM, RTX 5050 de 8 GB) y, con esas medidas, recomendar la máquina de producción. HU-07 se reestima de 25 a **33 puntos**, con tres sub-historias nuevas: escalera de modelos abiertos (07f, 2 pts), validación clínica con un médico (07g, 3 pts) y dimensionamiento de la máquina (07h, 3 pts). **Decisión del 7 de octubre:** la producción corre en el PC propio (RTX 5050 de 8 GB), así que no se compra hardware. La revisión clínica (07g) la hará Emilly Maria Celis, profesional en salud.
 
-Quedan por confirmar las **licencias de uso** de Gemma y MedGemma antes de llevarlos a producción.
+Las **licencias** quedaron verificadas el 7 de octubre (`LICENCIAS_COMPONENTES_ICF.md`): Gemma 4 es Apache 2.0 y se puede usar; MedGemma no se usa porque sus términos prohíben el uso clínico.
 
 **Resultado de HU-07f (7 de octubre):** en el PC de pruebas, `gemma4:e4b` (6,6 GB) mejora la selección sobre la similitud sola (funciones: precisión 43 % contra 29 %; estructuras: cobertura 86 % contra 67 %, contra las pistas orientativas no validadas por un médico) y responde en ~3,4 s con una GPU de 8 GB o ~15 s solo con CPU de 10 núcleos. Los otros modelos probados (`gemma4:e2b`, `medgemma:4b`, `qwen2.5:3b`) no la superan de forma útil. **Mínimo viable provisional: `gemma4:e4b`**; máquina mínima con GPU de 8 GB, 16 GB de RAM y 6 núcleos, o solo CPU de 8 núcleos con 16 GB de RAM. Los modelos de 12B a 31B no se midieron. Al medir se corrigieron dos defectos del motor con Gemma 4 (JSON en bloque de código y razonamiento previo). Detalle en [`PRUEBAS_HU07F_MODELOS_ABIERTOS.md`](./PRUEBAS_HU07F_MODELOS_ABIERTOS.md).
 
@@ -43,7 +43,7 @@ Quedan por confirmar las **licencias de uso** de Gemma y MedGemma antes de lleva
 | 07d | Pantalla «Perfil Funcional ICF» | 5 | ✅ Completada 7-oct (12 pruebas nuevas; causas oficiales en el formulario) |
 | 07e | Pruebas, manual de operación (Ollama, modelos y requisitos de la máquina) y reportes | 2 | ✅ Completada 7-oct: 5 E2E (5/5 contra DEV), job `icf-service-test` en CI, `docs/MANUAL_OPERACION_ICF.md` y reportes actualizados |
 | 07f | Escalera de modelos abiertos (Gemma 4 / MedGemma) en el PC de pruebas y modelo mínimo viable: `gemma4:e4b` | 2 | ✅ Completada 7-oct |
-| 07g | Validación clínica con un médico y umbral de confiabilidad | 3 | 📋 Pendiente (**nueva**) |
+| 07g | Validación clínica con un médico y umbral de confiabilidad | 3 | 🟡 Instrumento listo (7-oct): hoja de revisión en Excel con Fase A a ciegas y Fase B, cálculo de métricas y umbrales propuestos; **falta la revisión de Emilly Maria Celis** (los 3 pts se acreditan al documentar el resultado) |
 | 07h | Despliegue y operación en el PC de producción (i5-13450HX, 32 GB, RTX 5050 de 8 GB) | 3 | ✅ Completada (07-oct-2026): servicio y túnel operativos en el PC, Render configurado, prueba en QA, reinicio y tapa verificados |
 
 **Logros técnicos del período:**
@@ -53,7 +53,7 @@ Quedan por confirmar las **licencias de uso** de Gemma y MedGemma antes de lleva
 - **Motor:** reglas fijas (edad, calificador, capítulos), actividades desde la lista cerrada del Anexo (32 códigos), funciones y estructuras por búsqueda semántica entre los códigos de 3 dígitos, validación contra el catálogo y respaldo por similitud.
 - **Mediciones:** latencia, calidad de la búsqueda y comparación de tres modos, documentadas con su método y sus limitaciones.
 
-**Pendiente de la HU:** solo medir la confiabilidad con un médico (07g).
+**Pendiente de la HU:** solo la revisión de la profesional de salud (07g); el instrumento y el protocolo ya están (`PROTOCOLO_VALIDACION_CLINICA_HU07G.md`).
 
 ### 📋 HU-08, HU-09, HU-10
 Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y feedback de usuarios (8 pts) y Despliegue final y manuales (5 pts). HU-10 suma el manual de operación del servicio ICF.
@@ -99,7 +99,7 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 | **Momento 3** | 🟡 50,8 % (30 de 59 pts) |
 | **Commits (`master`)** | 221 en 21 días activos (0,99 por día; 65 de ellos el 5 y 6 de octubre) |
 | **Pull Requests mergeados** | 42 (39 en este período, 16 solo el 6 de octubre) |
-| **Pruebas automáticas** | backend 105 · frontend 38 · servicio ICF 70 (62 en CI) · **213 en total**; E2E 12 casos |
+| **Pruebas automáticas** | backend 105 · frontend 38 · servicio ICF 75 (67 en CI) · **218 en total**; E2E 12 casos |
 | **Tamaño del repositorio** | 8.140 KB (TypeScript 63 %, Python 34 %) |
 
 *Las cifras del R4 y de `PROJECT_STATUS_M2.md` son instantáneas históricas y no se modifican.*
@@ -110,10 +110,10 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 
 | Riesgo | Estado |
 |---|---|
-| **Privacidad:** con modelo local los datos no salen de la infraestructura propia (Ley 1581 de 2012) | 🟢 Mitigado por diseño; quedan por verificar las licencias de Gemma y MedGemma |
+| **Privacidad:** con modelo local los datos no salen de la infraestructura propia (Ley 1581 de 2012) | 🟢 Mitigado por diseño; licencias verificadas (Gemma 4 Apache 2.0; MedGemma descartado) |
 | **Confiabilidad clínica sin medir:** las cifras actuales usan pistas no validadas por un médico | 🟡 Se mide en HU-07g |
 | **Producción en un PC portátil propio:** puede suspenderse o quedar sin internet, sin redundancia | 🟢 Mitigado (HU-07h): respaldo por similitud, arranque automático, energía sin suspensión y reinicio probado |
-| **Las pruebas del servicio ICF no se ejecutaban en CI** | 🟢 Resuelto en HU-07e: job `icf-service-test` en dev, qa y prod (62 pasan; 8 de integración con el catálogo local se omiten) |
+| **Las pruebas del servicio ICF no se ejecutaban en CI** | 🟢 Resuelto en HU-07e: job `icf-service-test` en dev, qa y prod (67 pasan; 8 de integración con el catálogo local se omiten) |
 | **Protección de rama eludida** (17 bypass del propietario) y exceso de PRs de promoción | 🟡 Pendiente decidir la política |
 | **Seguimiento en GitHub desfasado** (milestone en 0 %, issue #7 con el alcance viejo) | 🟡 Crear las sub-historias como issues |
 | **Rendimiento de la API de Render** (DEUDA-01, riesgo aceptado el 23-sep) | 🟡 Sin cambios; el servicio ICF corre fuera de Render |
@@ -125,7 +125,7 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 1. **Hecho (6-oct):** se confirmó el enfoque local sin APIs y la reestimación de HU-07 a 33 pts. Sin presupuesto aprobado para hardware.
 2. **HU-07f (hecho, 7-oct):** `gemma4:e4b` es el mínimo viable provisional (ver `PRUEBAS_HU07F_MODELOS_ABIERTOS.md`); los modelos grandes se miden solo si la validación clínica lo exige.
 3. **HU-07g (en paralelo parcial):** hoja de revisión para el médico, medición de la confiabilidad clínica y definición del umbral de uso.
-4. **HU-07c, HU-07d y HU-07e (hechas, 7-oct):** backend, pantalla, E2E, CI y manual listos; sigue HU-07g (validación clínica).
+4. **HU-07c, HU-07d y HU-07e (hechas, 7-oct):** backend, pantalla, E2E, CI y manual listos; HU-07g tiene el instrumento listo y espera la revisión de la profesional de salud.
 5. **HU-08, HU-09 y HU-10** según el orden de `BACKLOG.md`.
 6. **Higiene de proceso:** crear los issues de 07a–07g, actualizar el issue #7, agrupar las promociones entre ramas y definir la política de la protección de rama.
 

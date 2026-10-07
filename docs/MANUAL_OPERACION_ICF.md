@@ -96,15 +96,16 @@ Después de **reiniciar el PC**: iniciar sesión, esperar uno o dos minutos y ej
 
 | Qué | Dónde | Cómo correrlo |
 |---|---|---|
-| Servicio ICF (62 pasan, 8 se omiten en CI) | `icf-service/tests/` | `cd icf-service && pytest` (el CI lo corre en los 3 ambientes) |
+| Servicio ICF (67 pasan, 8 se omiten en CI) | `icf-service/tests/` | `cd icf-service && pytest` (el CI lo corre en los 3 ambientes) |
 | Backend de sugerencias | `backend/app/tests/` (`test_icf_*.py`) | `cd backend && pytest app/tests/` |
 | Pantalla y guía (unitarias) | `frontend/src/__tests__/FunctionalProfile.test.tsx`, `IcfGuide.test.tsx` | `cd frontend && npm run test` |
+| Hoja de revisión clínica (generar y calcular métricas) | `icf-service/scripts/review_sheet.py` | ver el protocolo de HU-07g |
 | Pantalla de extremo a extremo (5 casos, servicio ICF simulado) | `frontend/e2e/functional-profile.spec.ts` | `cd frontend && npx playwright test e2e/functional-profile.spec.ts` (con `PLAYWRIGHT_BASE_URL`) |
 
 Las 8 pruebas omitidas en el CI (integración con PostgreSQL + pgvector y casos de referencia) necesitan el catálogo CIF-IA, que tiene derechos de la OMS y no está en el repositorio. Se corren en el PC de producción o de pruebas con `ICF_TEST_DATABASE_URL`.
 
 ## 9. Pendientes conocidos
 
-- **Validación clínica (HU-07g):** hasta que la profesional de salud revise los casos de referencia, las cifras de precisión son orientativas.
-- **Licencias:** verificar las licencias de Gemma y MedGemma antes de un uso clínico real.
+- **Validación clínica (HU-07g):** el instrumento está listo (`reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md`); hasta que la profesional de salud devuelva la hoja, las cifras de precisión son orientativas.
+- **Licencias (verificadas el 07-oct-2026):** Gemma 4 es Apache 2.0 y se puede usar; MedGemma no se usa porque sus términos prohíben el uso clínico. Detalle en [`reports/LICENCIAS_COMPONENTES_ICF.md`](reports/LICENCIAS_COMPONENTES_ICF.md). Si se cambia `ICF_LLM_MODEL`, repetir la verificación.
 - Es un equipo personal sin redundancia: si se apaga, el respaldo por similitud mantiene el servicio con menos precisión.

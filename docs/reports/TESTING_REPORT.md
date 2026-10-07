@@ -17,7 +17,7 @@ El proyecto Health Access Bridge ha implementado un conjunto completo de **prueb
 |---------|-------|
 | **Total de pruebas backend** | 105 casos de prueba (35 del Momento 1; el resto, predicciones e ICF) |
 | **Total de pruebas frontend** | 38 casos — 38/38 ✅ pasando (16 de HU-13 y 22 de HU-07) |
-| **Pruebas del servicio ICF** | 70 casos — 62 pasan en CI y 8 se omiten (requieren el catálogo local) |
+| **Pruebas del servicio ICF** | 75 casos — 67 pasan en CI y 8 se omiten (requieren el catálogo local) |
 | **Pruebas E2E (Playwright)** | 12 casos (2 login, 3 pacientes, 2 predicciones, 5 Perfil Funcional ICF) |
 | **Cobertura de HUs** | HU-01, HU-02, HU-03, HU-11, HU-12, HU-13 (todas ✅) y HU-07 (ver sección propia) |
 | **Framework backend** | pytest + FastAPI TestClient |
@@ -466,7 +466,7 @@ Con la implementación de HU-13, el frontend cuenta con **16 pruebas unitarias a
 
 | Capa | Archivos | Resultado |
 |------|----------|-----------|
-| Servicio ICF (pytest) | `icf-service/tests/` | **62 pasan, 8 omitidas** (70 en total) |
+| Servicio ICF (pytest) | `icf-service/tests/` | **67 pasan, 8 omitidas** (75 en total, incluidas 5 de las métricas de validación clínica) |
 | Backend (pytest) | `backend/app/tests/` (`test_icf_suggestions.py` 39, `test_icf_causes.py` 6, `test_icf_health.py` 8) | **105 pasan** en total (53 de ICF), cobertura 89 % |
 | Frontend unitarias (Vitest) | `FunctionalProfile.test.tsx` 15, `IcfGuide.test.tsx` 7 | **38 pasan** en total (22 de ICF) |
 | E2E (Playwright, Chromium) | `frontend/e2e/functional-profile.spec.ts` | **5 de 5** contra el frontend DEV |
@@ -483,6 +483,7 @@ Las 8 pruebas omitidas del servicio ICF son de integración con PostgreSQL + pgv
 - **Privacidad:** el payload nunca lleva nombre, documento ni orientación sexual; el servicio rechaza esos campos; el prompt no contiene identificadores.
 - **Acceso:** un médico no ve ni decide sobre pacientes de otro; el administrador sí puede; `/icf/health` es solo para administrador.
 - **Decisiones:** aceptar, editar (calificador, naturaleza, localización, código con el original conservado) y rechazar; historial de lotes.
+- **Validación clínica (HU-07g):** normalización de códigos, precisión estricta y flexible, cobertura a ciegas, calificadores, veredicto contra umbrales y lectura del Excel de la revisora.
 - **Pantalla y ayudas:** generación, enlaces a la CIE-10 en pestaña nueva, códigos y notas de ejemplo, reporte sin rechazados, Guía Predictiva en dos secciones, avance en Ayuda, contenido en español e inglés.
 
 ### E2E (HU-07e)

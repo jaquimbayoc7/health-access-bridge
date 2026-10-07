@@ -2,7 +2,7 @@
 > **Fuente:** GitHub API · `jaquimbayoc7/health-access-bridge` · `git log` · mediciones en el servidor físico
 > **Período analizado:** 26 Feb 2026 – 6 Oct 2026 (acumulado total del proyecto)
 > **Δ Desde último reporte:** 23 Sep 2026 – 6 Oct 2026 (inicio del Momento 3: HU-07a y HU-07b, y el episodio del modelo local Qwen)
-> **Generado:** 6 Oct 2026 (con dos adendas del 7 Oct 2026)
+> **Generado:** 6 Oct 2026 (con tres adendas del 7 Oct 2026)
 
 Este reporte tiene un tema central: **lo que pasó con el modelo local `qwen2.5:3b`** y cómo cambió la arquitectura de HU-07. Los datos técnicos completos (entorno, tablas, método) están en [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](./PRUEBAS_HU07_SERVIDOR_FISICO.md); aquí se resumen los **hallazgos y lo aprendido**.
 
@@ -269,7 +269,7 @@ El mismo día se cerraron **HU-07c, HU-07d, HU-07h y HU-07e** (5 + 5 + 3 + 2 pts
 | Puntos completados | 100 / 146 (68,5 %) | 117 / 146 (80,1 %) |
 | Pruebas backend | 52 | 105 (+53: sugerencias, decisiones y causas; 89 % de cobertura) |
 | Pruebas frontend | 16 | 38 (+22: pantalla y guía) |
-| Pruebas del servicio ICF | 68 | 70 (62 corren en CI, 8 locales) |
+| Pruebas del servicio ICF | 68 | 75 (67 corren en CI, 8 locales) |
 | Pruebas E2E | 7 specs | 12 (+5 del Perfil Funcional ICF) |
 | CI | las pruebas del servicio ICF no corrían (brecha de la sección 7) | job `icf-service-test` en dev, qa y prod: brecha cerrada |
 
@@ -299,6 +299,26 @@ El mismo día se cerraron **HU-07c, HU-07d, HU-07h y HU-07e** (5 + 5 + 3 + 2 pts
 | Producción en un equipo personal, sin redundancia | 🟡 Respaldo por similitud, arranque automático y manual de operación |
 | Pruebas de integración con catálogo omitidas en CI (catálogo con derechos de la OMS) | 🟢 Aceptado; se corren en local |
 | Promoción `develop` → `staging` → `master` pendiente para todo HU-07 | 🟡 Se agrupa en un solo ciclo de PRs |
+
+---
+
+## Tercera adenda (7 de octubre de 2026): instrumento de validación clínica y licencias
+
+Se preparó **HU-07g** y se verificaron las licencias. HU-07g **no se da por completada**: el instrumento está listo, pero falta la revisión de la profesional de salud (Emilly Maria Celis); sus 3 pts siguen sin acreditarse (117 de 146, 80,1 %).
+
+- **Un diseño para no sesgar a la revisora.** Si solo valorara la sugerencia, tendería a aceptarla. Por eso la hoja tiene una **Fase A a ciegas** (escribe los códigos que ella elegiría, sin ver la sugerencia) y una **Fase B** de valoración. La cobertura medida contra la Fase A es el dato menos sesgado. Aun así, es **una sola revisora y 24 casos sintéticos**: se mide calidad, no se garantiza nada en pacientes reales.
+- **Umbrales propuestos, no impuestos.** Precisión estricta ≥ 60 % y flexible ≥ 80 %, cobertura a ciegas ≥ 60 %, calificadores ≥ 80 %. Son una propuesta mía que debe confirmar el responsable con la revisora; cambiarlos es editar una constante.
+- **Licencias: dos conclusiones que cambian el riesgo.** (1) **Gemma 4 es Apache 2.0**: el modelo en producción se puede usar, y el riesgo que figuraba como abierto desde el 6 de octubre queda cerrado. (2) **MedGemma prohíbe el uso clínico** (diagnóstico o tratamiento, incluso en investigación, sin autorización regulatoria): era la opción «médica» y habría sido un error llevarla a producción; ya estaba descartada por calidad y ahora también por licencia. Queda una recomendación: consultar al INVIMA si el software podría considerarse dispositivo médico antes de un uso clínico real.
+- **Lección:** verificar la licencia antes de elegir un modelo, no después de medirlo. Se midieron MedGemma y Qwen 3B sin haber leído sus términos; ambos resultaron inutilizables para este uso por razones ajenas a la calidad.
+- **Datos del reporte que cambian:** servicio ICF 75 pruebas (67 en CI), total backend + frontend + servicio ICF = 218, más 12 E2E.
+
+| Riesgo | Estado |
+|---|---|
+| Licencias de Gemma y MedGemma sin verificar | 🟢 Cerrado: Gemma 4 Apache 2.0; MedGemma descartado |
+| Confiabilidad clínica sin medir | 🟡 Instrumento listo; falta la revisión (HU-07g) |
+| Encuadre regulatorio (¿dispositivo médico?) | 🟡 Consultar al INVIMA antes de un uso clínico real |
+
+Detalle: [`LICENCIAS_COMPONENTES_ICF.md`](./LICENCIAS_COMPONENTES_ICF.md) y [`PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](./PROTOCOLO_VALIDACION_CLINICA_HU07G.md).
 
 ---
 

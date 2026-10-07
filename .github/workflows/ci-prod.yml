@@ -69,7 +69,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install icf-service dependencies
-        run: pip install -r icf-service/requirements.txt
+        run: pip install -r icf-service/requirements.txt -r icf-service/requirements-review.txt
 
       # Las pruebas de integracion con PostgreSQL + pgvector y el catalogo se omiten en CI:
       # el catalogo CIF-IA tiene derechos de la OMS y no esta en el repositorio (HU-07e).

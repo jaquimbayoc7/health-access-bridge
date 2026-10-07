@@ -2,7 +2,7 @@
 **Estándar:** Gherkin (BDD — Behaviour Driven Development)  
 **Última actualización:** 7 de octubre de 2026  
 **Momento:** 3 (en curso; las suites 1–7 son del Momento 1 y las suites 8–11 de HU-07)  
-**Total de pruebas:** 225 automatizadas: 105 backend · 38 frontend · 70 servicio ICF · 12 E2E (Playwright). Las suites 1–7 conservan los casos Gherkin originales del Momento 1; el detalle del backend completo y de los E2E de HU-06 está en `TESTING_REPORT.md`.
+**Total de pruebas:** 230 automatizadas: 105 backend · 38 frontend · 75 servicio ICF · 12 E2E (Playwright). Las suites 1–7 conservan los casos Gherkin originales del Momento 1; el detalle del backend completo y de los E2E de HU-06 está en `TESTING_REPORT.md`.
 
 ---
 
@@ -17,7 +17,7 @@
 | [Frontend — Login](#suite-5--página-de-login-hu-13) | HU-13 | `Login.test.tsx` | 4 |
 | [Frontend — DashboardLayout](#suite-6--dashboardlayout-hu-13) | HU-13 | `DashboardLayout.test.tsx` | 4 |
 | [Frontend — Pacientes UI](#suite-7--gestión-de-pacientes-ui-hu-13) | HU-13 | `Patients.test.tsx` | 4 |
-| [Servicio ICF](#suite-8--servicio-icf-motor-rag-y-reglas-hu-07a-hu-07b-hu-07f) | HU-07a/b/f | `icf-service/tests/` | 70 |
+| [Servicio ICF](#suite-8--servicio-icf-motor-rag-y-reglas-hu-07a-hu-07b-hu-07f) | HU-07a/b/f | `icf-service/tests/` | 75 |
 | [Backend — Sugerencias CIF](#suite-9--backend-sugerencias-decisiones-causas-y-diagnóstico-hu-07c) | HU-07c | `test_icf_*.py` | 53 |
 | [Frontend — Perfil Funcional ICF](#suite-10--frontend-perfil-funcional-icf-y-guía-hu-07d) | HU-07d | `FunctionalProfile.test.tsx`, `IcfGuide.test.tsx` | 22 |
 | [E2E — Perfil Funcional ICF](#suite-11--e2e-perfil-funcional-icf-hu-07e) | HU-07e | `functional-profile.spec.ts` | 5 |
@@ -549,7 +549,7 @@ Feature: Gestión de Pacientes — Interfaz de Usuario
 **Archivos:** `icf-service/tests/test_engine.py`, `test_icf_service.py`, `test_ollama.py`, `test_app.py`, `test_reference_cases.py`, `test_integration_db.py`  
 **Framework:** pytest · FastAPI TestClient · repositorio y Ollama simulados  
 **Issues:** [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7)  
-**Total:** 70 pruebas (62 corren en CI; 8 de integración con PostgreSQL + pgvector y catálogo local se omiten en CI porque el catálogo CIF-IA no está en el repositorio)
+**Total:** 75 pruebas (67 corren en CI; 8 de integración con PostgreSQL + pgvector y catálogo local se omiten en CI porque el catálogo CIF-IA no está en el repositorio)
 
 ```gherkin
 Feature: Sugerencia de códigos CIF-IA (Resolución 1239 de 2022)
@@ -593,6 +593,13 @@ Feature: Sugerencia de códigos CIF-IA (Resolución 1239 de 2022)
     Given PostgreSQL con pgvector y el catálogo cargado
     Then la búsqueda vectorial respeta componente, capítulo y nivel
     And el flujo completo devuelve sugerencias
+
+  Scenario: TC-I16 — Métricas de la validación clínica (HU-07g)
+    Given una hoja de revisión llena por la profesional de salud
+    Then los códigos escritos a mano se normalizan a su forma de 3 dígitos
+    And se calculan precisión estricta y flexible, cobertura a ciegas y calificadores correctos
+    And el veredicto es CUMPLE, NO CUMPLE o INCOMPLETO según los umbrales
+    And el Excel con la Fase A, la Fase B y los faltantes se lee sin pérdida
 ```
 
 ---
@@ -791,7 +798,7 @@ Feature: Perfil Funcional ICF de extremo a extremo
 | TC-F14 | HU-13 Frontend | Patients UI | `Patients.test.tsx` | ✅ Pasando |
 | TC-F15 | HU-13 Frontend | Patients UI | `Patients.test.tsx` | ✅ Pasando |
 | TC-F16 | HU-13 Frontend | Patients UI | `Patients.test.tsx` | ✅ Pasando |
-| TC-I01–I07 | HU-07a/b/f Servicio ICF | Suite 8 | `icf-service/tests/` (62 en CI, 8 locales) | ✅ Pasando |
+| TC-I01–I07, I16 | HU-07a/b/f/g Servicio ICF | Suite 8 | `icf-service/tests/` (67 en CI, 8 locales) | ✅ Pasando |
 | TC-I08–I15 | HU-07c Backend | Suite 9 | `test_icf_suggestions.py`, `test_icf_causes.py`, `test_icf_health.py` | ✅ Pasando |
 | TC-F17–F23 | HU-07d Frontend | Suite 10 | `FunctionalProfile.test.tsx`, `IcfGuide.test.tsx` | ✅ Pasando |
 | TC-E01–E05 | HU-07e E2E | Suite 11 | `functional-profile.spec.ts` | ✅ Pasando (DEV, 07-oct-2026) |
@@ -815,9 +822,9 @@ Feature: Perfil Funcional ICF de extremo a extremo
 | `DashboardLayout` | 4 | ✅ 100% |
 | `Patients` page UI | 4 | ✅ 100% |
 | Smoke Tests CI/CD | 2 | ✅ 100% |
-| Servicio ICF (motor, reglas, Ollama) | 70 (62 en CI) | ✅ 100% de las que corren |
+| Servicio ICF (motor, reglas, Ollama, métricas de validación) | 75 (67 en CI) | ✅ 100% de las que corren |
 | Backend sugerencias, causas y diagnóstico ICF | 53 | ✅ 100% |
 | Frontend Perfil Funcional ICF y guía | 22 | ✅ 100% |
 | E2E Perfil Funcional ICF | 5 | ✅ 100% |
 | **Suites 1–7 (Momento 1)** | **53** | **✅ 100%** |
-| **Suites 8–11 (HU-07)** | **150** | **✅ 100%** |
+| **Suites 8–11 (HU-07)** | **155** | **✅ 100%** |
