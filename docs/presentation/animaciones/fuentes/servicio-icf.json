@@ -1,0 +1,314 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Servicio ICF por dentro: cómo se arma el Perfil Funcional",
+    "output": "servicio-icf.html",
+    "animation": "trace",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "entrada",
+      "type": "external",
+      "label": "Backend (Render)",
+      "sublabel": "POST /suggest + token",
+      "pos": [
+        40,
+        300
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "validar",
+      "type": "security",
+      "label": "Entrada segura",
+      "sublabel": "sin nombre ni documento",
+      "pos": [
+        280,
+        300
+      ],
+      "size": [
+        150,
+        64
+      ],
+      "tag": "extra=forbid"
+    },
+    {
+      "id": "reglas",
+      "type": "backend",
+      "label": "Reglas del Anexo",
+      "sublabel": "edad y calificador 0–4",
+      "pos": [
+        520,
+        300
+      ],
+      "size": [
+        150,
+        64
+      ],
+      "tag": "sin IA"
+    },
+    {
+      "id": "anexo",
+      "type": "database",
+      "label": "Lista del Anexo",
+      "sublabel": "32 actividades (d)",
+      "pos": [
+        520,
+        160
+      ],
+      "size": [
+        150,
+        64
+      ],
+      "tag": "lista cerrada"
+    },
+    {
+      "id": "embedding",
+      "type": "backend",
+      "label": "Embedding",
+      "sublabel": "bge-m3, una sola vez",
+      "pos": [
+        760,
+        300
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "pgv",
+      "type": "database",
+      "label": "pgvector",
+      "sublabel": "catálogo CIF-IA 1.593",
+      "pos": [
+        1000,
+        300
+      ],
+      "size": [
+        150,
+        64
+      ],
+      "tag": "3 dígitos"
+    },
+    {
+      "id": "ollama",
+      "type": "backend",
+      "label": "Ollama",
+      "sublabel": "bge-m3 + gemma4:e4b",
+      "pos": [
+        1000,
+        440
+      ],
+      "size": [
+        150,
+        64
+      ],
+      "tag": "GPU local"
+    },
+    {
+      "id": "seleccion",
+      "type": "backend",
+      "label": "Selección (IA)",
+      "sublabel": "elige entre 12",
+      "pos": [
+        1240,
+        300
+      ],
+      "size": [
+        150,
+        64
+      ],
+      "tag": "~2,5 s"
+    },
+    {
+      "id": "respaldo",
+      "type": "backend",
+      "label": "Respaldo",
+      "sublabel": "similitud, 0,6 s",
+      "pos": [
+        1240,
+        160
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "validacion",
+      "type": "security",
+      "label": "Validación final",
+      "sublabel": "títulos del catálogo",
+      "pos": [
+        1480,
+        300
+      ],
+      "size": [
+        150,
+        64
+      ],
+      "tag": "lista cerrada"
+    },
+    {
+      "id": "resultado",
+      "type": "external",
+      "label": "Resultado",
+      "sublabel": "b, s, d + calificador",
+      "pos": [
+        1480,
+        440
+      ],
+      "size": [
+        150,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "PC propio de producción: servicio ICF, PostgreSQL y Ollama",
+      "wraps": [
+        "validar",
+        "reglas",
+        "anexo",
+        "embedding",
+        "pgv",
+        "ollama",
+        "seleccion",
+        "respaldo",
+        "validacion",
+        "resultado"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "e-validar",
+      "from": "entrada",
+      "to": "validar",
+      "label": "JSON",
+      "variant": "emphasis"
+    },
+    {
+      "id": "v-reglas",
+      "from": "validar",
+      "to": "reglas",
+      "label": "contexto",
+      "variant": "emphasis"
+    },
+    {
+      "id": "r-anexo",
+      "from": "reglas",
+      "to": "anexo",
+      "label": "capítulos",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "r-embedding",
+      "from": "reglas",
+      "to": "embedding",
+      "label": "texto",
+      "variant": "emphasis"
+    },
+    {
+      "id": "emb-pgv",
+      "from": "embedding",
+      "to": "pgv",
+      "label": "vector",
+      "variant": "emphasis"
+    },
+    {
+      "id": "emb-ollama",
+      "from": "embedding",
+      "to": "ollama",
+      "label": "calcula",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "pgv-sel",
+      "from": "pgv",
+      "to": "seleccion",
+      "label": "12 códigos",
+      "variant": "emphasis"
+    },
+    {
+      "id": "sel-ollama",
+      "from": "seleccion",
+      "to": "ollama",
+      "label": "elige",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "right"
+    },
+    {
+      "id": "sel-respaldo",
+      "from": "seleccion",
+      "to": "respaldo",
+      "label": "si falla",
+      "variant": "security",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "respaldo-val",
+      "from": "respaldo",
+      "to": "validacion",
+      "label": "más cercanos",
+      "variant": "security",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "id": "sel-val",
+      "from": "seleccion",
+      "to": "validacion",
+      "label": "códigos",
+      "variant": "emphasis"
+    },
+    {
+      "id": "val-res",
+      "from": "validacion",
+      "to": "resultado",
+      "label": "listo",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Reglas primero",
+      "items": [
+        "El calificador 0–4, el máximo de 3 códigos por componente y el «no aplica» a menores de 6 años salen de reglas del Anexo 1239",
+        "Las actividades (d) salen de una lista cerrada y no pasan por el modelo"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "La IA solo elige",
+      "items": [
+        "gemma4:e4b recibe 12 candidatos del catálogo y responde con una lista cerrada",
+        "No puede inventar códigos ni títulos: los títulos salen del catálogo"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "Si algo falla",
+      "items": [
+        "Si el modelo no responde o devuelve algo inválido, entra el respaldo por similitud con una advertencia",
+        "Medido: ~2,6 s con el modelo en memoria, ~18 s el primer pedido, 100 % de JSON válido"
+      ]
+    }
+  ]
+}

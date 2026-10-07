@@ -4,8 +4,9 @@ Diagramas animados del proyecto desde la perspectiva del **médico** y del **adm
 
 | Archivo | Qué muestra |
 |---|---|
-| `index.html` | Página de entrada con los cuatro diagramas y sus videos |
+| `index.html` | Página de entrada con los cinco diagramas y sus videos |
 | `arquitectura-hab.html` | Arquitectura completa: actores, Render, túnel autenticado, PC propio con la IA y CI/CD |
+| `servicio-icf.html` | Servicio ICF por dentro: entrada segura, reglas, embedding, pgvector, selección por la IA, respaldo y validación final |
 | `recorrido-medico-pacientes.html` | Médico (1 de 2): acceso, registro de pacientes y predicción de barreras |
 | `recorrido-medico-icf.html` | Médico (2 de 2): Perfil Funcional ICF con IA local, decisión y reporte |
 | `recorrido-administrador.html` | Administrador: usuarios, límite de acceso (403) y salud del servicio de IA |
