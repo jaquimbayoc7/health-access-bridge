@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Health Access Bridge — Momento 1 y 2</title>
+<title>Health Access Bridge — Momentos 1 a 3</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -85,7 +85,7 @@ html{scroll-behavior:smooth}
       <p class="text-slate-500 text-base leading-relaxed mb-6 max-w-md">Herramienta para profesionales de la salud que facilita la predicción de barreras de acceso en personas con discapacidad en zonas rurales de Colombia, mediante inteligencia artificial.</p>
       <div class="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-200">
         <div class="flex justify-between text-xs font-medium text-slate-500 mb-2">
-          <span>Avance del proyecto</span><span class="text-primary font-bold">77% completado</span>
+          <span>Avance del proyecto</span><span class="text-primary font-bold">80% completado</span>
         </div>
         <div class="h-3 bg-slate-200 rounded-full overflow-hidden">
           <div id="pbar" class="h-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-1000" style="width:0%"></div>
@@ -132,8 +132,8 @@ html{scroll-behavior:smooth}
         </div>
       </div>
       <div class="bg-white rounded-xl p-4 border border-slate-200 card">
-        <div class="text-2xl font-bold text-slate-900">220</div>
-        <div class="text-slate-500 text-xs mt-0.5">Commits al repo</div>
+        <div class="text-2xl font-bold text-slate-900">222</div>
+        <div class="text-slate-500 text-xs mt-0.5">Commits en develop (151 en master)</div>
         <div class="text-xs text-slate-400 mt-2">22 días activos</div>
         <div class="text-xs text-green-600 font-medium">26 Feb – 7 Oct</div>
       </div>
@@ -410,7 +410,7 @@ html{scroll-behavior:smooth}
 <section id="historias" class="py-16">
   <div class="max-w-7xl mx-auto px-6">
     <h2 class="text-2xl font-bold mb-2 section-title">Historias de Usuario Completadas</h2>
-    <p class="text-slate-500 text-sm mb-10 mt-4">10 HUs entregadas en Momento 1 y 2 — 87 Story Points · más HU-07a y HU-07b del Momento 3 (13 pts)</p>
+    <p class="text-slate-500 text-sm mb-10 mt-4">10 HUs entregadas en los Momentos 1 y 2 — 87 Story Points · más 30 de los 33 pts de HU-07 en el Momento 3 (07a–07f y 07h; 07g espera la revisión clínica)</p>
     <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <!-- HU cards -->
       <div class="bg-white rounded-xl border border-slate-200 p-4 card">
@@ -446,7 +446,7 @@ html{scroll-behavior:smooth}
       <div class="bg-white rounded-xl border-l-4 border-l-orange-400 border border-slate-200 p-4 card">
         <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded">HU-12</span><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">✅</span></div><span class="text-xs text-slate-400">5 pts · S3.5</span></div>
         <h3 class="font-semibold text-slate-800 text-sm mb-2">Pruebas Integración Backend</h3>
-        <ul class="text-xs text-slate-500 space-y-1"><li>• pytest + FastAPI TestClient + SQLite</li><li>• test_auth.py: 17 casos</li><li>• test_patients.py: 18 casos</li></ul>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• pytest + FastAPI TestClient + SQLite</li><li>• test_auth.py: login, JWT y RBAC</li><li>• test_patients.py: CRUD, búsqueda y aislamiento por médico</li></ul>
         <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/15" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #15 →</a>
       </div>
       <div class="bg-white rounded-xl border-l-4 border-l-orange-400 border border-slate-200 p-4 card">
@@ -473,7 +473,7 @@ html{scroll-behavior:smooth}
       <div class="bg-white rounded-xl border-2 border-cyan-300 p-4 card">
         <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-cyan-100 text-cyan-700 text-xs font-bold px-2 py-0.5 rounded">HU-07</span><span class="bg-cyan-100 text-cyan-700 text-xs px-2 py-0.5 rounded-full">🟡</span></div><span class="text-xs text-slate-400">30/33 pts · M3</span></div>
         <h3 class="font-semibold text-slate-800 text-sm mb-2">Perfil Funcional ICF (en curso)</h3>
-        <ul class="text-xs text-slate-500 space-y-1"><li>• Servidor propio + túnel con token + catálogo CIF-IA (1.593 códigos)</li><li>• Motor de sugerencia y herramientas de evaluación (75 tests)</li><li>• Qwen 3B en el i3 descartado (peor que la similitud, 24–46 s) → Gemma 4 e4b sí mejora, sin APIs externas</li><li>• gemma4:e4b: mínimo viable provisional (3,4 s con GPU de 8 GB, ~15 s solo CPU)</li><li>• Backend y pantalla listos: generar, aceptar/editar/rechazar, copiar y PDF; enlaces a la CIE, ejemplos de notas y guía de uso</li><li>• Producción en el PC propio (~2,6 s por sugerencia); 5 E2E, tests del servicio ICF en CI y manual de operación</li><li>• Licencias verificadas: Gemma 4 Apache 2.0; MedGemma descartado (prohíbe uso clínico)</li><li>• 07g: hoja de revisión (Fase A a ciegas y Fase B) y umbrales propuestos listos</li><li class="text-slate-400">• Pendiente: la revisión de la profesional de salud (Emilly Maria Celis)</li></ul>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• Servidor propio + túnel con token + catálogo CIF-IA (1.593 códigos)</li><li>• Motor de sugerencia y herramientas de evaluación (75 tests)</li><li>• Qwen 3B en el i3 descartado (peor que la similitud, 24–46 s) → Gemma 4 e4b sí mejora, sin APIs externas</li><li>• gemma4:e4b: mínimo viable provisional (3,4 s con GPU de 8 GB, ~15 s solo CPU)</li><li>• Backend y pantalla listos: generar, aceptar/editar/rechazar, copiar y PDF; enlaces a la CIE, ejemplos de notas y guía de uso</li><li>• Producción en el PC propio (~2,6 s por sugerencia); 5 E2E, tests del servicio ICF en CI y manual de operación</li><li>• Licencias verificadas: Gemma 4 Apache 2.0; MedGemma descartado (prohíbe uso clínico)</li><li>• 07g: hoja de revisión (Fase A a ciegas y Fase B) y umbrales aprobados; reunión con la revisora la próxima semana</li><li class="text-slate-400">• Pendiente: la revisión de la profesional de salud (Emilly Maria Celis)</li></ul>
         <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/7" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #7 →</a>
       </div>
       <!-- Velocity summary -->
@@ -708,7 +708,7 @@ html{scroll-behavior:smooth}
           </div>
           <div>
             <div class="font-semibold text-lime-800 text-sm">Validación clínica (HU-07g)</div>
-            <div class="text-lime-600 text-xs mt-0.5">Protocolo, guía de la revisora, métricas y umbrales propuestos</div>
+            <div class="text-lime-600 text-xs mt-0.5">Protocolo, guía de la revisora, métricas y umbrales aprobados</div>
             <div class="text-lime-500 text-xs mt-1 font-mono">PROTOCOLO_VALIDACION_CLINICA_HU07G.md →</div>
           </div>
         </a>
@@ -1213,36 +1213,38 @@ html{scroll-behavior:smooth}
 <section id="metricas" class="py-16">
   <div class="max-w-7xl mx-auto px-6">
     <h2 class="text-2xl font-bold mb-2 section-title">Métricas del Repositorio</h2>
-    <p class="text-slate-500 text-sm mb-10 mt-4">GitHub — 26 Feb – 6 Oct 2026</p>
+    <p class="text-slate-500 text-sm mb-10 mt-4">GitHub — 26 Feb – 7 Oct 2026 · rama develop (corte 7-oct)</p>
     <div class="grid md:grid-cols-2 gap-8">
       <div class="bg-white rounded-xl border border-slate-200 p-6">
         <h3 class="font-semibold text-slate-700 mb-4 text-sm">Distribución de Lenguajes</h3>
         <div class="flex items-center gap-6">
           <div class="w-44 h-44 flex-shrink-0"><canvas id="langChart"></canvas></div>
           <div class="space-y-2 text-xs">
-            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-blue-500 flex-shrink-0"></div><span>TypeScript</span><span class="text-slate-400 ml-auto font-medium">63.1%</span></div>
-            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-green-500 flex-shrink-0"></div><span>Python</span><span class="text-slate-400 ml-auto font-medium">34.5%</span></div>
-            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-pink-400 flex-shrink-0"></div><span>CSS</span><span class="text-slate-400 ml-auto font-medium">0.7%</span></div>
-            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-yellow-400 flex-shrink-0"></div><span>Shell</span><span class="text-slate-400 ml-auto font-medium">0.5%</span></div>
-            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-slate-300 flex-shrink-0"></div><span>Otros (JS, HTML, Docker)</span><span class="text-slate-400 ml-auto font-medium">1.2%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-blue-500 flex-shrink-0"></div><span>TypeScript</span><span class="text-slate-400 ml-auto font-medium">60.9%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-green-500 flex-shrink-0"></div><span>Python</span><span class="text-slate-400 ml-auto font-medium">36.6%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-pink-400 flex-shrink-0"></div><span>CSS</span><span class="text-slate-400 ml-auto font-medium">0.5%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-yellow-400 flex-shrink-0"></div><span>Shell</span><span class="text-slate-400 ml-auto font-medium">0.4%</span></div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-slate-300 flex-shrink-0"></div><span>Otros (JS, PowerShell, HTML, Docker)</span><span class="text-slate-400 ml-auto font-medium">1.6%</span></div>
           </div>
         </div>
       </div>
       <div class="bg-white rounded-xl border border-slate-200 p-6">
         <h3 class="font-semibold text-slate-700 mb-4 text-sm">Actividad de Commits</h3>
         <div class="grid grid-cols-2 gap-3 mb-4 text-center text-xs">
-          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">221</div><div class="text-slate-500">Total commits</div></div>
-          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">21</div><div class="text-slate-500">Días activos</div></div>
-          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-green-600">54</div><div class="text-slate-500">Issues + PRs cerrados</div></div>
-          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-cyan-600">42</div><div class="text-slate-500">Pull Requests mergeados</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">222</div><div class="text-slate-500">Commits en develop</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-primary">22</div><div class="text-slate-500">Días activos</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-green-600">72</div><div class="text-slate-500">Issues + PRs cerrados</div></div>
+          <div class="bg-slate-50 rounded-lg p-3"><div class="text-2xl font-bold text-cyan-600">53</div><div class="text-slate-500">Pull Requests mergeados</div></div>
         </div>
         <div class="space-y-2 text-xs">
           <div class="flex items-center gap-2"><span class="text-slate-500 w-10">fix:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-red-400 h-2 rounded-full" style="width:26%"></div></div><span class="text-slate-400 w-6">58</span></div>
-          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">docs:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-blue-400 h-2 rounded-full" style="width:25%"></div></div><span class="text-slate-400 w-6">56</span></div>
-          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">feat:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-green-400 h-2 rounded-full" style="width:20%"></div></div><span class="text-slate-400 w-6">45</span></div>
-          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">merges:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-purple-400 h-2 rounded-full" style="width:20%"></div></div><span class="text-slate-400 w-6">44</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">docs:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-blue-400 h-2 rounded-full" style="width:28%"></div></div><span class="text-slate-400 w-6">62</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">feat:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-green-400 h-2 rounded-full" style="width:24%"></div></div><span class="text-slate-400 w-6">52</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">merges:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-purple-400 h-2 rounded-full" style="width:13%"></div></div><span class="text-slate-400 w-6">29</span></div>
           <div class="flex items-center gap-2"><span class="text-slate-500 w-10">chore:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-slate-400 h-2 rounded-full" style="width:5%"></div></div><span class="text-slate-400 w-6">10</span></div>
           <div class="flex items-center gap-2"><span class="text-slate-500 w-10">ci:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-cyan-400 h-2 rounded-full" style="width:2%"></div></div><span class="text-slate-400 w-6">5</span></div>
+          <div class="flex items-center gap-2"><span class="text-slate-500 w-10">otros:</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-amber-400 h-2 rounded-full" style="width:3%"></div></div><span class="text-slate-400 w-6">6</span></div>
+          <div class="text-[11px] text-slate-400 pt-1">otros = test 2, perf 2 y 2 sin prefijo. Total 222 en develop; master (producción) tiene 151 hasta la próxima promoción.</div>
         </div>
       </div>
     </div>
@@ -1324,7 +1326,7 @@ html{scroll-behavior:smooth}
       <div class="bg-white rounded-xl border border-slate-200 p-5 opacity-75">
         <div class="flex flex-wrap items-center justify-between mb-3">
           <div><h3 class="font-bold text-slate-800">M3 — Trabajo Integrador III</h3><div class="text-xs text-slate-400">Semanas 19-27</div></div>
-          <div class="flex items-center gap-2"><span class="bg-cyan-100 text-cyan-700 text-xs px-3 py-1 rounded-full">🟡 En progreso · 25 completados</span><span class="text-slate-500 font-bold">59 pts</span></div>
+          <div class="flex items-center gap-2"><span class="bg-cyan-100 text-cyan-700 text-xs px-3 py-1 rounded-full">🟡 En progreso · 30 completados</span><span class="text-slate-500 font-bold">59 pts</span></div>
         </div>
         <div class="flex flex-wrap gap-1.5 text-xs">
           <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ DEUDA-01 Rendimiento API — cerrada 23-sep (riesgo aceptado)</span>
@@ -1353,17 +1355,17 @@ html{scroll-behavior:smooth}
 <section id="sprints" class="py-16 bg-white">
   <div class="max-w-7xl mx-auto px-6">
     <h2 class="text-2xl font-bold mb-2 section-title">Seguimiento de Sprints</h2>
-    <p class="text-slate-500 text-sm mb-10 mt-4">7 sprints en el timeline (Sprint 4-5 adelantado a Sprint 3) · Momento 1 y 2 · 87 Story Points entregados</p>
+    <p class="text-slate-500 text-sm mb-10 mt-4">Sprints 1 a 7 de los Momentos 1 y 2 (Sprint 4-5 adelantado a Sprint 3), Sprint 8 de deuda técnica y Sprint 8-9 del Momento 3 en curso · 117 Story Points entregados (87 en M1 y M2 + 30 de HU-07)</p>
 
     <!-- KPI summary -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
       <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
-        <div class="text-3xl font-extrabold text-primary">87</div>
-        <div class="text-xs text-blue-600 mt-1 font-medium">Story Points entregados</div>
+        <div class="text-3xl font-extrabold text-primary">117</div>
+        <div class="text-xs text-blue-600 mt-1 font-medium">Story Points entregados (87 en M1–M2 + 30 en M3)</div>
       </div>
       <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
         <div class="text-3xl font-extrabold text-green-700">14.5</div>
-        <div class="text-xs text-green-600 mt-1 font-medium">Velocidad promedio (SP/sprint)</div>
+        <div class="text-xs text-green-600 mt-1 font-medium">Velocidad promedio (SP/sprint, sprints cerrados de M1–M2)</div>
       </div>
       <div class="bg-purple-50 border border-purple-200 rounded-xl p-4 text-center">
         <div class="text-3xl font-extrabold text-purple-700">100%</div>
@@ -1371,7 +1373,7 @@ html{scroll-behavior:smooth}
       </div>
       <div class="bg-teal-50 border border-teal-200 rounded-xl p-4 text-center">
         <div class="text-3xl font-extrabold text-teal-700">9</div>
-        <div class="text-xs text-teal-600 mt-1 font-medium">HUs completadas / cerradas</div>
+        <div class="text-xs text-teal-600 mt-1 font-medium">HUs completadas (M1 y M2)</div>
       </div>
     </div>
 
@@ -1388,7 +1390,7 @@ html{scroll-behavior:smooth}
           <span class="text-green-600 text-lg">✅</span>
         </div>
         <div class="space-y-2 text-xs text-slate-600 mb-4">
-          <div class="flex justify-between"><span>Semanas</span><span class="font-mono">1 – 2</span></div>
+          <div class="flex justify-between"><span>Semanas</span><span class="font-mono">4 – 5</span></div>
           <div class="flex justify-between"><span>SP planificados</span><span class="font-semibold">8</span></div>
           <div class="flex justify-between"><span>SP completados</span><span class="font-semibold text-green-700">8</span></div>
           <div class="flex justify-between"><span>Eficiencia</span><span class="font-semibold text-green-700">100%</span></div>
@@ -1405,19 +1407,18 @@ html{scroll-behavior:smooth}
         <div class="flex justify-between items-start mb-3">
           <div>
             <div class="text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded mb-1 inline-block">Sprint 2</div>
-            <div class="font-bold text-slate-800 text-sm">Registro de Pacientes + CI/CD</div>
+            <div class="font-bold text-slate-800 text-sm">Registro y Precarga de Pacientes</div>
           </div>
           <span class="text-green-600 text-lg">✅</span>
         </div>
         <div class="space-y-2 text-xs text-slate-600 mb-4">
-          <div class="flex justify-between"><span>Semanas</span><span class="font-mono">3 – 5</span></div>
+          <div class="flex justify-between"><span>Semanas</span><span class="font-mono">6 – 7</span></div>
           <div class="flex justify-between"><span>SP planificados</span><span class="font-semibold">13</span></div>
           <div class="flex justify-between"><span>SP completados</span><span class="font-semibold text-green-700">13</span></div>
           <div class="flex justify-between"><span>Eficiencia</span><span class="font-semibold text-green-700">100%</span></div>
         </div>
         <div class="flex flex-wrap gap-1">
           <span class="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded">#2 HU-02</span>
-          <span class="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded">#3 HU-03</span>
         </div>
         <div class="mt-3 bg-slate-100 rounded-full h-2"><div class="bg-green-500 h-2 rounded-full" style="width:100%"></div></div>
         <div class="text-xs text-right text-green-600 mt-1 font-medium">13 / 13 pts</div>
@@ -1428,17 +1429,18 @@ html{scroll-behavior:smooth}
         <div class="flex justify-between items-start mb-3">
           <div>
             <div class="text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded mb-1 inline-block">Sprint 3</div>
-            <div class="font-bold text-slate-800 text-sm">Modelo Predictivo ML</div>
+            <div class="font-bold text-slate-800 text-sm">Despliegue + Modelo Predictivo ML</div>
           </div>
           <span class="text-green-600 text-lg">✅</span>
         </div>
         <div class="space-y-2 text-xs text-slate-600 mb-4">
-          <div class="flex justify-between"><span>Semanas</span><span class="font-mono">6 – 8</span></div>
+          <div class="flex justify-between"><span>Semanas</span><span class="font-mono">8 – 9</span></div>
           <div class="flex justify-between"><span>SP planificados</span><span class="font-semibold">26</span></div>
           <div class="flex justify-between"><span>SP completados</span><span class="font-semibold text-green-700">26</span></div>
           <div class="flex justify-between"><span>Eficiencia</span><span class="font-semibold text-green-700">100%</span></div>
         </div>
         <div class="flex flex-wrap gap-1">
+          <span class="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded">#3 HU-03</span>
           <span class="bg-purple-50 text-purple-700 text-xs px-2 py-0.5 rounded">#4 HU-04 ⚡</span>
         </div>
         <div class="mt-3 bg-slate-100 rounded-full h-2"><div class="bg-green-500 h-2 rounded-full" style="width:100%"></div></div>
@@ -1455,7 +1457,7 @@ html{scroll-behavior:smooth}
           <span class="text-green-600 text-lg">✅</span>
         </div>
         <div class="space-y-2 text-xs text-slate-600 mb-4">
-          <div class="flex justify-between"><span>Semanas</span><span class="font-mono">8 – 9</span></div>
+          <div class="flex justify-between"><span>Semanas</span><span class="font-mono">9</span></div>
           <div class="flex justify-between"><span>SP planificados</span><span class="font-semibold">16</span></div>
           <div class="flex justify-between"><span>SP completados</span><span class="font-semibold text-green-700">16</span></div>
           <div class="flex justify-between"><span>Eficiencia</span><span class="font-semibold text-green-700">100%</span></div>
@@ -1537,11 +1539,11 @@ html{scroll-behavior:smooth}
         <div class="text-xs text-right text-teal-600 mt-1 font-medium">8 / 8 pts</div>
       </div>
 
-      <!-- Sprint 7.5 — Deuda técnica y proceso -->
+      <!-- Sprint 8 — Deuda técnica y proceso (DEUDA-01) -->
       <div class="bg-white rounded-xl border-2 border-cyan-300 p-5 card">
         <div class="flex justify-between items-start mb-3">
           <div>
-            <div class="text-xs font-bold text-cyan-700 bg-cyan-100 px-2 py-0.5 rounded mb-1 inline-block">Sprint 7.5</div>
+            <div class="text-xs font-bold text-cyan-700 bg-cyan-100 px-2 py-0.5 rounded mb-1 inline-block">Sprint 8 · Deuda técnica</div>
             <div class="font-bold text-slate-800 text-sm">Deuda Técnica y Proceso</div>
           </div>
           <span class="text-green-600 text-lg">✅</span>
@@ -1568,36 +1570,39 @@ html{scroll-behavior:smooth}
         <div class="text-xs text-right text-cyan-600 mt-1 font-medium">Deuda cerrada</div>
       </div>
 
-      <!-- Sprint 8 — Inicio del Momento 3 -->
+      <!-- Sprint 8-9 — Momento 3 (HU-07) -->
       <div class="bg-white rounded-xl border-2 border-emerald-300 p-5 card">
         <div class="flex justify-between items-start mb-3">
           <div>
-            <div class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded mb-1 inline-block">Sprint 8 · Momento 3</div>
+            <div class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded mb-1 inline-block">Sprint 8-9 · Momento 3</div>
             <div class="font-bold text-slate-800 text-sm">Servidor ICF y prueba del modelo local</div>
           </div>
           <span class="text-emerald-600 text-lg">🟡</span>
         </div>
         <div class="space-y-2 text-xs text-slate-600 mb-4">
-          <div class="flex justify-between"><span>Fecha</span><span class="font-mono">5–7-oct</span></div>
-          <div class="flex justify-between"><span>SP completados</span><span class="font-semibold">25 (HU-07a 5 + HU-07b 8 + HU-07c 5 + HU-07d 5 + HU-07f 2)</span></div>
+          <div class="flex justify-between"><span>Semanas (plan) / fechas</span><span class="font-mono">19 – 22 · desde 5-oct</span></div>
+          <div class="flex justify-between"><span>SP completados</span><span class="font-semibold">30 (07a 5 + 07b 8 + 07c 5 + 07d 5 + 07e 2 + 07f 2 + 07h 3)</span></div>
           <div class="flex justify-between"><span>Alcance</span><span class="font-semibold text-emerald-700">HU-07: 25 → 33 pts</span></div>
         </div>
         <ul class="text-xs text-slate-500 space-y-1 mb-3">
           <li>• Catálogo CIF-IA de 1.593 códigos extraído por OCR; servidor propio con túnel autenticado verificado desde Render QA</li>
           <li>• Qwen local (3B, i3 sin GPU): 24–46 s por sugerencia y peor selección que la similitud sola (0,6 s)</li>
           <li>• Búsqueda solo en códigos de 3 dígitos: cobertura de funciones 11 % → 40 %, estructuras 48 % → 86 %</li>
-          <li>• Decisión: sin APIs externas (privacidad); gemma4:e4b como mínimo viable (3,4 s con GPU de 8 GB); producción en el PC propio, sin comprar hardware</li>
+          <li>• Decisión: sin APIs externas (privacidad); gemma4:e4b como mínimo viable; producción en el PC propio (~2,6 s por sugerencia), sin comprar hardware</li><li>• 5 E2E, tests del servicio ICF en CI, manual de operación y licencias verificadas (Gemma 4 Apache 2.0)</li><li>• Falta 07g: la revisión clínica (reunión con la revisora la próxima semana)</li>
         </ul>
         <div class="flex flex-wrap gap-1">
           <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">HU-07a ✅</span>
           <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">HU-07b ✅</span>
           <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">HU-07c ✅</span>
           <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">HU-07d ✅</span>
+          <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">HU-07e ✅</span>
           <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">HU-07f ✅</span>
+          <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">HU-07h ✅</span>
+          <span class="bg-amber-50 text-amber-700 text-xs px-2 py-0.5 rounded">HU-07g 🟡</span>
           <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">Qwen descartado</span>
         </div>
-        <div class="mt-3 bg-slate-100 rounded-full h-2"><div class="bg-emerald-400 h-2 rounded-full" style="width:76%"></div></div>
-        <div class="text-xs text-right text-emerald-600 mt-1 font-medium">25 / 33 pts de HU-07</div>
+        <div class="mt-3 bg-slate-100 rounded-full h-2"><div class="bg-emerald-400 h-2 rounded-full" style="width:91%"></div></div>
+        <div class="text-xs text-right text-emerald-600 mt-1 font-medium">30 / 33 pts de HU-07</div>
       </div>
     </div>
 
@@ -1609,29 +1614,29 @@ html{scroll-behavior:smooth}
         <h3 class="font-semibold text-slate-700 text-sm mb-1">Velocity por Sprint</h3>
         <p class="text-xs text-slate-400 mb-4">Story Points completados en cada sprint</p>
         <canvas id="velocityChart" height="200"></canvas>
-        <p class="text-[11px] text-purple-600 mt-3">⚡ <strong>Sprint 4-5</strong> (morado) muestra HU-04 en su ventana planificada original, pero fue entregada anticipadamente en Sprint 3 — no se suma dos veces al total de 87 pts.</p>
+        <p class="text-[11px] text-purple-600 mt-3">⚡ <strong>Sprint 4-5</strong> (morado) muestra HU-04 en su ventana planificada original, pero fue entregada anticipadamente en Sprint 3 — no se suma dos veces al total de 87 pts de los Momentos 1 y 2. <strong>Sprint 8-9</strong> (verde) está en curso: 30 de 33 pts de HU-07 (falta 07g).</p>
       </div>
 
       <!-- Burndown chart -->
       <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
-        <h3 class="font-semibold text-slate-700 text-sm mb-1">Burndown — Momento 1 y 2</h3>
-        <p class="text-xs text-slate-400 mb-4">SP restantes vs avance ideal</p>
+        <h3 class="font-semibold text-slate-700 text-sm mb-1">Burndown — Proyecto completo (146 pts)</h3>
+        <p class="text-xs text-slate-400 mb-4">SP restantes por sprint: real, proyección del plan y avance ideal</p>
         <canvas id="burndownChart" height="200"></canvas>
-        <p class="text-[11px] text-purple-600 mt-3">⚡ El punto morado en <strong>Fin S4-5</strong> es una meseta: no hubo nueva reducción porque HU-04 (21 pts) ya se había entregado en Sprint 3.</p>
+        <p class="text-[11px] text-purple-600 mt-3">⚡ El punto morado en <strong>Fin S4-5</strong> es una meseta: HU-04 (21 pts) ya se había entregado en Sprint 3. <strong>Fin S8 (deuda)</strong> también es plana: DEUDA-01 no suma puntos de producto. El alcance total es 146 pts desde el inicio (HU-07 creció de 21 a 33 pts); <strong>quedan 29 pts</strong>: 07g (3), HU-08 (13), HU-09 (8) y HU-10 (5). La línea verde punteada es el plan, no un dato real.</p>
       </div>
     </div>
 
     <!-- Kanban metrics -->
     <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
-      <h3 class="font-semibold text-slate-700 text-sm mb-5">Estado del Backlog — Momento 1 y 2</h3>
+      <h3 class="font-semibold text-slate-700 text-sm mb-5">Estado del Backlog — 7-oct-2026</h3>
       <div class="grid md:grid-cols-3 gap-4 mb-5">
         <div class="bg-slate-200 rounded-xl p-4 text-center">
-          <div class="text-2xl font-extrabold text-slate-600">0</div>
-          <div class="text-xs text-slate-500 mt-1">📋 To Do (pendiente)</div>
+          <div class="text-2xl font-extrabold text-slate-600">3</div>
+          <div class="text-xs text-slate-500 mt-1">📋 To Do (HU-08, HU-09, HU-10)</div>
         </div>
         <div class="bg-blue-100 rounded-xl p-4 text-center">
-          <div class="text-2xl font-extrabold text-blue-700">0</div>
-          <div class="text-xs text-blue-600 mt-1">🔄 In Progress</div>
+          <div class="text-2xl font-extrabold text-blue-700">1</div>
+          <div class="text-xs text-blue-600 mt-1">🔄 In Progress (HU-07: 30/33 pts)</div>
         </div>
         <div class="bg-green-100 rounded-xl p-4 text-center">
           <div class="text-2xl font-extrabold text-green-700">9</div>
@@ -1648,11 +1653,11 @@ html{scroll-behavior:smooth}
           <div class="bg-slate-200 rounded-full h-2"><div class="bg-green-500 h-2 rounded-full" style="width:100%"></div></div>
         </div>
         <div>
-          <div class="flex justify-between mb-1"><span class="font-medium text-slate-600">HU-03 — Despliegue Multi-Ambiente</span><span class="text-green-600 font-semibold">✅ Done · 5 SP · Sprint 2</span></div>
+          <div class="flex justify-between mb-1"><span class="font-medium text-slate-600">HU-03 — Despliegue Multi-Ambiente</span><span class="text-green-600 font-semibold">✅ Done · 5 SP · Sprint 3</span></div>
           <div class="bg-slate-200 rounded-full h-2"><div class="bg-green-500 h-2 rounded-full" style="width:100%"></div></div>
         </div>
         <div>
-          <div class="flex justify-between mb-1"><span class="font-medium text-slate-600">HU-04 — Modelo Predictivo ML (ICF)</span><span class="text-purple-600 font-semibold">✅ Done · 26 SP · Sprint 3 ⚡</span></div>
+          <div class="flex justify-between mb-1"><span class="font-medium text-slate-600">HU-04 — Modelo Predictivo ML (ICF)</span><span class="text-purple-600 font-semibold">✅ Done · 21 SP · Sprint 3 ⚡</span></div>
           <div class="bg-slate-200 rounded-full h-2"><div class="bg-purple-500 h-2 rounded-full" style="width:100%"></div></div>
         </div>
         <div>
@@ -1674,6 +1679,10 @@ html{scroll-behavior:smooth}
         <div>
           <div class="flex justify-between mb-1"><span class="font-medium text-slate-600">HU-06 — Pruebas de Integración y Rendimiento</span><span class="text-teal-600 font-semibold">✅ Done · 8 SP · Sprint 7</span></div>
           <div class="bg-slate-200 rounded-full h-2"><div class="bg-teal-400 h-2 rounded-full" style="width:100%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1"><span class="font-medium text-slate-600">HU-07 — Perfil Funcional ICF (RAG + LLM local)</span><span class="text-emerald-600 font-semibold">🟡 30 / 33 SP · Sprint 8-9</span></div>
+          <div class="bg-slate-200 rounded-full h-2"><div class="bg-emerald-400 h-2 rounded-full" style="width:91%"></div></div>
         </div>
       </div>
     </div>
@@ -1993,7 +2002,7 @@ html{scroll-behavior:smooth}
       </div>
     </div>
     <div class="border-t border-slate-800 mt-8 pt-6 text-center text-xs">
-      Health Access Bridge · Momento 1 y 2 completados (100%) · Momento 3 en curso: HU-07a, 07b, 07c, 07d y 07f completadas, modelo local sin APIs externas (7-oct-2026) · Octubre 2026 · <a href="https://github.com/jaquimbayoc7" class="hover:text-white">@jaquimbayoc7</a>
+      Health Access Bridge · Momento 1 y 2 completados (100%) · Momento 3 en curso (30/59 pts): HU-07a, 07b, 07c, 07d, 07e, 07f y 07h completadas; 07g espera la revisión clínica; modelo local sin APIs externas (7-oct-2026) · Octubre 2026 · <a href="https://github.com/jaquimbayoc7" class="hover:text-white">@jaquimbayoc7</a>
     </div>
   </div>
 </footer>
@@ -2010,7 +2019,7 @@ html{scroll-behavior:smooth}
 <script>
   // Progress bar animation
   window.addEventListener('load', () => {
-    setTimeout(() => { document.getElementById('pbar').style.width = '77%'; }, 300);
+    setTimeout(() => { document.getElementById('pbar').style.width = '80%'; }, 300);
   });
 
   // Chart.js language donut
@@ -2020,7 +2029,7 @@ html{scroll-behavior:smooth}
     data: {
       labels: ['TypeScript','Python','CSS','Shell','Otros'],
       datasets: [{
-        data: [63.1, 34.5, 0.7, 0.5, 1.2],
+        data: [60.9, 36.6, 0.5, 0.4, 1.6],
         backgroundColor: ['#3B82F6','#22C55E','#EC4899','#EAB308','#CBD5E1'],
         borderWidth: 2, borderColor: '#fff'
       }]
@@ -2034,19 +2043,19 @@ html{scroll-behavior:smooth}
   new Chart(document.getElementById('velocityChart').getContext('2d'), {
     type: 'bar',
     data: {
-      labels: ['Sprint 1','Sprint 2','Sprint 3',['Sprint 3.5'],['Sprint 4-5','(adelantado)'],'Sprint 6-7','Sprint 7'],
+      labels: ['Sprint 1','Sprint 2','Sprint 3',['Sprint 3.5'],['Sprint 4-5','(adelantado)'],'Sprint 6-7','Sprint 7',['Sprint 8-9','(en curso)']],
       datasets: [
         {
           label: 'SP Completados',
-          data: [8, 13, 26, 16, 21, 16, 8],
-          backgroundColor: ['#22C55E','#22C55E','#22C55E','#F97316','#A855F7','#EAB308','#14B8A6'],
+          data: [8, 13, 26, 16, 21, 16, 8, 30],
+          backgroundColor: ['#22C55E','#22C55E','#22C55E','#F97316','#A855F7','#EAB308','#14B8A6','#10B981'],
           borderRadius: 6, borderSkipped: false
         },
         {
           label: 'SP Planificados',
-          data: [8, 13, 26, 16, 21, 16, 8],
+          data: [8, 13, 26, 16, 21, 16, 8, 33],
           backgroundColor: 'transparent',
-          borderColor: ['#16A34A','#16A34A','#16A34A','#EA580C','#9333EA','#CA8A04','#0D9488'],
+          borderColor: ['#16A34A','#16A34A','#16A34A','#EA580C','#9333EA','#CA8A04','#0D9488','#059669'],
           borderWidth: 2, type: 'bar', borderRadius: 6, borderSkipped: false
         }
       ]
@@ -2063,29 +2072,35 @@ html{scroll-behavior:smooth}
         } }
       },
       scales: {
-        y: { beginAtZero: true, max: 30, ticks: { stepSize: 5, font: { size: 11 } }, grid: { color: '#F1F5F9' } },
+        y: { beginAtZero: true, max: 35, ticks: { stepSize: 5, font: { size: 11 } }, grid: { color: '#F1F5F9' } },
         x: { ticks: { font: { size: 11 } }, grid: { display: false } }
       }
     }
   });
 
-  // Burndown line chart
+  // Burndown del proyecto completo (146 pts). Real al 7-oct-2026: 117 completados, 29 restantes.
   new Chart(document.getElementById('burndownChart').getContext('2d'), {
     type: 'line',
     data: {
-      labels: ['Inicio','Fin S1','Fin S2','Fin S3','Fin S3.5','Fin S4-5 ⚡','Fin S6-7','Fin S7'],
+      labels: ['Inicio','Fin S1','Fin S2','Fin S3','Fin S3.5','Fin S4-5 ⚡','Fin S6-7','Fin S7','Fin S8 (deuda)','S8-9 (hoy)','Fin S8-9','Fin S10-11','Fin S11','Fin S12'],
       datasets: [
         {
           label: 'Real (SP restantes)',
-          data: [87, 79, 66, 40, 24, 24, 8, 0],
+          data: [146, 138, 125, 99, 83, 83, 67, 59, 59, 29, null, null, null, null],
           borderColor: '#2563EB', backgroundColor: 'rgba(37,99,235,0.08)',
-          pointBackgroundColor: (ctx) => ctx.dataIndex === 5 ? '#A855F7' : '#2563EB',
-          pointRadius: (ctx) => ctx.dataIndex === 5 ? 7 : 5,
-          tension: 0.3, fill: true
+          pointBackgroundColor: (ctx) => ctx.dataIndex === 5 ? '#A855F7' : (ctx.dataIndex === 9 ? '#10B981' : '#2563EB'),
+          pointRadius: (ctx) => (ctx.dataIndex === 5 || ctx.dataIndex === 9) ? 7 : 5,
+          tension: 0.3, fill: true, spanGaps: false
+        },
+        {
+          label: 'Plan restante',
+          data: [null, null, null, null, null, null, null, null, null, 29, 26, 13, 5, 0],
+          borderColor: '#10B981', borderDash: [3, 3],
+          pointRadius: 4, pointBackgroundColor: '#10B981', tension: 0.2, fill: false, spanGaps: false
         },
         {
           label: 'Ideal (línea base)',
-          data: [87, 74.6, 62.1, 49.7, 37.3, 24.9, 12.4, 0],
+          data: Array.from({ length: 14 }, (_, i) => +(146 * (1 - i / 13)).toFixed(1)),
           borderColor: '#94A3B8', borderDash: [6, 4],
           pointRadius: 3, tension: 0.1, fill: false
         }
@@ -2097,14 +2112,18 @@ html{scroll-behavior:smooth}
         legend: { labels: { font: { size: 11 }, boxWidth: 12 } },
         tooltip: { callbacks: {
           label: c => ` ${c.dataset.label}: ${c.parsed.y} SP`,
-          afterBody: c => c[0].dataIndex === 5 && c[0].datasetIndex === 0
-            ? ['⚡ Meseta: HU-04 (21 pts) ya se habia entregado', 'en Sprint 3, antes de esta ventana.']
-            : []
+          afterBody: c => {
+            if (c[0].datasetIndex !== 0) return [];
+            if (c[0].dataIndex === 5) return ['⚡ Meseta: HU-04 (21 pts) ya se habia entregado', 'en Sprint 3, antes de esta ventana.'];
+            if (c[0].dataIndex === 8) return ['DEUDA-01: deuda tecnica, sin puntos de producto.'];
+            if (c[0].dataIndex === 9) return ['Sprint 8-9 en curso: HU-07 30/33 pts (falta 07g).'];
+            return [];
+          }
         } }
       },
       scales: {
-        y: { beginAtZero: true, max: 90, ticks: { stepSize: 10, font: { size: 11 } }, grid: { color: '#F1F5F9' } },
-        x: { ticks: { font: { size: 11 } }, grid: { display: false } }
+        y: { beginAtZero: true, max: 150, ticks: { stepSize: 25, font: { size: 11 } }, grid: { color: '#F1F5F9' } },
+        x: { ticks: { font: { size: 10 }, maxRotation: 60, minRotation: 40 }, grid: { display: false } }
       }
     }
   });

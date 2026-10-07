@@ -43,7 +43,7 @@ Las **licencias** quedaron verificadas el 7 de octubre (`LICENCIAS_COMPONENTES_I
 | 07d | Pantalla «Perfil Funcional ICF» | 5 | ✅ Completada 7-oct (12 pruebas nuevas; causas oficiales en el formulario) |
 | 07e | Pruebas, manual de operación (Ollama, modelos y requisitos de la máquina) y reportes | 2 | ✅ Completada 7-oct: 5 E2E (5/5 contra DEV), job `icf-service-test` en CI, `docs/MANUAL_OPERACION_ICF.md` y reportes actualizados |
 | 07f | Escalera de modelos abiertos (Gemma 4 / MedGemma) en el PC de pruebas y modelo mínimo viable: `gemma4:e4b` | 2 | ✅ Completada 7-oct |
-| 07g | Validación clínica con un médico y umbral de confiabilidad | 3 | 🟡 Instrumento listo (7-oct): hoja de revisión en Excel con Fase A a ciegas y Fase B, cálculo de métricas y umbrales propuestos; **falta la revisión de Emilly Maria Celis** (los 3 pts se acreditan al documentar el resultado) |
+| 07g | Validación clínica con un médico y umbral de confiabilidad | 3 | 🟡 Instrumento listo (7-oct): hoja de revisión en Excel con Fase A a ciegas y Fase B, cálculo de métricas y umbrales aprobados por el responsable (7-oct); **falta la revisión de Emilly Maria Celis, con quien hay reunión la próxima semana** (los 3 pts se acreditan al documentar el resultado) |
 | 07h | Despliegue y operación en el PC de producción (i5-13450HX, 32 GB, RTX 5050 de 8 GB) | 3 | ✅ Completada (07-oct-2026): servicio y túnel operativos en el PC, Render configurado, prueba en QA, reinicio y tapa verificados |
 
 **Logros técnicos del período:**
@@ -97,8 +97,8 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 | **Momento 1** | ✅ 100 % (63 pts) |
 | **Momento 2** | ✅ 100 % (24 pts) |
 | **Momento 3** | 🟡 50,8 % (30 de 59 pts) |
-| **Commits (`master`)** | 221 en 21 días activos (0,99 por día; 65 de ellos el 5 y 6 de octubre) |
-| **Pull Requests mergeados** | 42 (39 en este período, 16 solo el 6 de octubre) |
+| **Commits** | 222 en `develop` (151 en `master`, producción, hasta la próxima promoción) en 22 días activos; 55 de ellos el 5 y 6 de octubre (65 si se cuenta el 7) |
+| **Pull Requests mergeados** | 53 de 54 abiertos (corte 7-oct-2026) |
 | **Pruebas automáticas** | backend 105 · frontend 38 · servicio ICF 75 (67 en CI) · **218 en total**; E2E 12 casos |
 | **Tamaño del repositorio** | 8.140 KB (TypeScript 63 %, Python 34 %) |
 
