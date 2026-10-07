@@ -241,7 +241,7 @@ sequenceDiagram
     BE-->>FE: Reporte con sugerencias
     FE-->>M: Muestra tabla de códigos
     M->>FE: Acepta / edita / rechaza cada código
-    FE->>BE: PATCH /icf-suggestions/{id}
+    FE->>BE: PATCH /icf/suggestions/{id}
     BE->>BE: Guarda la decisión del médico
 ```
 
@@ -286,6 +286,11 @@ erDiagram
         int qualifier_cl "solo s: localización, 8 por defecto"
         text justification "texto del LLM"
         string status "sugerido, aceptado, editado, rechazado"
+        string batch_id "agrupa los codigos de una generacion"
+        string title "titulo del catalogo"
+        string origin "llm, similarity o rules"
+        string original_code "codigo sugerido, si el medico lo cambio"
+        datetime decided_at "decision del medico"
         string model "nombre del modelo, similarity o rules, para auditoría"
         string diag_cie "instantánea de entrada, opcional"
         text clinical_notes "instantánea de entrada, opcional"

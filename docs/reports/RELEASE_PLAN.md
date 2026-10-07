@@ -15,9 +15,9 @@
 |---------|---------|---------|-------------------|-------|--------|--------|
 | **R1 — MVP Clínico** | Momento 1 | 1-9 | [Milestone 1](https://github.com/jaquimbayoc7/health-access-bridge/milestone/1) | [EPICA-01 #11](https://github.com/jaquimbayoc7/health-access-bridge/issues/11) | 63 pts | ✅ Entregado |
 | **R2 — Usabilidad y Calidad** | Momento 2 | 10-18 | [Milestone 2](https://github.com/jaquimbayoc7/health-access-bridge/milestone/2) | [EPICA-02 #12](https://github.com/jaquimbayoc7/health-access-bridge/issues/12) | 24 pts | ✅ Entregado |
-| **R3 — IA Generativa y Cierre** | Momento 3 | 19-27 | [Milestone 3](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) | [EPICA-03 #13](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) | 59 pts | 🟡 En progreso (HU-07a, HU-07b y HU-07f completadas) |
+| **R3 — IA Generativa y Cierre** | Momento 3 | 19-27 | [Milestone 3](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) | [EPICA-03 #13](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) | 59 pts | 🟡 En progreso (HU-07a, HU-07b, HU-07c y HU-07f completadas) |
 
-**Total del proyecto:** 146 pts · **Completado:** 102 pts (69,9%) · **Pendiente:** 44 pts (30,1%)
+**Total del proyecto:** 146 pts · **Completado:** 107 pts (73,3%) · **Pendiente:** 39 pts (26,7%)
 
 > **Nota (05-oct-2026):** HU-07 se reestimó de 21 a 25 pts tras revisar el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022. El Momento 3 pasó de 47 a 51 pts y el total del proyecto de 134 a 138 pts. Las cifras de los reportes anteriores (Insights 1–4, estado del Momento 1) son instantáneas históricas y no se modifican.
 
@@ -94,7 +94,7 @@
 | HU | Descripción | Puntos | Sprint |
 |----|-------------|--------|--------|
 | DEUDA-TÉCNICA-01 | Resolver bottleneck de rendimiento API (ver §5) — *prerrequisito antes de sumar carga del LLM* | — (ver `BACKLOG.md`) | Inicio Sprint 8 |
-| HU-07 | Perfil Funcional ICF con RAG y LLM local para sugerencia de códigos CIF-IA según el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022 — sub-historias 07a (servidor y catálogo, 5, ✅), 07b (motor y evaluación, 8, ✅), 07c (backend, 5), 07d (frontend, 5), 07e (pruebas y docs, 2), 07f (escalera de modelos abiertos y modelo mínimo viable `gemma4:e4b`, 2, ✅), 07g (validación clínica y umbral de confiabilidad, 3), 07h (dimensionamiento de la máquina de producción, 3) | 33 (reestimado desde 21 el 05-oct-2026 y desde 25 el 06-oct-2026) | Sprint 8-9 |
+| HU-07 | Perfil Funcional ICF con RAG y LLM local para sugerencia de códigos CIF-IA según el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022 — sub-historias 07a (servidor y catálogo, 5, ✅), 07b (motor y evaluación, 8, ✅), 07c (backend, 5, ✅), 07d (frontend, 5), 07e (pruebas y docs, 2), 07f (escalera de modelos abiertos y modelo mínimo viable `gemma4:e4b`, 2, ✅), 07g (validación clínica y umbral de confiabilidad, 3), 07h (dimensionamiento de la máquina de producción, 3) | 33 (reestimado desde 21 el 05-oct-2026 y desde 25 el 06-oct-2026) | Sprint 8-9 |
 | HU-08 | Dashboard de Análisis y Exportación | 13 | Sprint 10-11 |
 | HU-09 | Pruebas Completas y Feedback de Usuarios (UAT) | 8 | Sprint 11 |
 | HU-10 | Despliegue Final y Generación de Manuales | 5 | Sprint 12 |

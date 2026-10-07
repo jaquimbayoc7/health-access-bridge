@@ -1,5 +1,8 @@
 # app/crud.py
 
+import uuid
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 from . import models, schemas, auth
 
@@ -117,3 +120,90 @@ def update_patient_prediction(db: Session, patient_id: int, profile: int, descri
         db.commit()
         db.refresh(db_patient)
     return db_patient
+
+
+# ----------------------------------------------------------------------
+# HU-07c: sugerencias de codigos CIF-IA
+# ----------------------------------------------------------------------
+_ICF_GROUPS = (("functions", "b"), ("structures", "s"), ("activities", "d"))
+
+
+def create_icf_batch(db: Session, patient_id: int, result: dict, diag_cie, clinical_notes):
+    """Guarda como un lote nuevo (estado `sugerido`) los codigos que devolvio el servicio ICF.
+    Descarta con tolerancia los elementos mal formados; los lotes anteriores se conservan."""
+    batch_id = str(uuid.uuid4())
+    model_name = str(result.get("model") or "")[:80] or None
+    rows = []
+    for key, component in _ICF_GROUPS:
+        items = result.get(key) or []
+        if not isinstance(items, list):
+            continue
+        for position, item in enumerate(items[:3]):  # maximo 3 por componente (Anexo 1239)
+            if not isinstance(item, dict) or not item.get("code") or not item.get("title"):
+                continue
+            rows.append(models.IcfSuggestion(
+                patient_id=patient_id,
+                batch_id=batch_id,
+                position=position,
+                component=component,
+                code=str(item["code"])[:10],
+                title=str(item["title"])[:300],
+                qualifier=item.get("qualifier"),
+                qualifier_cn=item.get("qualifier_cn"),
+                qualifier_cl=item.get("qualifier_cl"),
+                justification=(str(item.get("justification") or "")[:400] or None),
+                origin=str(item.get("origin") or "rules")[:20],
+                status="sugerido",
+                model=model_name,
+                diag_cie=diag_cie,
+                clinical_notes=clinical_notes,
+            ))
+    db.add_all(rows)
+    db.commit()
+    for row in rows:
+        db.refresh(row)
+    return rows
+
+
+def get_latest_icf_batch(db: Session, patient_id: int):
+    """Codigos de la generacion mas reciente del paciente, ordenados por componente y relevancia."""
+    last = (
+        db.query(models.IcfSuggestion)
+        .filter(models.IcfSuggestion.patient_id == patient_id)
+        .order_by(models.IcfSuggestion.created_at.desc(), models.IcfSuggestion.id.desc())
+        .first()
+    )
+    if last is None:
+        return []
+    return (
+        db.query(models.IcfSuggestion)
+        .filter(models.IcfSuggestion.batch_id == last.batch_id)
+        .order_by(models.IcfSuggestion.component, models.IcfSuggestion.position, models.IcfSuggestion.id)
+        .all()
+    )
+
+
+def get_icf_suggestion(db: Session, suggestion_id: int):
+    return db.query(models.IcfSuggestion).filter(models.IcfSuggestion.id == suggestion_id).first()
+
+
+def decide_icf_suggestion(db: Session, row: models.IcfSuggestion, decision: schemas.IcfDecision, user_id: int):
+    """Aplica la decision del medico. En `editado` cambia calificadores y/o el codigo (con su titulo),
+    conservando en `original_code` el codigo que sugirio la maquina."""
+    if decision.status == schemas.IcfStatus.editado:
+        if decision.code:
+            if decision.code != row.code:
+                row.original_code = row.original_code or row.code
+            row.code, row.title = decision.code, decision.title
+        if decision.qualifier is not None:
+            row.qualifier = decision.qualifier
+        if decision.qualifier_cn is not None:
+            row.qualifier_cn = decision.qualifier_cn
+        if decision.qualifier_cl is not None:
+            row.qualifier_cl = decision.qualifier_cl
+    row.status = decision.status.value
+    row.decided_at = datetime.utcnow()
+    row.decided_by_id = user_id
+    db.commit()
+    db.refresh(row)
+    return row
