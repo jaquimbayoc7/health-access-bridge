@@ -247,4 +247,17 @@ Se evaluó un modelo externo (Claude Sonnet 5.5, por API) y **se descartó por p
 
 ---
 
+## Adenda (7 de octubre de 2026): resultado de la escalera de modelos abiertos
+
+Un día después del cierre del período se completó **HU-07f** (2 pts; 102 de 146 pts, 69,9 %). El resultado cambia la lectura del episodio de Qwen: el problema no era el enfoque local, sino el modelo y el equipo.
+
+- **`gemma4:e4b` es el mínimo viable provisional:** funciones, precisión 43 % contra 29 % de la similitud; estructuras, cobertura 86 % contra 67 %; 3,4 s con una GPU de 8 GB y ~15 s solo con CPU de 10 núcleos (pistas orientativas, no validadas por un médico). `gemma4:e2b`, `medgemma:4b` y `qwen2.5:3b` no la superan de forma útil.
+- **Un resultado inválido que parecía válido.** La primera corrida con Gemma 4 dio cifras idénticas a la similitud porque el motor no interpretaba el JSON en bloque de código ni el razonamiento previo del modelo, y caía al respaldo en silencio. Se detectó por el aviso del script y se corrigió; la lección es leer los avisos antes de comparar tablas.
+- **Una corrección propia.** En un resumen intermedio se atribuyó a `medgemma:4b` una fila que era de la corrida inválida; se corrigió antes de documentar.
+- **Qué falta:** licencias de Gemma, validación clínica (HU-07g) y la recomendación de máquina (HU-07h). Los modelos de 12B a 31B no se midieron.
+
+Detalle: [`PRUEBAS_HU07F_MODELOS_ABIERTOS.md`](./PRUEBAS_HU07F_MODELOS_ABIERTOS.md).
+
+---
+
 *Datos extraídos de la API de GitHub (`gh api`), `git log` local y las mediciones ejecutadas en el servidor físico el 5 y 6 de octubre de 2026 (detalle en `PRUEBAS_HU07_SERVIDOR_FISICO.md`).*
