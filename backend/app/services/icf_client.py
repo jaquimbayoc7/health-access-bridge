@@ -12,6 +12,8 @@ import time
 from typing import Any, Dict, Optional
 from urllib import error, request
 
+from ..causes import normalize_cause
+
 DEFAULT_MODEL = "gemma4:e4b"  # minimo viable provisional (HU-07f)
 DEFAULT_TIMEOUT_S = 20.0  # diagnostico de conexion
 DEFAULT_SUGGEST_TIMEOUT_S = 90.0  # una sugerencia: ~3 s con GPU, ~15 s solo CPU; con holgura para la carga del modelo
@@ -57,7 +59,7 @@ def build_patient_context(patient: Any, diag_cie: Optional[str], clinical_notes:
     context: Dict[str, Any] = {
         "age": patient.edad,
         "gender": patient.genero,
-        "cause": patient.causa_deficiencia,
+        "cause": normalize_cause(patient.causa_deficiencia),
         "cat_fisica": patient.cat_fisica,
         "cat_psicosocial": patient.cat_psicosocial,
         "levels": levels,

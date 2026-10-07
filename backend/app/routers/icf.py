@@ -11,6 +11,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .. import crud, dependencies, models, schemas
+from ..causes import OFFICIAL_CAUSES
 from ..services import icf_client
 
 router = APIRouter(
@@ -51,6 +52,14 @@ def icf_health(
     Solo administradores. No expone la URL ni el token del servidor.
     """
     return icf_client.check_health()
+
+
+@router.get("/causes")
+def icf_causes(
+    current_user: models.User = Depends(dependencies.get_current_active_user),
+):
+    """Causas de la deficiencia del Anexo Tecnico de la Resolucion 1239 de 2022 (21 opciones, 3 grupos)."""
+    return OFFICIAL_CAUSES
 
 
 @patient_router.post("/{patient_id}/icf-suggestions", response_model=schemas.IcfSuggestionSet)

@@ -122,6 +122,11 @@ class TestGenerate:
         assert payload["age"] == 34 and payload["levels"] == {"D1": 70, "D2": 60, "D3": 80, "D4": 50, "D5": 65, "D6": 75}
         assert payload["diag_cie"] == "M54 Dorsalgia" and payload["clinical_notes"] == "Lumbalgia cronica"
 
+    def test_cause_is_normalized_to_the_official_list(self, client, auth_headers_medico, db, medico_user, fake_service):
+        legacy = _make_patient(db, medico_user.id, causa_deficiencia="Accidente laboral")
+        _generate(client, auth_headers_medico, legacy.id)
+        assert fake_service[-1]["payload"]["cause"] == "Accidente de trabajo"
+
     def test_snapshot_of_clinical_inputs_is_saved(self, client, auth_headers_medico, patient, fake_service, db):
         _generate(client, auth_headers_medico, patient.id, {"diag_cie": "G80 Paralisis cerebral", "clinical_notes": "Espastica"})
         row = db.query(models.IcfSuggestion).filter_by(patient_id=patient.id).first()
