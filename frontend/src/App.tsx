@@ -10,6 +10,7 @@ import LoginLanding from "./pages/LoginLanding";
 import Dashboard from "./pages/Dashboard";
 import Patients from "./pages/Patients";
 import Predictions from "./pages/Predictions";
+import FunctionalProfile from "./pages/FunctionalProfile";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import AdminPanel from "./pages/AdminPanel";
@@ -49,6 +50,7 @@ const App = () => (
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/patients" element={<Patients />} />
                 <Route path="/predictions" element={<Predictions />} />
+                <Route path="/functional-profile" element={<FunctionalProfile />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/predictive-guide" element={<PredictiveGuide />} />
                 <Route path="/help" element={<Help />} />
