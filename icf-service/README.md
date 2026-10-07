@@ -138,7 +138,8 @@ Comprobación desde fuera de la tailnet: sin token o con token falso debe dar `4
 | `ICF_LLM_URL` | URL pública de Funnel, sin `/` final |
 | `ICF_LLM_TOKEN` | el token del Caddyfile (secreto) |
 | `ICF_LLM_MODEL` | `qwen2.5:3b` |
-| `ICF_LLM_TIMEOUT_S` | `90` (se cargó `20` el 06-oct-2026 y se queda corto: una sugerencia con el modelo local tarda de 24 a 55 s) |
+| `ICF_LLM_TIMEOUT_S` | `20` (solo el diagnóstico `/icf/health`) |
+| `ICF_SUGGEST_TIMEOUT_S` | `90` por defecto (opcional; tiempo de espera de una sugerencia: ~3 s con GPU y ~15 s solo con CPU con `gemma4:e4b`) |
 | `ICF_LLM_KEEP_ALIVE` | `30m` |
 
 Comprobación: con un token de login de administrador, `GET /icf/health` debe devolver `reachable: true` y `model_available: true`. La respuesta nunca incluye la URL ni el token.

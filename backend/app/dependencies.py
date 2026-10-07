@@ -50,6 +50,16 @@ def get_current_active_admin(current_user: models.User = Depends(get_current_act
         )
     return current_user
 
+def get_accessible_patient(db: Session, patient_id: int, current_user: models.User) -> models.Patient:
+    """Paciente al que el usuario tiene acceso: el admin ve cualquiera; el medico solo los suyos."""
+    patient = crud.get_patient(db, patient_id=patient_id)
+    if patient is None:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    if current_user.role != "admin" and patient.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Operación no permitida. No eres el propietario de este paciente.")
+    return patient
+
+
 # CORRECCIÓN 5: Renombrada de 'is_physician' a 'get_current_active_medico'
 # ESTA ES LA CORRECCIÓN PRINCIPAL QUE SOLUCIONA EL ERROR DE DESPLIEGUE
 def get_current_active_medico(current_user: models.User = Depends(get_current_active_user)) -> models.User:

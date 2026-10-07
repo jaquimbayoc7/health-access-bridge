@@ -37,10 +37,13 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { CAUSE_GROUPS, isOfficialCause } from '@/lib/causes';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { patientService, Patient, PatientCreate } from '@/services/patients';
@@ -538,11 +541,20 @@ export default function Patients() {
                     <SelectValue placeholder={t('deficiencyCause')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Enfermedad general">Enfermedad general</SelectItem>
-                    <SelectItem value="Accidente de tránsito">Accidente de tránsito</SelectItem>
-                    <SelectItem value="Alteración genética o hereditaria">Alteración genética o hereditaria</SelectItem>
-                    <SelectItem value="Complicaciones durante el parto">Complicaciones durante el parto</SelectItem>
-                    <SelectItem value="Violencia por delincuencia común">Violencia por delincuencia común</SelectItem>
+                    {formData.causa_deficiencia && !isOfficialCause(formData.causa_deficiencia) && (
+                      <SelectGroup>
+                        <SelectLabel>Valor anterior (no oficial)</SelectLabel>
+                        <SelectItem value={formData.causa_deficiencia}>{formData.causa_deficiencia}</SelectItem>
+                      </SelectGroup>
+                    )}
+                    {CAUSE_GROUPS.map((group) => (
+                      <SelectGroup key={group.label}>
+                        <SelectLabel>{group.label}</SelectLabel>
+                        {group.options.map((option) => (
+                          <SelectItem key={option} value={option}>{option}</SelectItem>
+                        ))}
+                      </SelectGroup>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

@@ -65,7 +65,7 @@ services:
       - key: ICF_LLM_TOKEN
         sync: false
       - key: ICF_LLM_MODEL
-        value: qwen2.5:3b
+        value: gemma4:e4b
       - key: ICF_LLM_TIMEOUT_S
         value: "20"
       - key: ICF_LLM_KEEP_ALIVE
@@ -137,7 +137,7 @@ services:
       - key: ICF_LLM_TOKEN
         sync: false
       - key: ICF_LLM_MODEL
-        value: qwen2.5:3b
+        value: gemma4:e4b
       - key: ICF_LLM_TIMEOUT_S
         value: "20"
       - key: ICF_LLM_KEEP_ALIVE
@@ -209,7 +209,7 @@ services:
       - key: ICF_LLM_TOKEN
         sync: false
       - key: ICF_LLM_MODEL
-        value: qwen2.5:3b
+        value: gemma4:e4b
       - key: ICF_LLM_TIMEOUT_S
         value: "20"
       - key: ICF_LLM_KEEP_ALIVE

@@ -228,6 +228,7 @@ app.include_router(users.router, prefix="/users", tags=["Users & Authentication"
 app.include_router(patients.router, prefix="/patients", tags=["Patients"])
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 app.include_router(icf.router, prefix="/icf", tags=["ICF"])
+app.include_router(icf.patient_router, prefix="/patients", tags=["ICF"])
 
 
 @app.get("/", tags=["Root"])
