@@ -4,6 +4,9 @@ import profile0Image from '@/assets/profile-0.jpg';
 import profile1Image from '@/assets/profile-1.jpg';
 import profile2Image from '@/assets/profile-2.jpg';
 import { BookOpen } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { IcfGuide } from '@/components/IcfGuide';
 
 interface ProfileData {
   title: string;
@@ -15,6 +18,8 @@ interface ProfileData {
 
 export default function PredictiveGuide() {
   const { language } = useLanguage();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const section = searchParams.get('section') === 'icf' ? 'icf' : 'barriers';
 
   const profiles: Record<number, ProfileData> = {
     0: {
@@ -127,6 +132,17 @@ export default function PredictiveGuide() {
         </p>
       </div>
 
+      <Tabs value={section} onValueChange={(v) => setSearchParams(v === 'barriers' ? {} : { section: v })}>
+        <TabsList className="mb-6">
+          <TabsTrigger value="barriers">{language === 'es' ? 'Niveles de barrera' : 'Barrier levels'}</TabsTrigger>
+          <TabsTrigger value="icf">{language === 'es' ? 'Perfil Funcional ICF' : 'ICF Functional Profile'}</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="icf">
+          <IcfGuide />
+        </TabsContent>
+
+        <TabsContent value="barriers">
       {/* Profiles */}
       <div className="space-y-8">
         {Object.entries(profiles).map(([key, profile]) => (
@@ -187,6 +203,8 @@ export default function PredictiveGuide() {
           </Card>
         ))}
       </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
