@@ -56,6 +56,25 @@ jobs:
           ENVIRONMENT: production
         run: cd backend && pytest app/tests/ -v --tb=short
 
+  icf-service-test:
+    name: ICF Service Tests (Prod)
+    runs-on: ubuntu-26.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install icf-service dependencies
+        run: pip install -r icf-service/requirements.txt -r icf-service/requirements-review.txt
+
+      # Las pruebas de integracion con PostgreSQL + pgvector y el catalogo se omiten en CI:
+      # el catalogo CIF-IA tiene derechos de la OMS y no esta en el repositorio (HU-07e).
+      - name: Run icf-service tests (HU-07)
+        run: cd icf-service && pytest -v --tb=short
   frontend-build:
     name: Frontend Build (Prod)
     runs-on: ubuntu-26.04
@@ -94,7 +113,7 @@ jobs:
     name: "🔐 Approval Gate — Deploy to Production"
     runs-on: ubuntu-26.04
     environment: production
-    needs: [backend-test, frontend-build]
+    needs: [backend-test, icf-service-test, frontend-build]
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
 
     steps:

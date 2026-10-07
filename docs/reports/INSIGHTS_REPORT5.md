@@ -2,7 +2,7 @@
 > **Fuente:** GitHub API · `jaquimbayoc7/health-access-bridge` · `git log` · mediciones en el servidor físico
 > **Período analizado:** 26 Feb 2026 – 6 Oct 2026 (acumulado total del proyecto)
 > **Δ Desde último reporte:** 23 Sep 2026 – 6 Oct 2026 (inicio del Momento 3: HU-07a y HU-07b, y el episodio del modelo local Qwen)
-> **Generado:** 6 Oct 2026
+> **Generado:** 6 Oct 2026 (con tres adendas del 7 Oct 2026)
 
 Este reporte tiene un tema central: **lo que pasó con el modelo local `qwen2.5:3b`** y cómo cambió la arquitectura de HU-07. Los datos técnicos completos (entorno, tablas, método) están en [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](./PRUEBAS_HU07_SERVIDOR_FISICO.md); aquí se resumen los **hallazgos y lo aprendido**.
 
@@ -257,6 +257,68 @@ Un día después del cierre del período se completó **HU-07f** (2 pts; 102 de 
 - **Qué falta:** licencias de Gemma, validación clínica (HU-07g) y la recomendación de máquina (HU-07h). Los modelos de 12B a 31B no se midieron.
 
 Detalle: [`PRUEBAS_HU07F_MODELOS_ABIERTOS.md`](./PRUEBAS_HU07F_MODELOS_ABIERTOS.md).
+
+---
+
+## Segunda adenda (7 de octubre de 2026): backend, pantalla, producción en el PC propio y E2E
+
+El mismo día se cerraron **HU-07c, HU-07d, HU-07h y HU-07e** (5 + 5 + 3 + 2 pts). El proyecto pasa de 102 a **117 de 146 pts (80,1 %)** y el Momento 3 a **30 de 59 (50,8 %)**. Queda solo **HU-07g** (validación clínica, 3 pts) en HU-07; el resto pendiente es HU-08, HU-09 y HU-10 (26 pts). El repositorio llega a 219 commits; entre el 6 y el 7 de octubre hubo 20 (12 `feat`, 4 `docs`, 2 `fix`, 1 `test`, 1 `perf`).
+
+| Métrica | R5 (6-oct) | Esta adenda (7-oct) |
+|---|---|---|
+| Puntos completados | 100 / 146 (68,5 %) | 117 / 146 (80,1 %) |
+| Pruebas backend | 52 | 105 (+53: sugerencias, decisiones y causas; 89 % de cobertura) |
+| Pruebas frontend | 16 | 38 (+22: pantalla y guía) |
+| Pruebas del servicio ICF | 68 | 75 (67 corren en CI, 8 locales) |
+| Pruebas E2E | 7 specs | 12 (+5 del Perfil Funcional ICF) |
+| CI | las pruebas del servicio ICF no corrían (brecha de la sección 7) | job `icf-service-test` en dev, qa y prod: brecha cerrada |
+
+### Qué se entregó
+
+- **Backend (07c):** generar, consultar y decidir sugerencias con historial de lotes, 503 sin filtrar secretos, 422 para menores de 6 años y el payload sin nombre, documento ni orientación sexual. Se agregó la lista oficial de 21 causas de la deficiencia del Anexo 1239.
+- **Pantalla (07d):** «Perfil Funcional ICF» con aceptar, editar y rechazar cada código, reporte copiable y PDF.
+- **Producción en el PC propio (07h):** Docker (base, servicio ICF, Caddy), Ollama con GPU y túnel con token. Medido: ~2,6 s por sugerencia con el modelo en memoria, ~18 s el primer pedido tras 30 min sin uso, 5 médicos a la vez hasta 11,6 s. Render, la prueba en QA, el reinicio y la tapa del portátil quedaron verificados por el responsable.
+- **E2E y CI (07e):** 5 casos de Playwright con el servicio ICF simulado, verificados 5/5 contra DEV; el manual de operación (`docs/MANUAL_OPERACION_ICF.md`); suites 8 a 11 en `TEST_CASES.md`.
+
+### Hallazgos y lo aprendido
+
+1. **Probar en DEV con un uso real produjo mejoras que ninguna prueba automática habría pedido.** Tras las pruebas del responsable se agregaron enlaces a la CIE-10, ejemplos de notas clínicas sintéticos, una guía de uso en dos secciones en la Guía Predictiva y el avance del módulo en Ayuda. Lección: la retroalimentación de uso temprana vale más que ampliar casos de prueba.
+2. **Los secretos casi terminan sincronizados.** El `.env` se creó dentro del repositorio, que vive en OneDrive. Se detectó antes de usarlo, se borró, se movió a `%USERPROFILE%\.hab-icf\.env` y se regeneraron el token y la clave de la base. Regla: los secretos se generan siempre fuera de la carpeta sincronizada.
+3. **Un defecto que solo aparece por la vía pública.** `/api/tags` daba 403 por el túnel porque Ollama rechaza encabezados `Host` que no son locales; se resolvió en Caddy. Por eso `check.ps1` comprueba también la ruta pública y una sugerencia completa, no solo el servicio local.
+4. **Decisión de prueba E2E:** simular la lista de pacientes y los endpoints ICF con `page.route` evita depender de la GPU y de los datos compartidos de QA. El costo es que el E2E no ejercita el modelo real; esa ruta se cubre con `/icf/health` y una sugerencia manual en QA.
+5. **Un fallo de la propia prueba:** el primer intento del E2E de la guía falló por asumir que la interfaz estaba en español. Se corrigió aceptando ambos idiomas.
+6. **Deuda de lint heredada:** 5 errores en archivos anteriores a HU-07 (`Login.test.tsx`, `command.tsx`, `textarea.tsx`, `useJWTExpiry.ts`, `api.ts`). Ninguno es de esta historia; conviene un ticket aparte.
+7. **Higiene de commits:** dos mensajes de commit salieron con una marca de orden de bytes (BOM) al inicio por la codificación de PowerShell; es cosmético y se evitará en los siguientes.
+
+### Riesgos abiertos
+
+| Riesgo | Estado |
+|---|---|
+| Confiabilidad clínica sin medir: las cifras usan pistas orientativas | 🟡 HU-07g con la profesional de salud |
+| Licencias de Gemma y MedGemma sin verificar | 🟡 Antes de uso clínico real |
+| Producción en un equipo personal, sin redundancia | 🟡 Respaldo por similitud, arranque automático y manual de operación |
+| Pruebas de integración con catálogo omitidas en CI (catálogo con derechos de la OMS) | 🟢 Aceptado; se corren en local |
+| Promoción `develop` → `staging` → `master` pendiente para todo HU-07 | 🟡 Se agrupa en un solo ciclo de PRs |
+
+---
+
+## Tercera adenda (7 de octubre de 2026): instrumento de validación clínica y licencias
+
+Se preparó **HU-07g** y se verificaron las licencias. HU-07g **no se da por completada**: el instrumento está listo, pero falta la revisión de la profesional de salud (Emilly Maria Celis); sus 3 pts siguen sin acreditarse (117 de 146, 80,1 %).
+
+- **Un diseño para no sesgar a la revisora.** Si solo valorara la sugerencia, tendería a aceptarla. Por eso la hoja tiene una **Fase A a ciegas** (escribe los códigos que ella elegiría, sin ver la sugerencia) y una **Fase B** de valoración. La cobertura medida contra la Fase A es el dato menos sesgado. Aun así, es **una sola revisora y 24 casos sintéticos**: se mide calidad, no se garantiza nada en pacientes reales.
+- **Umbrales propuestos, no impuestos.** Precisión estricta ≥ 60 % y flexible ≥ 80 %, cobertura a ciegas ≥ 60 %, calificadores ≥ 80 %. Son una propuesta mía que debe confirmar el responsable con la revisora; cambiarlos es editar una constante.
+- **Licencias: dos conclusiones que cambian el riesgo.** (1) **Gemma 4 es Apache 2.0**: el modelo en producción se puede usar, y el riesgo que figuraba como abierto desde el 6 de octubre queda cerrado. (2) **MedGemma prohíbe el uso clínico** (diagnóstico o tratamiento, incluso en investigación, sin autorización regulatoria): era la opción «médica» y habría sido un error llevarla a producción; ya estaba descartada por calidad y ahora también por licencia. Queda una recomendación: consultar al INVIMA si el software podría considerarse dispositivo médico antes de un uso clínico real.
+- **Lección:** verificar la licencia antes de elegir un modelo, no después de medirlo. Se midieron MedGemma y Qwen 3B sin haber leído sus términos; ambos resultaron inutilizables para este uso por razones ajenas a la calidad.
+- **Datos del reporte que cambian:** servicio ICF 75 pruebas (67 en CI), total backend + frontend + servicio ICF = 218, más 12 E2E.
+
+| Riesgo | Estado |
+|---|---|
+| Licencias de Gemma y MedGemma sin verificar | 🟢 Cerrado: Gemma 4 Apache 2.0; MedGemma descartado |
+| Confiabilidad clínica sin medir | 🟡 Instrumento listo; falta la revisión (HU-07g) |
+| Encuadre regulatorio (¿dispositivo médico?) | 🟡 Consultar al INVIMA antes de un uso clínico real |
+
+Detalle: [`LICENCIAS_COMPONENTES_ICF.md`](./LICENCIAS_COMPONENTES_ICF.md) y [`PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](./PROTOCOLO_VALIDACION_CLINICA_HU07G.md).
 
 ---
 
