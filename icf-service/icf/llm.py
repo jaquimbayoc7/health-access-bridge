@@ -82,6 +82,12 @@ def parse_response(
     """Valida la respuesta del LLM y devuelve {componente: [(codigo, justificacion)]}. Descarta cualquier codigo
     que no sea candidato y los repetidos. Cada elemento puede ser texto (justificacion vacia) o un objeto
     {"code", "justificacion"}. Lanza ValueError si el JSON no es valido o no queda ningun codigo valido."""
+    if isinstance(text, str):
+        text = text.strip()
+        if text.startswith("```"):  # algunos modelos (Gemma) envuelven el JSON en un bloque de codigo
+            text = text.strip("`").strip()
+            if text[:4].lower() == "json":
+                text = text[4:].strip()
     try:
         data = json.loads(text)
     except (TypeError, ValueError) as exc:

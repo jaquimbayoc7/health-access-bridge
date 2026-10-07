@@ -143,6 +143,10 @@ Comprobación desde fuera de la tailnet: sin token o con token falso debe dar `4
 
 Comprobación: con un token de login de administrador, `GET /icf/health` debe devolver `reachable: true` y `model_available: true`. La respuesta nunca incluye la URL ni el token.
 
+## Modelo mínimo viable provisional (HU-07f, 7 de octubre de 2026)
+
+`gemma4:e4b` (6,6 GB) en modo `calidad`: en un PC con RTX 5050 de 8 GB mejora la selección sobre la similitud sola (funciones: precisión 43 % contra 29 %; estructuras: cobertura 86 % contra 67 %, con pistas no validadas por un médico) y tarda ~3,4 s; solo con CPU de 10 núcleos, ~15 s. Variables necesarias con Gemma 4: `ICF_LLM_MODEL=gemma4:e4b` e `ICF_LLM_THINK=false` (Gemma 4 razona antes de responder y envuelve el JSON en un bloque de código; el motor ya lo acepta). `ICF_LLM_NUM_GPU=0` fuerza CPU para dimensionar equipos sin GPU. Máquina mínima: GPU de 8 GB, 16 GB de RAM y 6 núcleos, o solo CPU de 8 núcleos con 16 GB. El servidor i3 de 12 GB no alcanza. Detalle en [`docs/reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md`](../docs/reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md).
+
 ## Medidas de referencia (5 y 6 de octubre de 2026, i3 / 12 GB, sin GPU)
 
 `qwen2.5:3b` (Q4_K_M, 1,9 GB): una respuesta mínima tarda 4,1 s en red local y 8,8 s por Funnel; leer el prompt cuesta ~0,05 s por token (21 tok/s) y escribir ~0,1 s por token (10 tok/s). El motor completo tardó 55,6 s en la primera versión, 22,9 s tras reducir lo que se le envía, y en la comparación final 24 s (modo rápido) y 46 s (modo calidad), contra 0,6 s de la similitud sola; además, el modelo local empeoró la selección frente a la similitud. `gemma4:e4b` ocupa 9,6 GB, no cabe junto a Qwen en 12 GB y no se evaluó. Tablas completas y método en [`docs/reports/PRUEBAS_HU07_SERVIDOR_FISICO.md`](../docs/reports/PRUEBAS_HU07_SERVIDOR_FISICO.md). El `ICF_LLM_TIMEOUT_S` de Render debe ser de 90 s mientras se use un modelo con latencia de decenas de segundos.

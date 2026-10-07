@@ -72,6 +72,23 @@ def test_chat_fills_stats_and_supports_no_format(fake_ollama):
     assert stats == {"prompt_eval_count": 7, "eval_count": 9, "load_ms": 5, "prompt_eval_ms": 70, "eval_ms": 90, "total_ms": 200}
 
 
+def test_chat_sends_think_only_when_configured(fake_ollama, monkeypatch):
+    url, calls, _ = fake_ollama
+    monkeypatch.delenv("ICF_LLM_THINK", raising=False)
+    ollama.chat_json(url, "gemma4:e4b", [{"role": "user", "content": "hola"}], None)
+    assert "think" not in calls[-1][1]
+    monkeypatch.setenv("ICF_LLM_THINK", "false")
+    ollama.chat_json(url, "gemma4:e4b", [{"role": "user", "content": "hola"}], None)
+    assert calls[-1][1]["think"] is False
+
+
+def test_parse_response_accepts_json_inside_code_fence():
+    from icf.llm import parse_response
+
+    out = parse_response('```json\n{"b": ["b730"], "s": []}\n```', ["b730"], ["s750"])
+    assert out["b"] == [("b730", "")]
+
+
 def test_chat_retries_with_plain_json_when_schema_is_rejected(fake_ollama):
     url, calls, state = fake_ollama
     state["reject_schema"] = True
