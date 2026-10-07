@@ -9,7 +9,7 @@
 
 ## Resumen Ejecutivo
 
-El proyecto lleva **112 de 146 puntos (76,7 %)**. En el Momento 3 se completaron **HU-07a** (servidor propio, túnel, catálogo y embeddings) y **HU-07b** (motor de sugerencia de códigos CIF y herramientas de evaluación), 13 de los 59 puntos del momento. El 7 de octubre se completó **HU-07f** (escalera de modelos abiertos): **15 de 59**. Ese mismo día se completaron **HU-07c** (backend de sugerencias) y **HU-07d** (pantalla): **25 de 59**.
+El proyecto lleva **115 de 146 puntos (78,8 %)**. En el Momento 3 se completaron **HU-07a** (servidor propio, túnel, catálogo y embeddings) y **HU-07b** (motor de sugerencia de códigos CIF y herramientas de evaluación), 13 de los 59 puntos del momento. El 7 de octubre se completó **HU-07f** (escalera de modelos abiertos): **15 de 59**. Ese mismo día se completaron **HU-07c** (backend de sugerencias) y **HU-07d** (pantalla): **25 de 59**. También ese día se completó **HU-07h** (producción en el PC propio, con Render, QA, reinicio y tapa verificados): **28 de 59**.
 
 El hallazgo central del período es que **el modelo local `qwen2.5:3b` no sirve para seleccionar códigos**: en el servidor físico (Intel i3, 12 GB, sin GPU) tardó de 24 a 46 s por sugerencia y **eligió peor que la búsqueda por similitud sola**, que responde en 0,6 s. Se evaluó pasar a un modelo externo por API (Claude Sonnet 5.5) y **se descartó por privacidad**: los datos de salud son sensibles (Ley 1581 de 2012) y todo debe quedar en infraestructura propia. La decisión del 6 de octubre es **buscar el modelo abierto mínimo viable**: probar la escalera Gemma 4 y MedGemma en un PC de pruebas con GPU (i5-13450HX, 32 GB de RAM, RTX 5050 de 8 GB) y, con esas medidas, recomendar la máquina de producción. HU-07 se reestima de 25 a **33 puntos**, con tres sub-historias nuevas: escalera de modelos abiertos (07f, 2 pts), validación clínica con un médico (07g, 3 pts) y dimensionamiento de la máquina (07h, 3 pts). **Decisión del 7 de octubre:** la producción corre en el PC propio (RTX 5050 de 8 GB), así que no se compra hardware. La revisión clínica (07g) la hará Emilly Maria Celis, profesional en salud.
 
@@ -44,7 +44,7 @@ Quedan por confirmar las **licencias de uso** de Gemma y MedGemma antes de lleva
 | 07e | Pruebas, manual de operación (Ollama, modelos y requisitos de la máquina) y reportes | 2 | 📋 Pendiente |
 | 07f | Escalera de modelos abiertos (Gemma 4 / MedGemma) en el PC de pruebas y modelo mínimo viable: `gemma4:e4b` | 2 | ✅ Completada 7-oct |
 | 07g | Validación clínica con un médico y umbral de confiabilidad | 3 | 📋 Pendiente (**nueva**) |
-| 07h | Despliegue y operación en el PC de producción (i5-13450HX, 32 GB, RTX 5050 de 8 GB) | 3 | 🟡 En curso: servicio y túnel operativos en el PC; falta Render y la prueba de extremo a extremo en QA |
+| 07h | Despliegue y operación en el PC de producción (i5-13450HX, 32 GB, RTX 5050 de 8 GB) | 3 | ✅ Completada (07-oct-2026): servicio y túnel operativos en el PC, Render configurado, prueba en QA, reinicio y tapa verificados |
 
 **Logros técnicos del período:**
 - Catálogo CIF-IA de **1.593 códigos** extraído de un PDF escaneado con OCR y revisado (3 códigos sin definición en el libro quedan fuera, pendientes de resolver).
@@ -53,7 +53,7 @@ Quedan por confirmar las **licencias de uso** de Gemma y MedGemma antes de lleva
 - **Motor:** reglas fijas (edad, calificador, capítulos), actividades desde la lista cerrada del Anexo (32 códigos), funciones y estructuras por búsqueda semántica entre los códigos de 3 dígitos, validación contra el catálogo y respaldo por similitud.
 - **Mediciones:** latencia, calidad de la búsqueda y comparación de tres modos, documentadas con su método y sus limitaciones.
 
-**Pendiente de la HU:** medir la confiabilidad con un médico, recomendar la máquina de producción (borrador en el informe de HU-07f) y construir backend y pantalla.
+**Pendiente de la HU:** medir la confiabilidad con un médico (07g) y cerrar pruebas automáticas, CI y manual (07e).
 
 ### 📋 HU-08, HU-09, HU-10
 Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y feedback de usuarios (8 pts) y Despliegue final y manuales (5 pts). HU-10 suma el manual de operación del servicio ICF.
@@ -90,13 +90,13 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 
 | Métrica | Valor |
 |---------|-------|
-| **Puntos completados** | 112 pts |
-| **Puntos pendientes** | 34 pts |
+| **Puntos completados** | 115 pts |
+| **Puntos pendientes** | 31 pts |
 | **Total del proyecto** | 146 pts |
-| **Avance general** | 76,7 % |
+| **Avance general** | 78,8 % |
 | **Momento 1** | ✅ 100 % (63 pts) |
 | **Momento 2** | ✅ 100 % (24 pts) |
-| **Momento 3** | 🟡 42,4 % (25 de 59 pts) |
+| **Momento 3** | 🟡 47,5 % (28 de 59 pts) |
 | **Commits (`master`)** | 221 en 21 días activos (0,99 por día; 65 de ellos el 5 y 6 de octubre) |
 | **Pull Requests mergeados** | 42 (39 en este período, 16 solo el 6 de octubre) |
 | **Pruebas automáticas** | backend 105 · frontend 28 · servicio ICF 70 · **203 en total**; E2E 7 specs |
@@ -112,7 +112,7 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 |---|---|
 | **Privacidad:** con modelo local los datos no salen de la infraestructura propia (Ley 1581 de 2012) | 🟢 Mitigado por diseño; quedan por verificar las licencias de Gemma y MedGemma |
 | **Confiabilidad clínica sin medir:** las cifras actuales usan pistas no validadas por un médico | 🟡 Se mide en HU-07g |
-| **Producción en un PC portátil propio:** puede suspenderse o quedar sin internet, sin redundancia | 🟡 Respaldo por similitud, arranque automático, energía y copia de la base (HU-07h) |
+| **Producción en un PC portátil propio:** puede suspenderse o quedar sin internet, sin redundancia | 🟢 Mitigado (HU-07h): respaldo por similitud, arranque automático, energía sin suspensión y reinicio probado |
 | **Las 68 pruebas del servicio ICF no se ejecutan en CI** (hoy corren solo en local) | 🟡 Se agregan al pipeline en HU-07e |
 | **Protección de rama eludida** (17 bypass del propietario) y exceso de PRs de promoción | 🟡 Pendiente decidir la política |
 | **Seguimiento en GitHub desfasado** (milestone en 0 %, issue #7 con el alcance viejo) | 🟡 Crear las sub-historias como issues |
