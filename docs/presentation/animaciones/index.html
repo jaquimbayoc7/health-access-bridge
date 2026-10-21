@@ -18,7 +18,8 @@
   .sub{color:var(--muted);margin:0 0 18px;font-size:14px}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
   .card{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;flex-direction:column}
-  .card video{width:100%;display:block;background:#F0F2F4;aspect-ratio:16/9;object-fit:cover;object-position:top}
+  .card video,.card img{width:100%;display:block;background:#F0F2F4;aspect-ratio:16/9;object-fit:cover;object-position:top}
+  .card img{object-fit:contain;object-position:center}
   .card .b{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
   .tag{align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;color:#fff}
   .card h3{margin:0;font-size:16px}
@@ -32,7 +33,7 @@
 <body>
 <header><div class="in">
   <h1>Health Access Bridge: el proyecto en movimiento</h1>
-  <p>Cinco diagramas animados hechos con Archify: la arquitectura completa, el funcionamiento interno del servicio de IA (ICF) y los recorridos del médico y del administrador, desde que inician sesión hasta el Perfil Funcional ICF con IA local. Haz clic en una tarjeta para explorarla (buscar nodos, trazar una ruta, cambiar de tema, exportar).</p>
+  <p>Seis diagramas hechos con Archify: la arquitectura completa, el funcionamiento interno del servicio de IA (ICF), los recorridos del médico y del administrador, desde que inician sesión hasta el Perfil Funcional ICF con IA local, y el proceso de validación clínica con la médica revisora. Haz clic en una tarjeta para explorarla (buscar nodos, trazar una ruta, cambiar de tema, exportar).</p>
 </div></header>
 <main>
   <h2>Visión general</h2>
@@ -95,8 +96,22 @@
     </div>
   </div>
 
+  <h2>Validación clínica del Perfil Funcional ICF</h2>
+  <p class="sub">El proceso completo con la médica revisora, de la preparación al veredicto: qué se mide, cómo se decide y qué pasa si no se alcanza.</p>
+  <div class="grid">
+    <div class="card">
+      <img src="video/proceso-validacion-clinica.png" alt="Proceso de validación clínica: preparación y entrega, revisión de la médica en dos fases, cálculo de métricas y veredicto" loading="lazy"/>
+      <div class="b">
+        <span class="tag" style="background:var(--ok)">Validación · HU-07g</span>
+        <h3>Validación con la médica revisora</h3>
+        <p>Aprobar criterios y generar la hoja, reunión y entrega privada, Fase A a ciegas con gravedad 0–4 y Fase B, cálculo con IC y κ ponderado (mínimo 30 pares), y veredicto CUMPLE, NO CUMPLE o INCOMPLETO. Incluye la repetibilidad del sistema, que no requiere a la médica.</p>
+        <a class="go" href="proceso-validacion-clinica.html">Abrir el diagrama interactivo →</a>
+      </div>
+    </div>
+  </div>
+
   <div class="nota">
-    <b>Cómo se hicieron.</b> Con <a href="https://github.com/tt-a1i/archify">Archify</a> (licencia MIT): cada diagrama se describe en JSON (carpeta <code>fuentes/</code>) y <code>construir.mjs</code> lo valida y genera un HTML autosuficiente con animación de trazas, que se abre sin instalar nada. Los videos de esta página (<code>video/</code>) son grabaciones de 14 s de esas animaciones para usar en presentaciones. Todos los datos son sintéticos; no hay información de pacientes.
+    <b>Cómo se hicieron.</b> Con <a href="https://github.com/tt-a1i/archify">Archify</a> (licencia MIT): cada diagrama se describe en JSON (carpeta <code>fuentes/</code>) y <code>construir.mjs</code> lo valida y genera un HTML autosuficiente con animación de trazas, que se abre sin instalar nada. Los videos de esta página (<code>video/</code>) son grabaciones de 14 s de esas animaciones para usar en presentaciones; la imagen de la validación clínica es una captura del diagrama (el video se puede exportar desde el visor con <b>Exportar</b>). Todos los datos son sintéticos; no hay información de pacientes.
   </div>
 </main>
 </body>

@@ -1,16 +1,18 @@
 # Animaciones de Health Access Bridge (Archify)
 
-Diagramas animados del proyecto desde la perspectiva del **médico** y del **administrador**, hechos con [Archify](https://github.com/tt-a1i/archify) (licencia MIT, v3.0.1).
+Diagramas animados del proyecto desde la perspectiva del **médico** y del **administrador**, más el proceso de **validación clínica** con la médica revisora, hechos con [Archify](https://github.com/tt-a1i/archify) (licencia MIT, v3.0.1).
 
 | Archivo | Qué muestra |
 |---|---|
-| `index.html` | Página de entrada con los cinco diagramas y sus videos |
+| `index.html` | Página de entrada con los seis diagramas y sus videos o capturas |
 | `arquitectura-hab.html` | Arquitectura completa: actores, Render, túnel autenticado, PC propio con la IA y CI/CD |
 | `servicio-icf.html` | Servicio ICF por dentro: entrada segura, reglas, embedding, pgvector, selección por la IA, respaldo y validación final |
 | `recorrido-medico-pacientes.html` | Médico (1 de 2): acceso, registro de pacientes y predicción de barreras |
 | `recorrido-medico-icf.html` | Médico (2 de 2): Perfil Funcional ICF con IA local, decisión y reporte |
 | `recorrido-administrador.html` | Administrador: usuarios, límite de acceso (403) y salud del servicio de IA |
+| `proceso-validacion-clinica.html` | Validación clínica (HU-07g): preparación, reunión y entrega, Fase A a ciegas y Fase B, cálculo con IC y κ ponderado, y veredicto. Tipo *workflow* con carriles |
 | `video/*.webm` | Grabación de 14 s de cada animación (para insertar en la presentación) |
+| `video/proceso-validacion-clinica.png` | Captura del diagrama de validación clínica (portada de su tarjeta; el video se exporta desde el visor con **Exportar**) |
 | `fuentes/*.json` | Fuente de cada diagrama (esquema de Archify) |
 | `construir.mjs` | Valida y genera los HTML (agrega el idioma español) |
 | `.evidencia/` | Resúmenes de validación de la última construcción |
