@@ -1,0 +1,98 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Validación clínica del Perfil Funcional ICF con la médica revisora",
+    "subtitle": "HU-07g · de la preparación al veredicto, con 24 casos sintéticos",
+    "output": "proceso-validacion-clinica.html",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "external": { "label": "Persona (médica o equipo)" },
+        "backend": { "label": "Script o servicio" },
+        "security": { "label": "Decisión o control" }
+      }
+    }
+  },
+  "lanes": [
+    { "id": "equipo", "label": "Equipo del proyecto" },
+    { "id": "medica", "label": "Médica revisora" },
+    { "id": "sistema", "label": "Sistema (scripts y servicio ICF)" },
+    { "id": "excepcion", "label": "Si no se alcanza", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "p1", "label": "1 · Preparación y entrega", "fromCol": 0, "toCol": 1 },
+    { "id": "p2", "label": "2 · Revisión clínica", "fromCol": 2, "toCol": 2 },
+    { "id": "p3", "label": "3 · Cálculo", "fromCol": 3, "toCol": 3 },
+    { "id": "p4", "label": "4 · Veredicto", "fromCol": 4, "toCol": 4 }
+  ],
+  "mainPath": ["aprobar", "entrega", "faseA", "faseB", "calcular", "veredicto", "cumple"],
+  "nodes": [
+    { "id": "aprobar", "lane": "equipo", "col": 0, "type": "security", "label": "Aprobar criterios", "sublabel": "umbrales y pisos del IC", "tag": "responsable", "width": 132, "yOffset": -48 },
+    { "id": "generar", "lane": "equipo", "col": 0, "type": "backend", "label": "Generar la hoja", "sublabel": "review_sheet.py generate", "tag": "24 casos", "width": 132, "yOffset": 48 },
+    { "id": "entrega", "lane": "equipo", "col": 1, "type": "external", "label": "Reunión y entrega", "sublabel": "hoja por canal privado", "tag": "catálogo OMS", "width": 132 },
+    { "id": "cumple", "lane": "equipo", "col": 4, "type": "external", "label": "Piloto con médicos", "sublabel": "borrador de apoyo", "tag": "si CUMPLE", "width": 132 },
+
+    { "id": "faseA", "lane": "medica", "col": 2, "type": "external", "label": "Fase A a ciegas", "sublabel": "códigos y gravedad 0–4", "tag": "sin ver la sugerencia", "width": 132, "yOffset": -48 },
+    { "id": "faseB", "lane": "medica", "col": 2, "type": "external", "label": "Fase B y faltantes", "sublabel": "valora cada sugerencia", "tag": "60 a 90 min en total", "width": 132, "yOffset": 48 },
+
+    { "id": "repetir", "lane": "sistema", "col": 2, "type": "backend", "label": "Repetibilidad", "sublabel": "5 corridas por caso", "tag": "sin la médica", "width": 132 },
+    { "id": "calcular", "lane": "sistema", "col": 3, "type": "backend", "label": "Calcular métricas", "sublabel": "review_sheet.py score", "tag": "IC y κ", "width": 132 },
+    { "id": "veredicto", "lane": "sistema", "col": 4, "type": "security", "label": "Veredicto", "sublabel": "criterios con meta y piso", "tag": "automático", "width": 132 },
+
+    { "id": "sinaprobar", "lane": "excepcion", "col": 4, "type": "security", "label": "Sin aprobar", "sublabel": "revisar y ajustar", "tag": "sin uso clínico", "width": 132 }
+  ],
+  "edges": [
+    { "id": "e-aprobar", "from": "aprobar", "to": "entrega", "label": "criterios", "variant": "emphasis", "role": "main" },
+    { "id": "e-hoja", "from": "generar", "to": "entrega", "label": "hoja lista", "variant": "emphasis" },
+    { "id": "e-entrega", "from": "entrega", "to": "faseA", "label": "hoja", "variant": "emphasis", "role": "main" },
+    { "id": "e-fases", "from": "faseA", "to": "faseB", "label": "luego", "variant": "emphasis", "role": "main" },
+    { "id": "e-llena", "from": "faseB", "to": "calcular", "label": "hoja llena", "variant": "emphasis", "role": "main" },
+    { "id": "e-estable", "from": "repetir", "to": "calcular", "label": "estabilidad", "variant": "dashed" },
+    { "id": "e-calcular", "from": "calcular", "to": "veredicto", "label": "criterios", "variant": "emphasis", "role": "main" },
+    { "id": "e-cumple", "from": "veredicto", "to": "cumple", "label": "CUMPLE", "variant": "emphasis", "role": "main", "fromSide": "top", "toSide": "bottom" },
+    { "id": "e-falla", "from": "veredicto", "to": "sinaprobar", "label": "NO CUMPLE o INCOMPLETO", "variant": "security", "role": "error", "fromSide": "bottom", "toSide": "top" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Qué se mide",
+      "items": [
+        "Precisión de lo sugerido: estricta ≥ 60 % y flexible ≥ 80 % en funciones y estructuras; actividades ≥ 80 %",
+        "Cobertura a ciegas ≥ 60 %: cuánto de lo que ella eligió estaba en la sugerencia",
+        "Calificador: κ ponderado ≥ 0,50 sobre al menos 30 códigos coincidentes",
+        "Casos revisados: al menos 20 de 24"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Cómo se decide",
+      "items": [
+        "Cada proporción debe alcanzar su meta y, además, su límite inferior (IC 95 % de Wilson) un piso: 40 %, 60 % y 40 %, pendientes de aprobación",
+        "El IC por bootstrap de casos se informa, pero no decide",
+        "Con menos de 30 pares el calificador queda INCOMPLETO en vez de decidir con un κ poco fiable"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Qué no cubre",
+      "items": [
+        "Una sola revisora: no se mide el acuerdo entre profesionales",
+        "24 casos sintéticos, no pacientes reales",
+        "Los umbrales son criterio del proyecto, no una norma clínica",
+        "La hoja trae títulos del catálogo de la OMS: no se publica"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Después del veredicto",
+      "items": [
+        "CUMPLE: piloto con médicos y la leyenda de borrador que ya muestra la pantalla",
+        "NO CUMPLE: revisar errores por componente; ajustar búsqueda o reglas, probar un modelo mayor o limitar el alcance",
+        "El resultado se documenta en el protocolo y en BACKLOG.md; recién entonces se da HU-07g por completa"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Recorrido del médico (2 de 2): Perfil Funcional ICF con IA local",
+    "output": "recorrido-medico-icf.html",
+    "viewBox": [
+      1080,
+      620
+    ],
+    "column_fit": "spread",
+    "animation": "trace",
+    "quality_profile": "showcase"
+  },
+  "participants": [
+    {
+      "id": "medico",
+      "type": "external",
+      "label": "Médico",
+      "sublabel": "profesional de salud"
+    },
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "Frontend",
+      "sublabel": "React · es/en"
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Backend",
+      "sublabel": "FastAPI · JWT"
+    },
+    {
+      "id": "db",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "pacientes y sugerencias"
+    },
+    {
+      "id": "icf",
+      "type": "security",
+      "label": "Servicio ICF",
+      "sublabel": "PC propio · token"
+    },
+    {
+      "id": "llm",
+      "type": "messagebus",
+      "label": "Ollama + pgvector",
+      "sublabel": "gemma4:e4b · CIF-IA"
+    }
+  ],
+  "segments": [
+    {
+      "from": 150,
+      "to": 371,
+      "label": "1 · Generar la sugerencia"
+    },
+    {
+      "from": 381,
+      "to": 515,
+      "label": "2 · Decisión y reporte"
+    }
+  ],
+  "messages": [
+    {
+      "id": "notas",
+      "from": "medico",
+      "to": "web",
+      "y": 165,
+      "label": "diagnóstico CIE y notas",
+      "variant": "default"
+    },
+    {
+      "id": "genera-api",
+      "from": "web",
+      "to": "api",
+      "y": 193,
+      "label": "POST …/icf-suggestions",
+      "variant": "emphasis"
+    },
+    {
+      "id": "genera-icf",
+      "from": "api",
+      "to": "icf",
+      "y": 221,
+      "label": "POST /suggest + token",
+      "variant": "security"
+    },
+    {
+      "id": "genera-llm",
+      "from": "icf",
+      "to": "llm",
+      "y": 249,
+      "label": "busca y elige entre 12",
+      "variant": "emphasis"
+    },
+    {
+      "id": "genera-ret",
+      "from": "llm",
+      "to": "icf",
+      "y": 277,
+      "label": "códigos elegidos",
+      "variant": "return"
+    },
+    {
+      "id": "genera-icf-ret",
+      "from": "icf",
+      "to": "api",
+      "y": 305,
+      "label": "b, s y d con calificador",
+      "variant": "return"
+    },
+    {
+      "id": "genera-db",
+      "from": "api",
+      "to": "db",
+      "y": 333,
+      "label": "guarda el lote",
+      "variant": "dashed"
+    },
+    {
+      "id": "genera-web",
+      "from": "api",
+      "to": "web",
+      "y": 361,
+      "label": "perfil sugerido (~2,6 s)",
+      "variant": "return"
+    },
+    {
+      "id": "decide",
+      "from": "medico",
+      "to": "web",
+      "y": 391,
+      "label": "acepta, edita o rechaza",
+      "variant": "default"
+    },
+    {
+      "id": "decide-api",
+      "from": "web",
+      "to": "api",
+      "y": 419,
+      "label": "PATCH /icf/suggestions",
+      "variant": "emphasis"
+    },
+    {
+      "id": "decide-db",
+      "from": "api",
+      "to": "db",
+      "y": 447,
+      "label": "guarda la decisión",
+      "variant": "default"
+    },
+    {
+      "id": "reporte",
+      "from": "medico",
+      "to": "web",
+      "y": 477,
+      "label": "copia o descarga PDF",
+      "variant": "default"
+    },
+    {
+      "id": "reporte-ret",
+      "from": "web",
+      "to": "medico",
+      "y": 505,
+      "label": "borrador de apoyo",
+      "variant": "return"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Lo que decide el médico",
+      "items": [
+        "Cada código queda «sugerido» hasta que el médico lo acepta, edita o rechaza",
+        "El reporte se presenta como borrador de apoyo, no como certificado"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Privacidad",
+      "items": [
+        "Al servicio de IA no viajan nombre, documento ni orientación sexual",
+        "El modelo corre en el PC propio: ningún dato clínico sale hacia terceros"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "Si el servicio falla",
+      "items": [
+        "El backend responde 503 con aviso claro o usa la búsqueda por similitud",
+        "El resto de la aplicación sigue funcionando"
+      ]
+    }
+  ]
+}

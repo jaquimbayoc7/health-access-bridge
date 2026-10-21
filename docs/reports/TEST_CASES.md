@@ -597,9 +597,13 @@ Feature: Sugerencia de códigos CIF-IA (Resolución 1239 de 2022)
   Scenario: TC-I16 — Métricas de la validación clínica (HU-07g)
     Given una hoja de revisión llena por la profesional de salud
     Then los códigos escritos a mano se normalizan a su forma de 3 dígitos
-    And se calculan precisión estricta y flexible, cobertura a ciegas y calificadores correctos
-    And el veredicto es CUMPLE, NO CUMPLE o INCOMPLETO según los umbrales
+    And se calculan precisión estricta y flexible, cobertura a ciegas y el κ ponderado del calificador (gravedad 0–4 escrita a ciegas), cada uno con su IC 95 %
+    And el calificador exige al menos 30 códigos coincidentes y, si no se llega, queda INCOMPLETO
+    And el veredicto es CUMPLE, NO CUMPLE o INCOMPLETO según los umbrales y los pisos del IC
     And el Excel con la Fase A, la Fase B y los faltantes se lee sin pérdida
+    And una hoja anterior se pone al día (`upgrade`) sin tocar la original ni las sugerencias
+    And la repetibilidad del sistema se mide con el κ de Fleiss entre corridas
+    And las funciones estadísticas coinciden con scikit-learn y statsmodels
 ```
 
 ---
