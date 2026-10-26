@@ -316,7 +316,7 @@ Se preparó **HU-07g** y se verificaron las licencias. HU-07g **no se da por com
 |---|---|
 | Licencias de Gemma y MedGemma sin verificar | 🟢 Cerrado: Gemma 4 Apache 2.0; MedGemma descartado |
 | Confiabilidad clínica sin medir | 🟡 Instrumento listo; falta la revisión (HU-07g) |
-| Encuadre regulatorio (¿dispositivo médico?) | 🟡 Consultar al INVIMA antes de un uso clínico real |
+| Encuadre regulatorio (¿dispositivo médico?) | ⚪ Descartado el 27-oct-2026 por decisión del responsable (no se consultará al INVIMA); se mantiene sin uso clínico real |
 
 Detalle: [`LICENCIAS_COMPONENTES_ICF.md`](./LICENCIAS_COMPONENTES_ICF.md) y [`PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](./PROTOCOLO_VALIDACION_CLINICA_HU07G.md).
 
@@ -337,4 +337,4 @@ HU-07g se cerró el 27 de octubre con tres rondas de revisión de la profesional
 | Riesgo | Estado |
 |---|---|
 | Confiabilidad clínica sin medir | 🟢 Medida en tres rondas; 5 de 6 criterios en casos nuevos, el calificador no cumple (κ 0,312) |
-| Uso clínico del perfil | 🟡 No aprobado: borrador de apoyo, calificador editable, falta consulta regulatoria y piloto |
+| Uso clínico del perfil | 🟡 No aprobado: borrador de apoyo, calificador editable; sin consulta regulatoria (descartada) ni piloto |
