@@ -2,7 +2,7 @@
 **Estándar:** Gherkin (BDD — Behaviour Driven Development)  
 **Última actualización:** 7 de octubre de 2026  
 **Momento:** 3 (en curso; las suites 1–7 son del Momento 1 y las suites 8–11 de HU-07)  
-**Total de pruebas:** 230 automatizadas: 105 backend · 38 frontend · 75 servicio ICF · 12 E2E (Playwright). Las suites 1–7 conservan los casos Gherkin originales del Momento 1; el detalle del backend completo y de los E2E de HU-06 está en `TESTING_REPORT.md`.
+**Total de pruebas:** 256 automatizadas: 105 backend · 38 frontend · 101 servicio ICF · 12 E2E (Playwright). Las suites 1–7 conservan los casos Gherkin originales del Momento 1; el detalle del backend completo y de los E2E de HU-06 está en `TESTING_REPORT.md`.
 
 ---
 
@@ -17,7 +17,7 @@
 | [Frontend — Login](#suite-5--página-de-login-hu-13) | HU-13 | `Login.test.tsx` | 4 |
 | [Frontend — DashboardLayout](#suite-6--dashboardlayout-hu-13) | HU-13 | `DashboardLayout.test.tsx` | 4 |
 | [Frontend — Pacientes UI](#suite-7--gestión-de-pacientes-ui-hu-13) | HU-13 | `Patients.test.tsx` | 4 |
-| [Servicio ICF](#suite-8--servicio-icf-motor-rag-y-reglas-hu-07a-hu-07b-hu-07f) | HU-07a/b/f | `icf-service/tests/` | 75 |
+| [Servicio ICF](#suite-8--servicio-icf-motor-rag-y-reglas-hu-07a-hu-07b-hu-07f) | HU-07a/b/f | `icf-service/tests/` | 101 |
 | [Backend — Sugerencias CIF](#suite-9--backend-sugerencias-decisiones-causas-y-diagnóstico-hu-07c) | HU-07c | `test_icf_*.py` | 53 |
 | [Frontend — Perfil Funcional ICF](#suite-10--frontend-perfil-funcional-icf-y-guía-hu-07d) | HU-07d | `FunctionalProfile.test.tsx`, `IcfGuide.test.tsx` | 22 |
 | [E2E — Perfil Funcional ICF](#suite-11--e2e-perfil-funcional-icf-hu-07e) | HU-07e | `functional-profile.spec.ts` | 5 |
@@ -826,7 +826,7 @@ Feature: Perfil Funcional ICF de extremo a extremo
 | `DashboardLayout` | 4 | ✅ 100% |
 | `Patients` page UI | 4 | ✅ 100% |
 | Smoke Tests CI/CD | 2 | ✅ 100% |
-| Servicio ICF (motor, reglas, Ollama, métricas de validación) | 75 (67 en CI) | ✅ 100% de las que corren |
+| Servicio ICF (motor, reglas, Ollama, métricas de validación) | 101 (92 en CI) | ✅ 100% de las que corren |
 | Backend sugerencias, causas y diagnóstico ICF | 53 | ✅ 100% |
 | Frontend Perfil Funcional ICF y guía | 22 | ✅ 100% |
 | E2E Perfil Funcional ICF | 5 | ✅ 100% |

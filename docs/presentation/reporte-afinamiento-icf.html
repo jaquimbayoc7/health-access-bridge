@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Reporte final del afinamiento de los códigos ICF — Health Access Bridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']},colors:{primary:'#2563EB',pdark:'#1D4ED8',plight:'#EFF6FF'}}}}</script>
+<style>
+html{scroll-behavior:smooth}
+.section-title::after{content:'';display:block;width:48px;height:4px;background:#2563EB;border-radius:2px;margin-top:8px}
+table{border-collapse:collapse;width:100%}
+th,td{padding:.5rem .75rem;text-align:left;font-size:.8rem;border-bottom:1px solid #e2e8f0;vertical-align:top}
+th{background:#f1f5f9;color:#475569;font-weight:600}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.ok{color:#15803d;font-weight:600}.no{color:#b91c1c;font-weight:600}
+@media print{nav{display:none!important}body{background:#fff!important}section{page-break-inside:avoid}}
+</style>
+</head>
+<body class="bg-slate-100 font-sans text-slate-800 antialiased">
+
+<nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+  <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between text-sm">
+    <a href="index.html#afinamiento" class="font-semibold text-slate-900">← Health Access Bridge</a>
+    <div class="hidden md:flex gap-5 text-slate-600 font-medium">
+      <a href="#resumen" class="hover:text-primary">Resumen</a><a href="#metodo" class="hover:text-primary">Método y sustento</a>
+      <a href="#resultados" class="hover:text-primary">Resultados</a><a href="#errores" class="hover:text-primary">Errores</a>
+      <a href="#lecciones" class="hover:text-primary">Lecciones</a><a href="#referencias" class="hover:text-primary">Fuentes</a>
+    </div>
+  </div>
+</nav>
+
+<header class="bg-white pt-14 pb-12 border-b border-slate-200">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="inline-flex items-center gap-2 bg-plight text-primary text-xs font-semibold px-3 py-1 rounded-full mb-4">HU-07g · Validación clínica · 26 y 27 de octubre de 2026</div>
+    <h1 class="text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-3">Afinamiento de los códigos ICF: de «no cumple» a cinco de seis criterios sobre casos nuevos</h1>
+    <p class="text-slate-500 max-w-3xl">Reporte final de la fase de validación clínica y corrección del motor que sugiere códigos CIF-IA (Resolución 1239 de 2022) a partir de los datos del paciente. Tres rondas de revisión con una profesional de salud, un modelo local de pesos abiertos (<code>gemma4:e4b</code>) y ningún dato clínico fuera de la infraestructura propia.</p>
+    <p class="text-xs text-slate-400 mt-3">Autor: @jaquimbayoc7 · Revisora: Emilly Maria Celis, profesional en salud · Fuente completa: <code>docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md</code>, secciones 8 a 13</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-6 py-12 space-y-14">
+
+<section id="resumen">
+  <h2 class="text-2xl font-bold mb-5 section-title">Resumen ejecutivo</h2>
+  <div class="grid md:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-xl border border-slate-200 p-4"><div class="text-3xl font-extrabold text-primary">3</div><div class="text-xs text-slate-500 mt-1">rondas con la revisora, 72 casos-revisión (24 casos × 3)</div></div>
+    <div class="bg-white rounded-xl border border-slate-200 p-4"><div class="text-3xl font-extrabold text-emerald-600">5 de 6</div><div class="text-xs text-slate-500 mt-1">criterios cumplidos sobre 24 casos que no se usaron para diseñar el motor</div></div>
+    <div class="bg-white rounded-xl border border-slate-200 p-4"><div class="text-3xl font-extrabold text-amber-600">0,312</div><div class="text-xs text-slate-500 mt-1">κ ponderado del calificador (meta 0,50): el criterio que no cumple</div></div>
+    <div class="bg-white rounded-xl border border-slate-200 p-4"><div class="text-3xl font-extrabold text-slate-800">+3 pts</div><div class="text-xs text-slate-500 mt-1">HU-07g acreditada por decisión del responsable: 120/146 (82,2 %)</div></div>
+  </div>
+  <div class="bg-white rounded-xl border border-slate-200 p-5 text-sm leading-relaxed space-y-3">
+    <p>El motor sugiere hasta tres códigos de funciones (b), estructuras (s) y actividades (d) por paciente, con calificador y justificación; el médico los acepta, edita o rechaza. Antes de esta fase sus cifras de calidad se medían con pistas orientativas que ningún profesional había validado. La revisión de la médica mostró, el 26 de octubre, que el sistema <strong>no alcanzaba tres de los seis umbrales aprobados</strong> (precisión estricta 59,1 %, precisión flexible 78,8 % y cobertura 55,2 %).</p>
+    <p>El análisis de errores encontró dos causas distintas y concretas: en estructuras el modelo <strong>completaba la cuota de tres códigos</strong> aunque el caso solo evidenciaba uno, y en funciones la búsqueda <strong>no traía los códigos motores</strong> (fuerza, control del movimiento y marcha) que la médica elegía. Se corrigieron sin cambiar de modelo y se midieron con 24 casos nuevos, con las reglas fijadas por escrito antes de ver las sugerencias. Resultado: precisión estricta 62,7 %, flexible 86,3 %, cobertura 69,0 % y actividades 100 % <strong>cumplen</strong>; el calificador no.</p>
+    <p><strong>Decisión del responsable (27-oct-2026):</strong> dejar las métricas como están, sin mover umbrales, acreditar los 3 puntos de HU-07g por haber completado la medición, el análisis y la corrección, y presentar el sistema como <strong>borrador de apoyo</strong> en el que el calificador es un valor inicial que el médico edita. <strong>No se aprueba el uso clínico.</strong></p>
+  </div>
+</section>
+
+<section id="metodo">
+  <h2 class="text-2xl font-bold mb-5 section-title">Método y sustento de los umbrales</h2>
+  <div class="grid md:grid-cols-3 gap-4 text-sm">
+    <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="font-semibold mb-1">Ronda 1 · diagnóstico</div><p class="text-slate-600">24 casos sintéticos (C01–C25). Fase A a ciegas: la médica escribe los códigos y la gravedad 0–4 que elegiría sin ver la sugerencia (evita el sesgo de anclaje). Fase B: valora cada sugerencia como Adecuado, Aceptable o No adecuado.</p></div>
+    <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="font-semibold mb-1">Ronda 2 · corrección</div><p class="text-slate-600">Se corrige el motor y la médica valora las 41 sugerencias nuevas sobre los mismos casos. Se mide la precisión real de la configuración activa.</p></div>
+    <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="font-semibold mb-1">Ronda 3 · casos nuevos</div><p class="text-slate-600">24 casos nuevos (N01–N24: visión, audición, discapacidad intelectual, neurológicas, psiquiátricas, crónicas, osteomusculares). Reglas escritas y publicadas antes de generar las sugerencias.</p></div>
+  </div>
+  <div class="bg-white rounded-xl border border-slate-200 p-5 mt-4 text-sm overflow-x-auto">
+    <div class="font-semibold mb-1">Criterios de aceptación y qué los respalda</div>
+    <p class="text-xs text-slate-500 mb-3">Fijados el 7 de octubre (el del calificador se reformuló el 21) y <strong>sin cambios después de ver los resultados</strong>. La columna «Respaldo» dice con honestidad cuánto sostiene la literatura cada cifra: lo que está respaldado y lo que es criterio del proyecto.</p>
+    <table>
+      <tr><th>Criterio</th><th class="n">Meta</th><th>Sustento en la literatura</th><th>Respaldo</th></tr>
+      <tr><td>Precisión flexible b+s y d («Adecuado» o «Aceptable»)</td><td class="n">≥ 0,80</td><td>Estándar mínimo de auditoría de codificación del NHS de Gales: 90 % de códigos correctos en el diagnóstico principal y <strong>80 % en los secundarios</strong> (DHCW). Burns et al. 2012, revisión sistemática de 32 estudios: exactitud humana mediana de 83,2 % y de 80,3 % en diagnósticos (RIC 63,3–94,1 %). Es decir, 80 % equivale a la codificación humana rutinaria. Límite: son ICD-10 hospitalarios, no CIF-IA.</td><td class="ok">Sustentado con referentes numéricos</td></tr>
+      <tr><td>Precisión estricta b+s («Adecuado»)</td><td class="n">≥ 0,60</td><td>Cerca del cuartil inferior de la exactitud humana (63,3 %, Burns 2012): un sistema por debajo estaría en el peor cuarto de la codificación humana. «Adecuado» es más exigente que «código correcto» de una auditoría, así que el referente es indirecto.</td><td>Indirecto</td></tr>
+      <tr><td>Cobertura de lo elegido a ciegas</td><td class="n">≥ 0,60</td><td>Los estándares de auditoría miden códigos correctos sobre los asignados (precisión), no cobertura. Los F1 publicados (84 % y más de 80 %, Newman-Griffis et al. 2021) son de clasificadores supervisados sobre 13 a 16 categorías: no son comparables con recuperación abierta en un catálogo amplio. F1 y κ por capítulo como contexto (Hripcsak y Rothschild 2005).</td><td>Sin referente externo: <strong>criterio del proyecto</strong></td></tr>
+      <tr><td>Calificador (κ ponderado, ≥ 30 pares)</td><td class="n">≥ 0,50</td><td>El κ ponderado es la medida estándar para una escala ordinal como 0–4 (Cohen 1968). Referentes humanos en CIF: mediana de 0,46 en funciones y 0,55 en actividades en test-retest (Okochi et al. 2005, 742 adultos mayores) y κ de 0,50–0,85 entre evaluadores expertos y 0,18–0,69 entre novatos (Chen et al. 2016). Se fijó en 0,50, límite inferior del rango de expertos; el piso general de McHugh 2012 (0,60) sería más exigente que lo que logran las personas. No existe un umbral universal de κ (Artstein y Poesio 2008).</td><td>Anclado a la fiabilidad humana; criterio del proyecto</td></tr>
+      <tr><td>Piso del IC 95 % (40 % / 60 % / 40 %)</td><td class="n">—</td><td>La regla de decidir con el límite inferior del IC y no con la estimación puntual es la práctica en exactitud diagnóstica y fiabilidad (Flahault et al. 2005; Koo y Li 2016; Jones et al. 1996; guía de la FDA 2007). Las cifras de los pisos son del proyecto; el de 60 % se apoya por analogía en McHugh 2012.</td><td>Regla respaldada; cifras: criterio del proyecto</td></tr>
+      <tr><td>Casos revisados</td><td class="n">≥ 20</td><td>Criterio de completitud, no de validez.</td><td>Criterio del proyecto</td></tr>
+    </table>
+    <p class="text-xs text-slate-500 mt-3"><strong>Aviso de alcance:</strong> los referentes son de ICD-10 hospitalaria, de CIF en geriatría e ictus y de imagen diagnóstica; sirven para anclar el orden de magnitud, no para certificar los valores. Ningún artículo revisado fija un umbral de concordancia para un sistema que sugiere códigos CIF con IA. La lógica de aceptación sigue la práctica de la IA médica: comparar con el desempeño de profesionales sobre la misma muestra (Liu et al. 2019) y fijar metas numéricas antes del estudio (Abràmoff et al. 2018).</p>
+  </div>
+
+  <div class="bg-white rounded-xl border border-slate-200 p-5 mt-4 text-sm">
+    <div class="font-semibold mb-3">Método de medición y estadística</div>
+    <div class="grid md:grid-cols-2 gap-6 text-slate-600">
+      <div class="space-y-3">
+        <p><strong class="text-slate-800">Diseño en dos fases.</strong> La Fase A es a ciegas: la médica escribe los códigos y la gravedad 0–4 que elegiría <em>sin ver</em> la sugerencia, para evitar el sesgo de anclaje (si solo valorara la sugerencia, tendería a aceptarla). La Fase B valora cada código sugerido. La cobertura y el calificador se miden contra la Fase A; las precisiones, contra la Fase B. El diseño a ciegas con varios casos se parece al de Cao et al. 2026 (6 fisiatras, 48 casos); Zhang et al. 2023 revisaron un solo caso y sin ocultar el origen. Ninguno fija umbrales de aceptación.</p>
+        <p><strong class="text-slate-800">Cómo se mide la concordancia.</strong> Estándar de referencia por profesionales con acuerdo entre anotadores (Newman-Griffis et al. 2021; Cieza et al. 2002); κ de Cohen para decisiones categóricas (Cohen 1960), κ ponderado lineal para la escala ordinal del calificador (Cohen 1968) y F1 cuando no hay «negativos» definidos, como al elegir códigos de un catálogo grande (Hripcsak y Rothschild 2005). El κ depende de la prevalencia y del sesgo, por eso siempre se reporta junto con el acuerdo exacto y a ±1 nivel (Hripcsak y Heitjan 2002; Feinstein y Cicchetti 1990; Byrt et al. 1993). La repetibilidad del sistema usa κ de Fleiss (Fleiss 1971).</p>
+        <p><strong class="text-slate-800">Reglas fijadas antes de los datos.</strong> Para la ronda 3 las reglas de medición se escribieron y publicaron antes de generar las sugerencias (Nosek et al. 2018) y los casos eran distintos de los usados para diagnosticar (Cawley y Talbot 2010; Kapoor y Narayanan 2023).</p>
+      </div>
+      <div class="space-y-3">
+        <p><strong class="text-slate-800">Prueba estadística.</strong> Cada proporción contrasta H₀: p ≤ piso frente a H₁: p &gt; piso. «El límite inferior del IC 95 % de Wilson ≥ piso» equivale a rechazar H₀ con la prueba de puntuación unilateral al 2,5 % (Wilson 1927; Newcombe 1998; Brown et al. 2001), comprobado numéricamente contra <code>statsmodels</code>. Un criterio cumple si el valor observado alcanza la <em>meta</em> y el límite inferior alcanza el <em>piso</em>. Las funciones de Wilson, κ de Cohen, κ ponderado y κ de Fleiss se contrastan con <code>scikit-learn</code> y <code>statsmodels</code> en las pruebas del repositorio.</p>
+        <p><strong class="text-slate-800">Tamaño de muestra.</strong> Con α unilateral de 2,5 % y potencia de 80 %, distinguir 80 % de 60 % (flexible) pide 36 códigos independientes y distinguir 60 % de 40 % (estricta y cobertura), 48 (Obuchowski 1998; Flahault et al. 2005). Con efecto de diseño de 1,8 son 65 y 87; el diseño aporta del orden de 100 a 144 códigos. Un κ con pocos pares es inestable: con 10 pares el IC mide 0,62 de ancho, con 30, 0,33 y con 60, 0,24, de ahí el mínimo de 30 (simulación propia).</p>
+        <p><strong class="text-slate-800">Códigos agrupados por caso.</strong> Los códigos de un mismo caso se parecen: el tamaño efectivo es n/DEFF con DEFF = 1 + (m − 1)ρ (Killip et al. 2004; Rao y Scott 1992). Con ρ de 0,2 a 0,3 el IC de Wilson cubre 90–93 % en vez de 97,5 %, así que se informa también un IC por <em>bootstrap de casos</em> (Field y Welsh 2007), que no decide. La simulación (24 casos × 5 códigos) muestra que un sistema cuyo desempeño real es el del piso se aprueba menos del 0,5 % de las veces y uno 10 puntos sobre la meta, el 94 % o más (Riley et al. 2021 sobre la imprecisión de muestras pequeñas).</p>
+      </div>
+    </div>
+    <p class="text-xs text-slate-400 mt-4">Cálculo propio y supuestos (rango de ρ, códigos por caso, pisos, mínimo de 30 pares) son nivel D en el protocolo: no provienen de una fuente y son reproducibles con <code>scripts/design_simulation.py</code>. El detalle, la tabla de verificación de las fuentes (niveles A a D) y las limitaciones están en <code>PROTOCOLO_VALIDACION_CLINICA_HU07G.md</code>, secciones 4.1 a 4.6.</p>
+  </div>
+</section>
+
+<section id="resultados">
+  <h2 class="text-2xl font-bold mb-5 section-title">Resultados de las tres rondas</h2>
+  <div class="bg-white rounded-xl border border-slate-200 p-5 mb-4">
+    <canvas id="chartRondas" height="110"></canvas>
+    <p class="text-xs text-slate-400 mt-2">Líneas punteadas: umbrales (60 %, 80 %, 60 % y κ 0,50 en la misma escala ×100). Rondas 1 y 2: casos C01–C25 (la 2 con el motor corregido); ronda 3: casos nuevos N01–N24.</p>
+  </div>
+  <div class="bg-white rounded-xl border border-slate-200 p-5 overflow-x-auto">
+    <table>
+      <tr><th>Criterio</th><th class="n">Ronda 1</th><th class="n">Ronda 2</th><th class="n">Ronda 3 (nuevos)</th><th class="n">IC 95 % ronda 3</th><th class="n">Meta</th><th>Ronda 3</th></tr>
+      <tr><td>Precisión estricta b+s</td><td class="n">0,591</td><td class="n">0,710</td><td class="n"><strong>0,627</strong></td><td class="n">0,531–0,715</td><td class="n">0,60</td><td class="ok">Cumple</td></tr>
+      <tr><td>Precisión flexible b+s</td><td class="n">0,788</td><td class="n">0,871</td><td class="n"><strong>0,863</strong></td><td class="n">0,783–0,916</td><td class="n">0,80</td><td class="ok">Cumple</td></tr>
+      <tr><td>Cobertura a ciegas b+s</td><td class="n">0,552</td><td class="n">0,582</td><td class="n"><strong>0,690</strong> (40/58)</td><td class="n">0,562–0,794</td><td class="n">0,60</td><td class="ok">Cumple</td></tr>
+      <tr><td>Calificador (κ ponderado)</td><td class="n">0,576</td><td class="n">0,540</td><td class="n"><strong>0,312</strong> (40 pares)</td><td class="n">0,123–0,500 (casos)</td><td class="n">0,50</td><td class="no">No cumple</td></tr>
+      <tr><td>Actividades (d), flexible</td><td class="n">1,000</td><td class="n">1,000</td><td class="n">1,000</td><td class="n">0,949–1,0</td><td class="n">0,80</td><td class="ok">Cumple</td></tr>
+      <tr><td>Casos revisados</td><td class="n">23</td><td class="n">23</td><td class="n">24</td><td class="n"></td><td class="n">20</td><td class="ok">Cumple</td></tr>
+    </table>
+    <p class="text-sm mt-4"><strong>Veredicto de las tres rondas: NO CUMPLE</strong> (ronda 1: tres criterios; rondas 2 y 3: uno). La ronda 3 es la primera en que las dos precisiones y la cobertura cumplen a la vez <em>sobre casos que no se usaron para diseñar el motor</em>, con condiciones distintas a las del primer set: evidencia de que los ajustes generalizan y no solo se ajustaron a los casos de diagnóstico (Cawley y Talbot 2010).</p>
+  </div>
+</section>
+
+<section id="errores">
+  <h2 class="text-2xl font-bold mb-5 section-title">Qué falló y por qué</h2>
+  <div class="grid md:grid-cols-2 gap-4 text-sm">
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+      <div class="font-semibold mb-2">Estructuras (s): relleno de la cuota de 3</div>
+      <p class="text-slate-600 mb-2">La 1.ª estructura era «Adecuado» o «Aceptable» en el 95 % de los casos; la 2.ª y la 3.ª, solo en el 57 % y el 38 %. El modelo trataba «hasta 3» como «3»; la médica comentó «no hay evidencia» en las 23 que rechazó. <code>s710</code> (cabeza y cuello) apareció en 9 casos y nunca fue «Adecuado».</p>
+      <p class="text-xs text-slate-500">Marco: clasificación con opción de rechazo (Chow 1970); la CIF codifica lo que el caso evidencia (OMS 2001; Cieza et al. 2005).</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+      <div class="font-semibold mb-2">Funciones (b): la búsqueda no traía los códigos motores</div>
+      <p class="text-slate-600 mb-2">Solo 18 de los 39 códigos que la médica eligió estaban entre los 12 candidatos; el modelo recuperaba 17. Faltaban sobre todo <code>b730</code> fuerza, <code>b760</code> control del movimiento y <code>b770</code> marcha (40 % de las omisiones): «tetraparesia» no se parece, para el modelo de embeddings, a «control de los movimientos voluntarios».</p>
+      <p class="text-xs text-slate-500">Marco: los «hubs» de los espacios de embeddings (Radovanović et al. 2010) y las listas de funciones por condición de los ICF Core Sets (Ewert et al. 2004).</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+      <div class="font-semibold mb-2">Lo que se probó y no ayudó</div>
+      <p class="text-slate-600">Ampliar los candidatos de funciones de 12 a 16 o 20, o sumar los más cercanos del capítulo 7: el techo de la búsqueda subía pero el modelo no elegía los códigos nuevos y la cobertura no mejoraba (listas largas empeoran la selección: Liu et al. 2024). Garantizar un cupo por capítulo empeoró. Un modelo mayor no se probó: los datos indicaban que el límite estaba en la búsqueda y en la instrucción, no en la capacidad.</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+      <div class="font-semibold mb-2">Un error propio de diseño (ronda 3)</div>
+      <p class="text-slate-600">El «vínculo mental» y la «excepción cerebral» que agregué tras la ronda 2 hicieron que 6 de las 7 estructuras rechazadas en la ronda 3 fueran <code>s110</code> (cerebro) en cuadros psiquiátricos o sensoriales. La médica ya había dado la pista en la ronda 1: en depresión y TEPT escribió <code>s110</code> con gravedad 0 («sin alteración estructural»). Queda documentado como lección.</p>
+    </div>
+  </div>
+  <div class="bg-white rounded-xl border border-slate-200 p-5 mt-4 text-sm">
+    <div class="font-semibold mb-2">El calificador: un desacuerdo sistemático, no aleatorio</div>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div>
+        <p class="text-slate-600 mb-2">Con 40 pares, la coincidencia exacta es de 0,475 y <strong>a un nivel de distancia de 0,975</strong>; el κ ponderado es 0,312. El sistema solo usa los niveles 2 y 3; la médica usa 2, 3 y 4 (siete casos con «completa»: ceguera, sordera profunda, paraplejia, ELA, amputación de brazo, insuficiencia renal en diálisis y sordoceguera). El sistema queda un nivel por debajo en 21 de 40 pares y nunca por encima. La categoría de HAB no distingue «grave» (3) de «completa» (4).</p>
+        <p class="text-xs text-slate-500">El κ es muy sensible al sesgo y a la poca variabilidad de uno de los evaluadores (Feinstein y Cicchetti 1990; Byrt et al. 1993): por eso un acuerdo a ±1 de 97,5 % puede dar κ bajo. No lo excusa, lo explica.</p>
+      </div>
+      <table>
+        <tr><th>Médica ↓ / sistema →</th><th class="n">2</th><th class="n">3</th><th class="n">4</th></tr>
+        <tr><td>2</td><td class="n"><strong>10</strong></td><td class="n">0</td><td class="n">0</td></tr>
+        <tr><td>3</td><td class="n">9</td><td class="n"><strong>9</strong></td><td class="n">0</td></tr>
+        <tr><td>4</td><td class="n">1</td><td class="n">11</td><td class="n"><strong>0</strong></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="correcciones">
+  <h2 class="text-2xl font-bold mb-5 section-title">Qué se cambió en el motor</h2>
+  <div class="bg-white rounded-xl border border-slate-200 p-5 text-sm overflow-x-auto">
+    <table>
+      <tr><th>Cambio</th><th>Qué hace</th><th>Estado final</th></tr>
+      <tr><td>Estructuras con evidencia (<code>ICF_S_EVIDENCE</code>)</td><td>El prompt pide solo las estructuras que el diagnóstico o las notas describen, mínimo una</td><td class="ok">Activo. Estructuras sugeridas: de 63 a 24 (1,1 por caso); precisión estricta de 0,444 a 0,792 en la ronda 2</td></tr>
+      <tr><td>Vínculo de movilidad (<code>ICF_MOTOR_LINK</code>)</td><td>Con deficiencia física al menos moderada y D4 ≥ 50, entran como candidatos b710, b730, b735, b760 y b770</td><td class="ok">Activo. Cobertura de funciones de 17/40 a 24–26/40; la primera versión (cualquier D4) se acotó tras 8 rechazos</td></tr>
+      <tr><td>Más candidatos de funciones</td><td>16 o 20 candidatos; los 3 más cercanos del capítulo 7</td><td class="no">Descartado: no mejoró la cobertura</td></tr>
+      <tr><td>Vínculo mental y excepción cerebral (<code>ICF_MENTAL_LINK</code>)</td><td>Estructuras del capítulo 1 si hay deficiencia psicosocial sin física</td><td class="no">Error de diseño: causó 6 de 7 rechazos de estructuras en la ronda 3. Sigue activo porque es parte de la configuración medida; se recomienda apagarlo (<code>ICF_MENTAL_LINK=false</code>) y medir el efecto en una cuarta ronda</td></tr>
+    </table>
+    <p class="text-xs text-slate-500 mt-3">Costo: sin cambio medible de latencia (≈ 2 s por sugerencia con <code>gemma4:e4b</code> en el PC de producción). Modelo sin cambios; sin APIs externas.</p>
+  </div>
+</section>
+
+<section id="lecciones">
+  <h2 class="text-2xl font-bold mb-5 section-title">Lecciones y decisiones</h2>
+  <div class="grid md:grid-cols-2 gap-4 text-sm">
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+      <div class="font-semibold mb-2">Lo que aprendimos</div>
+      <ul class="space-y-2 text-slate-600 list-disc pl-4">
+        <li>Medir con un profesional cambió el diagnóstico: las cifras con pistas orientativas no mostraban el relleno de estructuras ni el techo de la búsqueda.</li>
+        <li>El mayor avance vino de reglas clínicas explícitas y trazables, no de un modelo más grande ni de listas más largas.</li>
+        <li>Los casos nuevos son lo único que permite afirmar que una corrección generaliza: diagnosticar y medir con los mismos casos infla el resultado (Cawley y Talbot 2010; Kapoor y Narayanan 2023).</li>
+        <li>Fijar las reglas por escrito antes de ver los datos evitó ajustar el criterio al resultado (Nosek et al. 2018).</li>
+        <li>Una regla clínica sin evidencia también falla: el vínculo mental se equivocó y se detectó porque la ronda 3 era una prueba real.</li>
+      </ul>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 p-5">
+      <div class="font-semibold mb-2">Decisión del responsable y alcance</div>
+      <ul class="space-y-2 text-slate-600 list-disc pl-4">
+        <li>Las métricas y los umbrales quedan como están: el veredicto documentado es <strong>NO CUMPLE por el calificador</strong>.</li>
+        <li>Se acreditan los 3 pts de HU-07g: el instrumento, la medición en tres rondas, el análisis de errores y la corrección están completos. HU-07: 33/33; proyecto 120/146 (82,2 %); Momento 3: 33/59.</li>
+        <li>El perfil es un <strong>borrador de apoyo</strong>; el calificador se presenta como valor inicial editable por el médico (como ya funciona la pantalla). No se aprueba uso clínico real sin consulta regulatoria (INVIMA) ni piloto.</li>
+        <li>Pendientes recomendados: segunda revisora (acuerdo entre profesionales; Artstein y Poesio 2008), calificador con rango completo 0–4 y una cuarta ronda si se quiere cumplir el criterio.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="bg-white rounded-xl border border-slate-200 p-5 mt-4 text-sm">
+    <div class="font-semibold mb-2">Límites que se mantienen</div>
+    <p class="text-slate-600">Una sola revisora (no se mide el acuerdo entre profesionales); casos sintéticos, no personas reales; 24 casos por ronda, con intervalos de unos 18 puntos de ancho; los referentes numéricos son de codificación humana (ICD-10 hospitalaria; CIF en geriatría e ictus), una tarea parecida pero no igual; el vínculo de movilidad se diseñó viendo las omisiones de la ronda 1, por eso su efecto se confirmó solo con la ronda 3; el análisis de errores de la ronda 2 es post hoc.</p>
+  </div>
+</section>
+
+<section id="referencias">
+  <h2 class="text-2xl font-bold mb-5 section-title">Fuentes</h2>
+  <div class="bg-white rounded-xl border border-slate-200 p-5 text-xs text-slate-600 space-y-2 leading-relaxed">
+    <p>Artstein R, Poesio M. Inter-coder agreement for computational linguistics. <em>Computational Linguistics</em> 2008;34(4):555–596.</p>
+    <p>Burns EM, Rigby E, Mamidanna R, et al. Systematic review of discharge coding accuracy. <em>J Public Health</em> 2012;34(1):138–148.</p>
+    <p>Byrt T, Bishop J, Carlin JB. Bias, prevalence and kappa. <em>J Clin Epidemiol</em> 1993;46(5):423–429. doi:10.1016/0895-4356(93)90018-V</p>
+    <p>Cawley GC, Talbot NLC. On over-fitting in model selection and subsequent selection bias in performance evaluation. <em>J Mach Learn Res</em> 2010;11:2079–2107.</p>
+    <p>Chen S, Tao J, Tao Q, et al. Rater experience influences reliability and validity of the Brief ICF Core Set. <em>J Rehabil Med</em> 2016;48:265–272.</p>
+    <p>Chow CK. On optimum recognition error and reject tradeoff. <em>IEEE Trans Inf Theory</em> 1970;16(1):41–46. doi:10.1109/TIT.1970.1054406</p>
+    <p>Cieza A, Geyh S, Chatterji S, Kostanjsek N, Üstün B, Stucki G. ICF linking rules: an update based on lessons learned. <em>J Rehabil Med</em> 2005;37(4):212–218. doi:10.1080/16501970510040263</p>
+    <p>Digital Health and Care Wales. Clinical Coding Audit Methodology. NHS Wales.</p>
+    <p>Ewert T, Üstün B, Chatterji S, Kostanjsek N, Stucki G, Cieza A. Development of ICF Core Sets for patients with chronic conditions. <em>J Rehabil Med</em> 2004;36(Suppl 44):9–11. doi:10.1080/16501960410015353</p>
+    <p>Feinstein AR, Cicchetti DV. High agreement but low kappa: I. The problems of two paradoxes. <em>J Clin Epidemiol</em> 1990;43(6):543–549. doi:10.1016/0895-4356(90)90158-L</p>
+    <p>Flahault A, Cadilhac M, Thomas G. Sample size calculation should be performed for design accuracy in diagnostic test studies. <em>J Clin Epidemiol</em> 2005;58(8):859–862.</p>
+    <p>Hripcsak G, Rothschild AS. Agreement, the F-measure, and reliability in information retrieval. <em>J Am Med Inform Assoc</em> 2005;12(3):296–298.</p>
+    <p>Jones B, Jarvis P, Lewis JA, Ebbutt AF. Trials to assess equivalence: the importance of rigorous methods. <em>BMJ</em> 1996;313:36–39.</p>
+    <p>Kapoor S, Narayanan A. Leakage and the reproducibility crisis in machine-learning-based science. <em>Patterns</em> 2023;4(9):100804. doi:10.1016/j.patter.2023.100804</p>
+    <p>Liu NF, Lin K, Hewitt J, et al. Lost in the middle: how language models use long contexts. <em>Trans Assoc Comput Linguist</em> 2024;12:157–173. doi:10.1162/tacl_a_00638</p>
+    <p>Newcombe RG. Two-sided confidence intervals for the single proportion: comparison of seven methods. <em>Stat Med</em> 1998;17(8):857–872.</p>
+    <p>Nosek BA, Ebersole CR, DeHaven AC, Mellor DT. The preregistration revolution. <em>PNAS</em> 2018;115(11):2600–2606. doi:10.1073/pnas.1708274114</p>
+    <p>Okochi J, Utsunomiya S, Takahashi T, et al. Health measurement using the ICF: test-retest reliability study of ICF codes. <em>Health Qual Life Outcomes</em> 2005;3:46.</p>
+    <p>Organización Mundial de la Salud. Clasificación Internacional del Funcionamiento, de la Discapacidad y de la Salud (CIF). Ginebra: OMS; 2001.</p>
+    <p>Radovanović M, Nanopoulos A, Ivanović M. Hubs in space: popular nearest neighbors in high-dimensional data. <em>J Mach Learn Res</em> 2010;11:2487–2531.</p>
+    <p>Wilson EB. Probable inference, the law of succession, and statistical inference. <em>J Am Stat Assoc</em> 1927;22(158):209–212.</p>
+    <p>Brown LD, Cai TT, DasGupta A. Interval estimation for a binomial proportion. <em>Stat Sci</em> 2001;16(2):101–133. doi:10.1214/ss/1009213286</p>
+    <p>Cao W, Qu M, Zhu T, et al. Benchmarking large language models against human experts in rehabilitation medicine: a multidimensional evaluation. <em>J Neuroeng Rehabil</em> 2026;23. doi:10.1186/s12984-026-01903-0</p>
+    <p>Cieza A, Brockow T, Ewert T, et al. Linking health-status measurements to the International Classification of Functioning, Disability and Health. <em>J Rehabil Med</em> 2002;34(5):205–210. doi:10.1080/165019702760279189</p>
+    <p>Cohen J. A coefficient of agreement for nominal scales. <em>Educ Psychol Meas</em> 1960;20(1):37–46. doi:10.1177/001316446002000104</p>
+    <p>Cohen J. Weighted kappa: nominal scale agreement provision for scaled disagreement or partial credit. <em>Psychol Bull</em> 1968;70(4):213–220. doi:10.1037/h0026256</p>
+    <p>Field CA, Welsh AH. Bootstrapping clustered data. <em>J R Stat Soc B</em> 2007;69(3):369–390. doi:10.1111/j.1467-9868.2007.00593.x</p>
+    <p>Fleiss JL. Measuring nominal scale agreement among many raters. <em>Psychol Bull</em> 1971;76(5):378–382. doi:10.1037/h0031619</p>
+    <p>Hripcsak G, Heitjan DF. Measuring agreement in medical informatics reliability studies. <em>J Biomed Inform</em> 2002;35(2):99–110. doi:10.1016/S1532-0464(02)00500-2</p>
+    <p>Killip S, Mahfoud Z, Pearce K. What is an intracluster correlation coefficient? Crucial concepts for primary care researchers. <em>Ann Fam Med</em> 2004;2(3):204–208. doi:10.1370/afm.141</p>
+    <p>Koo TK, Li MY. A guideline of selecting and reporting intraclass correlation coefficients for reliability research. <em>J Chiropr Med</em> 2016;15(2):155–163. doi:10.1016/j.jcm.2016.02.012</p>
+    <p>Liu X, Faes L, Kale AU, et al. A comparison of deep learning performance against health-care professionals in detecting diseases from medical imaging. <em>Lancet Digit Health</em> 2019;1(6):e271–e297. doi:10.1016/S2589-7500(19)30123-2</p>
+    <p>McHugh ML. Interrater reliability: the kappa statistic. <em>Biochem Med</em> 2012;22(3):276–282. doi:10.11613/BM.2012.031</p>
+    <p>Newman-Griffis D, Camacho Maldonado J, Ho P-S, et al. Linking free text documentation of functioning and disability to the ICF with natural language processing. <em>Front Rehabil Sci</em> 2021;2. doi:10.3389/fresc.2021.742702</p>
+    <p>Newman-Griffis D, Fosler-Lussier E. Automated coding of under-studied medical concept domains: linking physical activity reports to the International Classification of Functioning, Disability and Health. <em>Front Digit Health</em> 2021;3. doi:10.3389/fdgth.2021.620828</p>
+    <p>Obuchowski NA. Sample size calculations in studies of test accuracy. <em>Stat Methods Med Res</em> 1998;7(4):371–392. doi:10.1177/096228029800700405</p>
+    <p>Abràmoff MD, Lavin PT, Birch M, et al. Pivotal trial of an autonomous AI-based diagnostic system for detection of diabetic retinopathy in primary care offices. <em>npj Digit Med</em> 2018;1:39. doi:10.1038/s41746-018-0040-6</p>
+    <p>Rao JNK, Scott AJ. A simple method for the analysis of clustered binary data. <em>Biometrics</em> 1992;48(2):577–585. doi:10.2307/2532311</p>
+    <p>Riley RD, Debray TPA, Collins GS, et al. Minimum sample size for external validation of a clinical prediction model with a binary outcome. <em>Stat Med</em> 2021;40(19):4230–4251. doi:10.1002/sim.9025</p>
+    <p>Roitero K, Martinuzzi A, Armellin MT, Paparella G, Maniero A, Della Mea V. Automated ICF coding of rehabilitation notes for low-resource languages via continual training of language models. <em>Stud Health Technol Inform</em> 2023. doi:10.3233/SHTI230262</p>
+    <p>Zhang L, Tashiro S, Mukaino M, Yamada S. Use of artificial intelligence large language models as a clinical tool in rehabilitation medicine: a comparative test case. <em>J Rehabil Med</em> 2023;55:jrm13373. doi:10.2340/jrm.v55.13373</p>
+    <p class="text-slate-400 pt-2">La bibliografía completa del proyecto (51 entradas, con el nivel de verificación de cada fuente) está en <code>docs/reports/referencias_validacion_clinica.bib</code> y <code>PROTOCOLO_VALIDACION_CLINICA_HU07G.md</code> (4.5).</p>
+  </div>
+</section>
+
+<section id="reproducir">
+  <h2 class="text-2xl font-bold mb-5 section-title">Reproducibilidad</h2>
+  <div class="bg-white rounded-xl border border-slate-200 p-5 text-xs">
+    <pre class="overflow-x-auto bg-slate-900 text-slate-100 rounded-lg p-4 leading-relaxed">python scripts/review_sheet.py score hoja_ronda3_llena.xlsx --exclude-zero-severity   # medición oficial de la ronda 3
+python scripts/review_sheet.py score hoja_ronda3_llena.xlsx                           # sensibilidad (misma cifra: no hubo gravedad 0)
+python scripts/review_ablation.py hoja_revision_v2.xlsx                              # recorte de estructuras (ronda 1)
+python scripts/variants_vs_review.py run referencia_revision.json --variants ACTIVO --dump sugerencias.json</pre>
+    <p class="text-slate-500 mt-3">Las hojas de revisión traen títulos del catálogo de la OMS y no se publican (<code>data/private/</code> está ignorada por git). Los 24 casos nuevos son sintéticos y sí están en el repositorio: <code>icf-service/reference/cases_ronda2.json</code>. Animación del proceso: <a class="text-primary underline" href="animaciones/proceso-validacion-clinica.html">proceso de validación clínica</a>.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 text-xs text-center py-6">Health Access Bridge · Reporte final del afinamiento de los códigos ICF · Octubre 2026 · <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/71" class="hover:text-white">Issue #71</a></footer>
+
+<script>
+new Chart(document.getElementById('chartRondas').getContext('2d'), {
+  type: 'line',
+  data: {
+    labels: ['Ronda 1 (motor original)', 'Ronda 2 (motor corregido, mismos casos)', 'Ronda 3 (casos nuevos)'],
+    datasets: [
+      { label: 'Precisión estricta', data: [59.1, 71.0, 62.7], borderColor: '#2563EB', backgroundColor: '#2563EB', tension: .25 },
+      { label: 'Precisión flexible', data: [78.8, 87.1, 86.3], borderColor: '#10B981', backgroundColor: '#10B981', tension: .25 },
+      { label: 'Cobertura a ciegas', data: [55.2, 58.2, 69.0], borderColor: '#F59E0B', backgroundColor: '#F59E0B', tension: .25 },
+      { label: 'Calificador (κ × 100)', data: [57.6, 54.0, 31.2], borderColor: '#EF4444', backgroundColor: '#EF4444', tension: .25 },
+      { label: 'Meta 60', data: [60, 60, 60], borderColor: '#94A3B8', borderDash: [4, 4], pointRadius: 0 },
+      { label: 'Meta 80', data: [80, 80, 80], borderColor: '#94A3B8', borderDash: [2, 6], pointRadius: 0 },
+      { label: 'Meta κ 50', data: [50, 50, 50], borderColor: '#FCA5A5', borderDash: [6, 3], pointRadius: 0 }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { labels: { font: { size: 11 }, boxWidth: 12 } }, tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y}` } } },
+    scales: { y: { min: 20, max: 100, title: { display: true, text: '% (κ × 100)' }, grid: { color: '#F1F5F9' } }, x: { grid: { display: false } } }
+  }
+});
+</script>
+</body>
+</html>
