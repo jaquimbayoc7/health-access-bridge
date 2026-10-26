@@ -50,6 +50,7 @@ Cambiar de modelo no requiere tocar código: se cambia `ICF_LLM_MODEL` (en el PC
 | PC (`%USERPROFILE%\.hab-icf\.env`) | `ICF_LLM_MODEL` | `gemma4:e4b` |
 | PC | `ICF_LLM_THINK` | `false` |
 | PC | `ICF_LLM_NUM_GPU` | opcional; `0` fuerza CPU |
+| PC | `ICF_S_EVIDENCE`, `ICF_MOTOR_LINK` | opcionales, `true` por defecto (HU-07g, 26-oct-2026): estructuras solo con evidencia y vínculo de movilidad para funciones; `false` devuelve el comportamiento anterior |
 | PC | `ICF_DB_PASSWORD`, `ICF_TOKEN` | aleatorios, creados por `init-env.ps1`; **nunca** en chats ni en el repositorio |
 | Render (los 3 ambientes) | `ICF_LLM_URL` | URL pública del túnel, sin barra final |
 | Render | `ICF_LLM_TOKEN` | el mismo token del PC |

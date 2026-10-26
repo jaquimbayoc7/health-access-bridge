@@ -28,14 +28,25 @@ SYSTEM_PROMPT_JUSTIFY = (
 )
 
 
-def system_prompt(justify: bool) -> str:
-    return SYSTEM_PROMPT_JUSTIFY if justify else SYSTEM_PROMPT
+# Variante "con evidencia" (26-oct-2026): la revisora rechazo las estructuras 2.a y 3.a que el modelo agregaba para
+# completar la cuota ("no hay evidencia"). Se pide solo lo que el caso describe, sin completar la lista.
+EVIDENCE_RULE = (
+    " En s devuelve solo las estructuras que el diagnostico o las notas describen (casi siempre 1); "
+    "no completes la lista."
+)
 
 
-def build_schema(b_codes: Sequence[str], s_codes: Sequence[str], justify: bool = False) -> Dict[str, Any]:
+def system_prompt(justify: bool, evidence: bool = False) -> str:
+    base = SYSTEM_PROMPT_JUSTIFY if justify else SYSTEM_PROMPT
+    return base + EVIDENCE_RULE if evidence else base
+
+
+def build_schema(
+    b_codes: Sequence[str], s_codes: Sequence[str], justify: bool = False, evidence: bool = False
+) -> Dict[str, Any]:
     """JSON Schema con los codigos candidatos como `enum`: el formato no permite ningun otro valor."""
 
-    def code_list(codes: Sequence[str]) -> Dict[str, Any]:
+    def code_list(codes: Sequence[str], min_items: int = 0) -> Dict[str, Any]:
         code = {"type": "string", "enum": list(codes)}
         items: Dict[str, Any] = code
         if justify:
@@ -44,13 +55,16 @@ def build_schema(b_codes: Sequence[str], s_codes: Sequence[str], justify: bool =
                 "properties": {"code": code, "justificacion": {"type": "string"}},
                 "required": ["code", "justificacion"],
             }
-        return {"type": "array", "maxItems": MAX_PER_COMPONENT, "items": items}
+        schema: Dict[str, Any] = {"type": "array", "maxItems": MAX_PER_COMPONENT, "items": items}
+        if min_items:
+            schema["minItems"] = min_items
+        return schema
 
     properties: Dict[str, Any] = {}
     if b_codes:
         properties["b"] = code_list(b_codes)
     if s_codes:
-        properties["s"] = code_list(s_codes)
+        properties["s"] = code_list(s_codes, 1 if evidence else 0)  # la primera estructura se conserva siempre
     return {"type": "object", "properties": properties, "required": list(properties)}
 
 
@@ -59,7 +73,8 @@ def _listing(title: str, pairs: Sequence[Pair]) -> str:
 
 
 def build_messages(
-    patient_summary: str, b_pairs: Sequence[Pair], s_pairs: Sequence[Pair], justify: bool = False
+    patient_summary: str, b_pairs: Sequence[Pair], s_pairs: Sequence[Pair], justify: bool = False,
+    evidence: bool = False,
 ) -> List[Dict[str, str]]:
     blocks = [patient_summary]
     if b_pairs:
@@ -67,7 +82,7 @@ def build_messages(
     if s_pairs:
         blocks.append(_listing("s:", s_pairs))
     return [
-        {"role": "system", "content": system_prompt(justify)},
+        {"role": "system", "content": system_prompt(justify, evidence)},
         {"role": "user", "content": "\n".join(blocks)},
     ]
 
