@@ -10,10 +10,10 @@
 | Dato | Valor |
 |---|---|
 | Avance del proyecto | **117 de 146 pts (80,1 %)** · Momento 1 100 % · Momento 2 100 % · **Momento 3: 30 de 59 pts (50,8 %)** |
-| HU-07 (Perfil Funcional ICF) | 30 de 33 pts: 07a, 07b, 07c, 07d, 07e, 07f y 07h hechas; **07g (3 pts) con el instrumento listo y sin revisión clínica** |
+| HU-07 (Perfil Funcional ICF) | 30 de 33 pts: 07a, 07b, 07c, 07d, 07e, 07f y 07h hechas; **07g (3 pts) revisada por la médica el 26-oct con veredicto NO CUMPLE (precisión estricta 59,1 %, flexible 78,8 %, cobertura 55,2 %, κ 0,576); sin acreditar** |
 | Pendiente de acreditar | 07g (3) → al cerrarla: 120/146 (82,2 %) y M3 33/59 |
 | Aún sin empezar | HU-08 Dashboard y exportación (13 pts), HU-09 Pruebas completas y feedback (8 pts), HU-10 Despliegue final y manuales (5 pts) = 26 pts |
-| Pruebas | backend 105 · frontend 38 · servicio ICF 75 (67 en CI, 8 locales) · E2E 12 · smoke 7 |
+| Pruebas | backend 105 · frontend 38 · servicio ICF 75 + 5 nuevas del 26-oct (vínculo de movilidad y evidencia) · E2E 12 · smoke 7 |
 | Producción de la IA | PC propio (i5-13450HX, 32 GB, RTX 5050 de 8 GB): `gemma4:e4b`, ~2,6 s por sugerencia con el modelo en memoria; Tailscale Funnel + Caddy con token |
 | Licencias | Verificadas: Gemma 4 Apache 2.0 (se usa); MedGemma no se usa (prohíbe uso clínico) → [`reports/LICENCIAS_COMPONENTES_ICF.md`](reports/LICENCIAS_COMPONENTES_ICF.md) |
 
@@ -23,14 +23,14 @@
 
 | # | Qué | Detalle |
 |---|---|---|
-| 1 | **Reunión con la revisora** (Emilly Maria Celis, profesional en salud), la próxima semana | Entregar `data/private/icf/review/hoja_revision_v2.xlsx` (la del 9 de octubre actualizada el 21: la Fase A ahora pide la gravedad; mismas sugerencias) **por un canal privado** (trae títulos del catálogo de la OMS) y explicarle la guía de [`reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md). Presentarle los umbrales: precisión estricta ≥ 60 %, flexible ≥ 80 %, cobertura a ciegas ≥ 60 % y calificador con κ ponderado ≥ 0,50 sobre al menos 30 códigos coincidentes (reemplaza el «≥ 80 % de calificadores correctos»; el 0,50 se ancla a la fiabilidad humana en CIF, ver 4.6 del protocolo). Si propone un ajuste clínico, se cambia `THRESHOLDS` en `icf-service/icf/review.py`. |
+| 1 | ~~Reunión con la revisora~~ **Hecha: la médica devolvió la hoja el 26-oct** | Veredicto NO CUMPLE; resultado y análisis de errores en [`reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md) (secciones 8 y 9). Decidir: (a) cómo se tratan los 3 pts de 07g, (b) si se corrige el motor (estructuras sin relleno de cuota, más candidatos de funciones; 9.5) y (c) cuándo revisar 20 a 25 casos nuevos con ella. **Hecho el 26-oct:** estructuras con evidencia y vínculo de movilidad ya están en el código y activos por defecto (sección 10 del protocolo); la imagen de `icf-service` ya se reconstruyó en el PC de producción (verificada con `check.ps1`). **Siguiente paso: entregar a la médica, por un canal privado, `data/private/icf/review/hoja_codigos_nuevos.xlsx` (41 sugerencias nuevas)**; al devolverla, correr `variants_vs_review.py score-new` (ver protocolo, 10.3). Después, casos nuevos. Los umbrales no se mueven. |
 | 2 | **Promoción de los últimos documentos** `develop` → `staging` → `master` | La promoción grande **ya se hizo** (PR #75 a #80, 7-oct): HU-07 completa está en `staging` y `master`, y la página oficial se publica desde `master`. Quedan pendientes solo los commits de documentación posteriores; agruparlos en un PR cuando haya más cambios. Tras promover, **revisar que la página oficial muestre las cifras actuales** (los contadores de commits cambian con cada merge). |
 | 3 | Tablero de proyectos de GitHub | El token de `gh` no tiene el permiso `read:project`; no se pudo revisar ni actualizar. Ejecutar `gh auth refresh -s read:project` (interactivo) si se usa el tablero. |
 | 4 | Consulta regulatoria | Preguntar al INVIMA o a un asesor jurídico si el software podría considerarse dispositivo médico antes de un uso clínico real. Mientras tanto la pantalla lo presenta como **borrador de apoyo**. |
 | 5 | Catálogo de la OMS | Confirmar si mostrar a los médicos los títulos del catálogo CIF-IA dentro de la aplicación requiere permiso explícito en un despliegue real. |
 | 6 | Presentación en Kimi | Usar [`presentation/KIMI_BRIEF_M3.md`](presentation/KIMI_BRIEF_M3.md) y reunir las capturas que el brief lista en la sección 9. |
 
-## 3. Qué hacer cuando la revisora devuelva la hoja (cierre de HU-07g)
+## 3. Cierre de HU-07g tras la devolución de la hoja (pasos 1 y 2 ya hechos el 26-oct; el 3 en adelante, pendientes)
 
 1. Guardar la hoja llena en `data/private/icf/review/hoja_revision_llena.xlsx`.
 2. Calcular métricas y veredicto (en Docker, ver comandos en la sección 6):

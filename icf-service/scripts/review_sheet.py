@@ -135,6 +135,7 @@ def generate(args) -> int:
             res = suggest(
                 patient, repo, fns.embed, fns.chat, settings.llm_model, stats=fns.stats, use_llm=settings.use_llm,
                 body_candidates=settings.body_candidates, justify=settings.justify,
+                s_evidence=settings.s_evidence, motor_link=settings.motor_link,
             )
             if not res.applicable:
                 print(f"{case['id']}: no aplica ({res.message}); se omite de la hoja")

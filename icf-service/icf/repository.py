@@ -20,6 +20,8 @@ class Repo(Protocol):
 
     def rank_codes(self, codes: Sequence[str], embedding: Sequence[float]) -> List[str]: ...
 
+    def titles(self, codes: Sequence[str]) -> List[Pair]: ...
+
 
 class PgRepo:
     def __init__(self, conn):
@@ -93,3 +95,8 @@ class PgRepo:
             (component, list(levels), chap, chap, vector, limit),
         ).fetchall()
         return [(code, title) for code, title in rows]
+
+    def titles(self, codes: Sequence[str]) -> List[Pair]:
+        """Codigos y titulos del catalogo, en el orden pedido; los que no existen se omiten."""
+        rows = dict(self.conn.execute("SELECT code, title FROM icf_codes WHERE code = ANY(%s)", (list(codes),)).fetchall())
+        return [(code, rows[code]) for code in codes if code in rows]
