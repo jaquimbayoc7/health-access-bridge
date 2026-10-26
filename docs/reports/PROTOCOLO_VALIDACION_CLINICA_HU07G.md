@@ -1,7 +1,7 @@
 # Protocolo de validación clínica del Perfil Funcional ICF (HU-07g)
 
 **Fecha:** 7 de octubre de 2026
-**Estado:** revisión **devuelta por la profesional de salud (Emilly Maria Celis) el 26 de octubre de 2026** y segunda ronda sobre las sugerencias nuevas del motor corregido el mismo día. Veredicto del `score`: **NO CUMPLE**, antes por tres criterios y ahora por uno (cobertura 0,582 frente a 0,60; secciones 8 a 11). HU-07g no se acredita; falta decidir los puntos y medir con casos nuevos. **27-oct: reglas de la tercera ronda con casos nuevos fijadas antes de ver las sugerencias (sección 12).**
+**Estado:** tres rondas de revisión completas con la profesional de salud (Emilly Maria Celis). Tercera ronda, sobre 24 casos nuevos (27-oct-2026): precisión estricta 0,627, flexible 0,863, cobertura 0,690 y actividades 1,0 **cumplen**; el calificador (κ ponderado 0,312) **no cumple**: veredicto **NO CUMPLE por un solo criterio** (secciones 8 a 13). HU-07g no se acredita; el responsable decide los puntos y si se hace una cuarta ronda.
 **Para quién:** la revisora y el responsable del proyecto.
 
 ## 1. Qué se mide y por qué
@@ -509,3 +509,60 @@ python scripts/review_sheet.py score ..\data\private\icf\review\hoja_ronda3_llen
 - **Producción reconstruida** con ese commit (`check.ps1 -Public -Suggest`: «Todo correcto»; la sugerencia sintética devuelve 3 funciones y 1 estructura en 2,0 s).
 - **Hoja generada:** `data/private/icf/review/hoja_ronda3.xlsx` (privada, trae títulos de la OMS), con los 24 casos aplicables, la Fase A a ciegas con gravedad 0 a 4, la Fase B y la hoja de faltantes. Se generó en un contenedor temporal con la imagen del servicio (`icf-service:latest`), la red `hab-icf_default` y el mismo código y la misma configuración que producción. El motor devolvió 3 funciones por caso y **1 estructura en 21 casos y 3 en 3 casos** (N02 baja visión, N14 amputación de miembro superior y N20 sordoceguera).
 - **Falta:** que la médica complete la hoja (unos 60 a 90 minutos); luego `score` con y sin `--exclude-zero-severity` y el informe de resultados.
+
+## 13. Resultado de la tercera ronda con casos nuevos (27 de octubre de 2026)
+
+La médica completó `hoja_ronda3.xlsx`: Fase A a ciegas en los 24 casos nuevos y 174 valoraciones en la Fase B. Se calculó con las reglas fijadas en la sección 12 (`review_sheet.py score --exclude-zero-severity`), sin tocar umbrales ni motor. En esta hoja la médica no calificó ningún código con gravedad 0, de modo que la exclusión no cambió ningún valor: la medición oficial y la de sensibilidad coinciden.
+
+### 13.1 Resultado frente a los umbrales
+
+| Criterio | Ronda 1 (motor original, casos C) | Ronda 2 (motor corregido, casos C) | **Ronda 3 (casos nuevos N)** | IC 95 % (Wilson) | Meta | Estado |
+|---|---|---|---|---|---|---|
+| Casos revisados | 23 | 23 | 24 | | ≥ 20 | Cumple |
+| Precisión estricta b+s | 0,591 | 0,710 | **0,627** | 0,531–0,715 | ≥ 0,60 | **Cumple** |
+| Precisión flexible b+s | 0,788 | 0,871 | **0,863** | 0,783–0,916 | ≥ 0,80 | **Cumple** |
+| Cobertura a ciegas b+s | 0,552 | 0,582 | **0,690** (40/58) | 0,562–0,794 | ≥ 0,60 | **Cumple** |
+| Calificador b+s (κ ponderado) | 0,576 | 0,540 | **0,312** (40 pares) | por casos 0,123–0,500 | ≥ 0,50 | **No cumple** |
+| Precisión flexible d | 1,000 | 1,000 | 1,000 | 0,949–1,0 | ≥ 0,80 | Cumple |
+
+**Veredicto: NO CUMPLE, por un solo criterio: el calificador.** Es la primera vez que la cobertura, y las dos precisiones a la vez, cumplen sobre casos que no se usaron para diseñar el motor; los límites inferiores de sus IC superan los pisos (0,531 > 0,40; 0,783 > 0,60; 0,562 > 0,40). Que las precisiones y la cobertura se sostengan en casos nuevos, y con un conjunto de condiciones más variado (visión, audición, discapacidad intelectual, enfermedades crónicas), es evidencia de que los ajustes de las secciones 10 y 12 generalizan y no solo se ajustaron a los 24 casos de diagnóstico (Cawley y Talbot 2010). Los límites: una sola revisora, casos sintéticos y 24 casos, con IC de unos 18 puntos de ancho (4.4).
+
+Por componente (Fase B): funciones 72 valoradas, estricta 0,667 y flexible 0,903, cobertura 28/40; estructuras 30 valoradas (21 casos con una estructura y 3 con tres), estricta 0,533 y flexible 0,767, cobertura 12/18; actividades 72 valoradas, estricta 0,903 y flexible 1,0. Además: precisión a ciegas 0,392 y F1 0,500 (informativas); acuerdo por capítulo κ 0,693 y cobertura por capítulo 0,880; calificador correcto en la Fase B: funciones 0,722, estructuras 0,583, actividades 0,819.
+
+### 13.2 Por qué falla el calificador
+
+Cuarenta pares (código elegido por ambos): κ ponderado 0,312; coincidencia exacta 0,475 y **a un nivel de distancia 0,975** (39 de 40). El desacuerdo es casi todo de un nivel y **sistemático**, no aleatorio:
+
+| Gravedad de la médica ↓ / del sistema → | 0 | 1 | 2 | 3 | 4 |
+|---|---|---|---|---|---|
+| 2 | 0 | 0 | **10** | 0 | 0 |
+| 3 | 0 | 0 | 9 | **9** | 0 |
+| 4 | 0 | 0 | 1 | 11 | **0** |
+
+- **El sistema solo usa 2 y 3** (20 y 20 pares); la médica usa 2, 3 y 4 (10, 18 y 12). El calificador del sistema sale de la categoría de HAB (moderada = 2, severa = 3) y de reglas fijas, nunca del modelo, y esa categoría no distingue una deficiencia «grave» de una «completa»: la médica puso 4 en 12 pares de 7 casos (ceguera, sordera profunda, paraplejia, ELA avanzada, amputación de brazo, insuficiencia renal en diálisis y sordoceguera) y el sistema, 3 en 11 de ellos.
+- **El sistema queda un nivel por debajo en 21 de 40 pares** (diferencia media −0,55; −0,43 en funciones y −0,83 en estructuras), y no hay ningún par en que quede por encima.
+- **El κ es muy sensible al sesgo y a la poca variabilidad de uno de los dos evaluadores**, de modo que puede ser bajo con acuerdo alto a ±1 nivel (Feinstein y Cicchetti 1990; Byrt et al. 1993). Eso explica por qué una coincidencia a ±1 de 97,5 % da un κ de 0,31, pero no lo excusa: la gravedad que muestra el sistema es sistemáticamente menor que la de la médica en los casos más graves.
+- **El κ cambia mucho entre conjuntos de casos**: 0,576 con 37 pares (ronda 1), 0,540 con la configuración corregida en esos mismos casos y 0,312 ahora; agrupando las rondas 1 y 3 (77 pares) es 0,478. El IC de la ronda 3 (0,123–0,500) contiene todos esos valores salvo los dos primeros. No se interpreta como que el calificador «mejoró y empeoró»: con 40 pares y una escala de 5 niveles, el κ es inestable (4.4, κ con pocos pares).
+
+### 13.3 Errores de precisión
+
+Los 14 códigos «No adecuado» (7 funciones y 7 estructuras):
+
+- **Seis de las siete estructuras rechazadas son `s110` (cerebro)** en visión (N02), bipolar (N11), ansiedad (N12), neuropatía periférica (N17), sordoceguera (N20) y tartamudez (N21), todas con el comentario «no existe evidencia de lesión cerebral». La séptima es `s120` (médula) en escoliosis. Es un error mío de diseño de la sección 12.1: el **vínculo mental** y la **excepción cerebral** del prompt hicieron que el modelo pusiera la estructura cerebral en cuadros psiquiátricos o sensoriales. Estaban apoyados en la ronda 1, donde la médica esperó `s110` en esquizofrenia, pero en depresión y TEPT escribió `s110` con gravedad 0 («sin alteración estructural»), lo que ya indicaba que no hay acuerdo para los cuadros psiquiátricos sin lesión. En esta ronda, ante esos casos, dejó la estructura vacía.
+- **Funciones rechazadas** (7): cognitivas o intelectuales aplicadas a cuadros que no son cognitivos (`b164` en baja visión y epilepsia controlada; `b163` en epilepsia; `b117` en sordera y TDAH) y dos aisladas (`b710` en neuropatía periférica; `b126` en tartamudez). El vínculo de movilidad, ya acotado, no produjo ningún rechazo: no aparece ni `b730`, `b760` ni `b770` entre ellos.
+- **Omisiones** (18 de 58): dispersas; se repiten `b110` (conciencia), `b130` (energía y impulso) y `b770` (marcha), 2 veces cada una, y `s750` (extremidad inferior), 2 veces.
+
+### 13.4 Conclusión y siguiente paso
+
+El motor corregido cumple cinco de los seis criterios sobre casos nuevos y falla el sexto, el calificador. Por la regla de la sección 12.3 (punto 6), **no se reajusta con estos casos**. Lo que se propone para una cuarta ronda, con las reglas escritas antes de generar las sugerencias:
+
+| # | Cambio | Sustento | Riesgo |
+|---|---|---|---|
+| 1 | **Calificador con rango completo (0–4):** permitir 4 («completa») cuando la categoría de HAB y el nivel del dominio relacionado son máximos, y permitir 1 («leve»), en lugar de agrupar toda deficiencia grave en 3 | La CIF define 4 = «problema completo» (96–100 %) y 3 = «grave» (50–95 %) (OMS 2001); la regla existente de nivel a calificador ya lo usa para actividades | Sin datos de categoría «Completa» en estos casos, puede no resolver el sesgo; hay que decidirlo antes con la médica |
+| 2 | **Quitar el vínculo mental y la excepción cerebral** (volver a la búsqueda de estructuras por el diagnóstico solo con deficiencia física) o limitarlos a diagnóstico neurológico | Sección 13.3: 6 de 7 estructuras rechazadas; Cieza et al. 2005 (vincular lo que el caso evidencia) | Vuelve la omisión de `s110` en cuadros neurológicos que no tienen categoría física |
+| 3 | **Funciones cognitivas solo con un diagnóstico o una nota cognitiva** (no por deficiencia psicosocial genérica) | Mismo sustento | Menos cobertura en cuadros mixtos |
+| 4 | **Segunda revisora** para medir el acuerdo entre profesionales en el calificador y en la elección de códigos; una sola evaluadora puede estar fijando una escala propia (Okochi et al. 2005: κ ponderado mediano 0,46–0,55 entre mediciones repetidas de profesionales) | Artstein y Poesio 2008 | Disponibilidad |
+
+**Decisiones del responsable:** (a) cómo se tratan los 3 pts de 07g (el instrumento, la medición y el análisis están completos; el veredicto sigue siendo NO CUMPLE); (b) si se hace la cuarta ronda o se acepta un alcance reducido (por ejemplo, el calificador queda como valor inicial editable por el médico, que es como ya funciona la pantalla, y no se evalúa como criterio); no se cambia el umbral para que el resultado cumpla (Nosek et al. 2018). El uso clínico no se aprueba.
+
+**Reproducir:** `python scripts/review_sheet.py score ../data/private/icf/review/hoja_ronda3.xlsx --exclude-zero-severity` (y sin la bandera).
