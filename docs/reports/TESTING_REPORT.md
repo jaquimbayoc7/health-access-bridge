@@ -15,8 +15,8 @@ El proyecto Health Access Bridge ha implementado un conjunto completo de **prueb
 
 | Métrica | Valor |
 |---------|-------|
-| **Total de pruebas backend** | 105 casos de prueba (35 del Momento 1; el resto, predicciones e ICF) |
-| **Total de pruebas frontend** | 38 casos — 38/38 ✅ pasando (16 de HU-13 y 22 de HU-07) |
+| **Total de pruebas backend** | 123 casos de prueba (35 del Momento 1; el resto, predicciones, ICF y analítica de HU-08) |
+| **Total de pruebas frontend** | 61 casos — 61/61 ✅ pasando (16 de HU-13, 22 de HU-07 y 23 de HU-08) |
 | **Pruebas del servicio ICF** | 101 casos — 92 pasan en CI y 9 se omiten (requieren el catálogo local) |
 | **Pruebas E2E (Playwright)** | 12 casos (2 login, 3 pacientes, 2 predicciones, 5 Perfil Funcional ICF) |
 | **Cobertura de HUs** | HU-01, HU-02, HU-03, HU-11, HU-12, HU-13 (todas ✅) y HU-07 (ver sección propia) |
@@ -467,8 +467,8 @@ Con la implementación de HU-13, el frontend cuenta con **16 pruebas unitarias a
 | Capa | Archivos | Resultado |
 |------|----------|-----------|
 | Servicio ICF (pytest) | `icf-service/tests/` | **92 pasan, 9 omitidas** (101 en total, medido el 27-oct-2026 con Python 3.11; incluyen las de las métricas de validación clínica y los vínculos del motor) |
-| Backend (pytest) | `backend/app/tests/` (`test_icf_suggestions.py` 39, `test_icf_causes.py` 6, `test_icf_health.py` 8) | **105 pasan** en total (53 de ICF), cobertura 89 % |
-| Frontend unitarias (Vitest) | `FunctionalProfile.test.tsx` 15, `IcfGuide.test.tsx` 7 | **38 pasan** en total (22 de ICF) |
+| Backend (pytest) | `backend/app/tests/` (`test_icf_suggestions.py` 39, `test_icf_causes.py` 6, `test_icf_health.py` 8) | **123 pasan** en total (53 de ICF y 18 de analítica de HU-08), cobertura 90,7 % |
+| Frontend unitarias (Vitest) | `FunctionalProfile.test.tsx` 15, `IcfGuide.test.tsx` 7 | **61 pasan** en total (22 de ICF y 23 del dashboard de HU-08: `Analytics.test.tsx` 12, `analyticsExport.test.ts` 11) |
 | E2E (Playwright, Chromium) | `frontend/e2e/functional-profile.spec.ts` | **5 de 5** contra el frontend DEV |
 | Calidad estática | `tsc --noEmit`, `npm run build` | sin errores |
 | Lint | `eslint src` | 0 errores en los archivos de HU-07; 5 errores heredados en `Login.test.tsx`, `command.tsx`, `textarea.tsx`, `useJWTExpiry.ts` y `api.ts` |

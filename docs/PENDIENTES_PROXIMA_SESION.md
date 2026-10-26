@@ -9,11 +9,12 @@
 
 | Dato | Valor |
 |---|---|
-| Avance del proyecto | **120 de 146 pts (82,2 %)** · Momento 1 100 % · Momento 2 100 % · **Momento 3: 33 de 59 pts (55,9 %)** |
+| Avance del proyecto | **133 de 146 pts (91,1 %)** · Momento 1 100 % · Momento 2 100 % · **Momento 3: 46 de 59 pts (78,0 %)** |
 | HU-07 (Perfil Funcional ICF) | **33 de 33 pts ✅**: 07a a 07h hechas. **07g cerrada el 27-oct** (3 pts acreditados por el responsable): tres rondas con la médica; con 24 casos nuevos cumplen precisión estricta 62,7 %, flexible 86,3 %, cobertura 69,0 % y actividades 100 %; el calificador (κ 0,312) no: NO CUMPLE por un criterio. Borrador de apoyo, sin uso clínico |
 | Recomendado (no bloquea) | Segunda revisora, calificador con rango 0–4, apagar `ICF_MENTAL_LINK` (6 de 7 estructuras rechazadas en la ronda 3) y una cuarta ronda con casos nuevos |
-| Aún sin empezar | HU-08 Dashboard y exportación (13 pts), HU-09 Pruebas completas y feedback (8 pts), HU-10 Despliegue final y manuales (5 pts) = 26 pts |
-| Pruebas | backend 105 · frontend 38 · servicio ICF 101 (92 en CI, 9 locales) · E2E 12 · smoke 7 |
+| HU-08 (Dashboard y exportación) | **13 pts ✅ completada el 27-oct** (adelantada): dashboard con 10 gráficos y filtros, exportación a Excel y PDF, backend `/analytics/*`; verificada en DEV (CI verde, E2E 5/5 contra el frontend DEV) |
+| Aún sin empezar | HU-09 Pruebas completas y feedback (8 pts) y HU-10 Despliegue final y manuales (5 pts) = 13 pts |
+| Pruebas | backend 123 · frontend 61 · servicio ICF 101 (92 en CI, 9 locales) · E2E 17 · smoke 7 |
 | Producción de la IA | PC propio (i5-13450HX, 32 GB, RTX 5050 de 8 GB): `gemma4:e4b`, ~2,6 s por sugerencia con el modelo en memoria; Tailscale Funnel + Caddy con token |
 | Licencias | Verificadas: Gemma 4 Apache 2.0 (se usa); MedGemma no se usa (prohíbe uso clínico) → [`reports/LICENCIAS_COMPONENTES_ICF.md`](reports/LICENCIAS_COMPONENTES_ICF.md) |
 
@@ -47,7 +48,7 @@
 
 | Prioridad | Qué | Nota |
 |---|---|---|
-| Alta | **HU-08** Dashboard de análisis y exportación (13 pts, Sprint 10-11, issue #8) | Gráficos interactivos, exportación a Excel y PDF. |
+| ✅ Hecha | **HU-08** Dashboard de análisis y exportación (13 pts, issue #8) | Completada el 27-oct; falta promover a QA y producción. |
 | Alta | **HU-09** Pruebas completas y feedback de usuarios (8 pts, Sprint 11, issue #9) | UAT con usuarios reales; aquí encajan los médicos y la validación de la guía de uso. |
 | Alta | **HU-10** Despliegue final y manuales (5 pts, Sprint 12, issue #10) | Incluye el manual de operación del servicio ICF (ya existe `docs/MANUAL_OPERACION_ICF.md`). |
 | Media | Deuda de lint heredada | 5 errores en `Login.test.tsx`, `command.tsx`, `textarea.tsx`, `useJWTExpiry.ts` y `api.ts` (no son de HU-07). Abrir un ticket. |

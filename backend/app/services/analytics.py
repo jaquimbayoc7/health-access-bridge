@@ -7,6 +7,7 @@ from collections import Counter
 from datetime import datetime
 from typing import Dict, Iterable, List, Optional
 
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from .. import models
@@ -36,6 +37,11 @@ def _counts(values: Iterable[Optional[str]], order: Optional[List[str]] = None) 
     else:
         keys.sort(key=lambda k: (-counter[k], k))
     return [{"key": k, "count": counter[k]} for k in keys]
+
+
+def _label(value: Optional[str]) -> Optional[str]:
+    """El género se escribe de varias formas en los datos ('femenino', 'Femenino'): se unifica para no duplicar categorías."""
+    return value.strip().capitalize() if value and value.strip() else value
 
 
 def _rate(num: int, den: int) -> Optional[float]:
@@ -73,7 +79,7 @@ def filter_patients(
 ) -> List[models.Patient]:
     query = _scope_query(db, user, owner_id)
     if genero:
-        query = query.filter(models.Patient.genero == genero)
+        query = query.filter(func.lower(models.Patient.genero) == genero.strip().lower())
     if edad_min is not None:
         query = query.filter(models.Patient.edad >= edad_min)
     if edad_max is not None:
@@ -174,7 +180,7 @@ def build_summary(db: Session, user: models.User, **filters) -> Dict:
             "profile": _counts([f"Perfil {p.prediction_profile}" for p in predicted]),
             "cat_fisica": _counts([p.cat_fisica for p in patients], SEVERITY_ORDER),
             "cat_psicosocial": _counts([p.cat_psicosocial for p in patients], SEVERITY_ORDER),
-            "genero": _counts([p.genero for p in patients]),
+            "genero": _counts([_label(p.genero) for p in patients]),
             "age_group": _counts([_age_group(p.edad) for p in patients], [g[0] for g in AGE_GROUPS]),
             "cause": _counts([p.causa_deficiencia for p in patients])[:TOP_CAUSES],
         },
@@ -187,7 +193,7 @@ def filter_options(db: Session, user: models.User) -> Dict:
     """Valores disponibles para los filtros del dashboard (solo los del alcance del usuario)."""
     patients = _scope_query(db, user, None).all()
     return {
-        "genero": sorted({p.genero for p in patients if p.genero}),
+        "genero": sorted({_label(p.genero) for p in patients if p.genero}),
         "cause": sorted({p.causa_deficiencia for p in patients if p.causa_deficiencia}),
         "profile": sorted({p.prediction_profile for p in patients if p.prediction_profile is not None}),
     }

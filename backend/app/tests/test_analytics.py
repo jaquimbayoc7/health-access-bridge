@@ -144,6 +144,19 @@ class TestAggregates:
         assert len(client.get("/analytics/summary", headers=doctor_headers).json()["distributions"]["cause"]) == 8
 
 
+class TestGenderSpelling:
+    def test_spelling_variants_are_one_category_and_the_filter_matches_all_of_them(self, client, db, doctor, doctor_headers):
+        _patient(db, doctor, genero="femenino")
+        _patient(db, doctor, genero="Femenino")
+        _patient(db, doctor, genero="masculino")
+        body = client.get("/analytics/summary", headers=doctor_headers).json()
+        assert _count(body["distributions"]["genero"], "Femenino") == 2 and _count(body["distributions"]["genero"], "Masculino") == 1
+        assert len(body["distributions"]["genero"]) == 2
+        assert client.get("/analytics/filters", headers=doctor_headers).json()["genero"] == ["Femenino", "Masculino"]
+        assert client.get("/analytics/summary?genero=Femenino", headers=doctor_headers).json()["totals"]["patients"] == 2
+        assert client.get("/analytics/summary?genero=FEMENINO", headers=doctor_headers).json()["totals"]["patients"] == 2
+
+
 class TestFilters:
     @pytest.fixture
     def populated(self, db, doctor):

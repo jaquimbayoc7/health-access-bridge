@@ -58,7 +58,7 @@ La página oficial del proyecto (`docs/presentation/index.html`, publicada en `h
 | **Optimización y ajustes** a los servicios inteligentes | 25 |
 | Decisiones importantes, riesgos, pendientes y cierre | 26, 27, 28, 29 |
 
-**Avance del proyecto: 82,2 % (120 de 146 pts)**, dentro del rango de 65 % a 100 % que pide la rúbrica.
+**Avance del proyecto: 91,1 % (133 de 146 pts)**, dentro del rango de 65 % a 100 % que pide la rúbrica.
 
 ---
 
@@ -81,8 +81,8 @@ DATOS avance_por_momento (barras apiladas)
 momento,        completados, pendientes, total
 M1 (sem 1-9),   63,          0,          63
 M2 (sem 10-18), 24,          0,          24
-M3 (sem 19-27), 33,          26,         59
-TOTAL,          120,         26,         146   -> 82,2 %
+M3 (sem 19-27), 46,          13,         59
+TOTAL,          133,         13,         146   -> 91,1 %
 ```
 
 ### 3.3 Release Plan (línea de tiempo)
@@ -115,7 +115,7 @@ Sprint 4-5 (adelant.), 10-13,        21,          21      (HU-04 ya entregada en
 Sprint 6-7,            14-17,        16,          16
 Sprint 7,              16-17,        8,           8
 Sprint 8 (deuda),      -,            0,           0       (DEUDA-01: deuda técnica, sin puntos de producto)
-Sprint 8-9 (en curso), 19-22,        33,          33      (HU-07 completa; 07g acreditada el 27-oct)
+Sprint 8-9 (en curso), 19-22,        46,          33      (HU-07 completa y HU-08 adelantada, 13 pts; 07g acreditada el 27-oct)
 ```
 Velocidad promedio de los sprints cerrados de M1 y M2: 14,5 SP por sprint (87 pts en 6 sprints).
 
@@ -223,13 +223,13 @@ Health Access Bridge · Momento 3: Trabajo Integrador III · «Perfil Funcional 
 Mapa de la sección 2 en forma de tabla de 10 criterios con íconos. Gráfica: ninguna (tabla).
 
 ### 3. Resumen ejecutivo
-Mensaje: «82,2 % del proyecto, con la IA ya integrada, privada y validada por una profesional de salud». KPIs en tarjetas: 120/146 pts · 33/59 pts de M3 · 263 pruebas · 254 en CI · ~2,6 s por sugerencia · 0 USD en APIs. Gráfica: **anillo de avance** (120 hechos, 26 pendientes).
+Mensaje: «91,1 % del proyecto, con la IA integrada, privada y validada por una profesional de salud, y un dashboard de análisis con exportación». KPIs en tarjetas: 133/146 pts · 46/59 pts de M3 · 309 pruebas · 300 en CI · ~2,6 s por sugerencia · 0 USD en APIs. Gráfica: **anillo de avance** (133 hechos, 13 pendientes).
 
 ### 4. Release Plan (R1, R2, R3)
 Mensaje: «Tres releases, dos entregadas y la tercera al 51 %». Gráfica: **Gantt por semanas** con los datos de 3.3, cada barra con su porcentaje. Contenido: puntos y HU por release (viñetas cortas).
 
 ### 5. Avance real frente a lo esperado
-Gráfica: **barras apiladas** de 3.2 (completados / pendientes por Momento). Mensaje: M1 y M2 cerrados al 100 %; M3 en 33 de 59. Línea: el total del proyecto creció de 134 a 146 pts por la reestimación de HU-07.
+Gráfica: **barras apiladas** de 3.2 (completados / pendientes por Momento). Mensaje: M1 y M2 cerrados al 100 %; M3 en 46 de 59. Línea: el total del proyecto creció de 134 a 146 pts por la reestimación de HU-07.
 
 ### 6. Prácticas ágiles aplicadas
 Mensaje: «SCRUM adaptado a un equipo unipersonal, con evidencia verificable». Tabla roles / eventos / artefactos (Product Owner redacta HUs en `BACKLOG.md`; Planning = estimación en SP con Planning Poker informal; Review = HU demostrada desplegada en DEV/QA/PROD; Retro = hallazgos documentados en reportes de insights por cierre; artefactos: Product Backlog, DoR, DoD, Release Plan, burndown, velocity). Gráfica: **rueda o diagrama de ciclo** Planificar → Desarrollar → Probar → Desplegar → Revisar. Fuente: `docs/reports/AGILE_PRACTICES.md`.
@@ -362,10 +362,10 @@ Gráfica: **línea de tiempo** con las 9 decisiones de la sección 3.8, cada una
 Tabla de riesgos (de `RELEASE_PLAN.md`) con semáforo: rendimiento de API (cerrado, riesgo aceptado), latencia del modelo (resuelto), calidad de modelos pequeños (mitigado), privacidad (mitigado por diseño y licencias), producción en PC propio (operando; sin redundancia), cobertura parcial del Anexo (mitigado), confiabilidad clínica (🟡 pendiente de validación), encuadre regulatorio como dispositivo médico (🟡 por consultar). **Lecciones:** (1) leer las salidas reales antes de comparar tablas; (2) verificar licencias antes de elegir un modelo; (3) un modelo mayor o «médico» no garantiza mejor resultado; (4) agrupar las promociones de rama; (5) probar el túnel con y sin token como paso fijo. Gráfica: **matriz de riesgo** (impacto vs. probabilidad) con los puntos coloreados por estado.
 
 ### 28. Pendientes y próximos pasos
-Mensaje: «La validación clínica está cerrada; quedan las tres HU finales». Lista: promoción `develop` → `staging` → `master`; HU-08 dashboard y exportación (13 pts); HU-09 pruebas completas y feedback (8); HU-10 despliegue final y manuales (5). La consulta regulatoria y el permiso del catálogo de la OMS se descartaron por decisión del responsable. Gráfica: **barras de los 26 pts pendientes** (HU-08 13, HU-09 8, HU-10 5) y proyección del burndown hasta el Sprint 12 (semana 27).
+Mensaje: «La validación clínica y el dashboard están cerrados; quedan dos HU finales». Lista: promoción `develop` → `staging` → `master`; HU-09 pruebas completas y feedback (8); HU-10 despliegue final y manuales (5). La consulta regulatoria y el permiso del catálogo de la OMS se descartaron por decisión del responsable. Gráfica: **barras de los 13 pts pendientes** (HU-09 8, HU-10 5) y proyección del burndown hasta el Sprint 12 (semana 27).
 
 ### 29. Conclusiones
-Cuatro mensajes: (1) 82,2 % del proyecto y las dos primeras releases cerradas; (2) IA integrada, local y privada, medida en latencia (~2,6 s), costo (0 USD) y energía (~0,042 Wh); (3) calidad respaldada por 263 pruebas, CI/CD y defectos corregidos con evidencia; (4) honestidad: la confiabilidad clínica se midió en tres rondas con una profesional de salud (5 de 6 criterios en casos nuevos; el calificador no cumple) y se presenta como borrador de apoyo; ver `presentation/reporte-afinamiento-icf.html`. Cierre con enlaces: repositorio, página oficial, frontend en producción.
+Cuatro mensajes: (1) 91,1 % del proyecto y las dos primeras releases cerradas; (2) IA integrada, local y privada, medida en latencia (~2,6 s), costo (0 USD) y energía (~0,042 Wh); (3) calidad respaldada por 309 pruebas, CI/CD y defectos corregidos con evidencia; (4) honestidad: la confiabilidad clínica se midió en tres rondas con una profesional de salud (5 de 6 criterios en casos nuevos; el calificador no cumple) y se presenta como borrador de apoyo; ver `presentation/reporte-afinamiento-icf.html`. Cierre con enlaces: repositorio, página oficial, frontend en producción.
 
 ---
 

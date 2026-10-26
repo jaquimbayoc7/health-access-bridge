@@ -3,7 +3,7 @@
 **Proyecto:** Health Access Bridge  
 **Metodología:** SCRUM  
 **Duración Total:** 27 Semanas  
-**Última actualización:** 27 de octubre de 2026 (cierre de HU-07g) · HU-07g acreditada (3 pts) por decisión del responsable con las métricas tal como están: HU-07 33/33, proyecto 120/146 (82,2 %), Momento 3 33/59 (55,9 %); reporte final del afinamiento de los códigos ICF en la presentación · 27 de octubre de 2026 · HU-07g con tercera ronda sobre 24 casos nuevos: precisión estricta 62,7 %, flexible 86,3 % y cobertura 69,0 % cumplen; el calificador (κ ponderado 0,312) no cumple, NO CUMPLE por un solo criterio · 26 de octubre de 2026 · HU-07g con segunda ronda: el motor corregido llega a precisión estricta 71,0 % y flexible 87,1 % y falla solo la cobertura (58,2 % frente a 60 %); antes de la corrección, con la revisión clínica devuelta: veredicto NO CUMPLE (precisión estricta 59,1 %, flexible 78,8 %, cobertura 55,2 %, κ del calificador 0,576) y análisis de errores con sustento en la literatura (estructuras: relleno de la cuota; funciones: la búsqueda no trae los códigos de la médica); sin acreditar los 3 pts · 21 de octubre de 2026 · HU-07g con los criterios de aceptación sustentados científica y estadísticamente (referentes de codificación humana, intervalos de confianza y κ ponderado) y la hoja de revisión actualizada; sigue faltando la revisión de la profesional de salud · 7 de octubre de 2026 · HU-07g con el instrumento listo (falta la revisión de la profesional de salud) y licencias de los modelos verificadas · HU-07e completada (E2E, tests del servicio ICF en CI, manual de operación y reportes) · HU-07h completada (producción operativa en el PC propio, con Render, QA, reinicio y tapa verificados) · HU-07d completada (pantalla «Perfil Funcional ICF»; 12 pruebas nuevas de frontend) · HU-07c completada (backend con generar, consultar y decidir sugerencias; 38 pruebas nuevas) · HU-07f completada: `gemma4:e4b` propuesto como modelo mínimo viable (`docs/reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md`) · 6 de octubre de 2026 · HU-07a y HU-07b completadas; pruebas con el servidor físico y Qwen documentadas (`docs/reports/PRUEBAS_HU07_SERVIDOR_FISICO.md`); HU-07 sigue con modelo local de pesos abiertos (sin APIs externas por privacidad; Gemma/MedGemma se prueban en un PC de pruebas), se agregan 07f, 07g y 07h y el total del proyecto queda en 146 pts (06-oct-2026) · Historial: Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada) · DEUDA-01 cerrada con riesgo aceptado (23-sep-2026) · Protección de rama y flujo de PR activados (23-sep-2026) · Hallazgo post-cierre de flakiness E2E corregido y validado en CI (24-sep-2026) · HU-07 redefinida con RAG y dividida en 07a–07e para iniciar Momento 3 (05-oct-2026) · HU-07 ajustada al Anexo Técnico de la Resolución 1239 de 2022 (05-oct-2026) · HU-07 reestimada a 25 pts y total del proyecto en 138 pts (05-oct-2026) · Ver [`docs/reports/INSIGHTS_REPORT4.md`](docs/reports/INSIGHTS_REPORT4.md) para el detalle completo de esta sesión.
+**Última actualización:** 27 de octubre de 2026 (HU-08 completada: dashboard de análisis con exportación a Excel y PDF; proyecto 133/146, 91,1 %, Momento 3 46/59) · 27 de octubre de 2026 (cierre de HU-07g) · HU-07g acreditada (3 pts) por decisión del responsable con las métricas tal como están: HU-07 33/33, proyecto 120/146 (82,2 %), Momento 3 33/59 (55,9 %); reporte final del afinamiento de los códigos ICF en la presentación · 27 de octubre de 2026 · HU-07g con tercera ronda sobre 24 casos nuevos: precisión estricta 62,7 %, flexible 86,3 % y cobertura 69,0 % cumplen; el calificador (κ ponderado 0,312) no cumple, NO CUMPLE por un solo criterio · 26 de octubre de 2026 · HU-07g con segunda ronda: el motor corregido llega a precisión estricta 71,0 % y flexible 87,1 % y falla solo la cobertura (58,2 % frente a 60 %); antes de la corrección, con la revisión clínica devuelta: veredicto NO CUMPLE (precisión estricta 59,1 %, flexible 78,8 %, cobertura 55,2 %, κ del calificador 0,576) y análisis de errores con sustento en la literatura (estructuras: relleno de la cuota; funciones: la búsqueda no trae los códigos de la médica); sin acreditar los 3 pts · 21 de octubre de 2026 · HU-07g con los criterios de aceptación sustentados científica y estadísticamente (referentes de codificación humana, intervalos de confianza y κ ponderado) y la hoja de revisión actualizada; sigue faltando la revisión de la profesional de salud · 7 de octubre de 2026 · HU-07g con el instrumento listo (falta la revisión de la profesional de salud) y licencias de los modelos verificadas · HU-07e completada (E2E, tests del servicio ICF en CI, manual de operación y reportes) · HU-07h completada (producción operativa en el PC propio, con Render, QA, reinicio y tapa verificados) · HU-07d completada (pantalla «Perfil Funcional ICF»; 12 pruebas nuevas de frontend) · HU-07c completada (backend con generar, consultar y decidir sugerencias; 38 pruebas nuevas) · HU-07f completada: `gemma4:e4b` propuesto como modelo mínimo viable (`docs/reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md`) · 6 de octubre de 2026 · HU-07a y HU-07b completadas; pruebas con el servidor físico y Qwen documentadas (`docs/reports/PRUEBAS_HU07_SERVIDOR_FISICO.md`); HU-07 sigue con modelo local de pesos abiertos (sin APIs externas por privacidad; Gemma/MedGemma se prueban en un PC de pruebas), se agregan 07f, 07g y 07h y el total del proyecto queda en 146 pts (06-oct-2026) · Historial: Septiembre 2026 · Momento 1 y Momento 2 completados (HU-06 cerrada) · DEUDA-01 cerrada con riesgo aceptado (23-sep-2026) · Protección de rama y flujo de PR activados (23-sep-2026) · Hallazgo post-cierre de flakiness E2E corregido y validado en CI (24-sep-2026) · HU-07 redefinida con RAG y dividida en 07a–07e para iniciar Momento 3 (05-oct-2026) · HU-07 ajustada al Anexo Técnico de la Resolución 1239 de 2022 (05-oct-2026) · HU-07 reestimada a 25 pts y total del proyecto en 138 pts (05-oct-2026) · Ver [`docs/reports/INSIGHTS_REPORT4.md`](docs/reports/INSIGHTS_REPORT4.md) para el detalle completo de esta sesión.
 
 ---
 
@@ -19,14 +19,14 @@
 
 | ✅ Done | 🟡 En Progreso | 📋 Backlog |
 |---------|---------------|-----------|
-| EPICA-01 Estructuración y Diseño | HU-08, HU-09 y HU-10 por iniciar (Momento 3 en curso: 33 de 59 pts) | EPICA-03 IA Generativa y Cierre |
+| EPICA-01 Estructuración y Diseño | HU-09 y HU-10 por iniciar (Momento 3 en curso: 46 de 59 pts) | EPICA-03 IA Generativa y Cierre |
 | DEUDA-01 Escalado de Rendimiento API ✅ (cerrada 23-sep, riesgo aceptado; ver §5 Release Plan) | — | — |
 | HU-01 Autenticación y Roles (8 pts) | — | EPICA-03 IA Generativa y Cierre |
 | HU-02 Registro y Precarga de Pacientes (13 pts) | — | — |
 | HU-07 Perfil Funcional ICF con RAG y LLM local (33 pts; 07a a 07h ✅; 07g cerrada el 27-oct-2026 con veredicto NO CUMPLE por el calificador) | — | — |
 | HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | — |
 | HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | — |
-| — | — | HU-08 Dashboard de Análisis y Exportación (13 pts) |
+| HU-08 Dashboard de Análisis y Exportación (13 pts) ✅ | — | — |
 | [#14 HU-11](https://github.com/jaquimbayoc7/health-access-bridge/issues/14) Pruebas Smoke en Producción (3 pts) | — | HU-09 Pruebas Completas y Feedback (8 pts) |
 | [#15 HU-12](https://github.com/jaquimbayoc7/health-access-bridge/issues/15) Pruebas de Integración Backend (5 pts) | — | HU-10 Despliegue Final y Manuales (5 pts) |
 | [#16 HU-13](https://github.com/jaquimbayoc7/health-access-bridge/issues/16) Pruebas de Diseño y UI Frontend (8 pts) | — | — |
@@ -34,8 +34,8 @@
 | HU-05b Ayuda contextual traducida (3 pts) | — | — |
 | [#6 HU-06](https://github.com/jaquimbayoc7/health-access-bridge/issues/6) Pruebas de Integración y Rendimiento (8 pts) | — | — |
 
-**Puntos completados: 120 pts · Puntos pendientes: 26 pts · Total: 146 pts** *(HU-07 reestimada de 21 a 25 pts el 05-oct-2026 y de 25 a 33 pts el 06-oct-2026 por los hallazgos de las pruebas en el servidor físico; HU-07a y HU-07b completadas el 06-oct-2026 y HU-07c, HU-07d, HU-07e, HU-07f y HU-07h el 07-oct-2026: +30 pts; HU-07g el 27-oct-2026: +3 pts)*  
-**Avance general: 82% (120 de 146 pts) · Momento 1 100% completado (Sprint 3.5 incluido) · Momento 2 100% completado · Momento 3 en curso: 33 de 59 pts (55,9 %)**
+**Puntos completados: 133 pts · Puntos pendientes: 13 pts · Total: 146 pts** *(HU-07 reestimada de 21 a 25 pts el 05-oct-2026 y de 25 a 33 pts el 06-oct-2026 por los hallazgos de las pruebas en el servidor físico; HU-07a y HU-07b completadas el 06-oct-2026 y HU-07c, HU-07d, HU-07e, HU-07f y HU-07h el 07-oct-2026: +30 pts; HU-07g el 27-oct-2026: +3 pts; HU-08 el 27-oct-2026: +13 pts)*  
+**Avance general: 91% (133 de 146 pts) · Momento 1 100% completado (Sprint 3.5 incluido) · Momento 2 100% completado · Momento 3 en curso: 46 de 59 pts (78,0 %)**
 
 ---
 
@@ -332,7 +332,7 @@ Reemplaza el alcance original de "Modo Offline y PWA" (no ejecutado). En su luga
 
 ---
 
-## MOMENTO 3: TRABAJO INTEGRADOR III (Semanas 19-27) - Avance 56% (33 de 59 pts) 🟡
+## MOMENTO 3: TRABAJO INTEGRADOR III (Semanas 19-27) - Avance 78% (46 de 59 pts) 🟡
 
 ### Sprint 8: Deuda Técnica de Rendimiento (previo a Sprint 8 & 9)
 
@@ -559,8 +559,20 @@ Es la primera vez que las precisiones y la cobertura cumplen a la vez **sobre ca
 - Funcionalidad de exportar a Excel y PDF.
 - Despliegue final en Render.
 
-**DoD:** Dashboard funcional, exportación sin errores, documentación.  
+**DoD:** Dashboard funcional, exportación sin errores, documentación.
 **Estimación:** 13 puntos.
+
+**Avance de HU-08 (27-oct-2026), implementada y en `develop`:**
+
+- **Backend** (`backend/app/routers/analytics.py`, `backend/app/services/analytics.py`): `GET /analytics/summary` y `GET /analytics/filters`. Solo conteos y promedios, **nunca** nombre, documento, orientación sexual ni fecha de nacimiento (hay una prueba que lo verifica). El médico ve solo sus pacientes; el administrador ve todos y puede filtrar por médico. Filtros por género, rango de edad, causa y perfil de predicción. Incluye el bloque del perfil funcional ICF (HU-07): sugerencias por estado, tasa de aceptación (aceptados + editados sobre decididos) por componente, códigos más frecuentes, origen y modelo; cuenta solo el último lote de cada paciente para que regenerar no duplique. Los pacientes eliminados (soft-delete) no cuentan.
+- **Frontend** (`frontend/src/pages/Analytics.tsx`): reemplaza la página anterior, que agregaba en el navegador y solo mostraba un gráfico. KPIs, 10 gráficos con recharts (perfiles, categorías física y psicosocial, género, grupos de edad, causas, radar de los dominios D1–D6, estado de los códigos ICF por componente, origen y modelo), pestañas «Pacientes» y «Perfil funcional ICF», filtros, estados de carga, vacío y error con reintento, español e inglés. El menú de análisis ahora también se muestra al administrador (antes se ocultaba).
+- **Exportación** (`frontend/src/lib/analyticsExport.ts`): una sola fuente de datos alimenta los dos formatos, de modo que el archivo coincide con lo que se ve. **Excel** de 5 hojas (resumen, distribuciones, dominios, ICF y códigos). **PDF** con el resumen, los gráficos y las tablas; los gráficos se rasterizan desde el SVG. Hallazgo al probarlo en un navegador real: con PNG el PDF de 10 gráficos pesaba **19 MB**; con JPEG y compresión pesa **220 KB**. Tampoco viajaba la leyenda de recharts (es HTML, fuera del SVG): se agregó como texto.
+- **Decisiones de diseño con sustento:** paleta de Okabe e Ito en hexadecimal, distinguible con daltonismo (Wong 2011, *Nature Methods* 8:441; doi:10.1038/nmeth.1618) y necesaria porque los SVG exportados no resuelven variables CSS; la tasa de aceptación del ICF es la medida de utilidad percibida por el médico de las sugerencias (complementa la validación clínica de HU-07g); los datos son agregados por diseño (Ley 1581 de 2012: no se exportan datos personales).
+- **Pruebas:** backend 17 nuevas (122 en total, cobertura 90,7 %); frontend 23 nuevas de vitest (61 en total); 5 E2E de Playwright nuevos (17 en total), con la sesión sembrada y `/analytics` simulado, que incluyen la descarga real del Excel y del PDF con gráficos. ESLint limpio en los archivos nuevos y `vite build` correcto.
+
+**Estado:** ✅ **Completada el 27-oct-2026** (13 pts).
+
+**Cierre de HU-08 (27-oct-2026):** CI de `develop` en verde (commit `c409b16`) y despliegue verificado en DEV: el backend publica `/analytics/summary` y `/analytics/filters`; con una sesión real de médico el resumen devuelve los agregados del alcance (6 pacientes, perfil funcional ICF con 9 sugerencias), sin token responde 401 y un médico que pide `owner_id` recibe 403; el frontend DEV sirve el bundle con el dashboard y los **5 E2E de Playwright pasan contra `hab-frontend-dev`**. La verificación en un ambiente real destapó un problema de los datos: el género aparecía como «femenino» y «Femenino» (dos categorías); el backend ahora lo unifica y el filtro no distingue mayúsculas (prueba nueva). QA y producción se actualizan al promover `develop` → `staging` → `master`. Los 13 pts se acreditan con el proyecto en **133 de 146 (91,1 %)** y el Momento 3 en **46 de 59 (78,0 %)**; quedan HU-09 (8) y HU-10 (5). La documentación de uso del dashboard para el manual de usuario va con HU-10.
 
 ---
 

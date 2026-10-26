@@ -2,7 +2,7 @@
 **Estándar:** Gherkin (BDD — Behaviour Driven Development)  
 **Última actualización:** 7 de octubre de 2026  
 **Momento:** 3 (en curso; las suites 1–7 son del Momento 1 y las suites 8–11 de HU-07)  
-**Total de pruebas:** 256 automatizadas: 105 backend · 38 frontend · 101 servicio ICF · 12 E2E (Playwright). Las suites 1–7 conservan los casos Gherkin originales del Momento 1; el detalle del backend completo y de los E2E de HU-06 está en `TESTING_REPORT.md`.
+**Total de pruebas:** 302 automatizadas: 123 backend · 61 frontend · 101 servicio ICF · 17 E2E (Playwright). Las suites 1–7 conservan los casos Gherkin originales del Momento 1; el detalle del backend completo y de los E2E de HU-06 está en `TESTING_REPORT.md`.
 
 ---
 
@@ -21,6 +21,7 @@
 | [Backend — Sugerencias CIF](#suite-9--backend-sugerencias-decisiones-causas-y-diagnóstico-hu-07c) | HU-07c | `test_icf_*.py` | 53 |
 | [Frontend — Perfil Funcional ICF](#suite-10--frontend-perfil-funcional-icf-y-guía-hu-07d) | HU-07d | `FunctionalProfile.test.tsx`, `IcfGuide.test.tsx` | 22 |
 | [E2E — Perfil Funcional ICF](#suite-11--e2e-perfil-funcional-icf-hu-07e) | HU-07e | `functional-profile.spec.ts` | 5 |
+| [Dashboard de análisis](#suite-12--dashboard-de-análisis-y-exportación-hu-08) | HU-08 | `test_analytics.py`, `Analytics.test.tsx`, `analyticsExport.test.ts`, `analytics.spec.ts` | 46 |
 
 ---
 
@@ -832,3 +833,22 @@ Feature: Perfil Funcional ICF de extremo a extremo
 | E2E Perfil Funcional ICF | 5 | ✅ 100% |
 | **Suites 1–7 (Momento 1)** | **53** | **✅ 100%** |
 | **Suites 8–11 (HU-07)** | **155** | **✅ 100%** |
+
+---
+
+## Suite 12 — Dashboard de análisis y exportación (HU-08)
+
+**Archivos:** `backend/app/tests/test_analytics.py` (18), `frontend/src/__tests__/Analytics.test.tsx` (12), `frontend/src/__tests__/analyticsExport.test.ts` (11), `frontend/e2e/analytics.spec.ts` (5)
+**Framework:** pytest · TestClient · SQLite en memoria / Vitest · Testing Library / Playwright (sesión sembrada y `/analytics` simulado)
+**Total:** 46 pruebas (18 backend, 23 frontend, 5 E2E; los E2E se corrieron también contra el frontend DEV desplegado)
+
+| Cobertura | Casos |
+|---|---|
+| Autenticación y privacidad | sin token 401; el resumen no contiene nombre, documento, orientación sexual ni fecha de nacimiento ni el correo del médico; el médico no puede filtrar por `owner_id` (403) |
+| Alcance | el médico solo ve sus pacientes; el administrador ve todos y filtra por médico; los pacientes eliminados no cuentan; alcance vacío devuelve ceros y `null`, sin errores |
+| Agregados | totales, tasas, edad promedio, distribuciones ordenadas por gravedad y por grupo de edad, promedios de D1–D6, causas limitadas a las 8 principales |
+| Filtros | género, rango de edad, causa y perfil (por separado y combinados); rangos inválidos 422; opciones de filtro solo del alcance del usuario; el género «femenino»/«Femenino» es una sola categoría |
+| ICF | tasa de aceptación por componente (sin decisiones no se inventa una tasa); regenerar no duplica (solo el último lote); códigos más frecuentes; los filtros acotan también el bloque ICF |
+| Pantalla | indicadores, inglés, estado vacío, filtro de género y quitar filtros, edades con espera (no consulta en cada tecla), error con reintento, pestaña ICF (y su estado vacío), filtro de médico solo para el administrador, botones desactivados mientras carga |
+| Exportación | secciones del reporte (resumen, filtros, distribuciones, dominios, ICF, códigos), mismos textos en español e inglés, Excel de 5 hojas, nombre del archivo con fecha, PDF con y sin gráficos y con alcance vacío, sin datos identificables |
+| E2E | indicadores y gráficos con filtro, pestaña ICF, descarga real del Excel, descarga real del PDF con gráficos (más de 40 KB; con PNG pesaba 19 MB), error y reintento |
