@@ -1,6 +1,6 @@
 # Pendientes y punto de partida para la próxima sesión
 
-**Corte:** 7 de octubre de 2026 · `develop`, `staging` y `master` quedaron sincronizadas por los PR #75 a #80 que hizo el responsable ese día (`master`: 249 commits). Solo falta promover los documentos añadidos después (este archivo, el brief de Kimi y la actualización del Release Plan).
+**Corte:** 27 de octubre de 2026 · HU-07 está completa (33 de 33 pts). `develop` tiene todo el trabajo de HU-07g y el reporte de afinamiento; `staging` y `master` están atrás: falta promover (ver 2, punto 2).
 **Uso:** abrir este archivo al empezar la sesión siguiente y seguir en orden. Complementa [`BACKLOG.md`](../BACKLOG.md) (fuente de verdad del alcance) y [`reports/PROJECT_STATUS_M3.md`](reports/PROJECT_STATUS_M3.md).
 
 ---
@@ -9,11 +9,11 @@
 
 | Dato | Valor |
 |---|---|
-| Avance del proyecto | **117 de 146 pts (80,1 %)** · Momento 1 100 % · Momento 2 100 % · **Momento 3: 30 de 59 pts (50,8 %)** |
-| HU-07 (Perfil Funcional ICF) | 30 de 33 pts: 07a, 07b, 07c, 07d, 07e, 07f y 07h hechas; **07g (3 pts) revisada por la médica el 26-oct con veredicto NO CUMPLE (precisión estricta 59,1 %, flexible 78,8 %, cobertura 55,2 %, κ 0,576); sin acreditar** |
-| Pendiente de acreditar | 07g (3) → al cerrarla: 120/146 (82,2 %) y M3 33/59 |
+| Avance del proyecto | **120 de 146 pts (82,2 %)** · Momento 1 100 % · Momento 2 100 % · **Momento 3: 33 de 59 pts (55,9 %)** |
+| HU-07 (Perfil Funcional ICF) | **33 de 33 pts ✅**: 07a a 07h hechas. **07g cerrada el 27-oct** (3 pts acreditados por el responsable): tres rondas con la médica; con 24 casos nuevos cumplen precisión estricta 62,7 %, flexible 86,3 %, cobertura 69,0 % y actividades 100 %; el calificador (κ 0,312) no: NO CUMPLE por un criterio. Borrador de apoyo, sin uso clínico |
+| Recomendado (no bloquea) | Segunda revisora, calificador con rango 0–4, apagar `ICF_MENTAL_LINK` (6 de 7 estructuras rechazadas en la ronda 3) y una cuarta ronda con casos nuevos |
 | Aún sin empezar | HU-08 Dashboard y exportación (13 pts), HU-09 Pruebas completas y feedback (8 pts), HU-10 Despliegue final y manuales (5 pts) = 26 pts |
-| Pruebas | backend 105 · frontend 38 · servicio ICF 75 + 5 nuevas del 26-oct (vínculo de movilidad y evidencia) · E2E 12 · smoke 7 |
+| Pruebas | backend 105 · frontend 38 · servicio ICF 101 (92 en CI, 9 locales) · E2E 12 · smoke 7 |
 | Producción de la IA | PC propio (i5-13450HX, 32 GB, RTX 5050 de 8 GB): `gemma4:e4b`, ~2,6 s por sugerencia con el modelo en memoria; Tailscale Funnel + Caddy con token |
 | Licencias | Verificadas: Gemma 4 Apache 2.0 (se usa); MedGemma no se usa (prohíbe uso clínico) → [`reports/LICENCIAS_COMPONENTES_ICF.md`](reports/LICENCIAS_COMPONENTES_ICF.md) |
 
@@ -23,14 +23,14 @@
 
 | # | Qué | Detalle |
 |---|---|---|
-| 1 | ~~Reunión con la revisora~~ **Hecha: la médica devolvió la hoja el 26-oct** | Veredicto NO CUMPLE; resultado y análisis de errores en [`reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md) (secciones 8 y 9). Decidir: (a) cómo se tratan los 3 pts de 07g, (b) si se corrige el motor (estructuras sin relleno de cuota, más candidatos de funciones; 9.5) y (c) cuándo revisar 20 a 25 casos nuevos con ella. **Hecho el 26-oct:** estructuras con evidencia y vínculo de movilidad ya están en el código y activos por defecto (sección 10 del protocolo); la imagen de `icf-service` ya se reconstruyó en el PC de producción (verificada con `check.ps1`). **La médica ya valoró las 41 sugerencias nuevas (26-oct):** precisión estricta 71,0 %, flexible 87,1 %, κ 0,540 cumplen; cobertura 58,2 % no (NO CUMPLE por un criterio; protocolo, sección 11). **Decidir:** (a) si la gravedad 0 deja de contar como código «esperado» (daría 61,9 %), con la regla escrita antes de los casos nuevos; (b) acotar el vínculo de movilidad a limitación motora real y no aplicar la regla de evidencia a la estructura principal de cuadros mentales (11.4); (c) preparar 20 a 25 casos nuevos para la médica. **Actualización 27-oct:** (a), (b) y (c) hechos: reglas de la tercera ronda fijadas en el protocolo (sección 12; la gravedad 0 no cuenta como esperada, con sensibilidad informada), vínculos ajustados, 24 casos nuevos (`icf-service/reference/cases_ronda2.json`), producción reconstruida y hoja `data/private/icf/review/hoja_ronda3.xlsx` **ya devuelta y calculada (27-oct): precisión estricta 62,7 %, flexible 86,3 %, cobertura 69,0 % y actividades cumplen; el calificador (κ 0,312) no: NO CUMPLE por un criterio** (protocolo, sección 13). Los ajustes no se hacen con estos casos. **Decidir:** (1) puntos de 07g; (2) cuarta ronda con calificador de rango 0–4, sin vínculo mental y con funciones cognitivas más acotadas, o alcance reducido (el calificador queda como valor inicial editable); (3) segunda revisora. Los umbrales no se mueven. |
-| 2 | **Promoción de los últimos documentos** `develop` → `staging` → `master` | La promoción grande **ya se hizo** (PR #75 a #80, 7-oct): HU-07 completa está en `staging` y `master`, y la página oficial se publica desde `master`. Quedan pendientes solo los commits de documentación posteriores; agruparlos en un PR cuando haya más cambios. Tras promover, **revisar que la página oficial muestre las cifras actuales** (los contadores de commits cambian con cada merge). |
-| 3 | Tablero de proyectos de GitHub | El token de `gh` no tiene el permiso `read:project`; no se pudo revisar ni actualizar. Ejecutar `gh auth refresh -s read:project` (interactivo) si se usa el tablero. |
+| 1 | ~~Reunión con la revisora y cierre de HU-07g~~ **Hecho el 27-oct** | El responsable dejó las métricas como están y acreditó los 3 pts. Resultado, análisis y cierre: [`reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md), secciones 8 a 14; reporte final: [`presentation/reporte-afinamiento-icf.html`](presentation/reporte-afinamiento-icf.html). |
+| 2 | **Promoción** `develop` → `staging` → `master` | `develop` está por delante: motor corregido (ICF_S_EVIDENCE, ICF_MOTOR_LINK, ICF_MENTAL_LINK), scripts de validación, casos nuevos, protocolo, presentación con la sección «Afinamiento de los códigos ICF» y el reporte final. Agrupar en un PR `develop` → `staging` y luego `staging` → `master`. **Tras promover, actualizar los contadores de commits de `docs/presentation/index.html`** (hoy figuran 249 en `master`, que ya tiene 260) y revisar que la página oficial muestre 120/146. |
+| 3 | Tablero de proyectos de GitHub | El token de `gh` no tiene el permiso `read:project`: **no se pudo actualizar el tablero**. Ejecutar `gh auth refresh -s read:project` (interactivo) y mover a Done HU-07g/#71 y HU-07/#7, o hacerlo a mano en la web. |
 | 4 | Consulta regulatoria | Preguntar al INVIMA o a un asesor jurídico si el software podría considerarse dispositivo médico antes de un uso clínico real. Mientras tanto la pantalla lo presenta como **borrador de apoyo**. |
 | 5 | Catálogo de la OMS | Confirmar si mostrar a los médicos los títulos del catálogo CIF-IA dentro de la aplicación requiere permiso explícito en un despliegue real. |
 | 6 | Presentación en Kimi | Usar [`presentation/KIMI_BRIEF_M3.md`](presentation/KIMI_BRIEF_M3.md) y reunir las capturas que el brief lista en la sección 9. |
 
-## 3. Cierre de HU-07g tras la devolución de la hoja (pasos 1 y 2 ya hechos el 26-oct; el 3 en adelante, pendientes)
+## 3. Cierre de HU-07g (hecho el 27-oct-2026; se conserva como guía para una cuarta ronda)
 
 1. Guardar la hoja llena en `data/private/icf/review/hoja_revision_llena.xlsx`.
 2. Calcular métricas y veredicto (en Docker, ver comandos en la sección 6):
