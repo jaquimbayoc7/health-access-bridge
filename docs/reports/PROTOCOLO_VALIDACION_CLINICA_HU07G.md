@@ -502,3 +502,10 @@ python scripts/review_sheet.py generate --cases reference/cases_ronda2.json --ou
 python scripts/review_sheet.py score ..\data\private\icf\review\hoja_ronda3_llena.xlsx --exclude-zero-severity --output informe_ronda3.json
 python scripts/review_sheet.py score ..\data\private\icf\review\hoja_ronda3_llena.xlsx    # sensibilidad, definición anterior
 ```
+
+### 12.5 Estado (27 de octubre de 2026)
+
+- Reglas y casos publicados en `develop` (commit `30cd5ec`) antes de generar las sugerencias.
+- **Producción reconstruida** con ese commit (`check.ps1 -Public -Suggest`: «Todo correcto»; la sugerencia sintética devuelve 3 funciones y 1 estructura en 2,0 s).
+- **Hoja generada:** `data/private/icf/review/hoja_ronda3.xlsx` (privada, trae títulos de la OMS), con los 24 casos aplicables, la Fase A a ciegas con gravedad 0 a 4, la Fase B y la hoja de faltantes. Se generó en un contenedor temporal con la imagen del servicio (`icf-service:latest`), la red `hab-icf_default` y el mismo código y la misma configuración que producción. El motor devolvió 3 funciones por caso y **1 estructura en 21 casos y 3 en 3 casos** (N02 baja visión, N14 amputación de miembro superior y N20 sordoceguera).
+- **Falta:** que la médica complete la hoja (unos 60 a 90 minutos); luego `score` con y sin `--exclude-zero-severity` y el informe de resultados.
