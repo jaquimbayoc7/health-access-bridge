@@ -1,7 +1,7 @@
 # Protocolo de validación clínica del Perfil Funcional ICF (HU-07g)
 
 **Fecha:** 7 de octubre de 2026
-**Estado:** tres rondas de revisión completas con la profesional de salud (Emilly Maria Celis). Tercera ronda, sobre 24 casos nuevos (27-oct-2026): precisión estricta 0,627, flexible 0,863, cobertura 0,690 y actividades 1,0 **cumplen**; el calificador (κ ponderado 0,312) **no cumple**: veredicto **NO CUMPLE por un solo criterio** (secciones 8 a 13). HU-07g no se acredita; el responsable decide los puntos y si se hace una cuarta ronda.
+**Estado:** **CERRADA el 27 de octubre de 2026** (sección 14). Tres rondas de revisión con la profesional de salud (Emilly Maria Celis); con 24 casos nuevos cumplen precisión estricta 0,627, flexible 0,863, cobertura 0,690 y actividades 1,0; el calificador (κ ponderado 0,312) no cumple: veredicto **NO CUMPLE por un solo criterio**. El responsable deja las métricas como están y acredita los 3 pts; borrador de apoyo, sin uso clínico.
 **Para quién:** la revisora y el responsable del proyecto.
 
 ## 1. Qué se mide y por qué
@@ -566,3 +566,23 @@ El motor corregido cumple cinco de los seis criterios sobre casos nuevos y falla
 **Decisiones del responsable:** (a) cómo se tratan los 3 pts de 07g (el instrumento, la medición y el análisis están completos; el veredicto sigue siendo NO CUMPLE); (b) si se hace la cuarta ronda o se acepta un alcance reducido (por ejemplo, el calificador queda como valor inicial editable por el médico, que es como ya funciona la pantalla, y no se evalúa como criterio); no se cambia el umbral para que el resultado cumpla (Nosek et al. 2018). El uso clínico no se aprueba.
 
 **Reproducir:** `python scripts/review_sheet.py score ../data/private/icf/review/hoja_ronda3.xlsx --exclude-zero-severity` (y sin la bandera).
+
+## 14. Cierre de la fase (27 de octubre de 2026)
+
+**Decisión del responsable:** las métricas y los umbrales se dejan **tal como están**; no se mueve ninguna meta para que el resultado cumpla (Nosek et al. 2018). El veredicto documentado de la medición oficial (ronda 3, casos nuevos) es **NO CUMPLE por un solo criterio, el calificador** (κ ponderado 0,312 frente a 0,50); los otros cinco criterios se cumplen.
+
+**Se acreditan los 3 pts de HU-07g.** Fundamento: lo que la historia exigía (hoja de revisión, cálculo de la confiabilidad clínica por componente, `expected` completado e informe de resultados) está completo, y se agregaron el análisis de errores, la corrección del motor y la medición sobre casos nuevos. El cumplimiento de todos los umbrales no era condición de cierre de la historia, sino la medición y la decisión sobre cómo usar el sistema. Con esto: HU-07 33 de 33 pts; proyecto 120 de 146 (82,2 %); Momento 3 33 de 59 (55,9 %).
+
+**Alcance con que queda:**
+
+| Aspecto | Decisión |
+|---|---|
+| Naturaleza del perfil | Borrador de apoyo; el certificado lo emite el equipo multidisciplinario (Resolución 1239 de 2022) |
+| Calificador | Valor inicial que el médico edita (como ya funciona la pantalla); no se presenta como medida validada |
+| Uso clínico real | **No aprobado**: falta la consulta regulatoria (INVIMA), un piloto con médicos y, preferiblemente, una segunda revisora |
+| Modelo | `gemma4:e4b` local; no se probó ningún modelo mayor (los datos indicaban que el límite estaba en la búsqueda y en la instrucción) |
+| Configuración en producción | La medida: `ICF_S_EVIDENCE`, `ICF_MOTOR_LINK` (D4 ≥ 50 y deficiencia física ≥ moderada) e `ICF_MENTAL_LINK` activos |
+
+**Recomendado, sin bloquear el cierre** (cada punto con su sustento en las secciones 11 a 13): (1) apagar `ICF_MENTAL_LINK` (6 de las 7 estructuras rechazadas en la ronda 3); (2) calificador con rango 0 a 4, porque la categoría de HAB no distingue «grave» de «completa» (OMS 2001); (3) funciones cognitivas solo con diagnóstico o nota cognitiva; (4) una cuarta ronda con casos nuevos y reglas fijadas antes (Cawley y Talbot 2010; Kapoor y Narayanan 2023); (5) una segunda revisora para medir el acuerdo entre profesionales (Artstein y Poesio 2008). Cambiar la configuración de producción sin medirla crearía un sistema distinto del validado; por eso no se hizo.
+
+**Entregables de la fase:** protocolo (este documento, secciones 8 a 14); reporte final con gráficas y fuentes, `docs/presentation/reporte-afinamiento-icf.html`, enlazado desde la sección «Afinamiento de los códigos ICF» de la página principal de la presentación; scripts `review_sheet.py` (con `--exclude-zero-severity`), `review_ablation.py` y `variants_vs_review.py`; casos nuevos `icf-service/reference/cases_ronda2.json`; `expected` completado en `reference/cases.json` y `reference/cases_ronda2.json`; issue #71 cerrada. Las hojas de revisión traen títulos del catálogo de la OMS y permanecen privadas en `data/private/`.

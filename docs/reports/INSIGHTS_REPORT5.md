@@ -323,3 +323,18 @@ Detalle: [`LICENCIAS_COMPONENTES_ICF.md`](./LICENCIAS_COMPONENTES_ICF.md) y [`PR
 ---
 
 *Datos extraídos de la API de GitHub (`gh api`), `git log` local y las mediciones ejecutadas en el servidor físico el 5 y 6 de octubre de 2026 (detalle en `PRUEBAS_HU07_SERVIDOR_FISICO.md`).*
+
+## Cuarta adenda (27 de octubre de 2026): cierre de la validación clínica (HU-07g)
+
+HU-07g se cerró el 27 de octubre con tres rondas de revisión de la profesional de salud. **Las lecciones** (detalle y fuentes en `PROTOCOLO_VALIDACION_CLINICA_HU07G.md`, secciones 8 a 14, y en `presentation/reporte-afinamiento-icf.html`):
+
+- **Medir con un profesional cambió el diagnóstico.** Con pistas orientativas no se veía que las estructuras rellenaban la cuota de 3 códigos (la 2.ª y la 3.ª solo eran «Adecuado/Aceptable» en el 57 % y el 38 %) ni que la búsqueda de funciones solo traía 18 de los 39 códigos que la médica elegía.
+- **El mayor avance vino de reglas clínicas explícitas, no de un modelo mayor.** Se probó y se descartó ampliar los candidatos; el vínculo de movilidad subió la cobertura de funciones de 17/40 a 24–26/40 sin cambiar de modelo ni la latencia (~2 s).
+- **Solo los casos nuevos permiten afirmar que una corrección generaliza.** Con 24 casos nuevos y reglas fijadas antes de ver las sugerencias: precisión estricta 62,7 %, flexible 86,3 %, cobertura 69,0 % y actividades 100 % cumplen; el calificador (κ ponderado 0,312) no.
+- **Un error propio:** el vínculo mental causó 6 de 7 estructuras rechazadas en la ronda 3; la pista estaba en la ronda 1 (s110 con gravedad 0 en depresión y TEPT).
+- **Cierre:** el responsable dejó las métricas como están y acreditó los 3 pts: HU-07 33/33, proyecto 120/146 (82,2 %), M3 33/59. Borrador de apoyo, sin uso clínico.
+
+| Riesgo | Estado |
+|---|---|
+| Confiabilidad clínica sin medir | 🟢 Medida en tres rondas; 5 de 6 criterios en casos nuevos, el calificador no cumple (κ 0,312) |
+| Uso clínico del perfil | 🟡 No aprobado: borrador de apoyo, calificador editable, falta consulta regulatoria y piloto |

@@ -56,6 +56,7 @@ html{scroll-behavior:smooth}
       <a href="#stack" class="hover:text-primary transition-colors">Stack</a>
       <a href="#cicd" class="hover:text-primary transition-colors">CI/CD</a>
       <a href="#historias" class="hover:text-primary transition-colors">HUs</a>
+      <a href="#afinamiento" class="hover:text-primary transition-colors">Afinamiento ICF</a>
       <a href="#testing" class="hover:text-primary transition-colors">Testing</a>
       <a href="#casos" class="hover:text-primary transition-colors">Casos</a>
       <a href="#mockups" class="hover:text-primary transition-colors">Mockups</a>
@@ -85,7 +86,7 @@ html{scroll-behavior:smooth}
       <p class="text-slate-500 text-base leading-relaxed mb-6 max-w-md">Herramienta para profesionales de la salud que facilita la predicción de barreras de acceso en personas con discapacidad en zonas rurales de Colombia, mediante inteligencia artificial.</p>
       <div class="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-200">
         <div class="flex justify-between text-xs font-medium text-slate-500 mb-2">
-          <span>Avance del proyecto</span><span class="text-primary font-bold">80% completado</span>
+          <span>Avance del proyecto</span><span class="text-primary font-bold">82% completado</span>
         </div>
         <div class="h-3 bg-slate-200 rounded-full overflow-hidden">
           <div id="pbar" class="h-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-1000" style="width:0%"></div>
@@ -93,7 +94,7 @@ html{scroll-behavior:smooth}
         <div class="flex justify-between text-xs text-slate-400 mt-2">
           <span>M1: 100% (63 pts)</span>
           <span class="text-green-600 font-semibold">M2: 100% (24/24 pts) ✅</span>
-          <span>M3: 30/59 pts · Total: 146 pts</span>
+          <span>M3: 33/59 pts · Total: 146 pts</span>
         </div>
       </div>
       <div class="flex flex-wrap gap-3">
@@ -110,8 +111,8 @@ html{scroll-behavior:smooth}
     </div>
     <div class="grid grid-cols-2 gap-4">
       <div class="bg-primary rounded-2xl p-5 text-white col-span-2">
-        <div class="text-4xl font-bold">117 <span class="text-blue-200 text-xl font-normal">/ 146 pts</span></div>
-        <div class="text-blue-200 text-sm mt-1">Story Points completados — Momentos 1 y 2, y HU-07 del Momento 3 (07a–07f y 07h; 07g espera la revisión clínica)</div>
+        <div class="text-4xl font-bold">120 <span class="text-blue-200 text-xl font-normal">/ 146 pts</span></div>
+        <div class="text-blue-200 text-sm mt-1">Story Points completados — Momentos 1 y 2, y HU-07 completa del Momento 3 (07a–07h, con la validación clínica 07g)</div>
         <div class="mt-3 flex gap-2 flex-wrap text-xs">
           <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">10 HUs + 2 épicas completadas</span>
           <span class="bg-white/20 text-white px-2 py-0.5 rounded-full">Momento 2 100% ✅</span>
@@ -121,12 +122,12 @@ html{scroll-behavior:smooth}
         </div>
       </div>
       <div class="bg-white rounded-xl p-4 border border-slate-200 card">
-        <div class="text-2xl font-bold text-slate-900">237</div>
+        <div class="text-2xl font-bold text-slate-900">263</div>
         <div class="text-slate-500 text-xs mt-0.5">Tests automatizados</div>
         <div class="flex gap-1 mt-2 flex-wrap text-xs">
           <span class="bg-green-100 text-green-700 px-1.5 py-0.5 rounded">105 backend</span>
           <span class="bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">38 frontend</span>
-          <span class="bg-cyan-100 text-cyan-700 px-1.5 py-0.5 rounded">75 servicio ICF</span>
+          <span class="bg-cyan-100 text-cyan-700 px-1.5 py-0.5 rounded">101 servicio ICF</span>
           <span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded">7 smoke</span>
           <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">12 E2E</span>
         </div>
@@ -410,7 +411,7 @@ html{scroll-behavior:smooth}
 <section id="historias" class="py-16">
   <div class="max-w-7xl mx-auto px-6">
     <h2 class="text-2xl font-bold mb-2 section-title">Historias de Usuario Completadas</h2>
-    <p class="text-slate-500 text-sm mb-10 mt-4">10 HUs entregadas en los Momentos 1 y 2 — 87 Story Points · más 30 de los 33 pts de HU-07 en el Momento 3 (07a–07f y 07h; 07g espera la revisión clínica)</p>
+    <p class="text-slate-500 text-sm mb-10 mt-4">10 HUs entregadas en los Momentos 1 y 2 — 87 Story Points · más HU-07 completa (33 pts) en el Momento 3, con la validación clínica 07g cerrada el 27-oct-2026</p>
     <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <!-- HU cards -->
       <div class="bg-white rounded-xl border border-slate-200 p-4 card">
@@ -471,9 +472,9 @@ html{scroll-behavior:smooth}
       </div>
       <!-- HU-07 (Momento 3, parcial) -->
       <div class="bg-white rounded-xl border-2 border-cyan-300 p-4 card">
-        <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-cyan-100 text-cyan-700 text-xs font-bold px-2 py-0.5 rounded">HU-07</span><span class="bg-cyan-100 text-cyan-700 text-xs px-2 py-0.5 rounded-full">🟡</span></div><span class="text-xs text-slate-400">30/33 pts · M3</span></div>
+        <div class="flex justify-between mb-2"><div class="flex gap-1"><span class="bg-cyan-100 text-cyan-700 text-xs font-bold px-2 py-0.5 rounded">HU-07</span><span class="bg-cyan-100 text-cyan-700 text-xs px-2 py-0.5 rounded-full">✅</span></div><span class="text-xs text-slate-400">33/33 pts · M3</span></div>
         <h3 class="font-semibold text-slate-800 text-sm mb-2">Perfil Funcional ICF (en curso)</h3>
-        <ul class="text-xs text-slate-500 space-y-1"><li>• Servidor propio + túnel con token + catálogo CIF-IA (1.593 códigos)</li><li>• Motor de sugerencia y herramientas de evaluación (75 tests)</li><li>• Qwen 3B en el i3 descartado (peor que la similitud, 24–46 s) → Gemma 4 e4b sí mejora, sin APIs externas</li><li>• gemma4:e4b: mínimo viable provisional (3,4 s con GPU de 8 GB, ~15 s solo CPU)</li><li>• Backend y pantalla listos: generar, aceptar/editar/rechazar, copiar y PDF; enlaces a la CIE, ejemplos de notas y guía de uso</li><li>• Producción en el PC propio (~2,6 s por sugerencia); 5 E2E, tests del servicio ICF en CI y manual de operación</li><li>• Licencias verificadas: Gemma 4 Apache 2.0; MedGemma descartado (prohíbe uso clínico)</li><li>• 07g: hoja de revisión (Fase A a ciegas y Fase B) y umbrales aprobados; reunión con la revisora la próxima semana</li><li class="text-slate-400">• Pendiente: la revisión de la profesional de salud (Emilly Maria Celis)</li></ul>
+        <ul class="text-xs text-slate-500 space-y-1"><li>• Servidor propio + túnel con token + catálogo CIF-IA (1.593 códigos)</li><li>• Motor de sugerencia y herramientas de evaluación (75 tests)</li><li>• Qwen 3B en el i3 descartado (peor que la similitud, 24–46 s) → Gemma 4 e4b sí mejora, sin APIs externas</li><li>• gemma4:e4b: mínimo viable provisional (3,4 s con GPU de 8 GB, ~15 s solo CPU)</li><li>• Backend y pantalla listos: generar, aceptar/editar/rechazar, copiar y PDF; enlaces a la CIE, ejemplos de notas y guía de uso</li><li>• Producción en el PC propio (~2,6 s por sugerencia); 5 E2E, tests del servicio ICF en CI y manual de operación</li><li>• Licencias verificadas: Gemma 4 Apache 2.0; MedGemma descartado (prohíbe uso clínico)</li><li>• 07g: tres rondas con la profesional de salud (Emilly Maria Celis); motor corregido: con 24 casos nuevos cumplen precisión estricta 62,7 %, flexible 86,3 % y cobertura 69,0 %; el calificador (κ 0,312) no cumple. <a href="#afinamiento" class="text-primary underline">Ver el reporte →</a></li></ul>
         <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/7" target="_blank" class="mt-3 text-xs text-primary hover:underline block">Issue #7 →</a>
       </div>
       <!-- Velocity summary -->
@@ -492,11 +493,75 @@ html{scroll-behavior:smooth}
   </div>
 </section>
 
+<!-- AFINAMIENTO ICF -->
+<section id="afinamiento" class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl font-bold mb-2 section-title">Afinamiento de los códigos ICF</h2>
+    <p class="text-slate-500 text-sm mb-8 mt-4">Reporte final de la fase de validación clínica de HU-07g (26 y 27 de octubre de 2026): tres rondas con una profesional de salud, correcciones al motor sin cambiar de modelo y 24 casos nuevos medidos con reglas fijadas antes de ver las sugerencias.</p>
+
+    <div class="grid md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-primary">3</div><div class="text-xs text-blue-600 mt-1 font-medium">rondas de revisión con la médica</div></div>
+      <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-green-700">5 de 6</div><div class="text-xs text-green-600 mt-1 font-medium">criterios cumplidos en casos nuevos</div></div>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-amber-700">0,312</div><div class="text-xs text-amber-600 mt-1 font-medium">κ del calificador (meta 0,50): el que no cumple</div></div>
+      <div class="bg-purple-50 border border-purple-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-purple-700">+3 pts</div><div class="text-xs text-purple-600 mt-1 font-medium">HU-07g acreditada: 120/146 (82,2 %)</div></div>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-6 mb-8">
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+        <div class="font-semibold text-slate-800 text-sm mb-3">Resultado frente a los umbrales aprobados</div>
+        <div class="overflow-x-auto"><table class="w-full text-xs">
+          <thead><tr class="text-left text-slate-500"><th class="py-1 pr-2">Criterio</th><th class="py-1 px-2 text-right">R1</th><th class="py-1 px-2 text-right">R2</th><th class="py-1 px-2 text-right">R3 (nuevos)</th><th class="py-1 pl-2 text-right">Meta</th></tr></thead>
+          <tbody class="text-slate-700">
+            <tr class="border-t border-slate-200"><td class="py-1.5 pr-2">Precisión estricta</td><td class="px-2 text-right">0,591</td><td class="px-2 text-right">0,710</td><td class="px-2 text-right font-bold text-green-700">0,627</td><td class="pl-2 text-right">0,60</td></tr>
+            <tr class="border-t border-slate-200"><td class="py-1.5 pr-2">Precisión flexible</td><td class="px-2 text-right">0,788</td><td class="px-2 text-right">0,871</td><td class="px-2 text-right font-bold text-green-700">0,863</td><td class="pl-2 text-right">0,80</td></tr>
+            <tr class="border-t border-slate-200"><td class="py-1.5 pr-2">Cobertura a ciegas</td><td class="px-2 text-right">0,552</td><td class="px-2 text-right">0,582</td><td class="px-2 text-right font-bold text-green-700">0,690</td><td class="pl-2 text-right">0,60</td></tr>
+            <tr class="border-t border-slate-200"><td class="py-1.5 pr-2">Calificador (κ pond.)</td><td class="px-2 text-right">0,576</td><td class="px-2 text-right">0,540</td><td class="px-2 text-right font-bold text-red-600">0,312</td><td class="pl-2 text-right">0,50</td></tr>
+            <tr class="border-t border-slate-200"><td class="py-1.5 pr-2">Actividades (d) flexible</td><td class="px-2 text-right">1,000</td><td class="px-2 text-right">1,000</td><td class="px-2 text-right font-bold text-green-700">1,000</td><td class="pl-2 text-right">0,80</td></tr>
+          </tbody></table></div>
+        <p class="text-[11px] text-slate-400 mt-3">R1 y R2: casos C01–C25 (R2 con el motor corregido). R3: 24 casos nuevos N01–N24. IC 95 % de la R3: estricta 0,531–0,715; flexible 0,783–0,916; cobertura 0,562–0,794; κ 0,123–0,500. Veredicto: NO CUMPLE por un solo criterio.</p>
+      </div>
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+        <canvas id="chartAfinamiento" height="190"></canvas>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-4 mb-8 text-sm">
+      <div class="bg-white border border-slate-200 rounded-xl p-5 card"><div class="font-semibold mb-1">Qué falló</div><p class="text-slate-600 text-xs leading-relaxed">En estructuras el modelo completaba la cuota de 3 códigos (la 2.ª y la 3.ª solo eran «Adecuado/Aceptable» en el 57 % y el 38 %); en funciones la búsqueda traía 18 de los 39 códigos que la médica elegía (faltaban fuerza, control del movimiento y marcha).</p></div>
+      <div class="bg-white border border-slate-200 rounded-xl p-5 card"><div class="font-semibold mb-1">Qué se corrigió</div><p class="text-slate-600 text-xs leading-relaxed">Estructuras solo con evidencia en el caso y un vínculo de movilidad acotado a limitación motora grave. Sin cambiar de modelo (<code>gemma4:e4b</code>) y a ~2 s por sugerencia. Ampliar candidatos no ayudó; el vínculo mental fue un error de diseño propio.</p></div>
+      <div class="bg-white border border-slate-200 rounded-xl p-5 card"><div class="font-semibold mb-1">Qué queda</div><p class="text-slate-600 text-xs leading-relaxed">El calificador del sistema solo usa 2 y 3 y la médica usa 2, 3 y 4 (queda un nivel por debajo en 21 de 40 pares). Es un borrador de apoyo con calificador editable; no se aprueba uso clínico. Recomendado: segunda revisora y una cuarta ronda.</p></div>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <a href="reporte-afinamiento-icf.html" class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-medium hover:bg-pdark transition-colors shadow-md text-sm">Leer el reporte completo →</a>
+      <a href="animaciones/proceso-validacion-clinica.html" class="flex items-center gap-2 border border-primary text-primary px-5 py-2.5 rounded-lg font-medium hover:bg-plight transition-colors text-sm">Animación del proceso</a>
+      <a href="https://github.com/jaquimbayoc7/health-access-bridge/issues/71" target="_blank" class="flex items-center gap-2 border border-slate-300 text-slate-600 px-5 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm">Issue #71</a>
+      <a href="https://github.com/jaquimbayoc7/health-access-bridge/blob/master/docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md" target="_blank" class="flex items-center gap-2 border border-slate-300 text-slate-600 px-5 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm">Protocolo y fuentes</a>
+    </div>
+    <script>
+    new Chart(document.getElementById('chartAfinamiento').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: ['R1 motor original', 'R2 motor corregido', 'R3 casos nuevos'],
+        datasets: [
+          { label: 'Precisión estricta', data: [59.1, 71.0, 62.7], borderColor: '#2563EB', backgroundColor: '#2563EB', tension: .25 },
+          { label: 'Precisión flexible', data: [78.8, 87.1, 86.3], borderColor: '#10B981', backgroundColor: '#10B981', tension: .25 },
+          { label: 'Cobertura', data: [55.2, 58.2, 69.0], borderColor: '#F59E0B', backgroundColor: '#F59E0B', tension: .25 },
+          { label: 'Calificador (κ×100)', data: [57.6, 54.0, 31.2], borderColor: '#EF4444', backgroundColor: '#EF4444', tension: .25 },
+          { label: 'Metas 60 y 80', data: [60, 60, 60], borderColor: '#94A3B8', borderDash: [4, 4], pointRadius: 0 },
+          { label: 'Meta 80', data: [80, 80, 80], borderColor: '#94A3B8', borderDash: [2, 6], pointRadius: 0 }
+        ]
+      },
+      options: { responsive: true, plugins: { legend: { labels: { font: { size: 10 }, boxWidth: 10 } } }, scales: { y: { min: 20, max: 100, grid: { color: '#F1F5F9' } }, x: { grid: { display: false } } } }
+    });
+    </script>
+  </div>
+</section>
+
 <!-- TESTING -->
 <section id="testing" class="py-16 bg-white">
   <div class="max-w-7xl mx-auto px-6">
     <h2 class="text-2xl font-bold mb-2 section-title">Testing y Calidad</h2>
-    <p class="text-slate-500 text-sm mb-10 mt-4">237 pruebas automatizadas: 229 corren en CI/CD (backend, frontend, servicio ICF, smoke y E2E) y 8 del servicio ICF, que necesitan el catálogo con derechos de la OMS, solo en local</p>
+    <p class="text-slate-500 text-sm mb-10 mt-4">263 pruebas automatizadas: 254 corren en CI/CD (backend, frontend, servicio ICF, smoke y E2E) y 9 del servicio ICF, que necesitan el catálogo con derechos de la OMS, solo en local</p>
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
       <div class="bg-green-50 border border-green-200 rounded-xl p-5 card">
         <div class="text-4xl font-bold text-green-700 mb-2 text-center">105</div>
@@ -518,11 +583,11 @@ html{scroll-behavior:smooth}
         </div>
       </div>
       <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-5 card">
-        <div class="text-4xl font-bold text-cyan-700 mb-2 text-center">75</div>
+        <div class="text-4xl font-bold text-cyan-700 mb-2 text-center">101</div>
         <div class="text-cyan-700 font-semibold text-sm text-center mb-3">Servicio ICF (HU-07)</div>
         <div class="space-y-1.5 text-xs">
           <div class="bg-white rounded-lg px-3 py-2 text-slate-600">Motor de sugerencia · reglas · catálogo · cliente de Ollama · API</div>
-          <div class="bg-white rounded-lg px-3 py-2 text-slate-600">67 corren en CI · 8 locales (PostgreSQL con pgvector real y catálogo)</div>
+          <div class="bg-white rounded-lg px-3 py-2 text-slate-600">92 corren en CI · 9 locales (PostgreSQL con pgvector real y catálogo)</div>
           <div class="bg-white rounded-lg px-3 py-2 text-slate-500">pytest · modelo y base simulados · en CI desde HU-07e</div>
         </div>
       </div>
@@ -664,7 +729,7 @@ html{scroll-behavior:smooth}
           </div>
           <div>
             <div class="font-semibold text-amber-800 text-sm">Estado del Proyecto — M3</div>
-            <div class="text-amber-600 text-xs mt-0.5">Corte 7-oct · 117/146 pts · 07g espera la revisión clínica · licencias verificadas</div>
+            <div class="text-amber-600 text-xs mt-0.5">Corte 27-oct · 120/146 pts · HU-07 completa (validación clínica 07g cerrada) · licencias verificadas</div>
             <div class="text-amber-500 text-xs mt-1 font-mono">PROJECT_STATUS_M3.md →</div>
           </div>
         </a>
@@ -1337,7 +1402,7 @@ html{scroll-behavior:smooth}
       <div class="bg-white rounded-xl border border-slate-200 p-5 opacity-75">
         <div class="flex flex-wrap items-center justify-between mb-3">
           <div><h3 class="font-bold text-slate-800">M3 — Trabajo Integrador III</h3><div class="text-xs text-slate-400">Semanas 19-27</div></div>
-          <div class="flex items-center gap-2"><span class="bg-cyan-100 text-cyan-700 text-xs px-3 py-1 rounded-full">🟡 En progreso · 30 completados</span><span class="text-slate-500 font-bold">59 pts</span></div>
+          <div class="flex items-center gap-2"><span class="bg-cyan-100 text-cyan-700 text-xs px-3 py-1 rounded-full">🟡 En progreso · 33 completados</span><span class="text-slate-500 font-bold">59 pts</span></div>
         </div>
         <div class="flex flex-wrap gap-1.5 text-xs">
           <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ DEUDA-01 Rendimiento API — cerrada 23-sep (riesgo aceptado)</span>
@@ -1351,7 +1416,7 @@ html{scroll-behavior:smooth}
           <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ 07d Pantalla Perfil Funcional (5)</span>
           <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ 07e Pruebas y docs (2)</span>
           <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ 07f Modelos abiertos: gemma4:e4b (2)</span>
-          <span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded">🟡 07g Validación clínica (3): falta la revisión</span>
+          <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ 07g Validación clínica (3): 3 rondas, 5 de 6 criterios en casos nuevos</span>
           <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded">✅ 07h Producción en el PC propio (3)</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-08 Dashboard+ (13)</span>
           <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded">HU-09 UAT (8)</span>
@@ -1366,13 +1431,13 @@ html{scroll-behavior:smooth}
 <section id="sprints" class="py-16 bg-white">
   <div class="max-w-7xl mx-auto px-6">
     <h2 class="text-2xl font-bold mb-2 section-title">Seguimiento de Sprints</h2>
-    <p class="text-slate-500 text-sm mb-10 mt-4">Sprints 1 a 7 de los Momentos 1 y 2 (Sprint 4-5 adelantado a Sprint 3), Sprint 8 de deuda técnica y Sprint 8-9 del Momento 3 en curso · 117 Story Points entregados (87 en M1 y M2 + 30 de HU-07)</p>
+    <p class="text-slate-500 text-sm mb-10 mt-4">Sprints 1 a 7 de los Momentos 1 y 2 (Sprint 4-5 adelantado a Sprint 3), Sprint 8 de deuda técnica y Sprint 8-9 del Momento 3 (HU-07 completa) · 120 Story Points entregados (87 en M1 y M2 + 33 de HU-07)</p>
 
     <!-- KPI summary -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
       <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
-        <div class="text-3xl font-extrabold text-primary">117</div>
-        <div class="text-xs text-blue-600 mt-1 font-medium">Story Points entregados (87 en M1–M2 + 30 en M3)</div>
+        <div class="text-3xl font-extrabold text-primary">120</div>
+        <div class="text-xs text-blue-600 mt-1 font-medium">Story Points entregados (87 en M1–M2 + 33 en M3)</div>
       </div>
       <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
         <div class="text-3xl font-extrabold text-green-700">14.5</div>
@@ -1599,7 +1664,7 @@ html{scroll-behavior:smooth}
           <li>• Catálogo CIF-IA de 1.593 códigos extraído por OCR; servidor propio con túnel autenticado verificado desde Render QA</li>
           <li>• Qwen local (3B, i3 sin GPU): 24–46 s por sugerencia y peor selección que la similitud sola (0,6 s)</li>
           <li>• Búsqueda solo en códigos de 3 dígitos: cobertura de funciones 11 % → 40 %, estructuras 48 % → 86 %</li>
-          <li>• Decisión: sin APIs externas (privacidad); gemma4:e4b como mínimo viable; producción en el PC propio (~2,6 s por sugerencia), sin comprar hardware</li><li>• 5 E2E, tests del servicio ICF en CI, manual de operación y licencias verificadas (Gemma 4 Apache 2.0)</li><li>• Falta 07g: la revisión clínica (reunión con la revisora la próxima semana)</li>
+          <li>• Decisión: sin APIs externas (privacidad); gemma4:e4b como mínimo viable; producción en el PC propio (~2,6 s por sugerencia), sin comprar hardware</li><li>• 5 E2E, tests del servicio ICF en CI, manual de operación y licencias verificadas (Gemma 4 Apache 2.0)</li><li>• 07g cerrada el 27-oct: tres rondas con la médica; ver el reporte de afinamiento ICF</li>
         </ul>
         <div class="flex flex-wrap gap-1">
           <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">HU-07a ✅</span>
@@ -1609,11 +1674,11 @@ html{scroll-behavior:smooth}
           <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">HU-07e ✅</span>
           <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">HU-07f ✅</span>
           <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">HU-07h ✅</span>
-          <span class="bg-amber-50 text-amber-700 text-xs px-2 py-0.5 rounded">HU-07g 🟡</span>
+          <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">HU-07g ✅</span>
           <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded">Qwen descartado</span>
         </div>
-        <div class="mt-3 bg-slate-100 rounded-full h-2"><div class="bg-emerald-400 h-2 rounded-full" style="width:91%"></div></div>
-        <div class="text-xs text-right text-emerald-600 mt-1 font-medium">30 / 33 pts de HU-07</div>
+        <div class="mt-3 bg-slate-100 rounded-full h-2"><div class="bg-emerald-400 h-2 rounded-full" style="width:100%"></div></div>
+        <div class="text-xs text-right text-emerald-600 mt-1 font-medium">33 / 33 pts de HU-07</div>
       </div>
     </div>
 
@@ -1647,7 +1712,7 @@ html{scroll-behavior:smooth}
         </div>
         <div class="bg-blue-100 rounded-xl p-4 text-center">
           <div class="text-2xl font-extrabold text-blue-700">1</div>
-          <div class="text-xs text-blue-600 mt-1">🔄 In Progress (HU-07: 30/33 pts)</div>
+          <div class="text-xs text-blue-600 mt-1">🔄 In Progress (HU-07: 33/33 pts, HU-08 a HU-10 por iniciar)</div>
         </div>
         <div class="bg-green-100 rounded-xl p-4 text-center">
           <div class="text-2xl font-extrabold text-green-700">9</div>
@@ -1692,8 +1757,8 @@ html{scroll-behavior:smooth}
           <div class="bg-slate-200 rounded-full h-2"><div class="bg-teal-400 h-2 rounded-full" style="width:100%"></div></div>
         </div>
         <div>
-          <div class="flex justify-between mb-1"><span class="font-medium text-slate-600">HU-07 — Perfil Funcional ICF (RAG + LLM local)</span><span class="text-emerald-600 font-semibold">🟡 30 / 33 SP · Sprint 8-9</span></div>
-          <div class="bg-slate-200 rounded-full h-2"><div class="bg-emerald-400 h-2 rounded-full" style="width:91%"></div></div>
+          <div class="flex justify-between mb-1"><span class="font-medium text-slate-600">HU-07 — Perfil Funcional ICF (RAG + LLM local)</span><span class="text-emerald-600 font-semibold">✅ 33 / 33 SP · Sprint 8-9</span></div>
+          <div class="bg-slate-200 rounded-full h-2"><div class="bg-emerald-400 h-2 rounded-full" style="width:100%"></div></div>
         </div>
       </div>
     </div>
@@ -2013,7 +2078,7 @@ html{scroll-behavior:smooth}
       </div>
     </div>
     <div class="border-t border-slate-800 mt-8 pt-6 text-center text-xs">
-      Health Access Bridge · Momento 1 y 2 completados (100%) · Momento 3 en curso (30/59 pts): HU-07a, 07b, 07c, 07d, 07e, 07f y 07h completadas; 07g espera la revisión clínica; modelo local sin APIs externas (7-oct-2026) · Octubre 2026 · <a href="https://github.com/jaquimbayoc7" class="hover:text-white">@jaquimbayoc7</a>
+      Health Access Bridge · Momento 1 y 2 completados (100%) · Momento 3 en curso (33/59 pts): HU-07 completa (07a a 07h); modelo local sin APIs externas; validación clínica en tres rondas (27-oct-2026) · Octubre 2026 · <a href="https://github.com/jaquimbayoc7" class="hover:text-white">@jaquimbayoc7</a>
     </div>
   </div>
 </footer>
@@ -2030,7 +2095,7 @@ html{scroll-behavior:smooth}
 <script>
   // Progress bar animation
   window.addEventListener('load', () => {
-    setTimeout(() => { document.getElementById('pbar').style.width = '80%'; }, 300);
+    setTimeout(() => { document.getElementById('pbar').style.width = '82%'; }, 300);
   });
 
   // Chart.js language donut
@@ -2058,7 +2123,7 @@ html{scroll-behavior:smooth}
       datasets: [
         {
           label: 'SP Completados',
-          data: [8, 13, 26, 16, 21, 16, 8, 30],
+          data: [8, 13, 26, 16, 21, 16, 8, 33],
           backgroundColor: ['#22C55E','#22C55E','#22C55E','#F97316','#A855F7','#EAB308','#14B8A6','#10B981'],
           borderRadius: 6, borderSkipped: false
         },
@@ -2089,7 +2154,7 @@ html{scroll-behavior:smooth}
     }
   });
 
-  // Burndown del proyecto completo (146 pts). Real al 7-oct-2026: 117 completados, 29 restantes.
+  // Burndown del proyecto completo (146 pts). Real al 27-oct-2026: 120 completados, 26 restantes.
   new Chart(document.getElementById('burndownChart').getContext('2d'), {
     type: 'line',
     data: {
@@ -2097,7 +2162,7 @@ html{scroll-behavior:smooth}
       datasets: [
         {
           label: 'Real (SP restantes)',
-          data: [146, 138, 125, 99, 83, 83, 67, 59, 59, 29, null, null, null, null],
+          data: [146, 138, 125, 99, 83, 83, 67, 59, 59, 26, null, null, null, null],
           borderColor: '#2563EB', backgroundColor: 'rgba(37,99,235,0.08)',
           pointBackgroundColor: (ctx) => ctx.dataIndex === 5 ? '#A855F7' : (ctx.dataIndex === 9 ? '#10B981' : '#2563EB'),
           pointRadius: (ctx) => (ctx.dataIndex === 5 || ctx.dataIndex === 9) ? 7 : 5,
@@ -2105,7 +2170,7 @@ html{scroll-behavior:smooth}
         },
         {
           label: 'Plan restante',
-          data: [null, null, null, null, null, null, null, null, null, 29, 26, 13, 5, 0],
+          data: [null, null, null, null, null, null, null, null, null, 26, 26, 13, 5, 0],
           borderColor: '#10B981', borderDash: [3, 3],
           pointRadius: 4, pointBackgroundColor: '#10B981', tension: 0.2, fill: false, spanGaps: false
         },
@@ -2127,7 +2192,7 @@ html{scroll-behavior:smooth}
             if (c[0].datasetIndex !== 0) return [];
             if (c[0].dataIndex === 5) return ['⚡ Meseta: HU-04 (21 pts) ya se habia entregado', 'en Sprint 3, antes de esta ventana.'];
             if (c[0].dataIndex === 8) return ['DEUDA-01: deuda tecnica, sin puntos de producto.'];
-            if (c[0].dataIndex === 9) return ['Sprint 8-9 en curso: HU-07 30/33 pts (falta 07g).'];
+            if (c[0].dataIndex === 9) return ['Sprint 8-9: HU-07 completa (33/33 pts) con la validación clínica 07g.'];
             return [];
           }
         } }
