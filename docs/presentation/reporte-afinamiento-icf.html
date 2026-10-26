@@ -24,7 +24,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
   <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between text-sm">
     <a href="index.html#afinamiento" class="font-semibold text-slate-900">← Health Access Bridge</a>
     <div class="hidden md:flex gap-5 text-slate-600 font-medium">
-      <a href="#resumen" class="hover:text-primary">Resumen</a><a href="#metodo" class="hover:text-primary">Método</a>
+      <a href="#resumen" class="hover:text-primary">Resumen</a><a href="#metodo" class="hover:text-primary">Método y sustento</a>
       <a href="#resultados" class="hover:text-primary">Resultados</a><a href="#errores" class="hover:text-primary">Errores</a>
       <a href="#lecciones" class="hover:text-primary">Lecciones</a><a href="#referencias" class="hover:text-primary">Fuentes</a>
     </div>
@@ -58,24 +58,42 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 </section>
 
 <section id="metodo">
-  <h2 class="text-2xl font-bold mb-5 section-title">Método</h2>
+  <h2 class="text-2xl font-bold mb-5 section-title">Método y sustento de los umbrales</h2>
   <div class="grid md:grid-cols-3 gap-4 text-sm">
     <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="font-semibold mb-1">Ronda 1 · diagnóstico</div><p class="text-slate-600">24 casos sintéticos (C01–C25). Fase A a ciegas: la médica escribe los códigos y la gravedad 0–4 que elegiría sin ver la sugerencia (evita el sesgo de anclaje). Fase B: valora cada sugerencia como Adecuado, Aceptable o No adecuado.</p></div>
     <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="font-semibold mb-1">Ronda 2 · corrección</div><p class="text-slate-600">Se corrige el motor y la médica valora las 41 sugerencias nuevas sobre los mismos casos. Se mide la precisión real de la configuración activa.</p></div>
     <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="font-semibold mb-1">Ronda 3 · casos nuevos</div><p class="text-slate-600">24 casos nuevos (N01–N24: visión, audición, discapacidad intelectual, neurológicas, psiquiátricas, crónicas, osteomusculares). Reglas escritas y publicadas antes de generar las sugerencias.</p></div>
   </div>
-  <div class="bg-white rounded-xl border border-slate-200 p-5 mt-4 text-sm">
-    <div class="font-semibold mb-2">Criterios de aceptación (fijados el 7 y el 21 de octubre, sin cambios)</div>
+  <div class="bg-white rounded-xl border border-slate-200 p-5 mt-4 text-sm overflow-x-auto">
+    <div class="font-semibold mb-1">Criterios de aceptación y qué los respalda</div>
+    <p class="text-xs text-slate-500 mb-3">Fijados el 7 de octubre (el del calificador se reformuló el 21) y <strong>sin cambios después de ver los resultados</strong>. La columna «Respaldo» dice con honestidad cuánto sostiene la literatura cada cifra: lo que está respaldado y lo que es criterio del proyecto.</p>
     <table>
-      <tr><th>Criterio</th><th class="n">Meta</th><th>Sustento</th></tr>
-      <tr><td>Precisión estricta (código «Adecuado»)</td><td class="n">≥ 0,60</td><td>Cuartil inferior de la exactitud de la codificación humana (Burns et al. 2012)</td></tr>
-      <tr><td>Precisión flexible («Adecuado» o «Aceptable»)</td><td class="n">≥ 0,80</td><td>Estándar de auditoría de codificación del NHS de Gales, 80 % (DHCW); mediana humana 80,3 % (Burns et al. 2012)</td></tr>
-      <tr><td>Cobertura de lo elegido a ciegas</td><td class="n">≥ 0,60</td><td>Criterio del proyecto; F1 y κ por capítulo como contexto (Hripcsak y Rothschild 2005)</td></tr>
-      <tr><td>Calificador (κ ponderado, ≥ 30 pares)</td><td class="n">≥ 0,50</td><td>Fiabilidad humana en CIF: mediana de 0,46–0,55 en test-retest (Okochi et al. 2005); 0,50–0,85 entre expertos (Chen et al. 2016)</td></tr>
-      <tr><td>Actividades (d), precisión flexible</td><td class="n">≥ 0,80</td><td>Igual que la flexible</td></tr>
-      <tr><td>Casos revisados</td><td class="n">≥ 20</td><td>Criterio de completitud</td></tr>
+      <tr><th>Criterio</th><th class="n">Meta</th><th>Sustento en la literatura</th><th>Respaldo</th></tr>
+      <tr><td>Precisión flexible b+s y d («Adecuado» o «Aceptable»)</td><td class="n">≥ 0,80</td><td>Estándar mínimo de auditoría de codificación del NHS de Gales: 90 % de códigos correctos en el diagnóstico principal y <strong>80 % en los secundarios</strong> (DHCW). Burns et al. 2012, revisión sistemática de 32 estudios: exactitud humana mediana de 83,2 % y de 80,3 % en diagnósticos (RIC 63,3–94,1 %). Es decir, 80 % equivale a la codificación humana rutinaria. Límite: son ICD-10 hospitalarios, no CIF-IA.</td><td class="ok">Sustentado con referentes numéricos</td></tr>
+      <tr><td>Precisión estricta b+s («Adecuado»)</td><td class="n">≥ 0,60</td><td>Cerca del cuartil inferior de la exactitud humana (63,3 %, Burns 2012): un sistema por debajo estaría en el peor cuarto de la codificación humana. «Adecuado» es más exigente que «código correcto» de una auditoría, así que el referente es indirecto.</td><td>Indirecto</td></tr>
+      <tr><td>Cobertura de lo elegido a ciegas</td><td class="n">≥ 0,60</td><td>Los estándares de auditoría miden códigos correctos sobre los asignados (precisión), no cobertura. Los F1 publicados (84 % y más de 80 %, Newman-Griffis et al. 2021) son de clasificadores supervisados sobre 13 a 16 categorías: no son comparables con recuperación abierta en un catálogo amplio. F1 y κ por capítulo como contexto (Hripcsak y Rothschild 2005).</td><td>Sin referente externo: <strong>criterio del proyecto</strong></td></tr>
+      <tr><td>Calificador (κ ponderado, ≥ 30 pares)</td><td class="n">≥ 0,50</td><td>El κ ponderado es la medida estándar para una escala ordinal como 0–4 (Cohen 1968). Referentes humanos en CIF: mediana de 0,46 en funciones y 0,55 en actividades en test-retest (Okochi et al. 2005, 742 adultos mayores) y κ de 0,50–0,85 entre evaluadores expertos y 0,18–0,69 entre novatos (Chen et al. 2016). Se fijó en 0,50, límite inferior del rango de expertos; el piso general de McHugh 2012 (0,60) sería más exigente que lo que logran las personas. No existe un umbral universal de κ (Artstein y Poesio 2008).</td><td>Anclado a la fiabilidad humana; criterio del proyecto</td></tr>
+      <tr><td>Piso del IC 95 % (40 % / 60 % / 40 %)</td><td class="n">—</td><td>La regla de decidir con el límite inferior del IC y no con la estimación puntual es la práctica en exactitud diagnóstica y fiabilidad (Flahault et al. 2005; Koo y Li 2016; Jones et al. 1996; guía de la FDA 2007). Las cifras de los pisos son del proyecto; el de 60 % se apoya por analogía en McHugh 2012.</td><td>Regla respaldada; cifras: criterio del proyecto</td></tr>
+      <tr><td>Casos revisados</td><td class="n">≥ 20</td><td>Criterio de completitud, no de validez.</td><td>Criterio del proyecto</td></tr>
     </table>
-    <p class="text-xs text-slate-500 mt-3">Cada proporción cumple solo si alcanza su meta y el límite inferior de su intervalo de confianza de Wilson supera un piso (Wilson 1927; Newcombe 1998); también se informa un IC por bootstrap de casos porque los códigos de un mismo caso no son independientes.</p>
+    <p class="text-xs text-slate-500 mt-3"><strong>Aviso de alcance:</strong> los referentes son de ICD-10 hospitalaria, de CIF en geriatría e ictus y de imagen diagnóstica; sirven para anclar el orden de magnitud, no para certificar los valores. Ningún artículo revisado fija un umbral de concordancia para un sistema que sugiere códigos CIF con IA. La lógica de aceptación sigue la práctica de la IA médica: comparar con el desempeño de profesionales sobre la misma muestra (Liu et al. 2019) y fijar metas numéricas antes del estudio (Abràmoff et al. 2018).</p>
+  </div>
+
+  <div class="bg-white rounded-xl border border-slate-200 p-5 mt-4 text-sm">
+    <div class="font-semibold mb-3">Método de medición y estadística</div>
+    <div class="grid md:grid-cols-2 gap-6 text-slate-600">
+      <div class="space-y-3">
+        <p><strong class="text-slate-800">Diseño en dos fases.</strong> La Fase A es a ciegas: la médica escribe los códigos y la gravedad 0–4 que elegiría <em>sin ver</em> la sugerencia, para evitar el sesgo de anclaje (si solo valorara la sugerencia, tendería a aceptarla). La Fase B valora cada código sugerido. La cobertura y el calificador se miden contra la Fase A; las precisiones, contra la Fase B. El diseño a ciegas con varios casos se parece al de Cao et al. 2026 (6 fisiatras, 48 casos); Zhang et al. 2023 revisaron un solo caso y sin ocultar el origen. Ninguno fija umbrales de aceptación.</p>
+        <p><strong class="text-slate-800">Cómo se mide la concordancia.</strong> Estándar de referencia por profesionales con acuerdo entre anotadores (Newman-Griffis et al. 2021; Cieza et al. 2002); κ de Cohen para decisiones categóricas (Cohen 1960), κ ponderado lineal para la escala ordinal del calificador (Cohen 1968) y F1 cuando no hay «negativos» definidos, como al elegir códigos de un catálogo grande (Hripcsak y Rothschild 2005). El κ depende de la prevalencia y del sesgo, por eso siempre se reporta junto con el acuerdo exacto y a ±1 nivel (Hripcsak y Heitjan 2002; Feinstein y Cicchetti 1990; Byrt et al. 1993). La repetibilidad del sistema usa κ de Fleiss (Fleiss 1971).</p>
+        <p><strong class="text-slate-800">Reglas fijadas antes de los datos.</strong> Para la ronda 3 las reglas de medición se escribieron y publicaron antes de generar las sugerencias (Nosek et al. 2018) y los casos eran distintos de los usados para diagnosticar (Cawley y Talbot 2010; Kapoor y Narayanan 2023).</p>
+      </div>
+      <div class="space-y-3">
+        <p><strong class="text-slate-800">Prueba estadística.</strong> Cada proporción contrasta H₀: p ≤ piso frente a H₁: p &gt; piso. «El límite inferior del IC 95 % de Wilson ≥ piso» equivale a rechazar H₀ con la prueba de puntuación unilateral al 2,5 % (Wilson 1927; Newcombe 1998; Brown et al. 2001), comprobado numéricamente contra <code>statsmodels</code>. Un criterio cumple si el valor observado alcanza la <em>meta</em> y el límite inferior alcanza el <em>piso</em>. Las funciones de Wilson, κ de Cohen, κ ponderado y κ de Fleiss se contrastan con <code>scikit-learn</code> y <code>statsmodels</code> en las pruebas del repositorio.</p>
+        <p><strong class="text-slate-800">Tamaño de muestra.</strong> Con α unilateral de 2,5 % y potencia de 80 %, distinguir 80 % de 60 % (flexible) pide 36 códigos independientes y distinguir 60 % de 40 % (estricta y cobertura), 48 (Obuchowski 1998; Flahault et al. 2005). Con efecto de diseño de 1,8 son 65 y 87; el diseño aporta del orden de 100 a 144 códigos. Un κ con pocos pares es inestable: con 10 pares el IC mide 0,62 de ancho, con 30, 0,33 y con 60, 0,24, de ahí el mínimo de 30 (simulación propia).</p>
+        <p><strong class="text-slate-800">Códigos agrupados por caso.</strong> Los códigos de un mismo caso se parecen: el tamaño efectivo es n/DEFF con DEFF = 1 + (m − 1)ρ (Killip et al. 2004; Rao y Scott 1992). Con ρ de 0,2 a 0,3 el IC de Wilson cubre 90–93 % en vez de 97,5 %, así que se informa también un IC por <em>bootstrap de casos</em> (Field y Welsh 2007), que no decide. La simulación (24 casos × 5 códigos) muestra que un sistema cuyo desempeño real es el del piso se aprueba menos del 0,5 % de las veces y uno 10 puntos sobre la meta, el 94 % o más (Riley et al. 2021 sobre la imprecisión de muestras pequeñas).</p>
+      </div>
+    </div>
+    <p class="text-xs text-slate-400 mt-4">Cálculo propio y supuestos (rango de ρ, códigos por caso, pisos, mínimo de 30 pares) son nivel D en el protocolo: no provienen de una fuente y son reproducibles con <code>scripts/design_simulation.py</code>. El detalle, la tabla de verificación de las fuentes (niveles A a D) y las limitaciones están en <code>PROTOCOLO_VALIDACION_CLINICA_HU07G.md</code>, secciones 4.1 a 4.6.</p>
   </div>
 </section>
 
@@ -205,7 +223,27 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
     <p>Organización Mundial de la Salud. Clasificación Internacional del Funcionamiento, de la Discapacidad y de la Salud (CIF). Ginebra: OMS; 2001.</p>
     <p>Radovanović M, Nanopoulos A, Ivanović M. Hubs in space: popular nearest neighbors in high-dimensional data. <em>J Mach Learn Res</em> 2010;11:2487–2531.</p>
     <p>Wilson EB. Probable inference, the law of succession, and statistical inference. <em>J Am Stat Assoc</em> 1927;22(158):209–212.</p>
-    <p class="text-slate-400 pt-2">La bibliografía completa del proyecto (48 entradas, con el nivel de verificación de cada fuente) está en <code>docs/reports/referencias_validacion_clinica.bib</code> y <code>PROTOCOLO_VALIDACION_CLINICA_HU07G.md</code> (4.5).</p>
+    <p>Brown LD, Cai TT, DasGupta A. Interval estimation for a binomial proportion. <em>Stat Sci</em> 2001;16(2):101–133. doi:10.1214/ss/1009213286</p>
+    <p>Cao W, Qu M, Zhu T, et al. Benchmarking large language models against human experts in rehabilitation medicine: a multidimensional evaluation. <em>J Neuroeng Rehabil</em> 2026;23. doi:10.1186/s12984-026-01903-0</p>
+    <p>Cieza A, Brockow T, Ewert T, et al. Linking health-status measurements to the International Classification of Functioning, Disability and Health. <em>J Rehabil Med</em> 2002;34(5):205–210. doi:10.1080/165019702760279189</p>
+    <p>Cohen J. A coefficient of agreement for nominal scales. <em>Educ Psychol Meas</em> 1960;20(1):37–46. doi:10.1177/001316446002000104</p>
+    <p>Cohen J. Weighted kappa: nominal scale agreement provision for scaled disagreement or partial credit. <em>Psychol Bull</em> 1968;70(4):213–220. doi:10.1037/h0026256</p>
+    <p>Field CA, Welsh AH. Bootstrapping clustered data. <em>J R Stat Soc B</em> 2007;69(3):369–390. doi:10.1111/j.1467-9868.2007.00593.x</p>
+    <p>Fleiss JL. Measuring nominal scale agreement among many raters. <em>Psychol Bull</em> 1971;76(5):378–382. doi:10.1037/h0031619</p>
+    <p>Hripcsak G, Heitjan DF. Measuring agreement in medical informatics reliability studies. <em>J Biomed Inform</em> 2002;35(2):99–110. doi:10.1016/S1532-0464(02)00500-2</p>
+    <p>Killip S, Mahfoud Z, Pearce K. What is an intracluster correlation coefficient? Crucial concepts for primary care researchers. <em>Ann Fam Med</em> 2004;2(3):204–208. doi:10.1370/afm.141</p>
+    <p>Koo TK, Li MY. A guideline of selecting and reporting intraclass correlation coefficients for reliability research. <em>J Chiropr Med</em> 2016;15(2):155–163. doi:10.1016/j.jcm.2016.02.012</p>
+    <p>Liu X, Faes L, Kale AU, et al. A comparison of deep learning performance against health-care professionals in detecting diseases from medical imaging. <em>Lancet Digit Health</em> 2019;1(6):e271–e297. doi:10.1016/S2589-7500(19)30123-2</p>
+    <p>McHugh ML. Interrater reliability: the kappa statistic. <em>Biochem Med</em> 2012;22(3):276–282. doi:10.11613/BM.2012.031</p>
+    <p>Newman-Griffis D, Camacho Maldonado J, Ho P-S, et al. Linking free text documentation of functioning and disability to the ICF with natural language processing. <em>Front Rehabil Sci</em> 2021;2. doi:10.3389/fresc.2021.742702</p>
+    <p>Newman-Griffis D, Fosler-Lussier E. Automated coding of under-studied medical concept domains: linking physical activity reports to the International Classification of Functioning, Disability and Health. <em>Front Digit Health</em> 2021;3. doi:10.3389/fdgth.2021.620828</p>
+    <p>Obuchowski NA. Sample size calculations in studies of test accuracy. <em>Stat Methods Med Res</em> 1998;7(4):371–392. doi:10.1177/096228029800700405</p>
+    <p>Abràmoff MD, Lavin PT, Birch M, et al. Pivotal trial of an autonomous AI-based diagnostic system for detection of diabetic retinopathy in primary care offices. <em>npj Digit Med</em> 2018;1:39. doi:10.1038/s41746-018-0040-6</p>
+    <p>Rao JNK, Scott AJ. A simple method for the analysis of clustered binary data. <em>Biometrics</em> 1992;48(2):577–585. doi:10.2307/2532311</p>
+    <p>Riley RD, Debray TPA, Collins GS, et al. Minimum sample size for external validation of a clinical prediction model with a binary outcome. <em>Stat Med</em> 2021;40(19):4230–4251. doi:10.1002/sim.9025</p>
+    <p>Roitero K, Martinuzzi A, Armellin MT, Paparella G, Maniero A, Della Mea V. Automated ICF coding of rehabilitation notes for low-resource languages via continual training of language models. <em>Stud Health Technol Inform</em> 2023. doi:10.3233/SHTI230262</p>
+    <p>Zhang L, Tashiro S, Mukaino M, Yamada S. Use of artificial intelligence large language models as a clinical tool in rehabilitation medicine: a comparative test case. <em>J Rehabil Med</em> 2023;55:jrm13373. doi:10.2340/jrm.v55.13373</p>
+    <p class="text-slate-400 pt-2">La bibliografía completa del proyecto (51 entradas, con el nivel de verificación de cada fuente) está en <code>docs/reports/referencias_validacion_clinica.bib</code> y <code>PROTOCOLO_VALIDACION_CLINICA_HU07G.md</code> (4.5).</p>
   </div>
 </section>
 
