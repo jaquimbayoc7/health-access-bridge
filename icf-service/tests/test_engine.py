@@ -419,7 +419,43 @@ def test_mobility_link_needs_difficulty_in_d4_and_physical_category():
 def test_new_settings_default_on_and_can_be_turned_off(monkeypatch):
     from icf.config import load_settings
 
-    assert load_settings().s_evidence is True and load_settings().motor_link is True
+    assert load_settings().s_evidence is True and load_settings().motor_link is True and load_settings().mental_link is True
     monkeypatch.setenv("ICF_S_EVIDENCE", "false")
     monkeypatch.setenv("ICF_MOTOR_LINK", "false")
-    assert load_settings().s_evidence is False and load_settings().motor_link is False
+    monkeypatch.setenv("ICF_MENTAL_LINK", "false")
+    s = load_settings()
+    assert s.s_evidence is False and s.motor_link is False and s.mental_link is False
+
+
+def test_mobility_link_needs_a_severe_motor_limitation():
+    """Segunda version (27-oct): D4 >= 50 y deficiencia fisica >= moderada; antes bastaba cualquier dificultad en D4."""
+    levels = {"D1": 3, "D2": 0, "D3": 0, "D4": 60, "D5": 10, "D6": 0}
+    assert rules.mobility_link_applies("Severa", levels)
+    assert rules.mobility_link_applies("Moderada", {**levels, "D4": 50})
+    assert not rules.mobility_link_applies("Moderada", {**levels, "D4": 49})  # limitacion de movilidad solo moderada
+    assert not rules.mobility_link_applies("Leve", {**levels, "D4": 90})  # deficiencia fisica leve
+    assert not rules.mobility_link_applies("Si", levels)  # categoria no reconocible
+    assert not rules.mobility_link_applies("Severa", {})  # sin D4
+
+
+def test_mobility_link_is_not_sent_for_a_mild_mobility_difficulty():
+    seen = {}
+
+    def chat(messages, schema):
+        seen["codes"] = schema["properties"]["b"]["items"]["enum"]
+        return json.dumps({"b": ["b730"]})
+
+    run(patient(levels={"D1": 3, "D2": 0, "D3": 0, "D4": 40, "D5": 10, "D6": 0}), chat, motor_link=True)
+    assert "b760" not in seen["codes"]
+    run(patient(), chat, motor_link=True)  # D4 = 60 y deficiencia fisica severa: se envia
+    assert "b760" in seen["codes"]
+
+
+def test_mental_link_searches_the_nervous_system_structures_without_physical_impairment():
+    assert rules.body_chapters("s", "Ninguna", "Severa", mental_link=True) == [1]
+    assert rules.body_chapters("s", "Ninguna", "Severa") == []  # apagado: comportamiento anterior
+    assert rules.body_chapters("s", "Ninguna", "Ninguna", mental_link=True) == []
+    assert rules.body_chapters("s", "Severa", "Leve", mental_link=True) == list(range(1, 9))  # no cambia con fisica
+    repo = FakeRepo()
+    run(patient(cat_fisica="Ninguna", cat_psicosocial="Severa"), chat_returning(GOOD), repo=repo, mental_link=True)
+    assert ("s", [1]) in repo.searches

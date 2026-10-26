@@ -103,6 +103,21 @@ def wilson_interval(successes: int, total: int, z: float = 1.96) -> Optional[Tup
     return round(max(0.0, centre - half), 3), round(min(1.0, centre + half), 3)
 
 
+def without_zero_severity(
+    blind: Dict[str, Dict[str, Set[str]]], blind_qualifiers: Dict[str, Dict[str, int]]
+) -> Tuple[Dict[str, Dict[str, Set[str]]], Dict[str, Dict[str, int]]]:
+    """Quita de lo esperado (Fase A) los codigos que la revisora califico con gravedad 0: en la CIF el calificador 0
+    significa "no hay problema" (OMS 2001), asi que no es un codigo que el sistema deba sugerir. Definicion fijada el
+    27-oct-2026, antes de la tercera ronda (protocolo, seccion 12); la medicion de las rondas 1 y 2 no la usa."""
+    zero = {case: {code for code, level in q.items() if level == 0} for case, q in blind_qualifiers.items()}
+    kept = {
+        case: {comp: {c for c in codes if c not in zero.get(case, set())} for comp, codes in comps.items()}
+        for case, comps in blind.items()
+    }
+    kept_q = {case: {c: lv for c, lv in q.items() if lv != 0} for case, q in blind_qualifiers.items()}
+    return kept, kept_q
+
+
 def cohen_kappa_binary(pairs: Iterable[Tuple[bool, bool]]) -> Optional[float]:
     """Kappa de Cohen para decisiones si/no de dos evaluadores. None si no hay datos o el azar esperado es 1."""
     pairs = list(pairs)

@@ -1,7 +1,7 @@
 # Protocolo de validación clínica del Perfil Funcional ICF (HU-07g)
 
 **Fecha:** 7 de octubre de 2026
-**Estado:** revisión **devuelta por la profesional de salud (Emilly Maria Celis) el 26 de octubre de 2026**, con 23 de 24 casos valorados. Veredicto del `score`: **NO CUMPLE** (secciones 8 y 9). HU-07g no se acredita; el siguiente paso es corregir el motor (9.5) y volver a medir con casos nuevos.
+**Estado:** tres rondas de revisión completas con la profesional de salud (Emilly Maria Celis). Tercera ronda, sobre 24 casos nuevos (27-oct-2026): precisión estricta 0,627, flexible 0,863, cobertura 0,690 y actividades 1,0 **cumplen**; el calificador (κ ponderado 0,312) **no cumple**: veredicto **NO CUMPLE por un solo criterio** (secciones 8 a 13). HU-07g no se acredita; el responsable decide los puntos y si se hace una cuarta ronda.
 **Para quién:** la revisora y el responsable del proyecto.
 
 ## 1. Qué se mide y por qué
@@ -412,3 +412,157 @@ Lecturas:
 - **Producción actualizada (26-oct-2026):** se reconstruyó la imagen de `icf-service` en el PC de producción (`docker compose up -d --build --no-deps icf-service`; la base y Caddy no se tocaron) y `check.ps1 -Public -Suggest` terminó en «Todo correcto» (local y por el túnel público, token verificado, `/api/generate` bloqueado). La sugerencia sintética ahora devuelve `b735 b760 b770` y una sola estructura, en 2,1 s. Los tres ambientes de Render usan este servicio; no hizo falta tocar Render porque los ajustes están activos por defecto en el servicio.
 - **Hoja corta para la médica (preparada el 26-oct-2026):** `data/private/icf/review/hoja_codigos_nuevos.xlsx` (privada, trae títulos de la OMS) con las **41 sugerencias nuevas** de la configuración activa sobre los mismos casos, con descripción, diagnóstico y notas, y las mismas columnas de valoración de la Fase B. No incluye Fase A porque ella ya conoce los casos. Al devolverla, `variants_vs_review.py score-new` calcula la precisión real de la configuración activa uniendo sus valoraciones viejas y las nuevas, con IC de Wilson (la cobertura no cambia: sale de la Fase A).
 - **Qué falta:** (1) que la médica valore las 41 sugerencias; (2) revisión de casos nuevos (20 a 25) con Fase A y Fase B, única forma de medir sin la fuga de 10.2 (Cawley y Talbot 2010; Kapoor y Narayanan 2023). Los umbrales no se modifican.
+
+## 11. Segunda ronda: la médica valora las sugerencias nuevas (26 de octubre de 2026)
+
+La revisora valoró las **41 sugerencias nuevas** de la configuración activa (37 funciones y 4 estructuras; `hoja_codigos_nuevos.xlsx`, privada). Con sus valoraciones anteriores se tiene la **precisión real de la configuración activa en los 24 casos** (93 sugerencias, todas valoradas), y con la Fase A, la cobertura. Se calculó con el mismo evaluador del `score` (`compute_metrics` y `evaluate_thresholds`), sin cambiar umbrales.
+
+### 11.1 Resultado frente a los umbrales
+
+| Criterio | Antes (motor anterior) | **Ahora (configuración activa)** | IC 95 % (Wilson) | Meta | Piso del IC | Estado |
+|---|---|---|---|---|---|---|
+| Casos revisados | 23 | 23 | | ≥ 20 | | Cumple |
+| Precisión estricta b+s | 0,591 | **0,710** (66/93) | 0,611–0,792 | ≥ 0,60 | 0,40 | **Cumple** |
+| Precisión flexible b+s | 0,788 | **0,871** (81/93) | 0,788–0,925 | ≥ 0,80 | 0,60 | **Cumple** |
+| Cobertura a ciegas b+s | 0,552 (37/67) | **0,582** (39/67) | 0,463–0,693 | ≥ 0,60 | 0,40 | **No cumple** (valor bajo la meta) |
+| Calificador b+s (κ ponderado) | 0,576 | **0,540** | por casos 0,294–0,708 | ≥ 0,50 | | Cumple |
+| Precisión flexible d | 1,000 | 1,000 | 0,947–1,0 | ≥ 0,80 | 0,60 | Cumple |
+
+**Veredicto: NO CUMPLE, ahora por un solo criterio** (la cobertura queda 1,8 puntos bajo la meta: le faltan 2 códigos de 67). Pasaron de fallar tres criterios a fallar uno. El IC de la cobertura (0,463–0,693) contiene la meta, de modo que, como en 8.1, el resultado no demuestra estar por debajo ni por encima (Jones et al. 1996; Flahault et al. 2005). Las dos precisiones cumplen su meta y el límite inferior de su IC supera el piso; el límite inferior de la flexible (0,788) queda 1,2 puntos bajo la meta de 0,80, un margen comparable a la variabilidad entre codificadores humanos (Burns et al. 2012).
+
+Por componente:
+
+| | Sugerencias | Estricta | Flexible | Antes (estricta / flexible) |
+|---|---|---|---|---|
+| Estructuras (s) | 24 | **0,792** | 0,833 | 0,444 / 0,635 |
+| Funciones (b) | 69 | 0,681 | 0,884 | 0,725 / 0,928 |
+
+Además: calificador correcto (Fase B) 0,753; precisión a ciegas 0,419 y F1 0,487 (antes 0,28 y 0,37); acuerdo por capítulo κ 0,753 y cobertura por capítulo 0,804 (antes 0,666 y 0,857).
+
+### 11.2 Qué funcionó y qué no
+
+1. **Estructuras con evidencia: funcionó.** Pasó de 63 a 24 estructuras sugeridas (1,1 por caso, como la médica) y la precisión estricta de 0,444 a 0,792; la médica solo rechazó 4 estructuras nuevas, todas por «sin evidencia estructural». Es la predicción de la clasificación con rechazo (Chow 1970) y de la regla de vincular solo lo que el texto contiene (Cieza et al. 2005). Costo: la cobertura de estructuras bajó de 20 a 15 de 27 (ver punto 3).
+2. **Vínculo de movilidad: ayudó a la cobertura y costó precisión de funciones.** La cobertura de funciones subió de 17 a 24 de 40, pero de las 37 funciones nuevas la médica valoró 18 «Adecuado», 11 «Aceptable» y **8 «No adecuado»**: la precisión de funciones bajó de 0,725/0,928 a 0,681/0,884. Los 8 rechazos son todos del mismo tipo: el vínculo propuso `b770` (marcha), `b730` (fuerza), `b760` o `b710` en casos cuya limitación principal no es motora (hipoacusia, asma leve, TEPT, deterioro cognitivo por alcohol, síndrome de Down, TEA), donde D4 tiene una dificultad leve o moderada (10 a 40). Comentarios como «asma leve no afecta la marcha» o «TEPT no implica déficit muscular» apuntan a que la regla se dispara con cualquier dificultad en D4, sin exigir una limitación motora. Es la misma falta de especificidad que se corrigió en estructuras.
+3. **Efecto colateral en estructuras: `s110` (cerebro).** Cinco de las 28 omisiones restantes son `s110` en cuadros mentales o del neurodesarrollo (esquizofrenia, síndrome de Down, TEA, depresión, TEPT); en C05 y C13 el motor no busca estructuras (categoría física «Ninguna») y en C06, C09 y C21 elige una estructura periférica (`s770`, `s750`, `s760`) en vez del cerebro. Con la regla de evidencia el modelo no infiere la estructura implícita del diagnóstico (la médica sí).
+4. **Las otras omisiones** son dispersas: `b167` y `b144` (2 cada una), `b730` (2), `s750` y `s760` (2 cada una) y una por código en `b125`, `b156`, `b620`, `b765`, `b770`, `b410`, `b440` y `b152`.
+
+### 11.3 Lectura y sensibilidad
+
+- **El avance es real pero en parte optimista.** El vínculo de movilidad se diseñó viendo las omisiones de la médica (10.2); la cobertura de 0,582 incluye ese efecto. Las precisiones, en cambio, sí son valoraciones de la médica a las sugerencias reales, sin la selección de 10.1: son la mejor medida que existe de la configuración activa, aunque sobre los mismos casos con los que se diagnosticó.
+- **Sensibilidad (9.4, punto 2):** si no se cuentan como «esperados» los 4 códigos que la médica calificó con gravedad 0 (`b000` y `s000` en C19, `s110` en C13 y C21), la cobertura sería 39/63 = **0,619** y el criterio se cumpliría. **No se aplica al veredicto oficial**: la definición de «esperado» se fijó antes de ver este resultado y cambiarla ahora, para que el número pase, es el movimiento que se debe evitar (Kapoor y Narayanan 2023); la corrección tiene sustento (calificador 0 = «no hay problema», OMS 2001) y debe decidirla el responsable, con la regla escrita antes de los casos nuevos.
+- **Dos usos de los mismos 24 casos** (diagnóstico y ajuste, y ahora medición) hacen que el siguiente ajuste ya no se pueda afinar con ellos sin sesgar (Cawley y Talbot 2010).
+
+### 11.4 Qué sigue
+
+| # | Acción | Sustento |
+|---|---|---|
+| 1 | **Acotar el vínculo de movilidad** a casos con limitación motora (por ejemplo, categoría física al menos moderada y dificultad de movilidad que supere un nivel mínimo), en lugar de cualquier dificultad en D4; apunta a recuperar la precisión de funciones sin perder cobertura | Cieza et al. 2005 (se vincula lo que el caso evidencia); es una hipótesis formulada con estos casos, no se mide con ellos |
+| 2 | **No aplicar la regla de evidencia a la estructura principal de cuadros mentales o del neurodesarrollo**, o permitir `s110` cuando el diagnóstico es neurológico o psiquiátrico | Mismo sustento; igual limitación |
+| 3 | **Revisar 20 a 25 casos nuevos** con Fase A y Fase B, definiendo antes de verlos el criterio de «esperado» (incluida la gravedad 0) y las reglas del paso 1 y 2 | Cawley y Talbot 2010; Kapoor y Narayanan 2023; 4.4 |
+| 4 | **Segunda revisora** | Artstein y Poesio 2008; Burns et al. 2012 |
+
+Los 3 pts de 07g siguen sin acreditarse hasta que el responsable decida; el uso clínico no se aprueba. Para repetir el cálculo: `variants_vs_review.py score-new` (precisión y cobertura) y el cálculo completo con `compute_metrics` y `evaluate_thresholds` descrito arriba (calificador incluido).
+
+## 12. Tercera ronda con casos nuevos: reglas fijadas antes de ver las sugerencias (27 de octubre de 2026)
+
+Esta sección se escribe y se sube **antes** de generar las sugerencias de los casos nuevos y de dárselos a la médica. Es el equivalente de un registro previo del análisis: fijar por escrito qué se mide y cómo se decide antes de ver los datos evita ajustar la regla al resultado (Nosek et al. 2018; Kapoor y Narayanan 2023). Los 24 casos de las rondas 1 y 2 ya se usaron para diagnosticar los errores y para medir la corrección; con ellos no se puede volver a ajustar sin sesgo (Cawley y Talbot 2010).
+
+### 12.1 Cambios al motor desde la ronda 2
+
+Se hicieron tras el análisis de 11.2, con sustento clínico y sin cambiar de modelo (`gemma4:e4b`). Una comprobación en los casos antiguos solo verifica que no se rompió nada: **no cuenta como validación**.
+
+| Cambio | Qué hace | Por qué | Sustento |
+|---|---|---|---|
+| Vínculo de movilidad más estricto | Solo si la deficiencia física es al menos moderada y D4 ≥ 50 (limitación de movilidad grave, calificador ≥ 3) | En la ronda 2 la médica rechazó 8 de 37 funciones nuevas en casos sin limitación motora, todos con D4 entre 10 y 40 | Se vincula lo que el caso evidencia (Cieza et al. 2005); umbral de 50 = calificador 3 «grave» de la propia escala (OMS 2001) |
+| Vínculo mental | Sin deficiencia física pero con psicosocial, las estructuras se buscan en el capítulo 1 (sistema nervioso) | La médica esperaba `s110` en esquizofrenia y depresión y el motor no buscaba estructuras | Las funciones mentales (b1) se vinculan con estructuras del sistema nervioso (reglas de vinculación, Cieza et al. 2005) |
+| Regla de evidencia, con una excepción | Se agrega al prompt: si el diagnóstico es neurológico, del neurodesarrollo o psiquiátrico, la estructura es la cerebral | La regla de evidencia hacía elegir estructuras periféricas en síndrome de Down, TEA y TEPT | Mismo sustento |
+
+Las tres reglas son interruptores (`ICF_MOTOR_LINK`, `ICF_MENTAL_LINK`, `ICF_S_EVIDENCE`) y están cubiertas por pruebas. Comprobación en los 24 casos antiguos (no es validación): cobertura 0,657 (44/67) y 23 estructuras sugeridas.
+
+### 12.2 Casos
+
+24 casos sintéticos nuevos, `icf-service/reference/cases_ronda2.json` (N01 a N24), escritos antes de ver sus sugerencias y distintos de C01 a C25. Cubren lo que el primer set cubría poco: visión (3), audición (2, con sordoceguera), discapacidad intelectual (2), neurológicas (esclerosis lateral, esclerosis múltiple, epilepsia, hemiplejia, paraplejia, lesión de plexo braquial), psiquiátricas y del neurodesarrollo (bipolar, ansiedad, TDAH, tartamudez), crónicas (EPOC, renal, diabetes con neuropatía, lupus) y osteomusculares (artrosis, fractura, amputación, escoliosis). Incluyen menores de edad (8, 9, 14, 15 y 16 años). No hay datos de personas reales.
+
+### 12.3 Reglas de medición (no se cambian después de ver los resultados)
+
+1. **Umbrales: los mismos** de 4.1 (precisión estricta ≥ 0,60, flexible ≥ 0,80, cobertura ≥ 0,60, κ ponderado ≥ 0,50 sobre al menos 30 pares, actividades ≥ 0,80, casos revisados ≥ 20), con los mismos pisos del IC.
+2. **Definición de «esperado»:** los códigos que la médica califica con **gravedad 0 en la Fase A no cuentan como esperados**, porque en la CIF el calificador 0 significa «no hay problema» (OMS 2001) y no es algo que el sistema deba sugerir. Se calcula con `review_sheet.py score --exclude-zero-severity` (función `without_zero_severity`, con prueba). Es una definición que se identificó viendo la ronda 1; se fija ahora, antes de los datos nuevos, y **se informa también la medición sin esta exclusión** como sensibilidad.
+3. **Motor congelado:** se mide con el código del commit que sube esta sección y la configuración por defecto. Mientras la médica revisa, no se cambia el motor.
+4. **Fase A antes de la B:** igual que en la ronda 1, para evitar el sesgo de anclaje (Fase A a ciegas con gravedad 0 a 4).
+5. **Veredicto:** CUMPLE solo si los seis criterios se cumplen sobre los 24 casos nuevos. Cualquier resultado se informa completo.
+6. **Si no cumple:** no se reajusta con estos casos. Los ajustes se miden en una cuarta ronda con casos nuevos y se vuelve a decidir.
+7. **Límites que se mantienen:** una sola revisora; casos sintéticos; con 24 casos, diferencias de unos pocos puntos no se distinguen (4.4); el acuerdo entre profesionales no se mide hasta que haya una segunda revisora (Artstein y Poesio 2008).
+
+### 12.4 Cómo se corre
+
+```powershell
+# sugerencias y hoja de revisión de la tercera ronda (contenedor temporal con la imagen del servicio y openpyxl)
+python scripts/review_sheet.py generate --cases reference/cases_ronda2.json --output ..\data\private\icf\review\hoja_ronda3.xlsx
+# con la hoja devuelta
+python scripts/review_sheet.py score ..\data\private\icf\review\hoja_ronda3_llena.xlsx --exclude-zero-severity --output informe_ronda3.json
+python scripts/review_sheet.py score ..\data\private\icf\review\hoja_ronda3_llena.xlsx    # sensibilidad, definición anterior
+```
+
+### 12.5 Estado (27 de octubre de 2026)
+
+- Reglas y casos publicados en `develop` (commit `30cd5ec`) antes de generar las sugerencias.
+- **Producción reconstruida** con ese commit (`check.ps1 -Public -Suggest`: «Todo correcto»; la sugerencia sintética devuelve 3 funciones y 1 estructura en 2,0 s).
+- **Hoja generada:** `data/private/icf/review/hoja_ronda3.xlsx` (privada, trae títulos de la OMS), con los 24 casos aplicables, la Fase A a ciegas con gravedad 0 a 4, la Fase B y la hoja de faltantes. Se generó en un contenedor temporal con la imagen del servicio (`icf-service:latest`), la red `hab-icf_default` y el mismo código y la misma configuración que producción. El motor devolvió 3 funciones por caso y **1 estructura en 21 casos y 3 en 3 casos** (N02 baja visión, N14 amputación de miembro superior y N20 sordoceguera).
+- **Falta:** que la médica complete la hoja (unos 60 a 90 minutos); luego `score` con y sin `--exclude-zero-severity` y el informe de resultados.
+
+## 13. Resultado de la tercera ronda con casos nuevos (27 de octubre de 2026)
+
+La médica completó `hoja_ronda3.xlsx`: Fase A a ciegas en los 24 casos nuevos y 174 valoraciones en la Fase B. Se calculó con las reglas fijadas en la sección 12 (`review_sheet.py score --exclude-zero-severity`), sin tocar umbrales ni motor. En esta hoja la médica no calificó ningún código con gravedad 0, de modo que la exclusión no cambió ningún valor: la medición oficial y la de sensibilidad coinciden.
+
+### 13.1 Resultado frente a los umbrales
+
+| Criterio | Ronda 1 (motor original, casos C) | Ronda 2 (motor corregido, casos C) | **Ronda 3 (casos nuevos N)** | IC 95 % (Wilson) | Meta | Estado |
+|---|---|---|---|---|---|---|
+| Casos revisados | 23 | 23 | 24 | | ≥ 20 | Cumple |
+| Precisión estricta b+s | 0,591 | 0,710 | **0,627** | 0,531–0,715 | ≥ 0,60 | **Cumple** |
+| Precisión flexible b+s | 0,788 | 0,871 | **0,863** | 0,783–0,916 | ≥ 0,80 | **Cumple** |
+| Cobertura a ciegas b+s | 0,552 | 0,582 | **0,690** (40/58) | 0,562–0,794 | ≥ 0,60 | **Cumple** |
+| Calificador b+s (κ ponderado) | 0,576 | 0,540 | **0,312** (40 pares) | por casos 0,123–0,500 | ≥ 0,50 | **No cumple** |
+| Precisión flexible d | 1,000 | 1,000 | 1,000 | 0,949–1,0 | ≥ 0,80 | Cumple |
+
+**Veredicto: NO CUMPLE, por un solo criterio: el calificador.** Es la primera vez que la cobertura, y las dos precisiones a la vez, cumplen sobre casos que no se usaron para diseñar el motor; los límites inferiores de sus IC superan los pisos (0,531 > 0,40; 0,783 > 0,60; 0,562 > 0,40). Que las precisiones y la cobertura se sostengan en casos nuevos, y con un conjunto de condiciones más variado (visión, audición, discapacidad intelectual, enfermedades crónicas), es evidencia de que los ajustes de las secciones 10 y 12 generalizan y no solo se ajustaron a los 24 casos de diagnóstico (Cawley y Talbot 2010). Los límites: una sola revisora, casos sintéticos y 24 casos, con IC de unos 18 puntos de ancho (4.4).
+
+Por componente (Fase B): funciones 72 valoradas, estricta 0,667 y flexible 0,903, cobertura 28/40; estructuras 30 valoradas (21 casos con una estructura y 3 con tres), estricta 0,533 y flexible 0,767, cobertura 12/18; actividades 72 valoradas, estricta 0,903 y flexible 1,0. Además: precisión a ciegas 0,392 y F1 0,500 (informativas); acuerdo por capítulo κ 0,693 y cobertura por capítulo 0,880; calificador correcto en la Fase B: funciones 0,722, estructuras 0,583, actividades 0,819.
+
+### 13.2 Por qué falla el calificador
+
+Cuarenta pares (código elegido por ambos): κ ponderado 0,312; coincidencia exacta 0,475 y **a un nivel de distancia 0,975** (39 de 40). El desacuerdo es casi todo de un nivel y **sistemático**, no aleatorio:
+
+| Gravedad de la médica ↓ / del sistema → | 0 | 1 | 2 | 3 | 4 |
+|---|---|---|---|---|---|
+| 2 | 0 | 0 | **10** | 0 | 0 |
+| 3 | 0 | 0 | 9 | **9** | 0 |
+| 4 | 0 | 0 | 1 | 11 | **0** |
+
+- **El sistema solo usa 2 y 3** (20 y 20 pares); la médica usa 2, 3 y 4 (10, 18 y 12). El calificador del sistema sale de la categoría de HAB (moderada = 2, severa = 3) y de reglas fijas, nunca del modelo, y esa categoría no distingue una deficiencia «grave» de una «completa»: la médica puso 4 en 12 pares de 7 casos (ceguera, sordera profunda, paraplejia, ELA avanzada, amputación de brazo, insuficiencia renal en diálisis y sordoceguera) y el sistema, 3 en 11 de ellos.
+- **El sistema queda un nivel por debajo en 21 de 40 pares** (diferencia media −0,55; −0,43 en funciones y −0,83 en estructuras), y no hay ningún par en que quede por encima.
+- **El κ es muy sensible al sesgo y a la poca variabilidad de uno de los dos evaluadores**, de modo que puede ser bajo con acuerdo alto a ±1 nivel (Feinstein y Cicchetti 1990; Byrt et al. 1993). Eso explica por qué una coincidencia a ±1 de 97,5 % da un κ de 0,31, pero no lo excusa: la gravedad que muestra el sistema es sistemáticamente menor que la de la médica en los casos más graves.
+- **El κ cambia mucho entre conjuntos de casos**: 0,576 con 37 pares (ronda 1), 0,540 con la configuración corregida en esos mismos casos y 0,312 ahora; agrupando las rondas 1 y 3 (77 pares) es 0,478. El IC de la ronda 3 (0,123–0,500) contiene todos esos valores salvo los dos primeros. No se interpreta como que el calificador «mejoró y empeoró»: con 40 pares y una escala de 5 niveles, el κ es inestable (4.4, κ con pocos pares).
+
+### 13.3 Errores de precisión
+
+Los 14 códigos «No adecuado» (7 funciones y 7 estructuras):
+
+- **Seis de las siete estructuras rechazadas son `s110` (cerebro)** en visión (N02), bipolar (N11), ansiedad (N12), neuropatía periférica (N17), sordoceguera (N20) y tartamudez (N21), todas con el comentario «no existe evidencia de lesión cerebral». La séptima es `s120` (médula) en escoliosis. Es un error mío de diseño de la sección 12.1: el **vínculo mental** y la **excepción cerebral** del prompt hicieron que el modelo pusiera la estructura cerebral en cuadros psiquiátricos o sensoriales. Estaban apoyados en la ronda 1, donde la médica esperó `s110` en esquizofrenia, pero en depresión y TEPT escribió `s110` con gravedad 0 («sin alteración estructural»), lo que ya indicaba que no hay acuerdo para los cuadros psiquiátricos sin lesión. En esta ronda, ante esos casos, dejó la estructura vacía.
+- **Funciones rechazadas** (7): cognitivas o intelectuales aplicadas a cuadros que no son cognitivos (`b164` en baja visión y epilepsia controlada; `b163` en epilepsia; `b117` en sordera y TDAH) y dos aisladas (`b710` en neuropatía periférica; `b126` en tartamudez). El vínculo de movilidad, ya acotado, no produjo ningún rechazo: no aparece ni `b730`, `b760` ni `b770` entre ellos.
+- **Omisiones** (18 de 58): dispersas; se repiten `b110` (conciencia), `b130` (energía y impulso) y `b770` (marcha), 2 veces cada una, y `s750` (extremidad inferior), 2 veces.
+
+### 13.4 Conclusión y siguiente paso
+
+El motor corregido cumple cinco de los seis criterios sobre casos nuevos y falla el sexto, el calificador. Por la regla de la sección 12.3 (punto 6), **no se reajusta con estos casos**. Lo que se propone para una cuarta ronda, con las reglas escritas antes de generar las sugerencias:
+
+| # | Cambio | Sustento | Riesgo |
+|---|---|---|---|
+| 1 | **Calificador con rango completo (0–4):** permitir 4 («completa») cuando la categoría de HAB y el nivel del dominio relacionado son máximos, y permitir 1 («leve»), en lugar de agrupar toda deficiencia grave en 3 | La CIF define 4 = «problema completo» (96–100 %) y 3 = «grave» (50–95 %) (OMS 2001); la regla existente de nivel a calificador ya lo usa para actividades | Sin datos de categoría «Completa» en estos casos, puede no resolver el sesgo; hay que decidirlo antes con la médica |
+| 2 | **Quitar el vínculo mental y la excepción cerebral** (volver a la búsqueda de estructuras por el diagnóstico solo con deficiencia física) o limitarlos a diagnóstico neurológico | Sección 13.3: 6 de 7 estructuras rechazadas; Cieza et al. 2005 (vincular lo que el caso evidencia) | Vuelve la omisión de `s110` en cuadros neurológicos que no tienen categoría física |
+| 3 | **Funciones cognitivas solo con un diagnóstico o una nota cognitiva** (no por deficiencia psicosocial genérica) | Mismo sustento | Menos cobertura en cuadros mixtos |
+| 4 | **Segunda revisora** para medir el acuerdo entre profesionales en el calificador y en la elección de códigos; una sola evaluadora puede estar fijando una escala propia (Okochi et al. 2005: κ ponderado mediano 0,46–0,55 entre mediciones repetidas de profesionales) | Artstein y Poesio 2008 | Disponibilidad |
+
+**Decisiones del responsable:** (a) cómo se tratan los 3 pts de 07g (el instrumento, la medición y el análisis están completos; el veredicto sigue siendo NO CUMPLE); (b) si se hace la cuarta ronda o se acepta un alcance reducido (por ejemplo, el calificador queda como valor inicial editable por el médico, que es como ya funciona la pantalla, y no se evalúa como criterio); no se cambia el umbral para que el resultado cumpla (Nosek et al. 2018). El uso clínico no se aprueba.
+
+**Reproducir:** `python scripts/review_sheet.py score ../data/private/icf/review/hoja_ronda3.xlsx --exclude-zero-severity` (y sin la bandera).

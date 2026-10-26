@@ -87,6 +87,7 @@ def suggest(
     motor_candidates: int = 0,
     s_evidence: bool = False,
     motor_link: bool = False,
+    mental_link: bool = False,
 ) -> SuggestionResult:
     started = time.perf_counter()
     result = SuggestionResult(applicable=True, model=model)
@@ -184,11 +185,11 @@ def suggest(
         if motor_candidates and 7 in b_chapters and any(chapter == 4 for chapter, _, _ in plan):
             known = {code for code, _ in b_pairs}
             b_pairs += [pair for pair in repo.search("b", vector, motor_candidates, [7]) if pair[0] not in known]
-        mobility = motor_link and 7 in b_chapters and any(chapter == 4 for chapter, _, _ in plan)
+        mobility = motor_link and 7 in b_chapters and rules.mobility_link_applies(patient.cat_fisica, patient.levels)
         if mobility:
             known = {code for code, _ in b_pairs}
             b_pairs += [pair for pair in repo.titles(rules.MOBILITY_BODY_CODES) if pair[0] not in known]
-        s_pairs = repo.search("s", vector, body_candidates, rules.body_chapters("s", patient.cat_fisica, patient.cat_psicosocial))
+        s_pairs = repo.search("s", vector, body_candidates, rules.body_chapters("s", patient.cat_fisica, patient.cat_psicosocial, mental_link))
         result.timings["search"] = round((time.perf_counter() - t0) * 1000)
     b_titles, s_titles = dict(b_pairs), dict(s_pairs)
 

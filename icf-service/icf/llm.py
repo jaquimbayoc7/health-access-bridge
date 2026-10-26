@@ -32,7 +32,7 @@ SYSTEM_PROMPT_JUSTIFY = (
 # completar la cuota ("no hay evidencia"). Se pide solo lo que el caso describe, sin completar la lista.
 EVIDENCE_RULE = (
     " En s devuelve solo las estructuras que el diagnostico o las notas describen (casi siempre 1); "
-    "no completes la lista."
+    "no completes la lista. Si el diagnostico es neurologico, del neurodesarrollo o psiquiatrico, la estructura es la cerebral."
 )
 
 
