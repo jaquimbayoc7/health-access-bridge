@@ -44,6 +44,7 @@ VARIANTS = {
     "V6 V1 + V3": dict(s_evidence=True, b_candidates=16, motor_candidates=3),
     "V7 b con vinculo de movilidad": dict(motor_link=True),
     "V8 V1 + V7": dict(s_evidence=True, motor_link=True),
+    "V9 V8 + vinculo mental (27-oct)": dict(s_evidence=True, motor_link=True, mental_link=True),
 }
 
 
@@ -86,7 +87,8 @@ def run(args) -> int:
         for name in names:
             # "ACTIVO" = la configuracion que usa el servicio (ICF_S_EVIDENCE e ICF_MOTOR_LINK)
             opts = (
-                dict(s_evidence=settings.s_evidence, motor_link=settings.motor_link) if name == "ACTIVO" else VARIANTS[name]
+                dict(s_evidence=settings.s_evidence, motor_link=settings.motor_link, mental_link=settings.mental_link)
+                if name == "ACTIVO" else VARIANTS[name]
             )
             tot = {"exp": 0, "hit": 0, "exp0": 0, "hit0": 0, "n_b": 0, "n_s": 0, "known": 0, "A": 0, "AB": 0, "new": 0}
             by_comp = {"b": [0, 0], "s": [0, 0]}

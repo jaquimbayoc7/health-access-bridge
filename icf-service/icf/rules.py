@@ -12,6 +12,12 @@ MAX_PER_COMPONENT = 3
 # y patron de la marcha). La busqueda por el texto del diagnostico no las traia (b730, b760 y b770 eran el 40 % de las
 # omisiones). Entran como candidatos; el modelo decide si el caso las respalda.
 MOBILITY_BODY_CODES = ("b710", "b730", "b735", "b760", "b770")
+# Segunda version (27-oct-2026, tras la segunda ronda de la revision): la regla se disparaba con cualquier dificultad en D4
+# y la medica rechazo 8 de 37 funciones nuevas en casos sin limitacion motora (hipoacusia, asma leve, TEPT, alcohol, Down,
+# TEA; D4 entre 10 y 40). Ahora exige una limitacion de movilidad grave (calificador >= 3, nivel D4 >= 50) y una deficiencia
+# fisica al menos moderada.
+MOBILITY_MIN_LEVEL = 50
+MOBILITY_MIN_CATEGORY = 2
 
 # Categoria de discapacidad de HAB (cat_fisica / cat_psicosocial) -> calificador generico de la CIF.
 _CATEGORY_QUALIFIER = {
@@ -69,15 +75,33 @@ def body_components_apply(cat_fisica: Optional[str], cat_psicosocial: Optional[s
     return not (fisica == 0 and psico == 0)
 
 
-def body_chapters(component: str, cat_fisica: Optional[str], cat_psicosocial: Optional[str]) -> List[int]:
+def mobility_link_applies(cat_fisica: Optional[str], levels: Dict[str, int]) -> bool:
+    """Vinculo D4 -> funciones neuromusculoesqueleticas: limitacion de movilidad grave y deficiencia fisica >= moderada."""
+    physical = category_qualifier(cat_fisica)
+    return (
+        physical is not None
+        and physical >= MOBILITY_MIN_CATEGORY
+        and levels.get("D4", 0) >= MOBILITY_MIN_LEVEL
+    )
+
+
+def body_chapters(
+    component: str, cat_fisica: Optional[str], cat_psicosocial: Optional[str], mental_link: bool = False
+) -> List[int]:
     """Capitulos donde buscar funciones (b) o estructuras (s), segun las categorias de HAB.
 
     b1 (funciones mentales) depende de la categoria psicosocial; b2-b8 y todas las estructuras (s),
-    de la fisica. Una categoria 'Ninguna' excluye sus capitulos; si no es reconocible, se incluyen."""
+    de la fisica. Una categoria 'Ninguna' excluye sus capitulos; si no es reconocible, se incluyen.
+
+    mental_link (27-oct-2026): sin deficiencia fisica pero con deficiencia psicosocial, las estructuras se buscan en el
+    capitulo 1 (sistema nervioso: s110 cerebro), pues las funciones mentales (b1) se vinculan con estas estructuras
+    (reglas de vinculacion, Cieza et al. 2005); la medica esperaba s110 en esquizofrenia, depresion y TEPT."""
     physical = category_qualifier(cat_fisica) != 0
     mental = category_qualifier(cat_psicosocial) != 0
     if component == "s":
-        return list(range(1, 9)) if physical else []
+        if physical:
+            return list(range(1, 9))
+        return [1] if (mental_link and mental) else []
     return ([1] if mental else []) + (list(range(2, 9)) if physical else [])
 
 

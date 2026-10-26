@@ -371,3 +371,14 @@ def test_excel_roundtrip_reads_what_the_reviewer_fills(tmp_path):
     assert suggested_q["C02"] == {"b730": 3, "s110": 3}
     assert missing["C02"]["b"] == {"b770"}
     assert suggested["C02"] == {"b": {"b730"}, "s": {"s110"}}
+
+
+def test_without_zero_severity_drops_no_problem_codes_from_the_expected_set():
+    from icf.review import without_zero_severity
+
+    blind = {"C13": {"b": {"b152"}, "s": {"s110"}}, "C19": {"b": {"b000"}, "s": {"s000"}}}
+    blind_q = {"C13": {"b152": 3, "s110": 0}, "C19": {"b000": 0, "s000": 0}}
+    kept, kept_q = without_zero_severity(blind, blind_q)
+    assert kept == {"C13": {"b": {"b152"}, "s": set()}, "C19": {"b": set(), "s": set()}}
+    assert kept_q == {"C13": {"b152": 3}, "C19": {}}
+    assert blind["C13"]["s"] == {"s110"}  # no modifica la entrada

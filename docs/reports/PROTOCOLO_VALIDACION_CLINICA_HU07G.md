@@ -1,7 +1,7 @@
 # Protocolo de validación clínica del Perfil Funcional ICF (HU-07g)
 
 **Fecha:** 7 de octubre de 2026
-**Estado:** revisión **devuelta por la profesional de salud (Emilly Maria Celis) el 26 de octubre de 2026** y segunda ronda sobre las sugerencias nuevas del motor corregido el mismo día. Veredicto del `score`: **NO CUMPLE**, antes por tres criterios y ahora por uno (cobertura 0,582 frente a 0,60; secciones 8 a 11). HU-07g no se acredita; falta decidir los puntos y medir con casos nuevos.
+**Estado:** revisión **devuelta por la profesional de salud (Emilly Maria Celis) el 26 de octubre de 2026** y segunda ronda sobre las sugerencias nuevas del motor corregido el mismo día. Veredicto del `score`: **NO CUMPLE**, antes por tres criterios y ahora por uno (cobertura 0,582 frente a 0,60; secciones 8 a 11). HU-07g no se acredita; falta decidir los puntos y medir con casos nuevos. **27-oct: reglas de la tercera ronda con casos nuevos fijadas antes de ver las sugerencias (sección 12).**
 **Para quién:** la revisora y el responsable del proyecto.
 
 ## 1. Qué se mide y por qué
@@ -462,3 +462,43 @@ Además: calificador correcto (Fase B) 0,753; precisión a ciegas 0,419 y F1 0,4
 | 4 | **Segunda revisora** | Artstein y Poesio 2008; Burns et al. 2012 |
 
 Los 3 pts de 07g siguen sin acreditarse hasta que el responsable decida; el uso clínico no se aprueba. Para repetir el cálculo: `variants_vs_review.py score-new` (precisión y cobertura) y el cálculo completo con `compute_metrics` y `evaluate_thresholds` descrito arriba (calificador incluido).
+
+## 12. Tercera ronda con casos nuevos: reglas fijadas antes de ver las sugerencias (27 de octubre de 2026)
+
+Esta sección se escribe y se sube **antes** de generar las sugerencias de los casos nuevos y de dárselos a la médica. Es el equivalente de un registro previo del análisis: fijar por escrito qué se mide y cómo se decide antes de ver los datos evita ajustar la regla al resultado (Nosek et al. 2018; Kapoor y Narayanan 2023). Los 24 casos de las rondas 1 y 2 ya se usaron para diagnosticar los errores y para medir la corrección; con ellos no se puede volver a ajustar sin sesgo (Cawley y Talbot 2010).
+
+### 12.1 Cambios al motor desde la ronda 2
+
+Se hicieron tras el análisis de 11.2, con sustento clínico y sin cambiar de modelo (`gemma4:e4b`). Una comprobación en los casos antiguos solo verifica que no se rompió nada: **no cuenta como validación**.
+
+| Cambio | Qué hace | Por qué | Sustento |
+|---|---|---|---|
+| Vínculo de movilidad más estricto | Solo si la deficiencia física es al menos moderada y D4 ≥ 50 (limitación de movilidad grave, calificador ≥ 3) | En la ronda 2 la médica rechazó 8 de 37 funciones nuevas en casos sin limitación motora, todos con D4 entre 10 y 40 | Se vincula lo que el caso evidencia (Cieza et al. 2005); umbral de 50 = calificador 3 «grave» de la propia escala (OMS 2001) |
+| Vínculo mental | Sin deficiencia física pero con psicosocial, las estructuras se buscan en el capítulo 1 (sistema nervioso) | La médica esperaba `s110` en esquizofrenia y depresión y el motor no buscaba estructuras | Las funciones mentales (b1) se vinculan con estructuras del sistema nervioso (reglas de vinculación, Cieza et al. 2005) |
+| Regla de evidencia, con una excepción | Se agrega al prompt: si el diagnóstico es neurológico, del neurodesarrollo o psiquiátrico, la estructura es la cerebral | La regla de evidencia hacía elegir estructuras periféricas en síndrome de Down, TEA y TEPT | Mismo sustento |
+
+Las tres reglas son interruptores (`ICF_MOTOR_LINK`, `ICF_MENTAL_LINK`, `ICF_S_EVIDENCE`) y están cubiertas por pruebas. Comprobación en los 24 casos antiguos (no es validación): cobertura 0,657 (44/67) y 23 estructuras sugeridas.
+
+### 12.2 Casos
+
+24 casos sintéticos nuevos, `icf-service/reference/cases_ronda2.json` (N01 a N24), escritos antes de ver sus sugerencias y distintos de C01 a C25. Cubren lo que el primer set cubría poco: visión (3), audición (2, con sordoceguera), discapacidad intelectual (2), neurológicas (esclerosis lateral, esclerosis múltiple, epilepsia, hemiplejia, paraplejia, lesión de plexo braquial), psiquiátricas y del neurodesarrollo (bipolar, ansiedad, TDAH, tartamudez), crónicas (EPOC, renal, diabetes con neuropatía, lupus) y osteomusculares (artrosis, fractura, amputación, escoliosis). Incluyen menores de edad (8, 9, 14, 15 y 16 años). No hay datos de personas reales.
+
+### 12.3 Reglas de medición (no se cambian después de ver los resultados)
+
+1. **Umbrales: los mismos** de 4.1 (precisión estricta ≥ 0,60, flexible ≥ 0,80, cobertura ≥ 0,60, κ ponderado ≥ 0,50 sobre al menos 30 pares, actividades ≥ 0,80, casos revisados ≥ 20), con los mismos pisos del IC.
+2. **Definición de «esperado»:** los códigos que la médica califica con **gravedad 0 en la Fase A no cuentan como esperados**, porque en la CIF el calificador 0 significa «no hay problema» (OMS 2001) y no es algo que el sistema deba sugerir. Se calcula con `review_sheet.py score --exclude-zero-severity` (función `without_zero_severity`, con prueba). Es una definición que se identificó viendo la ronda 1; se fija ahora, antes de los datos nuevos, y **se informa también la medición sin esta exclusión** como sensibilidad.
+3. **Motor congelado:** se mide con el código del commit que sube esta sección y la configuración por defecto. Mientras la médica revisa, no se cambia el motor.
+4. **Fase A antes de la B:** igual que en la ronda 1, para evitar el sesgo de anclaje (Fase A a ciegas con gravedad 0 a 4).
+5. **Veredicto:** CUMPLE solo si los seis criterios se cumplen sobre los 24 casos nuevos. Cualquier resultado se informa completo.
+6. **Si no cumple:** no se reajusta con estos casos. Los ajustes se miden en una cuarta ronda con casos nuevos y se vuelve a decidir.
+7. **Límites que se mantienen:** una sola revisora; casos sintéticos; con 24 casos, diferencias de unos pocos puntos no se distinguen (4.4); el acuerdo entre profesionales no se mide hasta que haya una segunda revisora (Artstein y Poesio 2008).
+
+### 12.4 Cómo se corre
+
+```powershell
+# sugerencias y hoja de revisión de la tercera ronda (contenedor temporal con la imagen del servicio y openpyxl)
+python scripts/review_sheet.py generate --cases reference/cases_ronda2.json --output ..\data\private\icf\review\hoja_ronda3.xlsx
+# con la hoja devuelta
+python scripts/review_sheet.py score ..\data\private\icf\review\hoja_ronda3_llena.xlsx --exclude-zero-severity --output informe_ronda3.json
+python scripts/review_sheet.py score ..\data\private\icf\review\hoja_ronda3_llena.xlsx    # sensibilidad, definición anterior
+```

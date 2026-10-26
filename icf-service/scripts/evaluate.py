@@ -75,7 +75,7 @@ def main() -> int:
             res = suggest(
                 patient, repo, fns.embed, fns.chat, settings.llm_model, stats=fns.stats, use_llm=settings.use_llm,
                 body_candidates=settings.body_candidates, justify=settings.justify,
-                s_evidence=settings.s_evidence, motor_link=settings.motor_link,
+                s_evidence=settings.s_evidence, motor_link=settings.motor_link, mental_link=settings.mental_link,
             )
             if res.applicable:
                 latencies.append(res.latency_ms)
