@@ -1,6 +1,6 @@
 # Estado del Proyecto Health Access Bridge — Momento Integrador III (corte parcial)
 
-**Última actualización:** 7 de octubre de 2026
+**Última actualización:** 26 de octubre de 2026 (HU-07g con la revisión clínica devuelta; el resto, al 7 de octubre)
 **Momento actual:** Momento 3 - Trabajo Integrador III (en progreso: HU-07a, HU-07b, HU-07c, HU-07d y HU-07f completadas)
 
 > Este documento continúa a [`PROJECT_STATUS_M2.md`](./PROJECT_STATUS_M2.md) (cierre del Momento 2, septiembre de 2026). Es un **corte parcial**: el Momento 3 va a la mitad de HU-07 y las HU-08, HU-09 y HU-10 no han empezado. Para el análisis de lo ocurrido con el modelo local Qwen, ver [`INSIGHTS_REPORT5.md`](./INSIGHTS_REPORT5.md) y [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](./PRUEBAS_HU07_SERVIDOR_FISICO.md).
@@ -43,7 +43,7 @@ Las **licencias** quedaron verificadas el 7 de octubre (`LICENCIAS_COMPONENTES_I
 | 07d | Pantalla «Perfil Funcional ICF» | 5 | ✅ Completada 7-oct (12 pruebas nuevas; causas oficiales en el formulario) |
 | 07e | Pruebas, manual de operación (Ollama, modelos y requisitos de la máquina) y reportes | 2 | ✅ Completada 7-oct: 5 E2E (5/5 contra DEV), job `icf-service-test` en CI, `docs/MANUAL_OPERACION_ICF.md` y reportes actualizados |
 | 07f | Escalera de modelos abiertos (Gemma 4 / MedGemma) en el PC de pruebas y modelo mínimo viable: `gemma4:e4b` | 2 | ✅ Completada 7-oct |
-| 07g | Validación clínica con un médico y umbral de confiabilidad | 3 | 🟡 Instrumento listo (7-oct): hoja de revisión en Excel con Fase A a ciegas y Fase B, cálculo de métricas y umbrales aprobados por el responsable (7-oct; el criterio del calificador y los pisos del IC se actualizaron y sustentaron el 21-oct); **falta la revisión de Emilly Maria Celis, con quien hay reunión la próxima semana** (los 3 pts se acreditan al documentar el resultado) |
+| 07g | Validación clínica con un médico y umbral de confiabilidad | 3 | 🟡 Instrumento listo (7-oct), criterios sustentados (21-oct) y **revisión de Emilly Maria Celis devuelta el 26-oct: veredicto NO CUMPLE** (precisión estricta 59,1 % y flexible 78,8 % de b+s, cobertura 55,2 %; el κ del calificador, 0,576, y las actividades, 100 %, sí cumplen). Causas: las estructuras completan la cuota de 3 y la búsqueda no trae las funciones motoras (b730, b760, b770); detalle y sustento en el protocolo, secciones 8 y 9. 3 pts sin acreditar |
 | 07h | Despliegue y operación en el PC de producción (i5-13450HX, 32 GB, RTX 5050 de 8 GB) | 3 | ✅ Completada (07-oct-2026): servicio y túnel operativos en el PC, Render configurado, prueba en QA, reinicio y tapa verificados |
 
 **Logros técnicos del período:**
@@ -53,7 +53,7 @@ Las **licencias** quedaron verificadas el 7 de octubre (`LICENCIAS_COMPONENTES_I
 - **Motor:** reglas fijas (edad, calificador, capítulos), actividades desde la lista cerrada del Anexo (32 códigos), funciones y estructuras por búsqueda semántica entre los códigos de 3 dígitos, validación contra el catálogo y respaldo por similitud.
 - **Mediciones:** latencia, calidad de la búsqueda y comparación de tres modos, documentadas con su método y sus limitaciones.
 
-**Pendiente de la HU:** solo la revisión de la profesional de salud (07g); el instrumento y el protocolo ya están (`PROTOCOLO_VALIDACION_CLINICA_HU07G.md`).
+**Avance (26-oct):** el motor ya incluye estructuras solo con evidencia y el vínculo de movilidad para funciones (medición preliminar: cobertura de 0,52–0,55 a 0,58–0,60; protocolo, sección 10). Producción ya actualizada (26-oct). **Pendiente de la HU:** que la médica valore las 41 sugerencias nuevas (hoja corta lista), medir con casos nuevos revisados por ella y decidir los puntos de 07g; ver `PROTOCOLO_VALIDACION_CLINICA_HU07G.md`, sección 9.5.
 
 ### 📋 HU-08, HU-09, HU-10
 Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y feedback de usuarios (8 pts) y Despliegue final y manuales (5 pts). HU-10 suma el manual de operación del servicio ICF.
@@ -111,7 +111,7 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 | Riesgo | Estado |
 |---|---|
 | **Privacidad:** con modelo local los datos no salen de la infraestructura propia (Ley 1581 de 2012) | 🟢 Mitigado por diseño; licencias verificadas (Gemma 4 Apache 2.0; MedGemma descartado) |
-| **Confiabilidad clínica sin medir:** las cifras actuales usan pistas no validadas por un médico | 🟡 Se mide en HU-07g |
+| **Confiabilidad clínica:** la revisión de la médica (26-oct) dio NO CUMPLE; estructuras con precisión estricta de 44 % y funciones con cobertura de 44 % | 🟡 Medida; corrección y nueva medición con casos nuevos pendientes (HU-07g) |
 | **Producción en un PC portátil propio:** puede suspenderse o quedar sin internet, sin redundancia | 🟢 Mitigado (HU-07h): respaldo por similitud, arranque automático, energía sin suspensión y reinicio probado |
 | **Las pruebas del servicio ICF no se ejecutaban en CI** | 🟢 Resuelto en HU-07e: job `icf-service-test` en dev, qa y prod (67 pasan; 8 de integración con el catálogo local se omiten) |
 | **Protección de rama eludida** (17 bypass del propietario) y exceso de PRs de promoción | 🟡 Pendiente decidir la política |

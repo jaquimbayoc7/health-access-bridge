@@ -29,7 +29,7 @@ _WHY_LLM = "Seleccionado por el modelo entre los códigos más cercanos al conte
 _WHY_SIMILARITY = "Mayor similitud con el contexto clínico."
 
 
-def _patient_summary(patient: PatientContext, plan: List[Tuple[int, int, int]]) -> str:
+def _patient_summary(patient: PatientContext, plan: List[Tuple[int, int, int]], motor_link: bool = False) -> str:
     """Resumen breve para el modelo (sin acentos y sin relleno: cada token de entrada cuesta tiempo)."""
     lines = [f"Paciente {patient.age} anios."]
     if patient.cause:
@@ -44,6 +44,8 @@ def _patient_summary(patient: PatientContext, plan: List[Tuple[int, int, int]]) 
         lines.append(f"Notas: {patient.clinical_notes}")
     if plan:
         lines.append("Dificultad: " + ", ".join(f"{_CHAPTER_NAME[ch]} {level}" for ch, level, _ in plan) + ".")
+    if motor_link:
+        lines.append("Con dificultad de movilidad considera las funciones neuromusculoesqueleticas (b7) del listado.")
     return "\n".join(lines)
 
 
@@ -81,6 +83,10 @@ def suggest(
     use_llm: bool = True,
     body_candidates: int = BODY_CANDIDATES,
     justify: bool = False,
+    b_candidates: Optional[int] = None,
+    motor_candidates: int = 0,
+    s_evidence: bool = False,
+    motor_link: bool = False,
 ) -> SuggestionResult:
     started = time.perf_counter()
     result = SuggestionResult(applicable=True, model=model)
@@ -166,11 +172,22 @@ def suggest(
     # 4) Funciones (b) y estructuras (s): candidatos por similitud; el LLM elige y ordena (solo codigos).
     b_pairs: List[Pair] = []
     s_pairs: List[Pair] = []
+    mobility = False
     if body_applies and vector is not None:
         # Solo cuentan b y s con calificador >= 1: los capitulos de una categoria 'Ninguna' se excluyen
         # dentro de la busqueda (filtrar despues dejaba la lista vacia, ej. esquizofrenia sin deficiencia fisica).
         t0 = time.perf_counter()
-        b_pairs = repo.search("b", vector, body_candidates, rules.body_chapters("b", patient.cat_fisica, patient.cat_psicosocial))
+        b_chapters = rules.body_chapters("b", patient.cat_fisica, patient.cat_psicosocial)
+        b_pairs = repo.search("b", vector, b_candidates or body_candidates, b_chapters)
+        # Dificultad de movilidad (D4) -> funciones neuromusculoesqueleticas (capitulo 7): la busqueda por el texto del
+        # diagnostico las dejaba fuera (fuerza, control del movimiento y marcha eran el 40 % de las omisiones, HU-07g).
+        if motor_candidates and 7 in b_chapters and any(chapter == 4 for chapter, _, _ in plan):
+            known = {code for code, _ in b_pairs}
+            b_pairs += [pair for pair in repo.search("b", vector, motor_candidates, [7]) if pair[0] not in known]
+        mobility = motor_link and 7 in b_chapters and any(chapter == 4 for chapter, _, _ in plan)
+        if mobility:
+            known = {code for code, _ in b_pairs}
+            b_pairs += [pair for pair in repo.titles(rules.MOBILITY_BODY_CODES) if pair[0] not in known]
         s_pairs = repo.search("s", vector, body_candidates, rules.body_chapters("s", patient.cat_fisica, patient.cat_psicosocial))
         result.timings["search"] = round((time.perf_counter() - t0) * 1000)
     b_titles, s_titles = dict(b_pairs), dict(s_pairs)
@@ -178,8 +195,8 @@ def suggest(
     parsed: Optional[Dict[str, List[Tuple[str, str]]]] = None
     if use_llm and (b_pairs or s_pairs):
         try:
-            schema = llm.build_schema([c for c, _ in b_pairs], [c for c, _ in s_pairs], justify)
-            messages = llm.build_messages(_patient_summary(patient, plan), b_pairs, s_pairs, justify)
+            schema = llm.build_schema([c for c, _ in b_pairs], [c for c, _ in s_pairs], justify, s_evidence)
+            messages = llm.build_messages(_patient_summary(patient, plan, mobility), b_pairs, s_pairs, justify, s_evidence)
             text = timed("llm", chat_fn, messages, schema)
             parsed = llm.parse_response(text, [c for c, _ in b_pairs], [c for c, _ in s_pairs])
             result.llm_used = True

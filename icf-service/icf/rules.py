@@ -7,6 +7,12 @@ from .domain_map import MIN_AGE_FOR_DOMAINS, REVIEW_THRESHOLD, qualifier_from_le
 
 MAX_PER_COMPONENT = 3
 
+# Regla de vinculacion (HU-07g, 26-oct-2026): una dificultad en el dominio D4 (movilidad) se asocia con las funciones
+# neuromusculoesqueleticas basicas del capitulo 7 (movilidad articular, fuerza, tono, control del movimiento voluntario
+# y patron de la marcha). La busqueda por el texto del diagnostico no las traia (b730, b760 y b770 eran el 40 % de las
+# omisiones). Entran como candidatos; el modelo decide si el caso las respalda.
+MOBILITY_BODY_CODES = ("b710", "b730", "b735", "b760", "b770")
+
 # Categoria de discapacidad de HAB (cat_fisica / cat_psicosocial) -> calificador generico de la CIF.
 _CATEGORY_QUALIFIER = {
     "ninguna": 0,

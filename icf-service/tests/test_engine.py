@@ -50,6 +50,11 @@ class FakeRepo:
             pairs = [(c, t) for c, t in pairs if int(c[1]) in chapters]
         return pairs[:limit]
 
+    def titles(self, codes):
+        known = {**dict(B), "b735": "Funciones del tono muscular", "b760": "Control de los movimientos voluntarios",
+                 "b770": "Patron de la marcha"}
+        return [(c, known[c]) for c in codes if c in known]
+
     def rank_codes(self, codes, embedding):
         self.ranked.append(list(codes))
         if not self.similarity_order:
@@ -352,3 +357,69 @@ def test_schema_rejects_identifiers_and_bad_levels():
         PatientContext(age=30, levels={"D1": 101})
     with pytest.raises(ValidationError):
         PatientContext(age=30, levels={"D9": 10})
+
+
+# --- HU-07g (26-oct-2026): ajustes tras la revision clinica ---
+
+
+def test_evidence_variant_changes_prompt_and_requires_one_structure():
+    assert llm.system_prompt(False, evidence=True).startswith(llm.SYSTEM_PROMPT)
+    assert "no completes la lista" in llm.system_prompt(True, evidence=True)
+    assert llm.system_prompt(False) == llm.SYSTEM_PROMPT  # sin la variante, el prompt no cambia
+    schema = llm.build_schema(["b730"], ["s750"], evidence=True)
+    assert schema["properties"]["s"]["minItems"] == 1 and schema["properties"]["s"]["maxItems"] == 3
+    assert "minItems" not in schema["properties"]["b"]
+    assert "minItems" not in llm.build_schema(["b730"], ["s750"])["properties"]["s"]
+
+
+def test_engine_sends_evidence_prompt_only_when_asked():
+    seen = {}
+
+    def chat(messages, schema):
+        seen["system"], seen["schema"] = messages[0]["content"], schema
+        return json.dumps(GOOD)
+
+    run(patient(), chat, s_evidence=True)
+    assert llm.EVIDENCE_RULE in seen["system"] and seen["schema"]["properties"]["s"]["minItems"] == 1
+    run(patient(), chat)
+    assert llm.EVIDENCE_RULE not in seen["system"]
+
+
+def test_mobility_link_adds_chapter7_candidates_and_a_hint_when_d4_has_difficulty():
+    seen = {}
+
+    def chat(messages, schema):
+        seen["user"], seen["codes"] = messages[1]["content"], schema["properties"]["b"]["items"]["enum"]
+        return json.dumps({"b": ["b760"], "s": ["s750"]})
+
+    res = run(patient(), chat, motor_link=True)
+    assert {"b710", "b730", "b735", "b760", "b770"} <= set(seen["codes"])
+    assert len(seen["codes"]) == len(set(seen["codes"]))  # sin repetidos
+    assert "neuromusculoesqueleticas" in seen["user"] and "b760 Control de los movimientos voluntarios" in seen["user"]
+    assert [f.code for f in res.functions] == ["b760"]  # el modelo puede elegir el codigo del vinculo
+    assert res.functions[0].title == "Control de los movimientos voluntarios"  # el titulo sale del catalogo
+
+    run(patient(), chat)  # apagado: ni candidatos nuevos ni pista
+    assert "b760" not in seen["codes"] and "neuromusculoesqueleticas" not in seen["user"]
+
+
+def test_mobility_link_needs_difficulty_in_d4_and_physical_category():
+    seen = {}
+
+    def chat(messages, schema):
+        seen["codes"], seen["user"] = schema["properties"]["b"]["items"]["enum"], messages[1]["content"]
+        return json.dumps({"b": ["b730"]})
+
+    run(patient(levels={"D1": 3, "D2": 0, "D3": 0, "D4": 2, "D5": 10, "D6": 0}), chat, motor_link=True)
+    assert "b760" not in seen["codes"] and "neuromusculoesqueleticas" not in seen["user"]
+    run(patient(cat_fisica="Ninguna"), chat, motor_link=True)  # sin deficiencia fisica no hay capitulo 7
+    assert "b760" not in seen["codes"]
+
+
+def test_new_settings_default_on_and_can_be_turned_off(monkeypatch):
+    from icf.config import load_settings
+
+    assert load_settings().s_evidence is True and load_settings().motor_link is True
+    monkeypatch.setenv("ICF_S_EVIDENCE", "false")
+    monkeypatch.setenv("ICF_MOTOR_LINK", "false")
+    assert load_settings().s_evidence is False and load_settings().motor_link is False
