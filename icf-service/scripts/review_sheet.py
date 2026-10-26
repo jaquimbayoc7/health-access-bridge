@@ -37,6 +37,7 @@ from icf.review import (  # noqa: E402
     normalize_yes_no,
     parse_code_qualifiers,
     parse_severity,
+    without_zero_severity,
 )
 
 DEFAULT_CASES = ROOT / "reference" / "cases.json"
@@ -135,7 +136,7 @@ def generate(args) -> int:
             res = suggest(
                 patient, repo, fns.embed, fns.chat, settings.llm_model, stats=fns.stats, use_llm=settings.use_llm,
                 body_candidates=settings.body_candidates, justify=settings.justify,
-                s_evidence=settings.s_evidence, motor_link=settings.motor_link,
+                s_evidence=settings.s_evidence, motor_link=settings.motor_link, mental_link=settings.mental_link,
             )
             if not res.applicable:
                 print(f"{case['id']}: no aplica ({res.message}); se omite de la hoja")
@@ -220,6 +221,9 @@ def read_filled(path: Path):
 
 def score(args) -> int:
     ratings, missing, blind, suggested, blind_q, suggested_q = read_filled(args.sheet)
+    if args.exclude_zero_severity:
+        blind, blind_q = without_zero_severity(blind, blind_q)
+        print("(Definicion de la tercera ronda: los codigos con gravedad 0 en la Fase A no cuentan como esperados)")
     metrics = compute_metrics(ratings, missing, blind, suggested, blind_q, suggested_q)
     verdict = evaluate_thresholds(metrics)
     print(f"Casos con valoracion: {metrics['cases_reviewed']}")
@@ -300,6 +304,7 @@ def main() -> int:
     s.add_argument("--cases", type=Path, default=DEFAULT_CASES)
     s.add_argument("--output", type=Path)
     s.add_argument("--apply-expected", action="store_true", help="copia la Fase A a 'expected' de cases.json")
+    s.add_argument("--exclude-zero-severity", action="store_true", help="los codigos con gravedad 0 en la Fase A no cuentan como esperados (tercera ronda)")
     args = ap.parse_args()
     return {"generate": generate, "upgrade": upgrade, "score": score}[args.cmd](args)
 
