@@ -1,7 +1,7 @@
 # Estado del Proyecto Health Access Bridge — Momento Integrador III (corte parcial)
 
-**Última actualización:** 27 de octubre de 2026 (cierre de HU-07g; el resto, al 7 de octubre)
-**Momento actual:** Momento 3 - Trabajo Integrador III (en progreso: HU-07 completa, 33 de 33 pts; HU-08, HU-09 y HU-10 por iniciar)
+**Última actualización:** 27 de octubre de 2026 (cierre de HU-07g y de HU-08; el resto, al 7 de octubre)
+**Momento actual:** Momento 3 - Trabajo Integrador III (en progreso: HU-07 y HU-08 completas, 46 de 59 pts; HU-09 y HU-10 por iniciar)
 
 > Este documento continúa a [`PROJECT_STATUS_M2.md`](./PROJECT_STATUS_M2.md) (cierre del Momento 2, septiembre de 2026). Es un **corte parcial**: el Momento 3 va a la mitad de HU-07 y las HU-08, HU-09 y HU-10 no han empezado. Para el análisis de lo ocurrido con el modelo local Qwen, ver [`INSIGHTS_REPORT5.md`](./INSIGHTS_REPORT5.md) y [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](./PRUEBAS_HU07_SERVIDOR_FISICO.md).
 
@@ -9,7 +9,7 @@
 
 ## Resumen Ejecutivo
 
-Al 27 de octubre el proyecto lleva **120 de 146 puntos (82,2 %)** (117 de 146 al 7 de octubre). En el Momento 3 se completaron **HU-07a** (servidor propio, túnel, catálogo y embeddings) y **HU-07b** (motor de sugerencia de códigos CIF y herramientas de evaluación), 13 de los 59 puntos del momento. El 7 de octubre se completó **HU-07f** (escalera de modelos abiertos): **15 de 59**. Ese mismo día se completaron **HU-07c** (backend de sugerencias) y **HU-07d** (pantalla): **25 de 59**. También ese día se completó **HU-07h** (producción en el PC propio, con Render, QA, reinicio y tapa verificados): **28 de 59**. También el 7 de octubre se completó **HU-07e** (E2E, pruebas del servicio ICF en CI, manual de operación y reportes): **30 de 59**.
+Al 27 de octubre el proyecto lleva **133 de 146 puntos (91,1 %)** (117 de 146 al 7 de octubre). En el Momento 3 se completaron **HU-07a** (servidor propio, túnel, catálogo y embeddings) y **HU-07b** (motor de sugerencia de códigos CIF y herramientas de evaluación), 13 de los 59 puntos del momento. El 7 de octubre se completó **HU-07f** (escalera de modelos abiertos): **15 de 59**. Ese mismo día se completaron **HU-07c** (backend de sugerencias) y **HU-07d** (pantalla): **25 de 59**. También ese día se completó **HU-07h** (producción en el PC propio, con Render, QA, reinicio y tapa verificados): **28 de 59**. También el 7 de octubre se completó **HU-07e** (E2E, pruebas del servicio ICF en CI, manual de operación y reportes): **30 de 59**.
 
 El hallazgo central del período es que **el modelo local `qwen2.5:3b` no sirve para seleccionar códigos**: en el servidor físico (Intel i3, 12 GB, sin GPU) tardó de 24 a 46 s por sugerencia y **eligió peor que la búsqueda por similitud sola**, que responde en 0,6 s. Se evaluó pasar a un modelo externo por API (Claude Sonnet 5.5) y **se descartó por privacidad**: los datos de salud son sensibles (Ley 1581 de 2012) y todo debe quedar en infraestructura propia. La decisión del 6 de octubre es **buscar el modelo abierto mínimo viable**: probar la escalera Gemma 4 y MedGemma en un PC de pruebas con GPU (i5-13450HX, 32 GB de RAM, RTX 5050 de 8 GB) y, con esas medidas, recomendar la máquina de producción. HU-07 se reestima de 25 a **33 puntos**, con tres sub-historias nuevas: escalera de modelos abiertos (07f, 2 pts), validación clínica con un médico (07g, 3 pts) y dimensionamiento de la máquina (07h, 3 pts). **Decisión del 7 de octubre:** la producción corre en el PC propio (RTX 5050 de 8 GB), así que no se compra hardware. La revisión clínica (07g) la hará Emilly Maria Celis, profesional en salud.
 
@@ -56,7 +56,7 @@ Las **licencias** quedaron verificadas el 7 de octubre (`LICENCIAS_COMPONENTES_I
 **Tercera ronda (27-oct), 24 casos nuevos con reglas fijadas antes de ver las sugerencias:** precisión estricta 62,7 %, flexible 86,3 %, cobertura 69,0 % y actividades 100 % cumplen; el calificador (κ ponderado 0,312) no cumple: NO CUMPLE por un solo criterio (protocolo, secciones 12 y 13). **Cierre (27-oct):** el responsable deja las métricas tal como están y acredita los 3 pts; 33 de 59 en el Momento 3. Reporte final: `docs/presentation/reporte-afinamiento-icf.html`. **Segunda ronda (26-oct):** la médica valoró las sugerencias nuevas; el motor corregido da precisión estricta 71,0 %, flexible 87,1 % y κ 0,540 (cumplen) y cobertura 58,2 % (no cumple por 1,8 puntos): NO CUMPLE por un solo criterio; ver protocolo, sección 11. **Avance (26-oct):** el motor ya incluye estructuras solo con evidencia y el vínculo de movilidad para funciones (medición preliminar: cobertura de 0,52–0,55 a 0,58–0,60; protocolo, sección 10). Producción ya actualizada (26-oct). **Recomendado tras el cierre (no bloquea):** segunda revisora, calificador con rango 0–4, apagar `ICF_MENTAL_LINK` y una cuarta ronda con casos nuevos; ver `PROTOCOLO_VALIDACION_CLINICA_HU07G.md`, secciones 13 y 14.
 
 ### 📋 HU-08, HU-09, HU-10
-Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y feedback de usuarios (8 pts) y Despliegue final y manuales (5 pts). HU-10 suma el manual de operación del servicio ICF.
+**HU-08 (completada el 27-oct, 13 pts):** dashboard de análisis con 10 gráficos, filtros, pestaña del perfil funcional ICF (tasa de aceptación de las sugerencias) y exportación a Excel (5 hojas) y PDF con gráficos; backend `/analytics/summary` y `/analytics/filters` con datos agregados; 18 pruebas de backend, 23 de frontend y 5 E2E, estos últimos también contra el frontend DEV desplegado (detalle en `BACKLOG.md`). Sin cambios: Pruebas completas y feedback de usuarios (HU-09, 8 pts) y Despliegue final y manuales (HU-10, 5 pts). HU-10 suma el manual de operación del servicio ICF.
 
 ---
 
@@ -90,16 +90,16 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 
 | Métrica | Valor |
 |---------|-------|
-| **Puntos completados** | 120 pts |
-| **Puntos pendientes** | 26 pts |
+| **Puntos completados** | 133 pts |
+| **Puntos pendientes** | 13 pts |
 | **Total del proyecto** | 146 pts |
-| **Avance general** | 82,2 % |
+| **Avance general** | 91,1 % |
 | **Momento 1** | ✅ 100 % (63 pts) |
 | **Momento 2** | ✅ 100 % (24 pts) |
-| **Momento 3** | 🟡 55,9 % (33 de 59 pts) |
+| **Momento 3** | 🟡 78,0 % (46 de 59 pts) |
 | **Commits** | 249 en `master` (236 en `develop`; 56 son merges de promoción) en 22 días activos; 70 de ellos el 5 y 6 de octubre (93 si se cuenta el 7) |
 | **Pull Requests mergeados** | 55 de 56 abiertos (corte 7-oct-2026) |
-| **Pruebas automáticas** | backend 105 · frontend 38 · servicio ICF 101 (92 en CI) · **244 en total**; E2E 12 casos |
+| **Pruebas automáticas** | backend 123 · frontend 61 · servicio ICF 101 (92 en CI) · **285 en total**; E2E 17 casos |
 | **Tamaño del repositorio** | 8.140 KB (TypeScript 63 %, Python 34 %) |
 
 *Las cifras del R4 y de `PROJECT_STATUS_M2.md` son instantáneas históricas y no se modifican.*
@@ -126,7 +126,7 @@ Sin cambios: Dashboard de análisis y exportación (13 pts), Pruebas completas y
 2. **HU-07f (hecho, 7-oct):** `gemma4:e4b` es el mínimo viable provisional (ver `PRUEBAS_HU07F_MODELOS_ABIERTOS.md`); los modelos grandes se miden solo si la validación clínica lo exige.
 3. **HU-07g (hecha, 27-oct):** tres rondas con la profesional de salud, corrección del motor y reporte final de la fase.
 4. **HU-07c, HU-07d y HU-07e (hechas, 7-oct):** backend, pantalla, E2E, CI y manual listos; HU-07g quedó cerrada el 27 de octubre (ver arriba).
-5. **HU-08, HU-09 y HU-10** según el orden de `BACKLOG.md`.
+5. **HU-08 (hecha, 27-oct)**; siguen **HU-09 y HU-10** según el orden de `BACKLOG.md`.
 6. **Higiene de proceso:** crear los issues de 07a–07g, actualizar el issue #7, agrupar las promociones entre ramas y definir la política de la protección de rama.
 
 ---

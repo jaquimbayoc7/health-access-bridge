@@ -6,6 +6,9 @@ Element.prototype.setPointerCapture = Element.prototype.setPointerCapture || (()
 Element.prototype.releasePointerCapture = Element.prototype.releasePointerCapture || (() => {});
 Element.prototype.scrollIntoView = Element.prototype.scrollIntoView || (() => {});
 
+// recharts (ResponsiveContainer) usa ResizeObserver, que jsdom no implementa.
+globalThis.ResizeObserver = globalThis.ResizeObserver || class { observe() {} unobserve() {} disconnect() {} };
+
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: (query: string) => ({

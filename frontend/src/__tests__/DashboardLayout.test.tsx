@@ -74,7 +74,7 @@ describe('DashboardLayout', () => {
       menuItems.filter((item) => {
         if (
           role === 'admin' &&
-          ['patients', 'predictions', 'analytics', 'predictiveGuide'].includes(item.title)
+          ['patients', 'predictions', 'predictiveGuide'].includes(item.title)
         )
           return false;
         if (role !== 'admin' && item.title === 'userList') return false;
@@ -86,6 +86,8 @@ describe('DashboardLayout', () => {
 
     expect(adminItems).toContain('userList');
     expect(adminItems).not.toContain('patients');
+    expect(adminItems).toContain('analytics'); // HU-08: el dashboard de análisis es para ambos roles
+    expect(medicoItems).toContain('analytics');
     expect(medicoItems).not.toContain('userList');
     expect(medicoItems).toContain('patients');
   });

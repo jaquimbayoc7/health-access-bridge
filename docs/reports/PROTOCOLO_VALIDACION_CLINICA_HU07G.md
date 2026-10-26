@@ -579,7 +579,7 @@ El motor corregido cumple cinco de los seis criterios sobre casos nuevos y falla
 |---|---|
 | Naturaleza del perfil | Borrador de apoyo; el certificado lo emite el equipo multidisciplinario (Resolución 1239 de 2022) |
 | Calificador | Valor inicial que el médico edita (como ya funciona la pantalla); no se presenta como medida validada |
-| Uso clínico real | **No aprobado**: falta la consulta regulatoria (INVIMA), un piloto con médicos y, preferiblemente, una segunda revisora |
+| Uso clínico real | **No aprobado**: la consulta regulatoria (INVIMA) se descartó por decisión del responsable (27-oct-2026); tampoco hay piloto con médicos ni segunda revisora |
 | Modelo | `gemma4:e4b` local; no se probó ningún modelo mayor (los datos indicaban que el límite estaba en la búsqueda y en la instrucción) |
 | Configuración en producción | La medida: `ICF_S_EVIDENCE`, `ICF_MOTOR_LINK` (D4 ≥ 50 y deficiencia física ≥ moderada) e `ICF_MENTAL_LINK` activos |
 
