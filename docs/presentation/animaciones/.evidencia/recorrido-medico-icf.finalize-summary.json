@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "sequence",
+  "quality": "showcase",
+  "specification": {
+    "path": "/work/.build/recorrido-medico-icf.json",
+    "sha256": "2e6ec05ae187fd202e6479e401f0b9a6b99d34dd38b95264fe4df0b532f4f8b7",
+    "bytes": 33222
+  },
+  "artifact": {
+    "path": "/work/recorrido-medico-icf.html",
+    "sha256": "a61006336f0fff337cf40e1f3a13e63c5d605f163ad58ffe9d92c9437b9eb247",
+    "bytes": 762642
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "/work/recorrido-medico-icf.finalize.json",
+    "summaryReceipt": "/work/recorrido-medico-icf.finalize-summary.json",
+    "browserCheckReceipt": "/work/recorrido-medico-icf.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.0.1",
+    "availableVersion": "3.0.1",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-07T22:40:46.415Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1666
+}

@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Recorrido del administrador: usuarios, límites de acceso y salud del servicio de IA",
+    "output": "recorrido-administrador.html",
+    "viewBox": [
+      1080,
+      684
+    ],
+    "column_fit": "spread",
+    "animation": "trace",
+    "quality_profile": "showcase"
+  },
+  "participants": [
+    {
+      "id": "admin",
+      "type": "external",
+      "label": "Administrador",
+      "sublabel": "gestiona la plataforma"
+    },
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "Frontend",
+      "sublabel": "React · es/en"
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Backend",
+      "sublabel": "FastAPI · RBAC"
+    },
+    {
+      "id": "db",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "usuarios y pacientes"
+    },
+    {
+      "id": "icf",
+      "type": "security",
+      "label": "Servicio ICF",
+      "sublabel": "PC propio · token"
+    }
+  ],
+  "segments": [
+    {
+      "from": 150,
+      "to": 257,
+      "label": "1 · Acceso"
+    },
+    {
+      "from": 265,
+      "to": 417,
+      "label": "2 · Gestión de usuarios"
+    },
+    {
+      "from": 425,
+      "to": 473,
+      "label": "3 · Límite de acceso"
+    },
+    {
+      "from": 481,
+      "to": 585,
+      "label": "4 · Salud del servicio de IA"
+    }
+  ],
+  "messages": [
+    {
+      "id": "login",
+      "from": "admin",
+      "to": "web",
+      "y": 165,
+      "label": "inicia sesión",
+      "variant": "default"
+    },
+    {
+      "id": "login-api",
+      "from": "web",
+      "to": "api",
+      "y": 193,
+      "label": "POST /users/login",
+      "variant": "emphasis"
+    },
+    {
+      "id": "login-db",
+      "from": "api",
+      "to": "db",
+      "y": 221,
+      "label": "valida usuario",
+      "variant": "security"
+    },
+    {
+      "id": "jwt",
+      "from": "api",
+      "to": "web",
+      "y": 249,
+      "label": "JWT con rol admin",
+      "variant": "return"
+    },
+    {
+      "id": "lista",
+      "from": "admin",
+      "to": "web",
+      "y": 273,
+      "label": "abre el panel de usuarios",
+      "variant": "default"
+    },
+    {
+      "id": "lista-api",
+      "from": "web",
+      "to": "api",
+      "y": 301,
+      "label": "GET /admin/users",
+      "variant": "emphasis"
+    },
+    {
+      "id": "lista-db",
+      "from": "api",
+      "to": "db",
+      "y": 329,
+      "label": "lista cuentas",
+      "variant": "default"
+    },
+    {
+      "id": "crea",
+      "from": "admin",
+      "to": "web",
+      "y": 353,
+      "label": "crea una cuenta de médico",
+      "variant": "default"
+    },
+    {
+      "id": "crea-api",
+      "from": "web",
+      "to": "api",
+      "y": 381,
+      "label": "POST …/users/register",
+      "variant": "emphasis"
+    },
+    {
+      "id": "estado",
+      "from": "admin",
+      "to": "web",
+      "y": 409,
+      "label": "activa o desactiva",
+      "variant": "dashed"
+    },
+    {
+      "id": "pacientes",
+      "from": "admin",
+      "to": "api",
+      "y": 437,
+      "label": "pide pacientes",
+      "variant": "default"
+    },
+    {
+      "id": "prohibido",
+      "from": "api",
+      "to": "admin",
+      "y": 465,
+      "label": "403 sin acceso",
+      "variant": "security"
+    },
+    {
+      "id": "salud",
+      "from": "admin",
+      "to": "api",
+      "y": 493,
+      "label": "GET /icf/health",
+      "variant": "emphasis"
+    },
+    {
+      "id": "salud-icf",
+      "from": "api",
+      "to": "icf",
+      "y": 521,
+      "label": "GET /health + token",
+      "variant": "security"
+    },
+    {
+      "id": "salud-icf-ret",
+      "from": "icf",
+      "to": "api",
+      "y": 549,
+      "label": "modelo disponible",
+      "variant": "return"
+    },
+    {
+      "id": "salud-ret",
+      "from": "api",
+      "to": "admin",
+      "y": 577,
+      "label": "estado sin URL ni token",
+      "variant": "return"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "Qué puede hacer",
+      "items": [
+        "Crear, listar, activar y desactivar cuentas de médicos",
+        "Consultar la salud del servicio de IA y revisar el estado de producción"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Qué no puede hacer",
+      "items": [
+        "Ver ni modificar pacientes: el backend responde 403",
+        "Ver la URL ni el token del túnel de IA"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Operación del PC de producción",
+      "items": [
+        "check.ps1 verifica Ollama, la base, el servicio y el túnel (con y sin token)",
+        "Mantener el cargador conectado y revisar tras cada reinicio"
+      ]
+    }
+  ]
+}
