@@ -40,4 +40,4 @@ node construir.mjs /ruta/a/archify/archify/bin/archify.mjs recorrido-medico-icf 
 
 ## Datos y privacidad
 
-Los diagramas no contienen datos de pacientes; las rutas, los textos y las cifras salen de este repositorio (`BACKLOG.md`, `docs/MANUAL_OPERACION_ICF.md`, `docs/diagrams/rag-icf-postgresql.md`).
+Los diagramas no contienen datos de pacientes; las rutas, los textos y las cifras salen de este repositorio (`BACKLOG.md`, `docs/manuals/MANUAL_ICF.md`, `docs/diagrams/rag-icf-postgresql.md`).

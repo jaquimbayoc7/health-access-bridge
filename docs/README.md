@@ -30,7 +30,8 @@
 | [reports/referencias_validacion_clinica.bib](./reports/referencias_validacion_clinica.bib) | Bibliografía (51 entradas) |
 | [reports/PRUEBAS_HU07_SERVIDOR_FISICO.md](./reports/PRUEBAS_HU07_SERVIDOR_FISICO.md) · [reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md](./reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md) | Pruebas en el servidor físico y escalera de modelos abiertos |
 | [reports/LICENCIAS_COMPONENTES_ICF.md](./reports/LICENCIAS_COMPONENTES_ICF.md) | Licencias de los componentes (Gemma 4, MedGemma, catálogo de la OMS) |
-| [MANUAL_OPERACION_ICF.md](./MANUAL_OPERACION_ICF.md) | Operación del servicio ICF: requisitos, Ollama, variables, fallas |
+| [manuals/MANUAL_ICF.md](./manuals/MANUAL_ICF.md) | Manual del servicio ICF: arquitectura, instalación, operación, mantenimiento y fallas |
+| [manuals/MANUAL_USUARIO.md](./manuals/MANUAL_USUARIO.md) · [manuals/MANUAL_TECNICO.md](./manuals/MANUAL_TECNICO.md) | Manual de usuario (con capturas) y manual técnico (también en PDF) |
 | [diagrams/rag-icf-postgresql.md](./diagrams/rag-icf-postgresql.md) | Diseño del RAG sobre PostgreSQL/pgvector |
 | [presentation/animaciones/](./presentation/animaciones/index.html) | Animaciones: arquitectura, servicio de IA, recorridos y proceso de validación |
 
@@ -75,7 +76,7 @@ Investigación HCI: [presentation/hci_report.html](./presentation/hci_report.htm
 | **Mockups de diseño** (8 pantallas) | ✅ Completado |
 | **Arquitectura C4** (6 diagramas HTML) | ✅ Completado y al día con HU-07 y HU-08 |
 | **Release Plan** | ✅ [`reports/RELEASE_PLAN.md`](./reports/RELEASE_PLAN.md) |
-| **Manual de operación del servicio ICF** | ✅ [`MANUAL_OPERACION_ICF.md`](./MANUAL_OPERACION_ICF.md) |
+| **Manual de operación del servicio ICF** | ✅ [`MANUAL_ICF.md`](./manuals/MANUAL_ICF.md) |
 | **Manuales de usuario y técnico finales** | 📋 Pendiente (HU-10) |
 | **BPM — Business Process Model** | 📋 Pendiente |
 
