@@ -48,7 +48,7 @@ Lista de comprobación basada en las 10 heurísticas de Nielsen (1994): estado d
 - Cero violaciones axe en los tres ambientes.
 - Cero defectos abiertos de severidad alta.
 
-## 6. Sesión con usuarios reales (pendiente)
+## 6. Sesión con usuarios reales (realizada el 27-oct-2026; resultados en `REPORTE_FINAL_PRUEBAS_HU09.md` y en `FORMATO_REGISTRO_UAT_SUS_HU09.xlsx`)
 **Muestra.** Cinco participantes detectan cerca del 85 % de los problemas de usabilidad (Nielsen y Landauer, 1993; Virzi, 1992). Para estimar el SUS con precisión se recomiendan más (Tullis y Stetson, 2004: 12 a 14). Un primer corte razonable: 3 a 5 médicos y 1 a 2 administradores.
 **Tareas.** Las de la sección 2 (M03, M05, M06 y M08 para el médico; A04 y A03 para el administrador), medidas en: completada sí/no, tiempo y errores.
 **Cuestionario.** Escala de Usabilidad del Sistema, SUS (Brooke, 1996), 10 ítems de 1 a 5, versión en español (Sevilla-Gonzalez et al., 2020); puntaje 0–100. Un puntaje ≥ 68 se considera por encima del promedio (Sauro y Lewis, 2016; Bangor et al., 2008).
