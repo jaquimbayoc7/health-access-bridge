@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { patientService, Patient } from '@/services/patients';
 import { toast } from 'sonner';
+import { profileBadgeClass } from '@/lib/profile';
 
 export default function Predictions() {
   const { t, language } = useLanguage();
@@ -63,16 +64,7 @@ export default function Predictions() {
     }
   };
 
-  const getProfileColor = (profile: number) => {
-    const colors = [
-      'bg-green-500',
-      'bg-blue-500',
-      'bg-yellow-500',
-      'bg-orange-500',
-      'bg-red-500'
-    ];
-    return colors[profile - 1] || 'bg-gray-500';
-  };
+  const getProfileColor = (profile: number) => profileBadgeClass(profile);
 
   return (
     <div className="space-y-6">

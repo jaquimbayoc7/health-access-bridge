@@ -101,7 +101,7 @@ export function OnboardingModal() {
         </DialogHeader>
 
         <div className="flex items-center gap-3 mt-2">
-          <Progress value={progress} className="flex-1" />
+          <Progress value={progress} className="flex-1" aria-label="Progreso de la guía de bienvenida" />
           <span className="text-xs text-muted-foreground whitespace-nowrap">
             {step + 1} / {STEPS.length}
           </span>

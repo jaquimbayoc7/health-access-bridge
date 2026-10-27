@@ -44,7 +44,7 @@ function buildCharts(summary: AnalyticsSummary, L: Labels): { patients: ChartDef
         <PieChart width={size?.width} height={size?.height}>
           <Pie data={data} dataKey="count" nameKey="key" outerRadius="70%" isAnimationActive={false}
                label={({ name, value }) => `${name}: ${value}`}>
-            {data.map((_, i) => <Cell key={i} fill={PALETTE[i % PALETTE.length]} />)}
+            {data.map((d, i) => <Cell key={i} fill={PALETTE[i % PALETTE.length]} aria-label={`${d.key}: ${d.count}`} />)}
           </Pie>
           <Tooltip />
         </PieChart>

@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { profileBadgeClass } from '@/lib/profile';
 
 export default function Dashboard() {
   const { t, language } = useLanguage();
@@ -125,12 +126,7 @@ export default function Dashboard() {
     },
   ];
 
-  const getProfileColor = (profile: number | null): string => {
-    if (!profile) return 'bg-muted';
-    if (profile <= 3) return 'bg-green-500';
-    if (profile <= 6) return 'bg-yellow-500';
-    return 'bg-red-500';
-  };
+  const getProfileColor = (profile: number | null): string => profileBadgeClass(profile);
 
   if (loading) {
     return (
@@ -189,7 +185,7 @@ export default function Dashboard() {
                       dataKey="value"
                     >
                       {roleDistributionData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
+                        <Cell key={`cell-${index}`} fill={entry.color} aria-label={`${entry.name}: ${entry.value}`} />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -229,7 +225,7 @@ export default function Dashboard() {
                       dataKey="value"
                     >
                       {statusDistributionData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
+                        <Cell key={`cell-${index}`} fill={entry.color} aria-label={`${entry.name}: ${entry.value}`} />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -311,7 +307,7 @@ export default function Dashboard() {
                       </p>
                     </div>
                     <Badge 
-                      className={`${getProfileColor(patient.prediction_profile)} text-white`}
+                      className={getProfileColor(patient.prediction_profile)}
                     >
                       Perfil {patient.prediction_profile}
                     </Badge>
