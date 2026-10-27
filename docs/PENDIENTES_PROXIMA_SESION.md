@@ -1,6 +1,6 @@
 # Pendientes y punto de partida para la próxima sesión
 
-**Corte:** 26 de octubre de 2026 · HU-07 y HU-08 completas (46 de 59 pts del Momento 3; proyecto 133 de 146). `develop`, `staging` y `master` quedaron al día por los PR #83 a #90 que hizo el responsable (producción, QA y DEV con el dashboard de análisis); solo falta promover lo posterior (corrección de fechas, nueva presentación, README y diagramas).
+**Corte:** 27 de octubre de 2026 · HU-07, HU-08 y HU-09 completas (54 de 59 pts del Momento 3; proyecto 141 de 146); queda HU-10. `develop`, `staging` y `master` quedaron al día por los PR #83 a #90 que hizo el responsable (producción, QA y DEV con el dashboard de análisis); solo falta promover lo posterior (corrección de fechas, nueva presentación, README y diagramas).
 **Uso:** abrir este archivo al empezar la sesión siguiente y seguir en orden. Complementa [`BACKLOG.md`](../BACKLOG.md) (fuente de verdad del alcance) y [`reports/PROJECT_STATUS_M3.md`](reports/PROJECT_STATUS_M3.md).
 
 ---
@@ -13,8 +13,9 @@
 | HU-07 (Perfil Funcional ICF) | **33 de 33 pts ✅**: 07a a 07h hechas. **07g cerrada el 26-oct** (3 pts acreditados por el responsable): tres rondas con la médica; con 24 casos nuevos cumplen precisión estricta 62,7 %, flexible 86,3 %, cobertura 69,0 % y actividades 100 %; el calificador (κ 0,312) no: NO CUMPLE por un criterio. Borrador de apoyo, sin uso clínico |
 | Recomendado (no bloquea) | Segunda revisora, calificador con rango 0–4, apagar `ICF_MENTAL_LINK` (6 de 7 estructuras rechazadas en la ronda 3) y una cuarta ronda con casos nuevos |
 | HU-08 (Dashboard y exportación) | **13 pts ✅ completada el 26-oct** (adelantada): dashboard con 10 gráficos y filtros, exportación a Excel y PDF, backend `/analytics/*`; verificada en DEV (CI verde, E2E 5/5 contra el frontend DEV) |
-| Aún sin empezar | HU-09 Pruebas completas y feedback (8 pts) y HU-10 Despliegue final y manuales (5 pts) = 13 pts |
-| Pruebas | backend 123 · frontend 61 · servicio ICF 101 (92 en CI, 9 locales) · E2E 17 · smoke 7 |
+| HU-09 (Pruebas y feedback) | **8 pts ✅ completada el 27-oct**: UAT 18/18 y accesibilidad WCAG 2.2 AA con 0 violaciones en DEV, sesión de 10 usuarios (SUS medio 81,25) y guía de calificadores ICF; ver `docs/reports/REPORTE_FINAL_PRUEBAS_HU09.md` |
+| HU-10 (Despliegue final y manuales, 5 pts) | **En curso:** los tres manuales están escritos (`docs/manuals/`: usuario con capturas, técnico y servicio ICF; Markdown y PDF) y **esperan la revisión del equipo para acreditar**. Faltan el despliegue final a producción, los reportes finales y la **documentación integral del proceso técnico, investigativo y de usuario bajo la plantilla del Trabajo Integrador II** (hay que aportar la plantilla) |
+| Pruebas | backend 123 · frontend 61 · servicio ICF 101 (92 en CI, 9 locales) · E2E 20 (+18 de aceptación bajo demanda) · smoke 7 |
 | Producción de la IA | PC propio (i5-13450HX, 32 GB, RTX 5050 de 8 GB): `gemma4:e4b`, ~2,6 s por sugerencia con el modelo en memoria; Tailscale Funnel + Caddy con token |
 | Licencias | Verificadas: Gemma 4 Apache 2.0 (se usa); MedGemma no se usa (prohíbe uso clínico) → [`reports/LICENCIAS_COMPONENTES_ICF.md`](reports/LICENCIAS_COMPONENTES_ICF.md) |
 
@@ -50,7 +51,7 @@
 |---|---|---|
 | ✅ Hecha | **HU-08** Dashboard de análisis y exportación (13 pts, issue #8) | Completada el 26-oct; falta promover a QA y producción. |
 | Alta | **HU-09** Pruebas completas y feedback de usuarios (8 pts, Sprint 11, issue #9) | UAT con usuarios reales; aquí encajan los médicos y la validación de la guía de uso. |
-| Alta | **HU-10** Despliegue final y manuales (5 pts, Sprint 12, issue #10) | Incluye el manual de operación del servicio ICF (ya existe `docs/MANUAL_OPERACION_ICF.md`). |
+| Alta | **HU-10** Despliegue final y manuales (5 pts, Sprint 12, issue #10) | Incluye el manual de operación del servicio ICF (ya existe `docs/manuals/MANUAL_ICF.md`). |
 | Media | Deuda de lint heredada | 5 errores en `Login.test.tsx`, `command.tsx`, `textarea.tsx`, `useJWTExpiry.ts` y `api.ts` (no son de HU-07). Abrir un ticket. |
 | Media | Release Plan R3 | Mantener `RELEASE_PLAN.md` al día (sus riesgos se actualizaron el 7-oct). |
 | Media | Insights Report 6 | Al cerrar M3 o al promover a `master`. Hoy `INSIGHTS_REPORT5.md` tiene 3 adendas del 7-oct. |
@@ -91,7 +92,7 @@
 | Pruebas y casos | `docs/reports/TESTING_REPORT.md`, `docs/reports/TEST_CASES.md` |
 | Pruebas de modelos | `docs/reports/PRUEBAS_HU07_SERVIDOR_FISICO.md`, `docs/reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md` |
 | Validación clínica y licencias | `docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md`, `docs/reports/LICENCIAS_COMPONENTES_ICF.md` |
-| Operación del servicio ICF | `docs/MANUAL_OPERACION_ICF.md`, `icf-service/deploy/windows/README.md` |
+| Operación del servicio ICF | `docs/manuals/MANUAL_ICF.md`, `icf-service/deploy/windows/README.md` |
 | Diseño del RAG | `docs/diagrams/rag-icf-postgresql.md` |
 | Presentación | `docs/presentation/index.html` (publicada desde `master`), brief para Kimi: `docs/presentation/KIMI_BRIEF_M3.md` |
 | Animaciones (Archify): arquitectura, recorridos del médico y del administrador, y validación clínica con la médica | `docs/presentation/animaciones/` (ver su `README.md` para regenerarlas) |

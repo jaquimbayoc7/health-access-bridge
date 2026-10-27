@@ -8,7 +8,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad, el anál
 
 ## Estado del Proyecto
 
-> **Corte: 26 de octubre de 2026** · **133 de 146 puntos (91,1 %)** · Momentos 1 y 2 al 100 % · Momento 3: 46 de 59 pts (HU-07 y HU-08 completas; quedan HU-09 y HU-10)
+> **Corte: 27 de octubre de 2026** · **141 de 146 puntos (96,6 %)** · Momentos 1 y 2 al 100 % · Momento 3: 54 de 59 pts (HU-07, HU-08 y HU-09 completas; queda HU-10)
 
 | Capa | Estado | Detalle |
 |------|--------|----------|
@@ -162,7 +162,7 @@ La referencia completa de la API (ReDoc) está en [`docs/api/redoc-api.html`](./
 | [#6](https://github.com/jaquimbayoc7/health-access-bridge/issues/6) | [HU-06] Pruebas de Integración y Rendimiento API | Sprint 7 (Sem. 16-17) | 8 | ✅ Done |
 | — | [HU-05b] Ayuda contextual (Help + Tooltips ICF) traducida por idioma | Sprint 6-7 (Sem. 14-17) | 3 | ✅ Done |
 
-### Momento 3 — Trabajo Integrador III (Semanas 19-27) · [Milestone](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) · 🟡 46 de 59 pts
+### Momento 3 — Trabajo Integrador III (Semanas 19-27) · [Milestone](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) · 🟡 54 de 59 pts
 
 > Épica: [#13 EPICA-03 IA Generativa, Dashboards y Cierre](https://github.com/jaquimbayoc7/health-access-bridge/issues/13)
 
@@ -170,7 +170,7 @@ La referencia completa de la API (ReDoc) está en [`docs/api/redoc-api.html`](./
 |-------|--------|--------|-----|--------|
 | [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7) | [HU-07] Perfil Funcional ICF con RAG y LLM local para sugerencia de códigos CIF (Colombia) — 07a a 07h, con la validación clínica 07g ([#71](https://github.com/jaquimbayoc7/health-access-bridge/issues/71)) | Sprint 8-9 (Sem. 19-22) | 33 | ✅ Done |
 | [#8](https://github.com/jaquimbayoc7/health-access-bridge/issues/8) | [HU-08] Dashboard de Análisis y Exportación | Sprint 8-9 (adelantada del 10-11) | 13 | ✅ Done |
-| [#9](https://github.com/jaquimbayoc7/health-access-bridge/issues/9) | [HU-09] Pruebas Completas y Feedback de Usuarios | Sprint 11 (Sem. 25-26) | 8 | 📋 Backlog |
+| [#9](https://github.com/jaquimbayoc7/health-access-bridge/issues/9) | [HU-09] Pruebas Completas y Feedback de Usuarios | Sprint 11 (Sem. 25-26) | 8 | ✅ Completada |
 | [#10](https://github.com/jaquimbayoc7/health-access-bridge/issues/10) | [HU-10] Despliegue Final y Generación de Manuales | Sprint 12 (Sem. 27) | 5 | 📋 Backlog |
 
 🔗 [Ver todas las issues](https://github.com/jaquimbayoc7/health-access-bridge/issues) · [Ver SCRUM Board](https://github.com/users/jaquimbayoc7/projects/1)
@@ -194,7 +194,7 @@ La referencia completa de la API (ReDoc) está en [`docs/api/redoc-api.html`](./
 | Backend | 123 (cobertura 90,7 %; el CI exige 80 %) | pytest · TestClient · SQLite |
 | Frontend | 61 | Vitest · Testing Library · jsdom |
 | Servicio ICF | 101 (92 en CI; 9 necesitan el catálogo de la OMS y corren en el PC propio) | pytest |
-| E2E | 17 | Playwright |
+| E2E | 20 (+18 de aceptación bajo demanda) | Playwright · axe-core (accesibilidad WCAG 2.2 AA) |
 | Smoke | 7 (QA 4 · PROD 3) | GitHub Actions |
 
 Detalle en [`docs/reports/TESTING_REPORT.md`](./docs/reports/TESTING_REPORT.md) y [`docs/reports/TEST_CASES.md`](./docs/reports/TEST_CASES.md). La validación clínica del perfil funcional ICF está en [`docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](./docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md).
@@ -224,7 +224,7 @@ cd frontend && npm ci && npm run dev
 
 > La app crea las tablas y ejecuta el seed automáticamente en el primer startup.
 > Documentación interactiva disponible en: http://localhost:8000/docs
-> Las sugerencias ICF necesitan el servicio ICF (`icf-service/`, ver su [manual de operación](./docs/MANUAL_OPERACION_ICF.md)); sin él, el resto de la aplicación funciona y la pantalla muestra un aviso.
+> Las sugerencias ICF necesitan el servicio ICF (`icf-service/`, ver su [manual de operación](./docs/manuals/MANUAL_ICF.md)); sin él, el resto de la aplicación funciona y la pantalla muestra un aviso.
 
 ---
 
@@ -254,7 +254,7 @@ health-access-bridge/
 │   │   ├── lib/             # analyticsExport (Excel/PDF), analyticsLabels, icfReport…
 │   │   ├── contexts/        # AuthContext (JWT), LanguageContext (ES/EN)
 │   │   └── __tests__/       # 61 pruebas Vitest + Testing Library
-│   ├── e2e/                 # 17 pruebas Playwright
+│   ├── e2e/                 # 20 pruebas Playwright + guion de aceptación (UAT) de 18 escenarios
 │   └── package.json · vite.config.ts
 ├── icf-service/             # Servicio de IA local (RAG sobre CIF-IA, Ollama, pgvector) · 101 pruebas
 ├── docs/
@@ -271,10 +271,11 @@ health-access-bridge/
 ## Documentación
 
 - [Presentación del proyecto](./docs/presentation/index.html) (resumen, producto, proceso y sprints, calidad, IA y validación ICF, usuarios, documentos)
+- Manuales: [Manual de usuario](./docs/manuals/MANUAL_USUARIO.md) · [Manual técnico](./docs/manuals/MANUAL_TECNICO.md) · [Manual de operación del servicio ICF](./docs/manuals/MANUAL_ICF.md)
 - [Backlog](./BACKLOG.md) · [Pendientes](./docs/PENDIENTES_PROXIMA_SESION.md)
 - Estado: [Momento 1](./docs/reports/PROJECT_STATUS.md) · [Momento 2](./docs/reports/PROJECT_STATUS_M2.md) · [Momento 3](./docs/reports/PROJECT_STATUS_M3.md) · [Release Plan](./docs/reports/RELEASE_PLAN.md)
-- Pruebas: [Casos de prueba](./docs/reports/TEST_CASES.md) · [Reporte de testing](./docs/reports/TESTING_REPORT.md) · [Reporte de HU-06](./docs/test-report.md)
-- IA e ICF: [Protocolo de validación clínica](./docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md) · [Reporte final del afinamiento](./docs/presentation/reporte-afinamiento-icf.html) · [Licencias](./docs/reports/LICENCIAS_COMPONENTES_ICF.md) · [Manual de operación](./docs/MANUAL_OPERACION_ICF.md)
+- Pruebas: [Casos de prueba](./docs/reports/TEST_CASES.md) · [Reporte de testing](./docs/reports/TESTING_REPORT.md) · [Reporte de HU-06](./docs/test-report.md) · [Reporte final de HU-09](./docs/reports/REPORTE_FINAL_PRUEBAS_HU09.md) · [Plan UAT](./docs/uat/PLAN_PRUEBAS_UAT_HU09.md)
+- IA e ICF: [Protocolo de validación clínica](./docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md) · [Reporte final del afinamiento](./docs/presentation/reporte-afinamiento-icf.html) · [Licencias](./docs/reports/LICENCIAS_COMPONENTES_ICF.md) · [Manual de operación](./docs/manuals/MANUAL_ICF.md)
 - Reportes de insights: [R5 (con adendas hasta el cierre de HU-07g)](./docs/reports/INSIGHTS_REPORT5.md) y [R1 a R4](./docs/reports)
 - [GitHub Project SCRUM Board](https://github.com/users/jaquimbayoc7/projects/1) · [Environments](https://github.com/jaquimbayoc7/health-access-bridge/settings/environments) · [Deployments](https://github.com/jaquimbayoc7/health-access-bridge/deployments)
 - [🎨 Mockups de Diseño](./frontend/design/images/) — 8 pantallas: Login, Dashboard, Pacientes, Predicciones, Admin Panel, Análisis, Guía Predictiva, Perfil Funcional ICF

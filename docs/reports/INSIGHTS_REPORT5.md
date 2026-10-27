@@ -278,7 +278,7 @@ El mismo día se cerraron **HU-07c, HU-07d, HU-07h y HU-07e** (5 + 5 + 3 + 2 pts
 - **Backend (07c):** generar, consultar y decidir sugerencias con historial de lotes, 503 sin filtrar secretos, 422 para menores de 6 años y el payload sin nombre, documento ni orientación sexual. Se agregó la lista oficial de 21 causas de la deficiencia del Anexo 1239.
 - **Pantalla (07d):** «Perfil Funcional ICF» con aceptar, editar y rechazar cada código, reporte copiable y PDF.
 - **Producción en el PC propio (07h):** Docker (base, servicio ICF, Caddy), Ollama con GPU y túnel con token. Medido: ~2,6 s por sugerencia con el modelo en memoria, ~18 s el primer pedido tras 30 min sin uso, 5 médicos a la vez hasta 11,6 s. Render, la prueba en QA, el reinicio y la tapa del portátil quedaron verificados por el responsable.
-- **E2E y CI (07e):** 5 casos de Playwright con el servicio ICF simulado, verificados 5/5 contra DEV; el manual de operación (`docs/MANUAL_OPERACION_ICF.md`); suites 8 a 11 en `TEST_CASES.md`.
+- **E2E y CI (07e):** 5 casos de Playwright con el servicio ICF simulado, verificados 5/5 contra DEV; el manual de operación (`docs/manuals/MANUAL_ICF.md`); suites 8 a 11 en `TEST_CASES.md`.
 
 ### Hallazgos y lo aprendido
 
