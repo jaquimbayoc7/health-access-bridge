@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from .database import engine, Base, SessionLocal
-from .routers import users, patients, admin, icf
+from .routers import users, patients, admin, icf, analytics
 from . import crud, schemas
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -229,6 +229,7 @@ app.include_router(patients.router, prefix="/patients", tags=["Patients"])
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 app.include_router(icf.router, prefix="/icf", tags=["ICF"])
 app.include_router(icf.patient_router, prefix="/patients", tags=["ICF"])
+app.include_router(analytics.router, prefix="/analytics", tags=["Analytics"])
 
 
 @app.get("/", tags=["Root"])

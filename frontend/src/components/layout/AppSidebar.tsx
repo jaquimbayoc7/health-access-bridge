@@ -39,8 +39,8 @@ export function AppSidebar() {
 
   // Filter menu items based on user role
   const filteredMenuItems = menuItems.filter((item) => {
-    // Hide patients, predictions, analytics and predictive guide for admin users
-    if (user?.role === 'admin' && ['patients', 'predictions', 'functionalProfile', 'analytics', 'predictiveGuide'].includes(item.title)) {
+    // Hide patients, predictions and predictive guide for admin users; analytics (HU-08) is shown to both roles
+    if (user?.role === 'admin' && ['patients', 'predictions', 'functionalProfile', 'predictiveGuide'].includes(item.title)) {
       return false;
     }
     // Hide admin panel for non-admin users
