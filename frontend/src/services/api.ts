@@ -134,20 +134,16 @@ export class ApiService {
     const url = `${API_BASE_URL}/admin/users/${userId}/status`;
     const token = this.token || localStorage.getItem('authToken');
     
-    try {
-      const response = await fetch(url, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ is_active: isActive }),
-      });
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ is_active: isActive }),
+    });
 
-      return this.handleResponse<User>(response);
-    } catch (error) {
-      throw error;
-    }
+    return this.handleResponse<User>(response);
   }
 }
 

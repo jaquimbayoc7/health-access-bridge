@@ -32,7 +32,6 @@ export function useJWTExpiry(logout: () => void) {
     }
 
     let warningTimer: ReturnType<typeof setTimeout> | undefined;
-    let logoutTimer: ReturnType<typeof setTimeout> | undefined;
 
     if (warningDelay > 0 && !warningShownRef.current) {
       warningTimer = setTimeout(() => {
@@ -44,7 +43,7 @@ export function useJWTExpiry(logout: () => void) {
       }, warningDelay);
     }
 
-    logoutTimer = setTimeout(() => {
+    const logoutTimer = setTimeout(() => {
       toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.', {
         id: 'jwt-expired',
       });

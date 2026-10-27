@@ -241,8 +241,7 @@ Notas:
 ## 15. Limitaciones y deuda técnica
 - **Sin migraciones de base de datos** (`create_all`). Para cambios de esquema en producción se requiere una herramienta como Alembic.
 - **Rendimiento con carga alta** en el plan gratuito: con 200 usuarios simultáneos el p95 fue de 54,6 s (DEUDA-01; ver `docs/test-report.md`).
-- `tsc --noEmit` reporta errores de tipos preexistentes (`analyticsExport.test.ts`, `Analytics.tsx:234`); no afectan el *build* de Vite ni el CI.
-- Algunos textos del frontend aún no están traducidos (por ejemplo, el subtítulo del Panel).
+- Lint (`eslint .`) y tipos (`tsc --noEmit`) están en cero errores desde el 27-oct-2026; se recomienda exigirlos en el CI.
 - El servicio ICF corre en **un solo PC sin redundancia**; el respaldo por similitud mitiga una caída.
 - Validación clínica del ICF: segunda revisora, calificador 0–4 y `ICF_MENTAL_LINK` apagado quedan como recomendaciones (ver `docs/PENDIENTES_PROXIMA_SESION.md`).
 - La revisión de accesibilidad con lectores de pantalla (NVDA, VoiceOver) está pendiente; axe-core solo cubre una parte de los criterios.

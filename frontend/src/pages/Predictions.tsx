@@ -72,7 +72,7 @@ export default function Predictions() {
         <div>
           <h1 className="text-3xl font-bold">{t('predictions')}</h1>
           <p className="text-muted-foreground mt-2">
-            Run disability barrier predictions for patients
+            {language === 'es' ? 'Ejecute predicciones de barreras de acceso para sus pacientes' : 'Run disability barrier predictions for patients'}
           </p>
         </div>
       </div>
