@@ -43,7 +43,7 @@ Los títulos y definiciones tienen derechos de autor de la OMS. El proyecto los 
 
 1. **Conservar los avisos de licencia:** Apache 2.0 y MIT piden mantener el texto de la licencia y los avisos al redistribuir. El proyecto no redistribuye los modelos (se descargan con Ollama), por lo que basta con documentarlos aquí.
 2. **Marco regulatorio colombiano:** una licencia permisiva del modelo no equivale a autorización regulatoria. Si el perfil llegara a usarse como parte de un proceso clínico real, habría que consultar al INVIMA si el software puede considerarse **dispositivo médico** (software como dispositivo médico) y a un asesor jurídico; **el responsable decidió el 26-oct-2026 no realizar esa consulta en este proyecto**. Mientras tanto la pantalla lo presenta como **borrador de apoyo** y la decisión es siempre del profesional.
-3. **Datos personales:** Ley 1581 de 2012. El modelo corre en infraestructura propia y no se envían nombre, documento ni orientación sexual (ver `docs/MANUAL_OPERACION_ICF.md`).
+3. **Datos personales:** Ley 1581 de 2012. El modelo corre en infraestructura propia y no se envían nombre, documento ni orientación sexual (ver `docs/manuals/MANUAL_ICF.md`).
 4. **Vigilar cambios:** si se cambia de modelo (`ICF_LLM_MODEL`), repetir esta verificación antes de usarlo.
 
 ## 4. Fuentes consultadas (7 de octubre de 2026)

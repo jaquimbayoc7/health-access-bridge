@@ -411,7 +411,7 @@ Qué decide quién: **reglas** (calificador, capítulos, máximo 3, lista cerrad
 
 ## 8. Fuentes en el repositorio
 
-`BACKLOG.md` · `docs/reports/RELEASE_PLAN.md` · `docs/reports/PROJECT_STATUS_M3.md` · `docs/reports/INSIGHTS_REPORT5.md` (con 3 adendas del 7-oct) · `docs/reports/TESTING_REPORT.md` · `docs/reports/TEST_CASES.md` · `docs/reports/PRUEBAS_HU07_SERVIDOR_FISICO.md` · `docs/reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md` · `docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md` · `docs/reports/LICENCIAS_COMPONENTES_ICF.md` · `docs/MANUAL_OPERACION_ICF.md` · `docs/diagrams/rag-icf-postgresql.md` · `docs/presentation/index.html` · `docs/presentation/entregable_tecnico_rubrica.html` (entregable análogo del Momento 2) · `.github/workflows/ci-*.yml`.
+`BACKLOG.md` · `docs/reports/RELEASE_PLAN.md` · `docs/reports/PROJECT_STATUS_M3.md` · `docs/reports/INSIGHTS_REPORT5.md` (con 3 adendas del 7-oct) · `docs/reports/TESTING_REPORT.md` · `docs/reports/TEST_CASES.md` · `docs/reports/PRUEBAS_HU07_SERVIDOR_FISICO.md` · `docs/reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md` · `docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md` · `docs/reports/LICENCIAS_COMPONENTES_ICF.md` · `docs/manuals/MANUAL_ICF.md` · `docs/diagrams/rag-icf-postgresql.md` · `docs/presentation/index.html` · `docs/presentation/entregable_tecnico_rubrica.html` (entregable análogo del Momento 2) · `.github/workflows/ci-*.yml`.
 
 URLs: repositorio https://github.com/jaquimbayoc7/health-access-bridge · página oficial https://health-access-bridge.onrender.com/presentation · frontend PROD https://hab-frontend.onrender.com · DEV https://hab-frontend-dev.onrender.com · QA https://hab-frontend-qa.onrender.com.
 

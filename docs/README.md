@@ -1,6 +1,6 @@
 # Documentación del Proyecto — Health Access Bridge (HAB)
 
-> **Última actualización:** 26 de octubre de 2026 · 133 de 146 pts (91,1 %) · Momentos 1 y 2 completos; Momento 3 en 46 de 59 pts (HU-07 y HU-08 completas)
+> **Última actualización:** 27 de octubre de 2026 · 141 de 146 pts (96,6 %) · Momentos 1 y 2 completos; Momento 3 en 46 de 59 pts (HU-07 y HU-08 completas)
 
 **Punto de entrada:** [`presentation/index.html`](./presentation/index.html), una página por vistas (Resumen, Producto, Proceso y sprints, Calidad, IA y validación ICF, Usuarios y Documentos) con buscador de documentos.
 
@@ -30,7 +30,8 @@
 | [reports/referencias_validacion_clinica.bib](./reports/referencias_validacion_clinica.bib) | Bibliografía (51 entradas) |
 | [reports/PRUEBAS_HU07_SERVIDOR_FISICO.md](./reports/PRUEBAS_HU07_SERVIDOR_FISICO.md) · [reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md](./reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md) | Pruebas en el servidor físico y escalera de modelos abiertos |
 | [reports/LICENCIAS_COMPONENTES_ICF.md](./reports/LICENCIAS_COMPONENTES_ICF.md) | Licencias de los componentes (Gemma 4, MedGemma, catálogo de la OMS) |
-| [MANUAL_OPERACION_ICF.md](./MANUAL_OPERACION_ICF.md) | Operación del servicio ICF: requisitos, Ollama, variables, fallas |
+| [manuals/MANUAL_ICF.md](./manuals/MANUAL_ICF.md) | Manual del servicio ICF: arquitectura, instalación, operación, mantenimiento y fallas |
+| [manuals/MANUAL_USUARIO.md](./manuals/MANUAL_USUARIO.md) · [manuals/MANUAL_TECNICO.md](./manuals/MANUAL_TECNICO.md) | Manual de usuario (con capturas) y manual técnico (también en PDF) |
 | [diagrams/rag-icf-postgresql.md](./diagrams/rag-icf-postgresql.md) | Diseño del RAG sobre PostgreSQL/pgvector |
 | [presentation/animaciones/](./presentation/animaciones/index.html) | Animaciones: arquitectura, servicio de IA, recorridos y proceso de validación |
 
@@ -75,7 +76,7 @@ Investigación HCI: [presentation/hci_report.html](./presentation/hci_report.htm
 | **Mockups de diseño** (8 pantallas) | ✅ Completado |
 | **Arquitectura C4** (6 diagramas HTML) | ✅ Completado y al día con HU-07 y HU-08 |
 | **Release Plan** | ✅ [`reports/RELEASE_PLAN.md`](./reports/RELEASE_PLAN.md) |
-| **Manual de operación del servicio ICF** | ✅ [`MANUAL_OPERACION_ICF.md`](./MANUAL_OPERACION_ICF.md) |
+| **Manual de operación del servicio ICF** | ✅ [`MANUAL_ICF.md`](./manuals/MANUAL_ICF.md) |
 | **Manuales de usuario y técnico finales** | 📋 Pendiente (HU-10) |
 | **BPM — Business Process Model** | 📋 Pendiente |
 
@@ -85,7 +86,7 @@ Investigación HCI: [presentation/hci_report.html](./presentation/hci_report.htm
 
 - [EPICA-01 — Estructuración y Diseño](https://github.com/jaquimbayoc7/health-access-bridge/issues/11) ✅
 - [EPICA-02 — Funcionalidades Core](https://github.com/jaquimbayoc7/health-access-bridge/issues/12) ✅
-- [EPICA-03 — IA Generativa, Dashboards y Cierre](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) 🟡 46 de 59 pts (HU-07 y HU-08 hechas; quedan HU-09 y HU-10)
+- [EPICA-03 — IA Generativa, Dashboards y Cierre](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) 🟡 54 de 59 pts (HU-07, HU-08 y HU-09 hechas; queda HU-10)
 - [Milestone 1 — Trabajo Integrador I](https://github.com/jaquimbayoc7/health-access-bridge/milestone/1) ✅
 - [Milestone 2 — Trabajo Integrador II](https://github.com/jaquimbayoc7/health-access-bridge/milestone/2) ✅
 - [Milestone 3 — Trabajo Integrador III](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) 🟡
