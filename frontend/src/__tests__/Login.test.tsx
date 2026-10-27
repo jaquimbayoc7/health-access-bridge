@@ -44,7 +44,7 @@ describe('Login page', () => {
   it('submit button is disabled while login request is in flight', async () => {
     vi.mocked(useAuth).mockReturnValue({
       user: null,
-      login: vi.fn(() => new Promise(() => {})) as any,
+      login: vi.fn(() => new Promise<never>(() => {})) as unknown as ReturnType<typeof useAuth>['login'],
       logout: vi.fn(),
       isLoading: false,
     });

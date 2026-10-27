@@ -83,10 +83,10 @@ describe('Excel', () => {
   it('genera cinco hojas con los datos del resumen', () => {
     const wb = buildWorkbook(SUMMARY, 'es');
     expect(wb.SheetNames).toEqual(['Resumen', 'Distribuciones', 'Dominios', 'ICF', 'Códigos']);
-    const resumen = XLSX.utils.sheet_to_json<string[]>(wb.Sheets['Resumen'], { header: 1 });
+    const resumen = XLSX.utils.sheet_to_json<unknown[]>(wb.Sheets['Resumen'], { header: 1 });
     expect(resumen[0]).toEqual(['Indicador', 'Valor']);
     expect(resumen.some((r) => r[0] === 'Pacientes' && r[1] === 12)).toBe(true);
-    const dist = XLSX.utils.sheet_to_json<string[]>(wb.Sheets['Distribuciones'], { header: 1 });
+    const dist = XLSX.utils.sheet_to_json<unknown[]>(wb.Sheets['Distribuciones'], { header: 1 });
     expect(dist.some((r) => r[0] === 'Moderada' && r[1] === 7)).toBe(true);
   });
 

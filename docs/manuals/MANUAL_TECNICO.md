@@ -241,11 +241,10 @@ Notas:
 ## 15. Limitaciones y deuda técnica
 - **Sin migraciones de base de datos** (`create_all`). Para cambios de esquema en producción se requiere una herramienta como Alembic.
 - **Rendimiento con carga alta** en el plan gratuito: con 200 usuarios simultáneos el p95 fue de 54,6 s (DEUDA-01; ver `docs/test-report.md`).
-- `tsc --noEmit` reporta errores de tipos preexistentes (`analyticsExport.test.ts`, `Analytics.tsx:234`); no afectan el *build* de Vite ni el CI.
-- Algunos textos del frontend aún no están traducidos (por ejemplo, el subtítulo del Panel).
+- Lint (`eslint .`) y tipos (`tsc --noEmit`) están en cero errores desde el 27-oct-2026, pero **el CI no los exige** (decisión del responsable por tiempo, 27-oct-2026): una regresión no frenaría un despliegue. Quien mantenga el proyecto puede agregarlos como pasos del flujo (`npx eslint .` y `npx tsc --noEmit -p tsconfig.app.json`).
 - El servicio ICF corre en **un solo PC sin redundancia**; el respaldo por similitud mitiga una caída.
-- Validación clínica del ICF: segunda revisora, calificador 0–4 y `ICF_MENTAL_LINK` apagado quedan como recomendaciones (ver `docs/PENDIENTES_PROXIMA_SESION.md`).
-- La revisión de accesibilidad con lectores de pantalla (NVDA, VoiceOver) está pendiente; axe-core solo cubre una parte de los criterios.
+- Validación clínica del ICF: **no habrá segunda revisora** (decisión del responsable por tiempo, 27-oct-2026), por lo que no se mide el acuerdo entre profesionales y el resultado refleja el criterio de una sola persona. Quedan como recomendaciones el calificador 0–4 y apagar `ICF_MENTAL_LINK` (ver `docs/PENDIENTES_PROXIMA_SESION.md`).
+- **No se hizo revisión con lectores de pantalla** (NVDA, VoiceOver) por tiempo (decisión del responsable, 27-oct-2026); la accesibilidad se verificó solo con axe-core, que cubre una parte de los criterios de WCAG, más el uso con teclado.
 
 ## 16. Referencias
 - FastAPI: https://fastapi.tiangolo.com · SQLAlchemy: https://docs.sqlalchemy.org · Vite: https://vitejs.dev · Playwright: https://playwright.dev · axe-core: https://github.com/dequelabs/axe-core

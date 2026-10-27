@@ -276,7 +276,7 @@ health-access-bridge/
 - Estado: [Momento 1](./docs/reports/PROJECT_STATUS.md) · [Momento 2](./docs/reports/PROJECT_STATUS_M2.md) · [Momento 3](./docs/reports/PROJECT_STATUS_M3.md) · [Release Plan](./docs/reports/RELEASE_PLAN.md)
 - Pruebas: [Casos de prueba](./docs/reports/TEST_CASES.md) · [Reporte de testing](./docs/reports/TESTING_REPORT.md) · [Reporte de HU-06](./docs/test-report.md) · [Reporte final de HU-09](./docs/reports/REPORTE_FINAL_PRUEBAS_HU09.md) · [Plan UAT](./docs/uat/PLAN_PRUEBAS_UAT_HU09.md)
 - IA e ICF: [Protocolo de validación clínica](./docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md) · [Reporte final del afinamiento](./docs/presentation/reporte-afinamiento-icf.html) · [Licencias](./docs/reports/LICENCIAS_COMPONENTES_ICF.md) · [Manual de operación](./docs/manuals/MANUAL_ICF.md)
-- Reportes de insights: [R5 (con adendas hasta el cierre de HU-07g)](./docs/reports/INSIGHTS_REPORT5.md) y [R1 a R4](./docs/reports)
+- Reportes de insights: [R6 (cierre del Momento 3)](./docs/reports/INSIGHTS_REPORT6.md) · [R5 (con adendas hasta el cierre de HU-07g)](./docs/reports/INSIGHTS_REPORT5.md) y [R1 a R4](./docs/reports)
 - [GitHub Project SCRUM Board](https://github.com/users/jaquimbayoc7/projects/1) · [Environments](https://github.com/jaquimbayoc7/health-access-bridge/settings/environments) · [Deployments](https://github.com/jaquimbayoc7/health-access-bridge/deployments)
 - [🎨 Mockups de Diseño](./frontend/design/images/) — 8 pantallas: Login, Dashboard, Pacientes, Predicciones, Admin Panel, Análisis, Guía Predictiva, Perfil Funcional ICF
 
