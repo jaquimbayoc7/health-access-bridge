@@ -1,6 +1,6 @@
 # Pendientes y punto de partida para la próxima sesión
 
-**Corte:** 26 de octubre de 2026 · HU-07 está completa (33 de 33 pts). `develop` tiene todo el trabajo de HU-07g y el reporte de afinamiento; `staging` y `master` están atrás: falta promover (ver 2, punto 2).
+**Corte:** 26 de octubre de 2026 · HU-07 y HU-08 completas (46 de 59 pts del Momento 3; proyecto 133 de 146). `develop`, `staging` y `master` quedaron al día por los PR #83 a #90 que hizo el responsable (producción, QA y DEV con el dashboard de análisis); solo falta promover lo posterior (corrección de fechas, nueva presentación, README y diagramas).
 **Uso:** abrir este archivo al empezar la sesión siguiente y seguir en orden. Complementa [`BACKLOG.md`](../BACKLOG.md) (fuente de verdad del alcance) y [`reports/PROJECT_STATUS_M3.md`](reports/PROJECT_STATUS_M3.md).
 
 ---
@@ -25,7 +25,7 @@
 | # | Qué | Detalle |
 |---|---|---|
 | 1 | ~~Reunión con la revisora y cierre de HU-07g~~ **Hecho el 26-oct** | El responsable dejó las métricas como están y acreditó los 3 pts. Resultado, análisis y cierre: [`reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md), secciones 8 a 14; reporte final: [`presentation/reporte-afinamiento-icf.html`](presentation/reporte-afinamiento-icf.html). |
-| 2 | **Promoción** `develop` → `staging` → `master` | `develop` está por delante: motor corregido (ICF_S_EVIDENCE, ICF_MOTOR_LINK, ICF_MENTAL_LINK), scripts de validación, casos nuevos, protocolo, presentación con la sección «Afinamiento de los códigos ICF» y el reporte final. Agrupar en un PR `develop` → `staging` y luego `staging` → `master`. **Tras promover, actualizar los contadores de commits de `docs/presentation/index.html`** (hoy figuran 249 en `master`, que ya tiene 260) y revisar que la página oficial muestre 120/146. |
+| 2 | **Promoción** `develop` → `staging` → `master` | **Hecha hasta HU-08** (PR #83 a #90). Lo posterior a ese corte (fechas corregidas, presentación por vistas, README, diagramas y referencia de la API actualizados) va en el siguiente PR. Tras promover, revisar que `docs/presentation/index.html` muestre las cifras actuales (la sección de métricas del repositorio se calcula con `master`: 275 commits al 26-oct) y que ReDoc (`docs/api/redoc-api.html`) cargue. |
 | 3 | Tablero de proyectos de GitHub | El token de `gh` no tiene el permiso `read:project`: **no se pudo actualizar el tablero**. Ejecutar `gh auth refresh -s read:project` (interactivo) y mover a Done HU-07g/#71 y HU-07/#7 (ambas ya están cerradas como issues desde el 26-oct), o hacerlo a mano en la web. |
 | 4 | ~~Consulta regulatoria (INVIMA)~~ **Descartada** | Decisión del responsable (26-oct-2026): **no se realizará en este proyecto**. Consecuencia que se mantiene: la pantalla se presenta como **borrador de apoyo** y el uso clínico real no está aprobado. |
 | 5 | ~~Catálogo de la OMS: permiso para mostrar títulos~~ **Descartado** | Decisión del responsable (26-oct-2026): **no se realizará en este proyecto**. Limitación aceptada: la aplicación muestra al médico el título de cada código; los reportes con títulos siguen sin publicarse (`data/private/`). |

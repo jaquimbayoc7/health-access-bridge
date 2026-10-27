@@ -128,13 +128,16 @@
   <div class="nav-section">Servicios</div>
   <a href="#api-service">ApiService</a>
   <a href="#patient-service">PatientService</a>
+  <a href="#icf-service">IcfService</a>
+  <a href="#analytics-service">AnalyticsService</a>
 
   <div class="nav-section">Páginas</div>
   <a href="#page-login">LoginLanding</a>
   <a href="#page-dashboard">Dashboard</a>
   <a href="#page-patients">Patients</a>
   <a href="#page-predictions">Predictions</a>
-  <a href="#page-analytics">Analytics</a>
+  <a href="#page-functional">FunctionalProfile</a>
+  <a href="#page-analytics">Analytics (dashboard)</a>
   <a href="#page-guide">PredictiveGuide</a>
   <a href="#page-admin">AdminPanel</a>
 
@@ -196,27 +199,34 @@
 │   ├── Dashboard.tsx
 │   ├── Patients.tsx
 │   ├── Predictions.tsx
-│   ├── Analytics.tsx
+│   ├── FunctionalProfile.tsx  <span class="cm"># Perfil funcional ICF (HU-07)</span>
+│   ├── Analytics.tsx          <span class="cm"># Dashboard de análisis y exportación (HU-08)</span>
 │   ├── PredictiveGuide.tsx
 │   ├── AdminPanel.tsx
-│   └── Settings.tsx
+│   ├── Help.tsx · Settings.tsx · NotFound.tsx
 ├── <span class="kw">services/</span>             <span class="cm"># Capa de comunicación con la API</span>
 │   ├── api.ts            <span class="cm"># ApiService — auth + admin endpoints</span>
-│   └── patients.ts       <span class="cm"># PatientService — CRUD + predicción</span>
+│   ├── patients.ts       <span class="cm"># PatientService — CRUD + predicción</span>
+│   ├── icf.ts            <span class="cm"># IcfService — sugerencias CIF-IA y decisión del médico</span>
+│   └── analytics.ts      <span class="cm"># AnalyticsService — resumen agregado y filtros</span>
+├── <span class="kw">lib/</span>
+│   ├── analyticsExport.ts  <span class="cm"># Exportación a Excel (5 hojas) y PDF con gráficos</span>
+│   ├── analyticsLabels.ts  <span class="cm"># Textos ES/EN del dashboard</span>
+│   └── icfReport.ts · icfGuideContent.ts · causes.ts
 ├── <span class="kw">contexts/</span>             <span class="cm"># Estado global via Context API</span>
 │   ├── AuthContext.tsx   <span class="cm"># JWT, login, logout, user state</span>
 │   └── LanguageContext.tsx <span class="cm"># i18n ES/EN</span>
 ├── <span class="kw">components/</span>
 │   ├── <span class="kw">layout/</span>
 │   │   ├── DashboardLayout.tsx  <span class="cm"># Shell: sidebar + topbar + outlet</span>
-│   │   ├── Sidebar.tsx
+│   │   ├── AppSidebar.tsx
 │   │   └── Header.tsx
 │   ├── <span class="kw">dashboard/</span>
-│   │   └── StatsCard.tsx
+│   │   └── MetricCard.tsx
 │   └── <span class="kw">ui/</span>               <span class="cm"># 49 componentes shadcn/ui</span>
 ├── <span class="kw">hooks/</span>
-│   └── use-toast.ts
-└── <span class="kw">__tests__/</span>            <span class="cm"># 16 tests Vitest + RTL</span></pre>
+│   └── use-toast.ts · use-mobile.tsx · useJWTExpiry.ts
+└── <span class="kw">__tests__/</span>            <span class="cm"># 61 tests Vitest + RTL (más 17 E2E en frontend/e2e)</span></pre>
   </section>
 
   <!-- ─── ROUTING ─── -->
@@ -230,7 +240,9 @@
       <tr><td><code>/dashboard</code></td><td><code>Dashboard</code></td><td class="role-medico">Médico</td><td>Resumen de métricas del médico</td></tr>
       <tr><td><code>/patients</code></td><td><code>Patients</code></td><td class="role-all">Ambos</td><td>CRUD de pacientes</td></tr>
       <tr><td><code>/predictions</code></td><td><code>Predictions</code></td><td class="role-all">Ambos</td><td>Ejecución del modelo ML</td></tr>
-      <tr><td><code>/analytics</code></td><td><code>Analytics</code></td><td class="role-all">Ambos</td><td>Gráficas y estadísticas</td></tr>
+      <tr><td><code>/functional-profile</code></td><td><code>FunctionalProfile</code></td><td class="role-medico">Médico</td><td>Perfil funcional ICF: sugerencias CIF-IA que se aceptan, editan o rechazan (HU-07)</td></tr>
+      <tr><td><code>/analytics</code></td><td><code>Analytics</code></td><td class="role-all">Ambos</td><td>Dashboard de análisis con filtros y exportación a Excel y PDF (HU-08); el administrador ve todos los pacientes y puede filtrar por médico</td></tr>
+      <tr><td><code>/help</code></td><td><code>Help</code></td><td class="role-all">Ambos</td><td>Centro de ayuda ES/EN (HU-05)</td></tr>
       <tr><td><code>/predictive-guide</code></td><td><code>PredictiveGuide</code></td><td class="role-all">Ambos</td><td>Guía clínica de perfiles ICF</td></tr>
       <tr><td><code>/settings</code></td><td><code>Settings</code></td><td class="role-all">Ambos</td><td>Configuración de cuenta</td></tr>
       <tr><td><code>/admin</code></td><td><code>AdminPanel</code></td><td class="role-admin">Admin</td><td>Gestión de usuarios — guard <code>AdminRoute</code></td></tr>
@@ -336,6 +348,29 @@
 
   <hr class="divider"/>
 
+  <!-- ─── ICF SERVICE ─── -->
+  <section id="icf-service">
+    <h2>IcfService</h2>
+    <p>Archivo: <code>src/services/icf.ts</code> · Singleton <code>icfService</code> (HU-07).</p>
+    <table>
+      <tr><th>Método</th><th>API</th><th>Descripción</th></tr>
+      <tr><td><code>generate(patientId, body)</code></td><td><code>POST /patients/{id}/icf-suggestions</code></td><td>Genera hasta 3 códigos CIF-IA por componente con el modelo local; devuelve un <code>IcfSuggestionSet</code></td></tr>
+      <tr><td><code>getLatest(patientId)</code></td><td><code>GET /patients/{id}/icf-suggestions</code></td><td>Último lote con la decisión del médico</td></tr>
+      <tr><td><code>decide(id, decision)</code></td><td><code>PATCH /icf/suggestions/{id}</code></td><td>Aceptar, editar o rechazar un código</td></tr>
+    </table>
+  </section>
+
+  <!-- ─── ANALYTICS SERVICE ─── -->
+  <section id="analytics-service">
+    <h2>AnalyticsService</h2>
+    <p>Archivo: <code>src/services/analytics.ts</code> · Singleton <code>analyticsService</code> (HU-08).</p>
+    <table>
+      <tr><th>Método</th><th>API</th><th>Descripción</th></tr>
+      <tr><td><code>getSummary(filters)</code></td><td><code>GET /analytics/summary</code></td><td>Resumen agregado (conteos y promedios, sin datos identificables) con filtros de género, edad, causa, perfil y, para el administrador, médico</td></tr>
+      <tr><td><code>getFilterOptions()</code></td><td><code>GET /analytics/filters</code></td><td>Valores disponibles para los filtros del alcance del usuario</td></tr>
+    </table>
+  </section>
+
   <!-- ─── PAGES ─── -->
   <section id="page-login">
     <h2>Página: LoginLanding</h2>
@@ -390,12 +425,24 @@
     </table>
   </section>
 
+  <section id="page-functional">
+    <h2>Página: FunctionalProfile</h2>
+    <p>Ruta: <code>/functional-profile</code> · Archivo: <code>pages/FunctionalProfile.tsx</code> (HU-07)</p>
+    <p>El médico elige un paciente, escribe opcionalmente el diagnóstico CIE y las notas, y genera la sugerencia de códigos CIF-IA (funciones, estructuras y actividades). Cada código se acepta, se edita (calificadores o código) o se rechaza; el reporte se copia o se descarga en PDF y se presenta como <strong>borrador de apoyo</strong>. Si el servicio de IA no responde se muestra un aviso y el resto de la aplicación sigue funcionando.</p>
+  </section>
+
   <section id="page-analytics">
-    <h2>Página: Analytics</h2>
-    <p>Ruta: <code>/analytics</code> · Archivo: <code>pages/Analytics.tsx</code></p>
-    <p>Dashboard analítico con gráficas Recharts. Muestra distribución de perfiles predictivos (gráfica de torta), métricas demográficas y tablas de resumen.</p>
-    <h3>Componentes Recharts usados</h3>
-    <p><code>PieChart</code> · <code>BarChart</code> · <code>ResponsiveContainer</code> · <code>Tooltip</code> · <code>Legend</code></p>
+    <h2>Página: Analytics (dashboard de análisis)</h2>
+    <p>Ruta: <code>/analytics</code> · Archivo: <code>pages/Analytics.tsx</code> (HU-08) · <span class="badge badge-blue">Médico y Admin</span></p>
+    <p>Dashboard con datos agregados que pide a <code>GET /analytics/summary</code>; no recibe ni muestra nombres, documentos ni otros datos identificables. El médico ve sus pacientes; el administrador, todos, y puede filtrar por médico.</p>
+    <table>
+      <tr><th>Elemento</th><th>Descripción</th></tr>
+      <tr><td>Indicadores</td><td>Pacientes, con predicción, % con predicción, edad y nivel global promedio; en la pestaña ICF: pacientes con perfil, códigos sugeridos y decididos y <strong>tasa de aceptación</strong> ((aceptados + editados) / decididos)</td></tr>
+      <tr><td>Gráficos (Recharts, 10)</td><td>Perfiles de predicción, categorías física y psicosocial, género, grupos de edad, causas, radar de los dominios D1–D6, estado de los códigos ICF por componente, origen y modelo. Paleta de Okabe e Ito (apta para daltonismo)</td></tr>
+      <tr><td>Filtros</td><td>Género, causa, perfil, rango de edad (con espera) y médico (solo admin)</td></tr>
+      <tr><td>Exportación</td><td><code>lib/analyticsExport.ts</code>: <strong>Excel</strong> de 5 hojas (resumen, distribuciones, dominios, ICF y códigos) y <strong>PDF</strong> con el resumen, los gráficos rasterizados en JPEG (220 KB frente a 19 MB con PNG) y las tablas</td></tr>
+      <tr><td>Estados</td><td>Carga, vacío, error con reintento; español e inglés (<code>lib/analyticsLabels.ts</code>)</td></tr>
+    </table>
   </section>
 
   <section id="page-guide">
@@ -446,30 +493,19 @@
   <!-- ─── TESTS ─── -->
   <section id="tests">
     <h2>Pruebas UI — Vitest + React Testing Library</h2>
-    <p>16 tests distribuidos en 4 módulos. Ejecutar con <code>npm run test</code>. Integrados en los 3 workflows CI/CD (dev/qa/prod).</p>
+    <p>61 tests Vitest en 8 archivos (y 17 pruebas E2E de Playwright en <code>frontend/e2e/</code>). Ejecutar con <code>npm run test</code>. Integrados en los 3 workflows CI/CD (dev/qa/prod).</p>
     <table>
       <tr><th>Archivo</th><th>Tests</th><th>Cubre</th></tr>
-      <tr>
-        <td><code>__tests__/AuthContext.test.tsx</code></td>
-        <td>4</td>
-        <td>Estado inicial, login exitoso, manejo de errores, logout + limpieza localStorage.</td>
-      </tr>
-      <tr>
-        <td><code>__tests__/Login.test.tsx</code></td>
-        <td>4</td>
-        <td>Render del formulario, submit con credenciales, mensaje de error, redirección por rol.</td>
-      </tr>
-      <tr>
-        <td><code>__tests__/DashboardLayout.test.tsx</code></td>
-        <td>4</td>
-        <td>Guard de ruta (no autenticado → login), render del sidebar, diferenciación de menú por rol.</td>
-      </tr>
-      <tr>
-        <td><code>__tests__/Patients.test.tsx</code></td>
-        <td>4</td>
-        <td>Render tabla de pacientes, búsqueda debounce, diálogo de creación, estado vacío.</td>
-      </tr>
+      <tr><td><code>__tests__/AuthContext.test.tsx</code></td><td>4</td><td>Estado inicial, login exitoso, manejo de errores, logout + limpieza localStorage.</td></tr>
+      <tr><td><code>__tests__/Login.test.tsx</code></td><td>4</td><td>Render del formulario, submit con credenciales, mensaje de error, redirección por rol.</td></tr>
+      <tr><td><code>__tests__/DashboardLayout.test.tsx</code></td><td>4</td><td>Guard de ruta, render del sidebar, menú por rol (el análisis es para ambos roles).</td></tr>
+      <tr><td><code>__tests__/Patients.test.tsx</code></td><td>4</td><td>Tabla de pacientes, búsqueda, diálogo de creación, estado vacío.</td></tr>
+      <tr><td><code>__tests__/FunctionalProfile.test.tsx</code></td><td>15</td><td>Generar, aceptar/editar/rechazar, errores 503 y menores de 6 años, reporte (HU-07).</td></tr>
+      <tr><td><code>__tests__/IcfGuide.test.tsx</code></td><td>7</td><td>Guía de uso del perfil funcional ICF (HU-07).</td></tr>
+      <tr><td><code>__tests__/Analytics.test.tsx</code></td><td>12</td><td>Indicadores, idioma, estado vacío, filtros, edades con espera, error y reintento, pestaña ICF, filtro de médico solo admin, exportación Excel y PDF (HU-08).</td></tr>
+      <tr><td><code>__tests__/analyticsExport.test.ts</code></td><td>11</td><td>Secciones del reporte, Excel de 5 hojas, PDF con y sin gráficos, sin datos identificables (HU-08).</td></tr>
     </table>
+    <p><strong>E2E (Playwright):</strong> login, pacientes, predicciones, perfil funcional ICF (5) y dashboard de análisis (5, con descargas reales de Excel y PDF).</p>
 
     <h3>Configuración</h3>
     <pre><span class="cm"># vite.config.ts — entorno jsdom</span>

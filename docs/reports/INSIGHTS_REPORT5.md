@@ -338,3 +338,18 @@ HU-07g se cerró el 26 de octubre con tres rondas de revisión de la profesional
 |---|---|
 | Confiabilidad clínica sin medir | 🟢 Medida en tres rondas; 5 de 6 criterios en casos nuevos, el calificador no cumple (κ 0,312) |
 | Uso clínico del perfil | 🟡 No aprobado: borrador de apoyo, calificador editable; sin consulta regulatoria (descartada) ni piloto |
+
+## Quinta adenda (26 de octubre de 2026): HU-08, dashboard de análisis y exportación
+
+HU-08 se completó el mismo día y quedó verificada en DEV, QA y producción (CI en verde; el endpoint responde con sesión real; 5 E2E de Playwright contra el frontend DEV). Lecciones:
+
+- **Probar en un navegador real destapó lo que las pruebas unitarias no veían:** el PDF con 10 gráficos pesaba **19 MB** (PNG sin comprimir; con JPEG y compresión, 220 KB) y la leyenda de recharts no viajaba (es HTML, fuera del SVG).
+- **Verificar con datos reales del ambiente destapó un problema de los datos:** el género aparecía como «femenino» y «Femenino» (dos categorías). Se unificó en el backend y en el filtro, con prueba.
+- **Los agregados se calculan en el servidor, no en el navegador:** antes la página sumaba en el cliente la lista completa de pacientes; ahora el backend devuelve solo conteos y promedios, lo que además evita exponer datos identificables.
+- **Documentación que se había quedado atrás:** al revisar el repo para cerrar la historia, el README, la referencia de la API (con la librería ReDoc sin versión fijada, que dejó de cargar con la versión más reciente), la documentación del frontend y varios diagramas C4 seguían en el estado de marzo. Se actualizaron y se fijó la versión de ReDoc.
+- **Un error propio de proceso:** los eventos del 26-oct se rotularon como «27-oct» en documentos e issues; se corrigieron en 17 archivos. Lección: verificar la fecha del sistema antes de escribirla.
+
+| Riesgo | Estado |
+|---|---|
+| Datos agregados del dashboard exponen información identificable | 🟢 Mitigado por diseño y con prueba (no hay nombre, documento ni orientación sexual en la respuesta ni en las exportaciones) |
+| Documentación desactualizada respecto del código | 🟢 Revisada y actualizada el 26-oct (README, API, diagramas, presentación) |
