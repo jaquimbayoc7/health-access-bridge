@@ -37,12 +37,12 @@ Se midió en HU-07b y se descartó por calidad. Además su licencia (Qwen Resear
 
 ### Catálogo CIF-IA
 
-Los títulos y definiciones tienen derechos de autor de la OMS. El proyecto los usa internamente para buscar y mostrar al médico el título de cada código, y **no los publica**: viven en `data/private/` (ignorado por git) y los reportes con títulos (como la hoja de revisión clínica) se comparten solo por canales privados. No se confirmó con la entidad que corresponda si la visualización de los títulos a los médicos dentro de la aplicación requiere permiso explícito para un despliegue real: **el responsable decidió el 27-oct-2026 no realizar esa gestión en este proyecto** y se acepta como limitación.
+Los títulos y definiciones tienen derechos de autor de la OMS. El proyecto los usa internamente para buscar y mostrar al médico el título de cada código, y **no los publica**: viven en `data/private/` (ignorado por git) y los reportes con títulos (como la hoja de revisión clínica) se comparten solo por canales privados. No se confirmó con la entidad que corresponda si la visualización de los títulos a los médicos dentro de la aplicación requiere permiso explícito para un despliegue real: **el responsable decidió el 26-oct-2026 no realizar esa gestión en este proyecto** y se acepta como limitación.
 
 ## 3. Recomendaciones
 
 1. **Conservar los avisos de licencia:** Apache 2.0 y MIT piden mantener el texto de la licencia y los avisos al redistribuir. El proyecto no redistribuye los modelos (se descargan con Ollama), por lo que basta con documentarlos aquí.
-2. **Marco regulatorio colombiano:** una licencia permisiva del modelo no equivale a autorización regulatoria. Si el perfil llegara a usarse como parte de un proceso clínico real, habría que consultar al INVIMA si el software puede considerarse **dispositivo médico** (software como dispositivo médico) y a un asesor jurídico; **el responsable decidió el 27-oct-2026 no realizar esa consulta en este proyecto**. Mientras tanto la pantalla lo presenta como **borrador de apoyo** y la decisión es siempre del profesional.
+2. **Marco regulatorio colombiano:** una licencia permisiva del modelo no equivale a autorización regulatoria. Si el perfil llegara a usarse como parte de un proceso clínico real, habría que consultar al INVIMA si el software puede considerarse **dispositivo médico** (software como dispositivo médico) y a un asesor jurídico; **el responsable decidió el 26-oct-2026 no realizar esa consulta en este proyecto**. Mientras tanto la pantalla lo presenta como **borrador de apoyo** y la decisión es siempre del profesional.
 3. **Datos personales:** Ley 1581 de 2012. El modelo corre en infraestructura propia y no se envían nombre, documento ni orientación sexual (ver `docs/MANUAL_OPERACION_ICF.md`).
 4. **Vigilar cambios:** si se cambia de modelo (`ICF_LLM_MODEL`), repetir esta verificación antes de usarlo.
 

@@ -48,14 +48,18 @@ src/
 │   ├── Dashboard.tsx        # Panel principal
 │   ├── Patients.tsx         # Gestión de pacientes (CRUD)
 │   ├── Predictions.tsx      # Ejecución de predicciones IA
-│   ├── Analytics.tsx        # Gráficas y estadísticas
+│   ├── FunctionalProfile.tsx # Perfil funcional ICF: sugerencias CIF-IA (HU-07)
+│   ├── Analytics.tsx        # Dashboard de análisis y exportación a Excel/PDF (HU-08)
 │   ├── PredictiveGuide.tsx  # Guía de interpretación de perfiles
 │   ├── AdminPanel.tsx       # Panel de administración de usuarios
 │   ├── Settings.tsx         # Configuración (en desarrollo)
 │   └── NotFound.tsx         # Página 404
 ├── services/
 │   ├── api.ts               # Servicio de autenticación y admin (JWT, usuarios)
-│   └── patients.ts          # Servicio de pacientes y predicciones
+│   ├── patients.ts          # Servicio de pacientes y predicciones
+│   ├── icf.ts               # Sugerencias CIF-IA y decisión del médico
+│   └── analytics.ts         # Resumen agregado y filtros del dashboard
+├── lib/                     # analyticsExport (Excel/PDF), analyticsLabels, icfReport…
 ├── App.tsx                  # Enrutamiento principal
 └── main.tsx                 # Punto de entrada
 ```
@@ -68,8 +72,8 @@ El sistema maneja **dos roles** con vistas diferenciadas:
 
 | Rol | Acceso |
 |---|---|
-| **Médico** | Dashboard, Pacientes, Predicciones, Analíticas, Guía Predictiva, Configuración |
-| **Administrador** | Dashboard (métricas de usuarios), Panel de Administración (CRUD de usuarios) |
+| **Médico** | Dashboard, Pacientes, Predicciones, Perfil Funcional ICF, Análisis, Guía Predictiva, Ayuda, Configuración |
+| **Administrador** | Dashboard (métricas de usuarios), Panel de Administración (CRUD de usuarios), **Análisis global** (todos los pacientes, con filtro por médico) |
 
 ---
 
@@ -163,20 +167,20 @@ Módulo para ejecutar predicciones de barreras de discapacidad usando el modelo 
 
 ---
 
-### 📈 Analíticas (`/analytics`) — Solo Médicos
+### 📈 Dashboard de análisis (`/analytics`) — Médicos y Administradores (HU-08)
 
-**Archivo:** `src/pages/Analytics.tsx`
+**Archivo:** `src/pages/Analytics.tsx` · **Servicio:** `src/services/analytics.ts` · **Exportación:** `src/lib/analyticsExport.ts`
 
-Visualización de datos agregados sobre las predicciones realizadas.
+Estadísticas **agregadas** (conteos y promedios; nunca nombres, documentos ni otros datos identificables). El médico ve sus pacientes; el administrador, todos, y puede filtrar por médico.
 
-**Gráficas:**
-- **Distribución de Perfiles de Predicción:** Gráfico de torta que muestra la cantidad de pacientes por perfil (0, 1, 2) con porcentajes.
+- **Indicadores:** pacientes, con predicción, % con predicción, edad y nivel global promedio.
+- **10 gráficos (Recharts, paleta apta para daltonismo):** perfiles de predicción, categorías física y psicosocial, género, grupos de edad, causas, radar de los dominios D1–D6, estado de los códigos ICF por componente, origen y modelo.
+- **Pestaña «Perfil funcional ICF»:** códigos sugeridos y decididos, **tasa de aceptación** ((aceptados + editados) / decididos) y los códigos más frecuentes.
+- **Filtros:** género, causa, perfil, rango de edad y médico (solo admin).
+- **Exportación:** Excel de 5 hojas (resumen, distribuciones, dominios, ICF y códigos) y PDF con el resumen, los gráficos y las tablas.
+- **Estados:** carga, vacío y error con reintento; español e inglés.
 
-**Resumen Estadístico (4 métricas):**
-- Total de pacientes
-- Pacientes con predicciones
-- Perfil promedio
-- Nivel global promedio
+**Endpoints consumidos:** `GET /analytics/summary` y `GET /analytics/filters`.
 
 ---
 
