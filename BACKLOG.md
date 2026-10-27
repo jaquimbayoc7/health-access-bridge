@@ -590,6 +590,8 @@ Es la primera vez que las precisiones y la cobertura cumplen a la vez **sobre ca
 **DoD:** Reporte final de pruebas, correcciones aplicadas.  
 **Estimación:** 8 puntos.
 
+**Avance (27-oct-2026):** guion de aceptación automatizado de 18 escenarios (médico, administrador y transversales) **18/18 aprobados en DEV** y auditoría de accesibilidad WCAG 2.2 AA con axe-core en 14 pantallas con **cero violaciones** tras 7 grupos de correcciones (nombres accesibles, contraste, navegación, jerarquía de títulos, gráficos). Documentos: [`PLAN_PRUEBAS_UAT_HU09.md`](docs/uat/PLAN_PRUEBAS_UAT_HU09.md) y [`REPORTE_FINAL_PRUEBAS_HU09.md`](docs/reports/REPORTE_FINAL_PRUEBAS_HU09.md). **Pendiente:** sesión con usuarios reales (SUS y comentarios) y repetir las pruebas en QA/PROD tras promover; los 8 pts no se acreditan hasta decidirlo.
+
 ---
 
 ### Sprint 12: Entrega Final y Documentación (Semana 27)
