@@ -325,6 +325,29 @@ export default function FunctionalProfile() {
         <AlertDescription>{DRAFT_NOTICE}</AlertDescription>
       </Alert>
 
+      <details className="rounded-md border bg-muted/40 p-3 text-sm" data-testid="qualifier-guide">
+        <summary className="cursor-pointer font-medium">
+          {L('¿Qué significa el calificador (nivel de severidad)?', 'What does the qualifier (severity level) mean?')}
+        </summary>
+        <p className="mt-2 text-muted-foreground">
+          {L(
+            'El calificador indica cuánto se afecta la función, la estructura o la actividad. Es la escala genérica de la CIF: la sugerencia del sistema es un punto de partida y usted la confirma o la edita con el lápiz de cada fila.',
+            'The qualifier shows how much a function, structure or activity is affected. It is the generic ICF scale: the system suggestion is a starting point that you confirm or edit with the pencil on each row.'
+          )}
+        </p>
+        <ul className="mt-2 grid gap-1 sm:grid-cols-2">
+          <li><strong>0 — {L('Ninguna', 'No problem')}</strong> (0–4 %)</li>
+          <li><strong>1 — {L('Leve', 'Mild')}</strong> (5–24 %)</li>
+          <li><strong>2 — {L('Moderada', 'Moderate')}</strong> (25–49 %)</li>
+          <li><strong>3 — {L('Severa', 'Severe')}</strong> (50–95 %)</li>
+          <li><strong>4 — {L('Completa', 'Complete')}</strong> (96–100 %)</li>
+          <li><strong>8 / 9 — {L('Sin especificar / No aplicable', 'Not specified / Not applicable')}</strong></li>
+        </ul>
+        <p className="mt-2 text-xs text-muted-foreground">
+          {L('Fuente: OMS, CIF (2001), escala genérica de calificadores.', 'Source: WHO, ICF (2001), generic qualifier scale.')}
+        </p>
+      </details>
+
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
@@ -557,6 +580,10 @@ export default function FunctionalProfile() {
               <Label htmlFor="edit-q">
                 {editing?.component === 's' ? L('Magnitud', 'Extent') : L('Calificador', 'Qualifier')}
               </Label>
+              <p className="text-xs text-muted-foreground">
+                {L('0 ninguna (0–4 %) · 1 leve (5–24 %) · 2 moderada (25–49 %) · 3 severa (50–95 %) · 4 completa (96–100 %)',
+                   '0 none (0–4%) · 1 mild (5–24%) · 2 moderate (25–49%) · 3 severe (50–95%) · 4 complete (96–100%)')}
+              </p>
               <Select value={editQ} onValueChange={setEditQ}>
                 <SelectTrigger id="edit-q">
                   <SelectValue placeholder="—" />

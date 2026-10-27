@@ -24,8 +24,8 @@ export function Header() {
       <div className="flex items-center gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <Globe className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="rounded-full" aria-label={language === 'es' ? 'Cambiar idioma' : 'Change language'}>
+              <Globe className="h-5 w-5" aria-hidden="true" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -38,14 +38,14 @@ export function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Button variant="ghost" size="icon" className="rounded-full relative">
-          <Bell className="h-5 w-5" />
-          <span className="absolute top-1 right-1 h-2 w-2 bg-destructive rounded-full"></span>
+        <Button variant="ghost" size="icon" className="rounded-full relative" aria-label={language === 'es' ? 'Notificaciones' : 'Notifications'}>
+          <Bell className="h-5 w-5" aria-hidden="true" />
+          <span className="absolute top-1 right-1 h-2 w-2 bg-destructive rounded-full" aria-hidden="true"></span>
         </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="rounded-full p-1">
+            <Button variant="ghost" className="rounded-full p-1" aria-label={language === 'es' ? 'Menú de usuario' : 'User menu'}>
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-primary text-primary-foreground">
                   {user?.name?.charAt(0) || 'U'}

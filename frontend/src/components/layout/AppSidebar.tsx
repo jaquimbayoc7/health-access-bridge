@@ -54,6 +54,7 @@ export function AppSidebar() {
   return (
     <Sidebar className={collapsed ? 'w-14' : 'w-60'} collapsible="icon">
       <SidebarContent className="pt-4">
+        <nav aria-label={t('mainMenu')} className="flex flex-1 flex-col gap-2">
         {!collapsed && (
           <div className="px-6 py-4">
             <h2 className="text-xl font-bold text-primary">Health Access Bridge</h2>
@@ -110,6 +111,7 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         </div>
+        </nav>
       </SidebarContent>
     </Sidebar>
   );
