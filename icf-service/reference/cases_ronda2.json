@@ -1,5 +1,5 @@
 {
-  "about": "Set de la tercera ronda de validacion clinica de HU-07g (27-oct-2026). 24 casos SINTETICOS (no son personas reales) y sin datos identificables, disenados antes de ver sus sugerencias y distintos de los C01-C25 que se usaron para diagnosticar y ajustar el motor. Incluyen condiciones que el set anterior cubria poco (vision, audicion, discapacidad intelectual, sordoceguera, enfermedades cronicas y neurologicas). Las reglas de evaluacion se fijaron antes de generarlos: ver docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md, seccion 12.",
+  "about": "Set de la tercera ronda de validacion clinica de HU-07g (26-oct-2026). 24 casos SINTETICOS (no son personas reales) y sin datos identificables, disenados antes de ver sus sugerencias y distintos de los C01-C25 que se usaron para diagnosticar y ajustar el motor. Incluyen condiciones que el set anterior cubria poco (vision, audicion, discapacidad intelectual, sordoceguera, enfermedades cronicas y neurologicas). Las reglas de evaluacion se fijaron antes de generarlos: ver docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md, seccion 12.",
   "cases": [
     {
       "id": "N01",

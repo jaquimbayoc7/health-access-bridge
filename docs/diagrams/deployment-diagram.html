@@ -40,7 +40,7 @@
 <p class="sub">Infraestructura de despliegue en Render Cloud — Ambientes DEV / QA / PROD con CI/CD en GitHub Actions</p>
 
 <div class="wrap">
-<svg width="1420" height="1145" xmlns="http://www.w3.org/2000/svg">
+<svg width="1800" height="1145" xmlns="http://www.w3.org/2000/svg">
 <defs>
   <marker id="arr" markerWidth="9" markerHeight="6" refX="9" refY="3" orient="auto">
     <polygon points="0 0,9 3,0 6" fill="#555"/>
@@ -59,7 +59,7 @@
   <text x="710" y="44"  text-anchor="middle" class="t-head">UI — Frontend SPA</text>
   <text x="710" y="59"  text-anchor="middle" class="t-sub">[Container: React 18 · TypeScript · Vite · TailwindCSS · shadcn/ui]</text>
   <text x="710" y="76"  text-anchor="middle" class="t-sub">SPA que provee la interfaz clínica: Login, Dashboard,</text>
-  <text x="710" y="91"  text-anchor="middle" class="t-sub">Pacientes, Predicciones, Analíticas, Admin Panel</text>
+  <text x="710" y="91"  text-anchor="middle" class="t-sub">Pacientes, Predicciones, Perfil ICF, Dashboard de análisis, Admin</text>
   <text x="710" y="109" text-anchor="middle" class="t-sub" style="font-style:italic">Ejecutado en el navegador del usuario final</text>
 
 <!-- ═══════════════════════════════════════════════════════════════
@@ -83,7 +83,7 @@
   <text x="441" y="1012" text-anchor="middle" class="t-sub">Repo: jaquimbayoc7/health-access-bridge</text>
   <text x="441" y="1028" text-anchor="middle" class="t-sub">Trigger: push to master</text>
   <text x="441" y="1044" text-anchor="middle" class="t-sub">Python 3.11 · Node 18</text>
-  <text x="441" y="1060" text-anchor="middle" class="t-sub">pytest (30 tests) · vite build</text>
+  <text x="441" y="1060" text-anchor="middle" class="t-sub">pytest (123) · vitest (61) · vite build</text>
   <text x="441" y="1076" text-anchor="middle" class="t-sub">Deploy via render.yaml + Render API</text>
 
   <!-- Center section: 3 workflows -->
@@ -172,7 +172,7 @@
     <ellipse cx="800" cy="660" rx="130" ry="13" class="db"/>
     <text x="800" y="610" text-anchor="middle" class="t-head2">PostgreSQL 15 — QA</text>
     <text x="800" y="626" text-anchor="middle" class="t-sub">[Container: Render Managed DB]</text>
-    <text x="800" y="641" text-anchor="middle" class="t-sub">Free tier · Integration tests (30 tests)</text>
+    <text x="800" y="641" text-anchor="middle" class="t-sub">Free tier · Integración y E2E</text>
 
   <!-- ─── PROD ENVIRONMENT ─── -->
   <rect x="991" y="218" width="405" height="658" rx="4" class="dn"/>
@@ -252,6 +252,31 @@
 <!-- Frontend PROD → Backend PROD -->
 <path class="rel2" d="M 1193 374 L 1193 396"/>
 <text x="1201" y="389" class="t-lbl">REST / HTTPS</text>
+
+
+<!-- ═══ PC PROPIO — SERVICIO ICF (HU-07) ═══ -->
+  <rect x="1425" y="360" width="350" height="360" rx="4" class="dn"/>
+  <text x="1600" y="738" text-anchor="middle" class="t-node">PC propio (Windows)</text>
+  <text x="1600" y="750" text-anchor="middle" class="t-kind">[Deployment Node: i5-13450HX · 32 GB · RTX 5050 8 GB]</text>
+  <rect x="1438" y="372" width="324" height="52" rx="3" class="ct"/>
+  <text x="1600" y="392" text-anchor="middle" class="t-head2">Tailscale Funnel + Caddy</text>
+  <text x="1600" y="408" text-anchor="middle" class="t-sub">HTTPS · exige el token Bearer · solo /suggest y /health</text>
+  <rect x="1438" y="432" width="324" height="64" rx="3" class="ct"/>
+  <text x="1600" y="452" text-anchor="middle" class="t-head2">Servicio ICF</text>
+  <text x="1600" y="468" text-anchor="middle" class="t-sub">[Container Docker: FastAPI · Python 3.11]</text>
+  <text x="1600" y="483" text-anchor="middle" class="t-sub">RAG sobre el catálogo CIF-IA · reglas y calificador</text>
+  <rect x="1438" y="504" width="324" height="56" rx="3" class="ml"/>
+  <text x="1600" y="524" text-anchor="middle" class="t-head2">Ollama (en Windows, usa la GPU)</text>
+  <text x="1600" y="540" text-anchor="middle" class="t-sub">gemma4:e4b (~2 s) · bge-m3 (embeddings)</text>
+  <rect x="1438" y="568" width="324" height="56" rx="3" class="db"/>
+  <text x="1600" y="588" text-anchor="middle" class="t-head2">PostgreSQL + pgvector</text>
+  <text x="1600" y="604" text-anchor="middle" class="t-sub">[Container Docker] catálogo y embeddings; sin datos de pacientes</text>
+  <text x="1600" y="650" text-anchor="middle" class="t-sub">Arranque automático · reinicio y tapa verificados</text>
+
+  <!-- Backends → Servicio ICF -->
+  <path class="rel" d="M 1383 480 L 1425 480" />
+  <text x="1388" y="470" class="t-lbl">túnel + token</text>
+  <text x="1432" y="778" class="t-lbl">Los backends de DEV, QA y PROD usan el mismo servicio ICF (HU-07)</text>
 
 <!-- Backend DEV → PostgreSQL DEV -->
 <path class="rel2" d="M 437 542 L 437 565"/>

@@ -115,7 +115,7 @@ Sprint 4-5 (adelant.), 10-13,        21,          21      (HU-04 ya entregada en
 Sprint 6-7,            14-17,        16,          16
 Sprint 7,              16-17,        8,           8
 Sprint 8 (deuda),      -,            0,           0       (DEUDA-01: deuda técnica, sin puntos de producto)
-Sprint 8-9 (en curso), 19-22,        46,          33      (HU-07 completa y HU-08 adelantada, 13 pts; 07g acreditada el 27-oct)
+Sprint 8-9 (en curso), 19-22,        46,          33      (HU-07 completa y HU-08 adelantada, 13 pts; 07g acreditada el 26-oct)
 ```
 Velocidad promedio de los sprints cerrados de M1 y M2: 14,5 SP por sprint (87 pts en 6 sprints).
 

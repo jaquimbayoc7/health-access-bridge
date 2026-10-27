@@ -91,7 +91,7 @@ body{font-family:'Segoe UI',sans-serif;background:#fff;padding:40px;display:flex
   <!-- 4. Backend → PostgreSQL [PostgreSQL protocol] -->
   <path class="arr dsh" d="M 650 660 L 650 775"/>
 
-  <!-- 5. Backend → HybridModel API [HTTPS/REST] -->
+  <!-- 5. Backend → Servicio ICF [HTTPS + token] -->
   <path class="arr dsh" d="M 835 470 L 1090 470 L 1090 370 L 1130 370"/>
 
   <!-- 6. GitHub Actions → Render [Render Deploy API] -->
@@ -111,7 +111,7 @@ body{font-family:'Segoe UI',sans-serif;background:#fff;padding:40px;display:flex
 <div class="lbl" style="left:720px;top:226px">Accede vía navegador<br><span class="tech">[HTTPS]</span></div>
 <div class="lbl" style="left:450px;top:455px">Llama a la API<br><span class="tech">[JSON/HTTPS]</span></div>
 <div class="lbl" style="left:658px;top:710px">Lee y escribe datos<br><span class="tech">[PostgreSQL protocol]</span></div>
-<div class="lbl" style="left:940px;top:448px">Ejecuta predicción ML<br><span class="tech">[HTTPS/REST + API Key]</span></div>
+<div class="lbl" style="left:940px;top:448px">Pide sugerencia ICF<br><span class="tech">[HTTPS + token]</span></div>
 <div class="lbl" style="left:1278px;top:706px">Trigger deploy<br><span class="tech">[Render API]</span></div>
 <div class="lbl" style="left:945px;top:504px">Despliega y aloja<br><span class="tech">[Python Web Service]</span></div>
 <div class="lbl" style="left:870px;top:854px">Gestiona base de datos<br><span class="tech">[PostgreSQL Managed]</span></div>
@@ -130,7 +130,7 @@ body{font-family:'Segoe UI',sans-serif;background:#fff;padding:40px;display:flex
   <div class="p-body">
     <div class="p-name">Médico</div>
     <div class="p-tag">[Person]</div>
-    <div class="p-desc">Registra pacientes y genera predicciones ICF.</div>
+    <div class="p-desc">Registra pacientes, predice barreras, documenta el perfil ICF y consulta el dashboard.</div>
   </div>
 </div>
 
@@ -144,7 +144,7 @@ body{font-family:'Segoe UI',sans-serif;background:#fff;padding:40px;display:flex
   <div class="c-icon browser"></div>
   <div class="c-name">Frontend SPA</div>
   <div class="c-tech">[Container: React 18 / TypeScript / Vite / TailwindCSS]</div>
-  <div class="c-desc">App de página única. Provee UI para login (RBAC), gestión de pacientes, predicciones de discapacidad y panel de administración. Build: <code>npm run build</code> → dist/.</div>
+  <div class="c-desc">App de página única. Provee UI para login (RBAC), gestión de pacientes, predicciones, perfil funcional ICF, dashboard de análisis (exporta a Excel y PDF) y panel de administración. Build: <code>npm run build</code> → dist/.</div>
 </div>
 
 <!-- Container: Backend API -->
@@ -152,7 +152,7 @@ body{font-family:'Segoe UI',sans-serif;background:#fff;padding:40px;display:flex
   <div class="c-icon terminal"></div>
   <div class="c-name">Backend API</div>
   <div class="c-tech">[Container: Python 3.11 / FastAPI / SQLAlchemy / Uvicorn]</div>
-  <div class="c-desc">API REST con autenticación JWT y RBAC (Admin / Médico). Gestiona pacientes (CRUD), delega predicciones al HybridModelDisability API externo y expone /docs (Swagger UI). Puerto $PORT vía Uvicorn.</div>
+  <div class="c-desc">API REST con autenticación JWT y RBAC (Admin / Médico). Gestiona pacientes (CRUD), ejecuta el modelo HybridModelDisability embebido, pide sugerencias CIF-IA al servicio ICF, expone /analytics (dashboard) y /docs (Swagger UI). Puerto $PORT vía Uvicorn.</div>
 </div>
 
 <!-- Container: PostgreSQL -->
@@ -160,16 +160,15 @@ body{font-family:'Segoe UI',sans-serif;background:#fff;padding:40px;display:flex
   <div class="c-icon db"></div>
   <div class="c-name">PostgreSQL 15</div>
   <div class="c-tech">[Container: PostgreSQL — Render Managed DB]</div>
-  <div class="c-desc">Almacena usuarios, pacientes, historias clínicas y predicciones. 3 instancias aisladas: hab-db-dev / hab-db-qa / hab-db-prod (Ohio).</div>
+  <div class="c-desc">Almacena usuarios, pacientes, historias clínicas, predicciones y sugerencias ICF. 3 instancias aisladas: hab-db-dev / hab-db-qa / hab-db-prod (Ohio).</div>
 </div>
 
-<!-- External: HybridModelDisability API -->
+<!-- External: Servicio ICF (PC propio) -->
 <div class="ext gray2" style="left:1130px;top:290px">
-  <div class="e-name">HybridModelDisability API</div>
-  <div class="e-tag">[Software System — ML Service]</div>
-  <div class="e-desc">Servicio externo alojado en Render.<br>
-  URL: <code>hybridmodeldisability.onrender.com</code><br>
-  Predice perfiles de barreras de discapacidad (K-Means + Gradient Boosting) basados en niveles de actividad D1–D6.</div>
+  <div class="e-name">Servicio ICF (PC propio)</div>
+  <div class="e-tag">[Software System — IA local]</div>
+  <div class="e-desc">FastAPI + PostgreSQL/pgvector + Ollama (embeddings <code>bge-m3</code> y <code>gemma4:e4b</code>).<br>
+  Catálogo CIF-IA y selección de códigos con un modelo local de pesos abiertos (~2 s). Túnel autenticado con token; sin APIs externas.</div>
 </div>
 
 <!-- External: GitHub Actions -->

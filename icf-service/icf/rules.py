@@ -12,7 +12,7 @@ MAX_PER_COMPONENT = 3
 # y patron de la marcha). La busqueda por el texto del diagnostico no las traia (b730, b760 y b770 eran el 40 % de las
 # omisiones). Entran como candidatos; el modelo decide si el caso las respalda.
 MOBILITY_BODY_CODES = ("b710", "b730", "b735", "b760", "b770")
-# Segunda version (27-oct-2026, tras la segunda ronda de la revision): la regla se disparaba con cualquier dificultad en D4
+# Segunda version (26-oct-2026, tras la segunda ronda de la revision): la regla se disparaba con cualquier dificultad en D4
 # y la medica rechazo 8 de 37 funciones nuevas en casos sin limitacion motora (hipoacusia, asma leve, TEPT, alcohol, Down,
 # TEA; D4 entre 10 y 40). Ahora exige una limitacion de movilidad grave (calificador >= 3, nivel D4 >= 50) y una deficiencia
 # fisica al menos moderada.
@@ -93,7 +93,7 @@ def body_chapters(
     b1 (funciones mentales) depende de la categoria psicosocial; b2-b8 y todas las estructuras (s),
     de la fisica. Una categoria 'Ninguna' excluye sus capitulos; si no es reconocible, se incluyen.
 
-    mental_link (27-oct-2026): sin deficiencia fisica pero con deficiencia psicosocial, las estructuras se buscan en el
+    mental_link (26-oct-2026): sin deficiencia fisica pero con deficiencia psicosocial, las estructuras se buscan en el
     capitulo 1 (sistema nervioso: s110 cerebro), pues las funciones mentales (b1) se vinculan con estas estructuras
     (reglas de vinculacion, Cieza et al. 2005); la medica esperaba s110 en esquizofrenia, depresion y TEPT."""
     physical = category_qualifier(cat_fisica) != 0

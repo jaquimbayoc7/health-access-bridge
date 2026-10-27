@@ -137,6 +137,18 @@ body{font-family:'Segoe UI',sans-serif;background:#fff;padding:30px;display:flex
 <!-- DB Session → PostgreSQL -->
 <path class="arr dsh" d="M 630 860 L 630 900 L 480 900 L 480 940"/>
 
+<!-- Frontend → ICF Router [JSON/HTTPS] (HU-07) -->
+<path class="arr dsh" d="M 760 105 L 1055 105 L 1055 250"/>
+
+<!-- ICF Router → ICF Client -->
+<path class="arr dsh" d="M 1055 400 L 1055 480"/>
+
+<!-- ICF Client → Servicio ICF (túnel con token) -->
+<path class="arr dsh" d="M 1170 540 L 1300 540 L 1300 400"/>
+
+<!-- Analytics → Database Session (HU-08) -->
+<path class="arr dsh" d="M 800 770 L 760 770"/>
+
 <!-- ML Inference → model.joblib (reads file) -->
 <path class="arr dsh" d="M 920 560 L 1050 560 L 1050 640 L 1200 640"/>
 
@@ -153,6 +165,9 @@ body{font-family:'Segoe UI',sans-serif;background:#fff;padding:30px;display:flex
 <div class="lbl" style="left:460px;top:760px">Obtiene sesión<br><span class="tech">[SQLAlchemy Session]</span></div>
 <div class="lbl" style="left:540px;top:905px">Lee/escribe datos<br><span class="tech">[PostgreSQL protocol]</span></div>
 <div class="lbl" style="left:940px;top:600px">Carga modelo<br><span class="tech">[joblib.load()]</span></div>
+<div class="lbl" style="left:830px;top:84px">Perfil ICF<br><span class="tech">[JSON/HTTPS]</span></div>
+<div class="lbl" style="left:1190px;top:520px">Pide sugerencia<br><span class="tech">[HTTPS + token]</span></div>
+<div class="lbl" style="left:766px;top:748px">Consulta<br><span class="tech">[Session]</span></div>
 
 <!-- Persons -->
 <div class="person" style="left:30px;top:30px">
@@ -168,7 +183,7 @@ body{font-family:'Segoe UI',sans-serif;background:#fff;padding:30px;display:flex
   <div class="p-body">
     <div class="p-name">Médico</div>
     <div class="p-tag">[Person]</div>
-    <div class="p-desc">Registra pacientes y genera predicciones ICF.</div>
+    <div class="p-desc">Registra pacientes, predice barreras, documenta el perfil ICF y consulta el dashboard.</div>
   </div>
 </div>
 
@@ -207,6 +222,14 @@ body{font-family:'Segoe UI',sans-serif;background:#fff;padding:30px;display:flex
   <div class="c-desc">CRUD completo de pacientes:<br>GET/POST/PUT/DELETE /patients/*<br>POST /patients/{id}/predict → lanza predicción ML. Soporta paginación y búsqueda.</div>
 </div>
 
+<!-- ICF Router (HU-07) -->
+<div class="comp" style="left:940px;top:250px;width:230px">
+  <div class="comp-plug"></div>
+  <div class="c-name">ICF Router</div>
+  <div class="c-tech">[Component: FastAPI APIRouter — routers/icf.py]</div>
+  <div class="c-desc">Perfil funcional ICF (HU-07):<br>POST/GET /patients/{id}/icf-suggestions<br>PATCH /icf/suggestions/{id} (aceptar, editar, rechazar).</div>
+</div>
+
 <!-- ROW 2: Service components -->
 <div class="comp" style="left:110px;top:480px;width:250px">
   <div class="comp-plug"></div>
@@ -229,12 +252,19 @@ body{font-family:'Segoe UI',sans-serif;background:#fff;padding:30px;display:flex
   <div class="c-desc">Carga model_pipeline.joblib (lazy load). Recibe niveles D1–D6 del paciente, ejecuta pipeline K-Means + Gradient Boosting y retorna perfil 0/1/2 de barreras de discapacidad.</div>
 </div>
 
+<div class="comp" style="left:940px;top:480px;width:230px">
+  <div class="comp-plug"></div>
+  <div class="c-name">ICF Client</div>
+  <div class="c-tech">[Component: urllib — services/icf_client.py]</div>
+  <div class="c-desc">Llama al servicio ICF por un túnel con token (timeout 90 s; 503 si no responde). Nunca envía nombre, documento ni orientación sexual.</div>
+</div>
+
 <!-- ROW 3: Data layer -->
 <div class="comp" style="left:150px;top:700px;width:300px">
   <div class="comp-plug"></div>
   <div class="c-name">CRUD Layer</div>
   <div class="c-tech">[Component: SQLAlchemy ORM — crud.py / models.py]</div>
-  <div class="c-desc">Operaciones de base de datos para User y Patient. Incluye filtrado por owner_id (RBAC a nivel de dato), soft-delete y actualización de predicciones.</div>
+  <div class="c-desc">Operaciones de base de datos para User, Patient e IcfSuggestion. Incluye filtrado por owner_id (RBAC a nivel de dato), soft-delete, actualización de predicciones y lotes de sugerencias ICF.</div>
 </div>
 
 <div class="comp" style="left:500px;top:700px;width:260px">
@@ -244,12 +274,27 @@ body{font-family:'Segoe UI',sans-serif;background:#fff;padding:30px;display:flex
   <div class="c-desc">Gestiona el engine y las sesiones de SQLAlchemy. Provee get_db() como dependency inyectable. Crea tablas en startup via Base.metadata.create_all().</div>
 </div>
 
+<!-- Analytics (HU-08) -->
+<div class="comp" style="left:800px;top:700px;width:370px">
+  <div class="comp-plug"></div>
+  <div class="c-name">Analytics Router y servicio</div>
+  <div class="c-tech">[Component: routers/analytics.py — services/analytics.py]</div>
+  <div class="c-desc">Dashboard de análisis (HU-08): GET /analytics/summary y /analytics/filters. Solo conteos y promedios, sin datos identificables; el médico ve sus pacientes y el admin todos (filtro por médico).</div>
+</div>
+
+<!-- Servicio ICF (sistema externo, PC propio) -->
+<div class="ext-sys" style="left:1200px;top:250px">
+  <div class="es-name">Servicio ICF (PC propio)</div>
+  <div class="es-tag">[Container: FastAPI · Ollama · PostgreSQL/pgvector]</div>
+  <div class="es-desc">Catálogo CIF-IA, búsqueda por embeddings y modelo local gemma4:e4b (~2 s). Sin APIs externas.</div>
+</div>
+
 <!-- PostgreSQL (container, outside backend boundary) -->
 <div class="ext-cont" style="left:320px;top:940px;width:260px">
   <div class="ec-icon db"></div>
   <div class="ec-name">PostgreSQL 15</div>
   <div class="ec-tech">[Container: Render Managed DB]</div>
-  <div class="ec-desc">Tablas: users, patients. 3 instancias: dev / qa / prod.</div>
+  <div class="ec-desc">Tablas: users, patients, icf_suggestions. 3 instancias: dev / qa / prod.</div>
 </div>
 
 <!-- model_pipeline.joblib (external artifact) -->

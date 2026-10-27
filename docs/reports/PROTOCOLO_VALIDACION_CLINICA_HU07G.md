@@ -1,7 +1,7 @@
 # Protocolo de validación clínica del Perfil Funcional ICF (HU-07g)
 
 **Fecha:** 7 de octubre de 2026
-**Estado:** **CERRADA el 27 de octubre de 2026** (sección 14). Tres rondas de revisión con la profesional de salud (Emilly Maria Celis); con 24 casos nuevos cumplen precisión estricta 0,627, flexible 0,863, cobertura 0,690 y actividades 1,0; el calificador (κ ponderado 0,312) no cumple: veredicto **NO CUMPLE por un solo criterio**. El responsable deja las métricas como están y acredita los 3 pts; borrador de apoyo, sin uso clínico.
+**Estado:** **CERRADA el 26 de octubre de 2026** (sección 14). Tres rondas de revisión con la profesional de salud (Emilly Maria Celis); con 24 casos nuevos cumplen precisión estricta 0,627, flexible 0,863, cobertura 0,690 y actividades 1,0; el calificador (κ ponderado 0,312) no cumple: veredicto **NO CUMPLE por un solo criterio**. El responsable deja las métricas como están y acredita los 3 pts; borrador de apoyo, sin uso clínico.
 **Para quién:** la revisora y el responsable del proyecto.
 
 ## 1. Qué se mide y por qué
@@ -463,7 +463,7 @@ Además: calificador correcto (Fase B) 0,753; precisión a ciegas 0,419 y F1 0,4
 
 Los 3 pts de 07g siguen sin acreditarse hasta que el responsable decida; el uso clínico no se aprueba. Para repetir el cálculo: `variants_vs_review.py score-new` (precisión y cobertura) y el cálculo completo con `compute_metrics` y `evaluate_thresholds` descrito arriba (calificador incluido).
 
-## 12. Tercera ronda con casos nuevos: reglas fijadas antes de ver las sugerencias (27 de octubre de 2026)
+## 12. Tercera ronda con casos nuevos: reglas fijadas antes de ver las sugerencias (26 de octubre de 2026)
 
 Esta sección se escribe y se sube **antes** de generar las sugerencias de los casos nuevos y de dárselos a la médica. Es el equivalente de un registro previo del análisis: fijar por escrito qué se mide y cómo se decide antes de ver los datos evita ajustar la regla al resultado (Nosek et al. 2018; Kapoor y Narayanan 2023). Los 24 casos de las rondas 1 y 2 ya se usaron para diagnosticar los errores y para medir la corrección; con ellos no se puede volver a ajustar sin sesgo (Cawley y Talbot 2010).
 
@@ -503,14 +503,14 @@ python scripts/review_sheet.py score ..\data\private\icf\review\hoja_ronda3_llen
 python scripts/review_sheet.py score ..\data\private\icf\review\hoja_ronda3_llena.xlsx    # sensibilidad, definición anterior
 ```
 
-### 12.5 Estado (27 de octubre de 2026)
+### 12.5 Estado (26 de octubre de 2026)
 
 - Reglas y casos publicados en `develop` (commit `30cd5ec`) antes de generar las sugerencias.
 - **Producción reconstruida** con ese commit (`check.ps1 -Public -Suggest`: «Todo correcto»; la sugerencia sintética devuelve 3 funciones y 1 estructura en 2,0 s).
 - **Hoja generada:** `data/private/icf/review/hoja_ronda3.xlsx` (privada, trae títulos de la OMS), con los 24 casos aplicables, la Fase A a ciegas con gravedad 0 a 4, la Fase B y la hoja de faltantes. Se generó en un contenedor temporal con la imagen del servicio (`icf-service:latest`), la red `hab-icf_default` y el mismo código y la misma configuración que producción. El motor devolvió 3 funciones por caso y **1 estructura en 21 casos y 3 en 3 casos** (N02 baja visión, N14 amputación de miembro superior y N20 sordoceguera).
 - **Falta:** que la médica complete la hoja (unos 60 a 90 minutos); luego `score` con y sin `--exclude-zero-severity` y el informe de resultados.
 
-## 13. Resultado de la tercera ronda con casos nuevos (27 de octubre de 2026)
+## 13. Resultado de la tercera ronda con casos nuevos (26 de octubre de 2026)
 
 La médica completó `hoja_ronda3.xlsx`: Fase A a ciegas en los 24 casos nuevos y 174 valoraciones en la Fase B. Se calculó con las reglas fijadas en la sección 12 (`review_sheet.py score --exclude-zero-severity`), sin tocar umbrales ni motor. En esta hoja la médica no calificó ningún código con gravedad 0, de modo que la exclusión no cambió ningún valor: la medición oficial y la de sensibilidad coinciden.
 
@@ -567,7 +567,7 @@ El motor corregido cumple cinco de los seis criterios sobre casos nuevos y falla
 
 **Reproducir:** `python scripts/review_sheet.py score ../data/private/icf/review/hoja_ronda3.xlsx --exclude-zero-severity` (y sin la bandera).
 
-## 14. Cierre de la fase (27 de octubre de 2026)
+## 14. Cierre de la fase (26 de octubre de 2026)
 
 **Decisión del responsable:** las métricas y los umbrales se dejan **tal como están**; no se mueve ninguna meta para que el resultado cumpla (Nosek et al. 2018). El veredicto documentado de la medición oficial (ronda 3, casos nuevos) es **NO CUMPLE por un solo criterio, el calificador** (κ ponderado 0,312 frente a 0,50); los otros cinco criterios se cumplen.
 
@@ -579,7 +579,7 @@ El motor corregido cumple cinco de los seis criterios sobre casos nuevos y falla
 |---|---|
 | Naturaleza del perfil | Borrador de apoyo; el certificado lo emite el equipo multidisciplinario (Resolución 1239 de 2022) |
 | Calificador | Valor inicial que el médico edita (como ya funciona la pantalla); no se presenta como medida validada |
-| Uso clínico real | **No aprobado**: la consulta regulatoria (INVIMA) se descartó por decisión del responsable (27-oct-2026); tampoco hay piloto con médicos ni segunda revisora |
+| Uso clínico real | **No aprobado**: la consulta regulatoria (INVIMA) se descartó por decisión del responsable (26-oct-2026); tampoco hay piloto con médicos ni segunda revisora |
 | Modelo | `gemma4:e4b` local; no se probó ningún modelo mayor (los datos indicaban que el límite estaba en la búsqueda y en la instrucción) |
 | Configuración en producción | La medida: `ICF_S_EVIDENCE`, `ICF_MOTOR_LINK` (D4 ≥ 50 y deficiencia física ≥ moderada) e `ICF_MENTAL_LINK` activos |
 
