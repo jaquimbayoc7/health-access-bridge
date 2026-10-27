@@ -502,6 +502,10 @@ Se agregó el job `icf-service-test` (Python 3.11, `pytest`) a `ci-dev.yml`, `ci
 
 ---
 
+## HU-09 — Pruebas completas y feedback de usuarios (27-oct-2026)
+
+Resumen: 18/18 escenarios de aceptación y 0 violaciones de accesibilidad WCAG 2.2 AA en DEV; 7 grupos de hallazgos de accesibilidad corregidos; sesión con 10 usuarios (SUS medio 81,25, mínimo 72,5, máximo 90) y 2 hallazgos de severidad media corregidos con una guía de calificadores. Limitaciones: n = 10, solo se observó la tarea del perfil ICF y axe-core no sustituye la revisión con lectores de pantalla. Ver [`REPORTE_FINAL_PRUEBAS_HU09.md`](./REPORTE_FINAL_PRUEBAS_HU09.md).
+
 ## Resultados de Ejecución
 
 ### Estado Actual de Pruebas

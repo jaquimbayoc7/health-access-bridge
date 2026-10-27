@@ -8,7 +8,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad, el anál
 
 ## Estado del Proyecto
 
-> **Corte: 26 de octubre de 2026** · **133 de 146 puntos (91,1 %)** · Momentos 1 y 2 al 100 % · Momento 3: 46 de 59 pts (HU-07 y HU-08 completas; quedan HU-09 y HU-10)
+> **Corte: 27 de octubre de 2026** · **141 de 146 puntos (96,6 %)** · Momentos 1 y 2 al 100 % · Momento 3: 54 de 59 pts (HU-07, HU-08 y HU-09 completas; queda HU-10)
 
 | Capa | Estado | Detalle |
 |------|--------|----------|
@@ -170,7 +170,7 @@ La referencia completa de la API (ReDoc) está en [`docs/api/redoc-api.html`](./
 |-------|--------|--------|-----|--------|
 | [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7) | [HU-07] Perfil Funcional ICF con RAG y LLM local para sugerencia de códigos CIF (Colombia) — 07a a 07h, con la validación clínica 07g ([#71](https://github.com/jaquimbayoc7/health-access-bridge/issues/71)) | Sprint 8-9 (Sem. 19-22) | 33 | ✅ Done |
 | [#8](https://github.com/jaquimbayoc7/health-access-bridge/issues/8) | [HU-08] Dashboard de Análisis y Exportación | Sprint 8-9 (adelantada del 10-11) | 13 | ✅ Done |
-| [#9](https://github.com/jaquimbayoc7/health-access-bridge/issues/9) | [HU-09] Pruebas Completas y Feedback de Usuarios | Sprint 11 (Sem. 25-26) | 8 | 📋 Backlog |
+| [#9](https://github.com/jaquimbayoc7/health-access-bridge/issues/9) | [HU-09] Pruebas Completas y Feedback de Usuarios | Sprint 11 (Sem. 25-26) | 8 | ✅ Completada |
 | [#10](https://github.com/jaquimbayoc7/health-access-bridge/issues/10) | [HU-10] Despliegue Final y Generación de Manuales | Sprint 12 (Sem. 27) | 5 | 📋 Backlog |
 
 🔗 [Ver todas las issues](https://github.com/jaquimbayoc7/health-access-bridge/issues) · [Ver SCRUM Board](https://github.com/users/jaquimbayoc7/projects/1)

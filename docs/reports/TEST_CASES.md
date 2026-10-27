@@ -852,3 +852,16 @@ Feature: Perfil Funcional ICF de extremo a extremo
 | Pantalla | indicadores, inglés, estado vacío, filtro de género y quitar filtros, edades con espera (no consulta en cada tecla), error con reintento, pestaña ICF (y su estado vacío), filtro de médico solo para el administrador, botones desactivados mientras carga |
 | Exportación | secciones del reporte (resumen, filtros, distribuciones, dominios, ICF, códigos), mismos textos en español e inglés, Excel de 5 hojas, nombre del archivo con fecha, PDF con y sin gráficos y con alcance vacío, sin datos identificables |
 | E2E | indicadores y gráficos con filtro, pestaña ICF, descarga real del Excel, descarga real del PDF con gráficos (más de 40 KB; con PNG pesaba 19 MB), error y reintento |
+
+---
+
+## Suite 13 — Aceptación (UAT) y accesibilidad (HU-09)
+
+Ejecutadas el 27-oct-2026 contra DEV con `e2e/uat-aceptacion.spec.ts` (`UAT=1`, 18 escenarios) y `e2e/accessibility.spec.ts` (3 pruebas con axe-core, WCAG 2.2 AA). Resultado: **18/18** y **3/3 con 0 violaciones**. Detalle de cada escenario en [`docs/uat/PLAN_PRUEBAS_UAT_HU09.md`](../uat/PLAN_PRUEBAS_UAT_HU09.md); resultados y la sesión de usabilidad (SUS medio 81,25, n = 10) en [`REPORTE_FINAL_PRUEBAS_HU09.md`](./REPORTE_FINAL_PRUEBAS_HU09.md).
+
+| ID | Escenario | Resultado |
+|---|---|---|
+| UAT-M01 a M13 | Médico: sesión, pacientes (alta, edición, baja), predicción, perfil ICF, exportaciones, dashboard, idioma, ayuda, aislamiento entre médicos, credenciales inválidas | ✅ |
+| UAT-A01 a A04 | Administrador: panel de usuarios, menú por rol, análisis global, alta y desactivación de un médico | ✅ |
+| UAT-X01, X02 | Teléfono de 390 px sin desplazamiento horizontal; inicio de sesión solo con teclado | ✅ |
+| A11Y-1 a A11Y-3 | axe-core sobre el inicio de sesión, 8 pantallas del médico y 5 del administrador | ✅ 0 violaciones |

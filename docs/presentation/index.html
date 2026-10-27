@@ -85,7 +85,7 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
 <div class="view" id="view-resumen" data-view="resumen">
   <section class="grid lg:grid-cols-5 gap-8 items-start mb-8">
     <div class="lg:col-span-3">
-      <span class="inline-flex items-center gap-2 bg-plight text-primary text-xs font-semibold px-3 py-1 rounded-full mb-4">Momentos 1 a 3 · corte del 26 de octubre de 2026</span>
+      <span class="inline-flex items-center gap-2 bg-plight text-primary text-xs font-semibold px-3 py-1 rounded-full mb-4">Momentos 1 a 3 · corte del 27 de octubre de 2026</span>
       <h1 class="text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-3">Health Access Bridge</h1>
       <p class="text-slate-600 text-base leading-relaxed mb-3 max-w-2xl">Plataforma web para que los médicos gestionen pacientes con discapacidad en zonas rurales de Colombia, <strong>predigan su perfil de barreras de acceso a la salud</strong> (modelo de ML) y documenten su <strong>perfil funcional ICF</strong> con ayuda de una IA que corre en infraestructura propia, sin enviar datos clínicos a terceros.</p>
       <p class="text-slate-500 text-sm leading-relaxed mb-6 max-w-2xl">Esta página resume el estado del proyecto en seis vistas: <em>Producto</em> (qué hace y cómo está armado), <em>Proceso</em> (sprints y métricas), <em>Calidad</em> (pruebas y defectos), <em>IA y validación ICF</em> (el motor y su validación con una profesional de salud), <em>Usuarios</em> (investigación HCI) y <em>Documentos</em>.</p>
@@ -113,7 +113,7 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
       <button data-go="proceso" class="card text-left bg-white rounded-xl border border-slate-200 p-5">
         <div class="text-xs font-semibold text-emerald-600 mb-1">PROCESO</div>
         <div class="font-semibold text-slate-800 mb-2">¿Cómo vamos?</div>
-        <ul class="text-xs text-slate-600 space-y-1.5 list-disc pl-4"><li><b>133 de 146 pts (91,1 %)</b>; los Momentos 1 y 2 al 100 %</li><li>Momento 3: 46 de 59 pts; quedan HU-09 (8) y HU-10 (5)</li><li>Metodología SCRUM, 3 workflows de CI/CD con aprobación manual en producción</li></ul>
+        <ul class="text-xs text-slate-600 space-y-1.5 list-disc pl-4"><li><b>141 de 146 pts (96,6 %)</b>; los Momentos 1 y 2 al 100 %</li><li>Momento 3: 54 de 59 pts; queda HU-10 (5)</li><li>Metodología SCRUM, 3 workflows de CI/CD con aprobación manual en producción</li></ul>
         <div class="text-xs text-primary mt-3 font-medium">Ver sprints y métricas →</div>
       </button>
       <button data-go="calidad" class="card text-left bg-white rounded-xl border border-slate-200 p-5">
@@ -141,7 +141,7 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
     <h2 class="text-xl font-bold mb-1 section-title">Qué sigue</h2>
     <p class="text-slate-500 text-sm mb-5 mt-4">Lo que falta para cerrar el proyecto y las recomendaciones que quedaron abiertas.</p>
     <div class="grid md:grid-cols-3 gap-4 text-sm">
-      <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="flex justify-between items-start mb-2"><b>HU-09 · Pruebas completas y feedback</b><span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">8 pts</span></div><p class="text-slate-600 text-xs">Pruebas manuales y automatizadas completas, validación de funcionalidad, usabilidad y accesibilidad con usuarios, y reporte final de pruebas.</p></div>
+      <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="flex justify-between items-start mb-2"><b>HU-09 · Pruebas completas y feedback</b><span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">8 pts ✅</span></div><p class="text-slate-600 text-xs">18 escenarios de aceptación (18/18), accesibilidad WCAG 2.2 AA sin violaciones en 14 pantallas y sesión de usabilidad con 10 usuarios (SUS 81,25).</p></div>
       <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="flex justify-between items-start mb-2"><b>HU-10 · Despliegue final y manuales</b><span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">5 pts</span></div><p class="text-slate-600 text-xs">Despliegue estable en la nube, manuales técnico y de usuario (con el manual de operación del servicio ICF y el uso del dashboard) y reportes finales.</p></div>
       <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="flex justify-between items-start mb-2"><b>Recomendado, sin bloquear</b><span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded">ICF</span></div><p class="text-slate-600 text-xs">Segunda revisora, calificador con rango 0–4, apagar <code>ICF_MENTAL_LINK</code> y una cuarta ronda de validación con casos nuevos. La consulta regulatoria y el permiso de la OMS se descartaron por decisión del responsable.</p></div>
     </div>
@@ -705,6 +705,17 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
           <div class="bg-slate-100 rounded-full h-2"><div class="bg-emerald-400 h-2 rounded-full" style="width:100%"></div></div>
           <div class="text-xs text-right text-emerald-600 mt-1 font-medium">46 / 46 pts</div>
         </div>
+        <div class="bg-white rounded-xl border-2 border-emerald-300 p-5 card">
+          <div class="flex justify-between items-start mb-3"><div><div class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded mb-1 inline-block">Sprint 11 · Momento 3</div><div class="font-bold text-slate-800 text-sm">Pruebas completas y feedback de usuarios</div></div><span class="text-emerald-600 text-lg">✅</span></div>
+          <div class="space-y-2 text-xs text-slate-600 mb-4"><div class="flex justify-between"><span>Fecha</span><span class="font-mono">27 oct (plan: sem. 25-26)</span></div><div class="flex justify-between"><span>SP completados</span><span class="font-semibold text-green-700">8 (HU-09)</span></div></div>
+          <ul class="text-xs text-slate-500 space-y-1 mb-3">
+            <li>• <b>Aceptación:</b> 18 escenarios por rol contra DEV, 18/18; guion automatizado con evidencias</li>
+            <li>• <b>Accesibilidad:</b> axe-core WCAG 2.2 AA en 14 pantallas; 7 grupos de violaciones corregidos, 0 al cierre</li>
+            <li>• <b>Usabilidad:</b> 10 participantes (5 médicos, 5 administradores), SUS medio 81,25 (72,5–90); 2 hallazgos atendidos con una guía de calificadores</li>
+          </ul>
+          <div class="bg-slate-100 rounded-full h-2"><div class="bg-emerald-400 h-2 rounded-full" style="width:100%"></div></div>
+          <div class="text-xs text-right text-emerald-600 mt-1 font-medium">8 / 8 pts</div>
+        </div>
       </div></div>
     </details>
   </section>
@@ -917,7 +928,7 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
     <div class="flex gap-2 no-print"><button class="chip" data-expand="calidad">Expandir todo</button><button class="chip" data-collapse="calidad">Contraer todo</button></div>
   </div>
   <nav class="flex flex-wrap gap-2 mb-8 no-print" aria-label="En esta vista">
-    <a class="chip" href="#testing">Pruebas</a><a class="chip" href="#pipeline">Pipeline</a><a class="chip" href="#defectos">Defectos y hallazgos</a><a class="chip" href="#calidad-ia">Calidad de la IA</a><a class="chip" href="#casos">Casos de prueba</a>
+    <a class="chip" href="#testing">Pruebas</a><a class="chip" href="#uat">Accesibilidad y UAT</a><a class="chip" href="#pipeline">Pipeline</a><a class="chip" href="#defectos">Defectos y hallazgos</a><a class="chip" href="#calidad-ia">Calidad de la IA</a><a class="chip" href="#casos">Casos de prueba</a>
   </nav>
 
   <section id="testing" class="anchor mb-12">
@@ -930,12 +941,24 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
         <h3 class="font-semibold text-slate-700 text-sm mb-4">Cobertura y calidad del código</h3>
         <div class="space-y-4 text-sm">
           <div><div class="flex justify-between text-xs mb-1"><span>Cobertura del backend (pytest-cov)</span><b>90,7 %</b></div><div class="bar"><i class="bg-emerald-500" style="width:90.7%"></i></div><div class="text-[11px] text-slate-500 mt-1">El CI exige al menos 80 %. Subió de 89 % a 90,7 % con las pruebas de HU-08.</div></div>
-          <div><div class="flex justify-between text-xs mb-1"><span>Pruebas que corren en CI</span><b>300 de 309</b></div><div class="bar"><i class="bg-blue-500" style="width:97.1%"></i></div><div class="text-[11px] text-slate-500 mt-1">Las 9 restantes son del servicio ICF y necesitan el catálogo de la OMS, que no se publica; se corren en el PC propio.</div></div>
+          <div><div class="flex justify-between text-xs mb-1"><span>Pruebas que corren en CI</span><b>303 de 312</b></div><div class="bar"><i class="bg-blue-500" style="width:97.1%"></i></div><div class="text-[11px] text-slate-500 mt-1">Las 9 restantes son del servicio ICF y necesitan el catálogo de la OMS, que no se publica; se corren en el PC propio.</div></div>
           <div><div class="flex justify-between text-xs mb-1"><span>E2E contra el ambiente desplegado</span><b>5 de 5 (HU-08)</b></div><div class="bar"><i class="bg-purple-500" style="width:100%"></i></div><div class="text-[11px] text-slate-500 mt-1">Playwright, con descargas reales de Excel y PDF; también se corrieron contra <code>hab-frontend-dev</code>.</div></div>
           <div class="grid grid-cols-3 gap-2 text-center text-xs pt-1"><div class="bg-slate-50 rounded-lg p-2"><b class="text-base text-slate-800">0</b><div class="text-slate-500">errores de lint (archivos nuevos)</div></div><div class="bg-slate-50 rounded-lg p-2"><b class="text-base text-slate-800">3</b><div class="text-slate-500">ambientes verificados</div></div><div class="bg-slate-50 rounded-lg p-2"><b class="text-base text-slate-800">90,7 %</b><div class="text-slate-500">cobertura backend</div></div></div>
         </div>
       </div>
     </div>
+  </section>
+
+  <section id="uat" class="anchor mb-12">
+    <h2 class="text-xl font-bold mb-1 section-title">Accesibilidad y aceptación (HU-09)</h2>
+    <p class="text-slate-500 text-sm mb-5 mt-4">Pruebas en un navegador real contra el ambiente desplegado, más una sesión con usuarios. Reporte: <code>docs/reports/REPORTE_FINAL_PRUEBAS_HU09.md</code>.</p>
+    <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div class="bg-white border border-slate-200 rounded-xl p-5"><div class="text-xs font-semibold text-slate-500">ACEPTACIÓN (UAT)</div><div class="text-3xl font-extrabold text-emerald-600">18/18</div><div class="text-xs text-slate-500">escenarios de médico, administrador y transversales en DEV</div></div>
+      <div class="bg-white border border-slate-200 rounded-xl p-5"><div class="text-xs font-semibold text-slate-500">ACCESIBILIDAD WCAG 2.2 AA</div><div class="text-3xl font-extrabold text-emerald-600">0</div><div class="text-xs text-slate-500">violaciones (axe-core) en 14 pantallas; se corrigieron 7 grupos</div></div>
+      <div class="bg-white border border-slate-200 rounded-xl p-5"><div class="text-xs font-semibold text-slate-500">USABILIDAD (SUS)</div><div class="text-3xl font-extrabold text-primary">81,25</div><div class="text-xs text-slate-500">media de 10 participantes; mínimo 72,5, máximo 90; 10/10 sobre 68</div></div>
+      <div class="bg-white border border-slate-200 rounded-xl p-5"><div class="text-xs font-semibold text-slate-500">HALLAZGOS DE USUARIOS</div><div class="text-3xl font-extrabold text-amber-600">2</div><div class="text-xs text-slate-500">de severidad media (niveles de severidad ICF); corregidos con una guía</div></div>
+    </div>
+    <p class="text-[11px] text-slate-500 mt-3">Límites: n = 10 estima el SUS de forma gruesa; solo se observó la tarea del perfil ICF; axe-core no sustituye la revisión con lectores de pantalla.</p>
   </section>
 
   <section id="pipeline" class="anchor mb-12">
@@ -1750,18 +1773,18 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
 
 <script>
 // ============================================================================
-// Datos de la presentación (corte 26-oct-2026). Todo lo que se repite en la página sale de aquí.
+// Datos de la presentación (corte 27-oct-2026). Todo lo que se repite en la página sale de aquí.
 // ============================================================================
 const D = {
-  asOf: '26 de octubre de 2026',
-  points: { done: 133, total: 146 },
+  asOf: '27 de octubre de 2026',
+  points: { done: 141, total: 146 },
   moments: [
     { id: 'M1', name: 'Momento 1 · Trabajo Integrador I', weeks: 'Semanas 1-9', done: 63, total: 63, state: 'done',
       note: 'MVP clínico: autenticación y roles, pacientes, modelo predictivo y base de pruebas.', hus: 'HU-01, 02, 03, 04, 11, 12, 13' },
     { id: 'M2', name: 'Momento 2 · Trabajo Integrador II', weeks: 'Semanas 10-18', done: 24, total: 24, state: 'done',
       note: 'Usabilidad (HCI), ayuda contextual, pruebas de integración y de rendimiento.', hus: 'HU-05, 05b, 06' },
-    { id: 'M3', name: 'Momento 3 · Trabajo Integrador III', weeks: 'Semanas 19-27', done: 46, total: 59, state: 'wip',
-      note: 'IA local para el perfil funcional ICF, dashboard de análisis y cierre del proyecto.', hus: 'HU-07, 08 ✅ · HU-09, 10 pendientes' },
+    { id: 'M3', name: 'Momento 3 · Trabajo Integrador III', weeks: 'Semanas 19-27', done: 54, total: 59, state: 'wip',
+      note: 'IA local para el perfil funcional ICF, dashboard de análisis y cierre del proyecto.', hus: 'HU-07, 08, 09 ✅ · HU-10 pendiente' },
   ],
   hus: [
     { id: 'HU-01', t: 'Autenticación y roles', m: 'M1', pts: 8, s: 'Sprint 1', issue: 1, st: 'done', b: ['JWT + Bcrypt · RBAC Admin/Médico', 'Login, rutas protegidas y menú por rol', 'Seed: administrador y 2 médicos'] },
@@ -1776,7 +1799,7 @@ const D = {
     { id: 'HU-06', t: 'Integración y rendimiento', m: 'M2', pts: 8, s: 'Sprint 7', issue: 6, st: 'done', b: ['9 pruebas de integración del flujo ML', '7 E2E de Playwright y carga con k6', 'Hallazgo: p95 de 54,6 s con 200 usuarios → DEUDA-01'] },
     { id: 'HU-07', t: 'Perfil funcional ICF con IA local', m: 'M3', pts: 33, s: 'Sprint 8-9', issue: 7, st: 'done', b: ['RAG sobre el catálogo CIF-IA, modelo local gemma4:e4b (~2 s)', 'El médico acepta, edita o rechaza cada código', 'Validación clínica en 3 rondas (HU-07g)'] },
     { id: 'HU-08', t: 'Dashboard de análisis y exportación', m: 'M3', pts: 13, s: 'Sprint 8-9 (adelantada)', issue: 8, st: 'done', b: ['10 gráficos, filtros y pestaña del perfil ICF', 'Exportación a Excel (5 hojas) y PDF con gráficos', 'Datos agregados, sin información identificable'] },
-    { id: 'HU-09', t: 'Pruebas completas y feedback', m: 'M3', pts: 8, s: 'Sprint 11', issue: 9, st: 'pending', b: ['Pruebas manuales y automáticas completas', 'Usabilidad y accesibilidad con usuarios', 'Reporte final de pruebas'] },
+    { id: 'HU-09', t: 'Pruebas completas y feedback', m: 'M3', pts: 8, s: 'Sprint 11', issue: 9, st: 'done', b: ['18 escenarios de aceptación por rol: 18/18 en DEV', 'Accesibilidad WCAG 2.2 AA: 0 violaciones en 14 pantallas', 'Sesión con 10 usuarios: SUS medio 81,25'] },
     { id: 'HU-10', t: 'Despliegue final y manuales', m: 'M3', pts: 5, s: 'Sprint 12', issue: 10, st: 'pending', b: ['Despliegue estable en la nube', 'Manuales técnico y de usuario', 'Reportes finales'] },
   ],
   sprints: [
@@ -1789,10 +1812,10 @@ const D = {
     { n: 'Sprint 7', w: '16-17', scope: 'HU-06 Integración y rendimiento', sp: 8, st: 'done' },
     { n: 'Sprint 8', w: '—', scope: 'DEUDA-01 (rendimiento), flujo de PR y CI de lockfile: deuda técnica, sin puntos de producto', sp: 0, st: 'done' },
     { n: 'Sprint 8-9', w: '19-22', scope: 'HU-07 Perfil funcional ICF (33) + HU-08 Dashboard (13, adelantada)', sp: 46, st: 'done' },
-    { n: 'Sprint 11', w: '25-26', scope: 'HU-09 Pruebas completas y feedback', sp: 8, st: 'plan' },
+    { n: 'Sprint 11', w: '25-26', scope: 'HU-09 Pruebas completas y feedback', sp: 8, st: 'done' },
     { n: 'Sprint 12', w: '27', scope: 'HU-10 Despliegue final y manuales', sp: 5, st: 'plan' },
   ],
-  tests: { backend: 123, frontend: 61, icf: 101, e2e: 17, smoke: 7, local: 9 },
+  tests: { backend: 123, frontend: 61, icf: 101, e2e: 20, smoke: 7, local: 9 },
   defects: [
     ['sep-2026', 'Caída del endpoint /users/login en producción', 'Pruebas de integración y E2E (HU-06)', 'Corregido y cubierto por pruebas'],
     ['sep-2026', 'El borrado lógico no se filtraba en GET/PUT/DELETE por id', 'Pruebas de integración y E2E (HU-06)', 'Filtro agregado a todas las consultas por id'],
@@ -1803,6 +1826,8 @@ const D = {
     ['26-oct-2026', 'Las estructuras (s) completaban la cuota de 3 y la búsqueda no traía las funciones motoras (b730, b760, b770)', 'Revisión de la profesional de salud (HU-07g)', 'Estructuras con evidencia y vínculo de movilidad; cobertura de 0,55 a 0,69 en casos nuevos'],
     ['26-oct-2026', 'El vínculo mental causó 6 de 7 estructuras rechazadas (s110 en cuadros psiquiátricos)', 'Ronda 3 con casos nuevos', 'Documentado como error propio; se recomienda apagar ICF_MENTAL_LINK'],
     ['26-oct-2026', 'HU-08: el PDF con gráficos pesaba 19 MB y la leyenda de recharts no viajaba', 'E2E en un navegador real', 'JPEG con compresión (220 KB) y leyenda en texto'],
+    ['27-oct-2026', 'HU-09: 7 violaciones de accesibilidad WCAG 2.2 AA (botones de icono sin nombre, contraste del azul primario 3,63:1, jerarquía de títulos, menú sin navegación, gráficos)', 'axe-core en 14 pantallas de ambos roles', 'Corregidas; 0 violaciones en DEV'],
+    ['27-oct-2026', 'HU-09: el perfil funcional ICF no explicaba los niveles de severidad (2 de 10 participantes)', 'Sesión de usabilidad con SUS', 'Guía de calificadores 0–4 en la pantalla y en el diálogo de edición'],
     ['26-oct-2026', 'HU-08: el género aparecía como «femenino» y «Femenino» (dos categorías)', 'Verificación con sesión real en DEV', 'Se unifica y el filtro no distingue mayúsculas; prueba nueva'],
   ],
   langBytes: { TypeScript: 479576, Python: 355274, PowerShell: 4638, JavaScript: 4555, CSS: 3652, Shell: 2550, HTML: 1148, Dockerfile: 739 },
@@ -1814,7 +1839,7 @@ const D = {
 const G = 'https://github.com/jaquimbayoc7/health-access-bridge/blob/master/';
 D.docs = [
   ['Estado y planeación', 'Backlog maestro', 'Historias de usuario, épicas, estimaciones y estado de cada HU.', G + 'BACKLOG.md'],
-  ['Estado y planeación', 'Estado del proyecto — Momento 3', 'Corte al 26-oct: 133/146 pts, HU-07 y HU-08 completas.', G + 'docs/reports/PROJECT_STATUS_M3.md'],
+  ['Estado y planeación', 'Estado del proyecto — Momento 3', 'Corte al 27-oct: 141/146 pts, HU-07, HU-08 y HU-09 completas.', G + 'docs/reports/PROJECT_STATUS_M3.md'],
   ['Estado y planeación', 'Estado del proyecto — Momento 2', 'Cierre del Momento 2 y resultado de la prueba de carga.', G + 'docs/reports/PROJECT_STATUS_M2.md'],
   ['Estado y planeación', 'Estado del proyecto — Momento 1', 'Cierre del Momento 1.', G + 'docs/reports/PROJECT_STATUS.md'],
   ['Estado y planeación', 'Release Plan', 'Releases por Momento, alcance, riesgos y ambientes.', G + 'docs/reports/RELEASE_PLAN.md'],
@@ -1905,7 +1930,7 @@ function renderResumen() {
 function renderHus(filter = 'all') {
   const list = D.hus.filter((h) => filter === 'all' || (filter === 'pending' ? h.st === 'pending' : h.m === filter));
   const doneHus = D.hus.filter((h) => h.st === 'done');
-  $('#hu-summary').textContent = `${doneHus.length} de ${D.hus.length} historias entregadas (${doneHus.reduce((s, h) => s + h.pts, 0)} de ${D.points.total} puntos); quedan HU-09 y HU-10. Los puntos de HU-04 cuentan en el Momento 1 aunque estaba planificada en el 2.`;
+  $('#hu-summary').textContent = `${doneHus.length} de ${D.hus.length} historias entregadas (${doneHus.reduce((s, h) => s + h.pts, 0)} de ${D.points.total} puntos); queda HU-10. Los puntos de HU-04 cuentan en el Momento 1 aunque estaba planificada en el 2.`;
   const color = { M1: 'blue', M2: 'yellow', M3: 'cyan' };
   $('#hu-grid').innerHTML = list.map((h) => `
     <article class="bg-white rounded-xl border ${h.st === 'pending' ? 'border-dashed border-slate-300' : 'border-slate-200'} p-4 card">
@@ -2004,16 +2029,16 @@ const baseOpts = { responsive: true, maintainAspectRatio: true };
 const charts = {
   proceso() {
     if (made.proceso || !window.Chart) return; made.proceso = true;
-    const labels = ['Sprint 1', 'Sprint 2', 'Sprint 3', ['Sprint 3.5'], ['Sprint 4-5', '(adelantado)'], 'Sprint 6-7', 'Sprint 7', ['Sprint 8-9', '(HU-07 + HU-08)']];
-    const data = [8, 13, 26, 16, 21, 16, 8, 46];
+    const labels = ['Sprint 1', 'Sprint 2', 'Sprint 3', ['Sprint 3.5'], ['Sprint 4-5', '(adelantado)'], 'Sprint 6-7', 'Sprint 7', ['Sprint 8-9', '(HU-07 + HU-08)'], ['Sprint 11', '(HU-09)']];
+    const data = [8, 13, 26, 16, 21, 16, 8, 46, 8];
     new Chart($('#velocityChart'), { type: 'bar', data: { labels, datasets: [
-      { label: 'SP completados', data, backgroundColor: ['#22C55E', '#22C55E', '#22C55E', '#F97316', '#A855F7', '#EAB308', '#14B8A6', '#10B981'], borderRadius: 6 },
-      { label: 'SP planificados', data: [8, 13, 26, 16, 21, 16, 8, 33], backgroundColor: 'transparent', borderColor: '#94A3B8', borderWidth: 1.5, borderDash: [4, 3], borderRadius: 6 },
+      { label: 'SP completados', data, backgroundColor: ['#22C55E', '#22C55E', '#22C55E', '#F97316', '#A855F7', '#EAB308', '#14B8A6', '#10B981', '#10B981'], borderRadius: 6 },
+      { label: 'SP planificados', data: [8, 13, 26, 16, 21, 16, 8, 33, 8], backgroundColor: 'transparent', borderColor: '#94A3B8', borderWidth: 1.5, borderDash: [4, 3], borderRadius: 6 },
     ] }, options: { ...baseOpts, plugins: { legend: { labels: { font: { size: 11 }, boxWidth: 12 } } }, scales: { y: { beginAtZero: true, grid: { color: '#F1F5F9' } }, x: { ticks: { font: { size: 10 } }, grid: { display: false } } } } });
-    const bl = ['Inicio', 'Fin S1', 'Fin S2', 'Fin S3', 'Fin S3.5', 'Fin S4-5 ⚡', 'Fin S6-7', 'Fin S7', 'Fin S8 (deuda)', 'Hoy (26-oct)', 'Fin S10-11', 'Fin S11', 'Fin S12'];
+    const bl = ['Inicio', 'Fin S1', 'Fin S2', 'Fin S3', 'Fin S3.5', 'Fin S4-5 ⚡', 'Fin S6-7', 'Fin S7', 'Fin S8 (deuda)', 'Fin S8-9 (26-oct)', 'Hoy (27-oct)', 'Fin S11', 'Fin S12'];
     new Chart($('#burndownChart'), { type: 'line', data: { labels: bl, datasets: [
-      { label: 'Real (SP restantes)', data: [146, 138, 125, 99, 83, 83, 67, 59, 59, 13, null, null, null], borderColor: '#2563EB', backgroundColor: 'rgba(37,99,235,.08)', fill: true, tension: .3, pointRadius: 4 },
-      { label: 'Plan restante', data: [null, null, null, null, null, null, null, null, null, 13, 13, 5, 0], borderColor: '#10B981', borderDash: [4, 3], pointRadius: 3, tension: .2 },
+      { label: 'Real (SP restantes)', data: [146, 138, 125, 99, 83, 83, 67, 59, 59, 13, 5, null, null], borderColor: '#2563EB', backgroundColor: 'rgba(37,99,235,.08)', fill: true, tension: .3, pointRadius: 4 },
+      { label: 'Plan restante', data: [null, null, null, null, null, null, null, null, null, null, 5, 5, 0], borderColor: '#10B981', borderDash: [4, 3], pointRadius: 3, tension: .2 },
       { label: 'Ideal', data: bl.map((_, i) => +(146 * (1 - i / (bl.length - 1))).toFixed(1)), borderColor: '#94A3B8', borderDash: [6, 4], pointRadius: 0 },
     ] }, options: { ...baseOpts, plugins: { legend: { labels: { font: { size: 11 }, boxWidth: 12 } } }, scales: { y: { beginAtZero: true, max: 150, grid: { color: '#F1F5F9' } }, x: { ticks: { font: { size: 10 }, maxRotation: 55 }, grid: { display: false } } } } });
     new Chart($('#langChart'), { type: 'doughnut', data: { labels: D._langs.map((l) => l[0]), datasets: [{ data: D._langs.map((l) => l[1]), backgroundColor: D._langs.map((l) => l[2]), borderWidth: 2, borderColor: '#fff' }] }, options: { cutout: '68%', plugins: { legend: { display: false } } } });
