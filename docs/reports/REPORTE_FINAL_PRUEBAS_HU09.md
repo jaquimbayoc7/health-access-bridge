@@ -56,5 +56,16 @@ Nota de proceso: la primera versión de la corrección 7 (un `aria-label` en cad
 3. El guion UAT usa cuentas semilla de DEV y deja un usuario médico `uat.<marca>@salud.co` desactivado por cada ejecución.
 4. `tsc --noEmit` reporta errores de tipos preexistentes (`analyticsExport.test.ts`, `Analytics.tsx:234`); no afectan el build de Vite ni la CI y quedan para HU-10.
 
-## 5. Siguiente paso
-Promover `develop` → `staging` → `master` y repetir el guion UAT (`UAT=1`) y `accessibility.spec.ts` contra QA y PROD (criterio de salida del plan).
+## 5. Verificación tras la promoción (27-oct-2026)
+Tras los PR a `staging` y `master` (hasta el #100; las tres ramas quedaron alineadas) se repitieron las pruebas en los ambientes promovidos:
+
+| Ambiente | Aceptación (UAT) | Accesibilidad WCAG 2.2 AA |
+|---|---|---|
+| DEV | 18/18 | 3/3, 0 violaciones |
+| QA | 18/18 | 3/3, 0 violaciones |
+| Producción | No se ejecuta (crea y borra datos de prueba) | 3/3, 0 violaciones |
+
+Hallazgos de esta verificación: (1) en QA, la insignia de usuario inactivo del panel de administración tenía contraste insuficiente (3,76:1) y se corrigió (`--destructive` a 4,83:1); (2) el escenario UAT-A03 leía la lista de médicos antes de que el filtro terminara de cargarla (intermitente) y ahora espera a que cargue. Los `/health` de QA y producción responden `ok` y el CI de producción está en verde.
+
+## 6. Cierre
+Criterios de salida del plan cumplidos para DEV y QA (aceptación y accesibilidad) y para producción (accesibilidad y salud); el UAT no se corre en producción por diseño.
