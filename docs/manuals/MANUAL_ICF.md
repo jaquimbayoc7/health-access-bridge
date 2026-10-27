@@ -247,7 +247,7 @@ Las pruebas omitidas en el CI necesitan el catálogo CIF-IA (derechos de la OMS)
 
 **Validación clínica (HU-07g).** Una profesional de salud revisó el motor en **tres rondas** (24 casos sintéticos × 3, con una tercera ronda de **casos nuevos** y reglas fijadas por escrito antes de generar las sugerencias). Resultado final: **5 de 6 criterios cumplidos** sobre los casos nuevos; el que **no** cumple es la concordancia del calificador (κ ponderado 0,312 frente a la meta de 0,50). Por eso el sistema se presenta como **borrador de apoyo** y el calificador es un **valor inicial que el médico edita**; **no se aprueba el uso clínico autónomo**. Detalle y sustento de los umbrales: [`PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](../reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md) y [reporte final del afinamiento](../presentation/reporte-afinamiento-icf.html).
 
-**Pendientes de la validación:** segunda revisora, calificador en escala 0–4 con mejor ajuste, apagar `ICF_MENTAL_LINK` y una cuarta ronda con casos nuevos.
+**Límite aceptado:** no habrá segunda revisora (decisión del responsable por tiempo, 27-oct-2026); no se mide el acuerdo entre profesionales. **Recomendados que quedan abiertos:** calificador en escala 0–4 con mejor ajuste, apagar `ICF_MENTAL_LINK` y una cuarta ronda con casos nuevos.
 
 ## 12. Licencias, límites y riesgos
 - **Licencias** (verificadas el 7-oct-2026): Gemma 4 es Apache 2.0 (se puede usar); MedGemma no se usa. `bge-m3` se usa para embeddings. El **catálogo CIF-IA tiene derechos de la OMS**: no se redistribuye. Si se cambia el modelo, repetir la verificación.

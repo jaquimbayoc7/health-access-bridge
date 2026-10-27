@@ -59,7 +59,7 @@ HAB es una aplicación web para profesionales de la salud que atienden a persona
 
 - **Menú de la izquierda:** Panel, Pacientes, Predicciones, Perfil Funcional ICF, Análisis, Guía Predictiva, Ayuda, Configuración y Cerrar Sesión. El botón de la esquina superior izquierda lo contrae.
 - **Barra superior:** cambio de **idioma** (globo), **notificaciones** (campana) y su **menú de usuario** (círculo con su inicial).
-- **Panel:** muestra el total de sus pacientes, las predicciones del día y la tasa de éxito, además de sus **pacientes recientes** y el **historial de predicciones**. El texto debajo del título «Panel» puede aparecer en inglés: es un detalle de traducción que no afecta el uso.
+- **Panel:** muestra el total de sus pacientes, las predicciones del día y la tasa de éxito, además de sus **pacientes recientes** y el **historial de predicciones**.
 - **Avisos:** al guardar, eliminar o generar algo, aparece un aviso verde (éxito) o rojo (error) en la esquina inferior derecha.
 - **Colores de perfil:** el perfil de barreras se muestra con una insignia: **Perfil 0** gris, **Perfil 1** verde, **Perfil 2** azul.
 
@@ -231,7 +231,7 @@ En un teléfono el menú se contrae y las tablas se convierten en **tarjetas**:
 
 ![Pacientes en el teléfono](img/18-movil-pacientes.jpg)
 
-HAB se puede usar **solo con el teclado**: **Tab** y **Mayús+Tab** para moverse, **Enter** o **Espacio** para pulsar, **Esc** para cerrar un cuadro. Los botones de íconos tienen nombre para lectores de pantalla y los colores cumplen los contrastes de WCAG 2.2 nivel AA (verificado con herramientas automáticas; la revisión con lector de pantalla está pendiente).
+HAB se puede usar **solo con el teclado**: **Tab** y **Mayús+Tab** para moverse, **Enter** o **Espacio** para pulsar, **Esc** para cerrar un cuadro. Los botones de íconos tienen nombre para lectores de pantalla y los colores cumplen los contrastes de WCAG 2.2 nivel AA (verificado con herramientas automáticas y con el teclado; no se probó con lectores de pantalla).
 
 ## 11. Privacidad y buenas prácticas
 - Los datos de salud son **sensibles** (Ley 1581 de 2012). Use HAB solo para su trabajo clínico.
@@ -252,7 +252,6 @@ HAB se puede usar **solo con el teclado**: **Tab** y **Mayús+Tab** para moverse
 | Todos los códigos salen genéricos | Falta diagnóstico y notas clínicas. Agréguelos y genere de nuevo |
 | El Excel o el PDF no se descarga | Permita las descargas del sitio en el navegador |
 | No se genera el perfil de un paciente | Revise que tenga 6 años o más y que el servicio de IA esté encendido |
-| Un texto aparece en inglés | Hay unos pocos textos sin traducir; no afectan el uso |
 | Un usuario no puede entrar | Pida al administrador revisar que esté activo |
 
 **Soporte:** escriba al responsable del proyecto o abra un reporte en https://github.com/jaquimbayoc7/health-access-bridge/issues indicando la pantalla, lo que hizo y el mensaje que vio. **No incluya datos de pacientes.**

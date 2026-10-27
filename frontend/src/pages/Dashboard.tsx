@@ -147,7 +147,7 @@ export default function Dashboard() {
         <p className="text-muted-foreground mt-2">
           {user?.role === 'admin'
             ? (language === 'es' ? 'Gestione usuarios y visualice métricas del sistema' : 'Manage users and view system metrics')
-            : 'Monitor your disability assessment activities'}
+            : (language === 'es' ? 'Siga de cerca sus evaluaciones de barreras de acceso' : 'Monitor your disability assessment activities')}
         </p>
       </div>
 

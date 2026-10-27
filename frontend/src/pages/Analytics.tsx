@@ -229,8 +229,8 @@ export default function Analytics() {
     try {
       await new Promise((resolve) => setTimeout(resolve, 150));
       const images: ChartImage[] = [];
-      const nodes = offscreenRef.current?.querySelectorAll<HTMLElement>('[data-chart-title]') ?? [];
-      for (const node of Array.from(nodes)) {
+      const nodes: HTMLElement[] = Array.from(offscreenRef.current?.querySelectorAll<HTMLElement>('[data-chart-title]') ?? []);
+      for (const node of nodes) {
         const svg = node.querySelector<SVGSVGElement>('svg.recharts-surface');
         if (svg) images.push({ title: node.dataset.chartTitle ?? '', note: node.dataset.chartNote, ...(await svgToImage(svg)) });
       }

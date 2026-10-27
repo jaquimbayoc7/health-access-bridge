@@ -11,10 +11,11 @@
 |---|---|
 | Avance del proyecto | **133 de 146 pts (91,1 %)** · Momento 1 100 % · Momento 2 100 % · **Momento 3: 46 de 59 pts (78,0 %)** |
 | HU-07 (Perfil Funcional ICF) | **33 de 33 pts ✅**: 07a a 07h hechas. **07g cerrada el 26-oct** (3 pts acreditados por el responsable): tres rondas con la médica; con 24 casos nuevos cumplen precisión estricta 62,7 %, flexible 86,3 %, cobertura 69,0 % y actividades 100 %; el calificador (κ 0,312) no: NO CUMPLE por un criterio. Borrador de apoyo, sin uso clínico |
-| Recomendado (no bloquea) | Segunda revisora, calificador con rango 0–4, apagar `ICF_MENTAL_LINK` (6 de 7 estructuras rechazadas en la ronda 3) y una cuarta ronda con casos nuevos |
+| Recomendado (no bloquea) | Calificador con rango 0–4, apagar `ICF_MENTAL_LINK` (6 de 7 estructuras rechazadas en la ronda 3) y una cuarta ronda con casos nuevos. **Descartada** la segunda revisora (27-oct, por tiempo) |
+| Decisiones de alcance del 27-oct-2026 (por tiempo) | **No se harán:** segunda revisora clínica, revisión de accesibilidad con lector de pantalla y exigir lint y tipos en el CI. Quedan documentadas como limitaciones en los manuales, el reporte de HU-09 y el Insights Report 6 |
 | HU-08 (Dashboard y exportación) | **13 pts ✅ completada el 26-oct** (adelantada): dashboard con 10 gráficos y filtros, exportación a Excel y PDF, backend `/analytics/*`; verificada en DEV (CI verde, E2E 5/5 contra el frontend DEV) |
 | HU-09 (Pruebas y feedback) | **8 pts ✅ completada el 27-oct**: UAT 18/18 y accesibilidad WCAG 2.2 AA con 0 violaciones en DEV, sesión de 10 usuarios (SUS medio 81,25) y guía de calificadores ICF; ver `docs/reports/REPORTE_FINAL_PRUEBAS_HU09.md` |
-| HU-10 (Despliegue final y manuales, 5 pts) | **En curso:** los tres manuales están escritos (`docs/manuals/`: usuario con capturas, técnico y servicio ICF; Markdown y PDF) y **esperan la revisión del equipo para acreditar**. Faltan el despliegue final a producción, los reportes finales y la **documentación integral del proceso técnico, investigativo y de usuario bajo la plantilla del Trabajo Integrador II** (hay que aportar la plantilla) |
+| HU-10 (Despliegue final y manuales, 5 pts) | **En curso:** los tres manuales están escritos (`docs/manuals/`: usuario con capturas, técnico y servicio ICF; Markdown y PDF) y **fueron aprobados por el responsable el 27-oct**. Lint y tipos del frontend quedaron en cero errores y los subtítulos sin traducir se corrigieron. Faltan el despliegue final de la última versión a producción, los reportes finales y la **documentación integral del proceso técnico, investigativo y de usuario bajo la plantilla del Trabajo Integrador II** (hay que aportar la plantilla) |
 | Pruebas | backend 123 · frontend 61 · servicio ICF 101 (92 en CI, 9 locales) · E2E 20 (+18 de aceptación bajo demanda) · smoke 7 |
 | Producción de la IA | PC propio (i5-13450HX, 32 GB, RTX 5050 de 8 GB): `gemma4:e4b`, ~2,6 s por sugerencia con el modelo en memoria; Tailscale Funnel + Caddy con token |
 | Licencias | Verificadas: Gemma 4 Apache 2.0 (se usa); MedGemma no se usa (prohíbe uso clínico) → [`reports/LICENCIAS_COMPONENTES_ICF.md`](reports/LICENCIAS_COMPONENTES_ICF.md) |
@@ -41,7 +42,7 @@
 4. Documentar el resultado: nueva sección en `docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md`, `BACKLOG.md`, `PROJECT_STATUS_M3.md`, issue #71 (cerrarlo), issue #7, presentación y `INSIGHTS_REPORT5.md` (o un Insights R6).
 5. **Si CUMPLE:** acreditar los 3 pts; perfil usable como borrador de apoyo en un piloto con médicos.
    **Si NO CUMPLE:** revisar errores por componente; opciones: ajustar búsqueda o reglas, medir modelos de 12B a 31B (`gemma4:12b`, `26b`, `31b`; no se midieron), o limitar el alcance. No aprobar uso clínico.
-6. Considerar una **segunda revisora** (hoy es una sola; no se mide acuerdo entre profesionales).
+6. ~~Segunda revisora~~ **Descartada por tiempo** (decisión del responsable, 27-oct-2026): hay una sola revisora y no se mide el acuerdo entre profesionales; es un límite aceptado y documentado.
 
 ---
 

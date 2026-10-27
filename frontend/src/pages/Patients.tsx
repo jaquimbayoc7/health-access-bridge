@@ -50,7 +50,7 @@ import { patientService, Patient, PatientCreate } from '@/services/patients';
 import { toast } from 'sonner';
 
 export default function Patients() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -283,7 +283,7 @@ export default function Patients() {
         <div>
           <h1 className="text-3xl font-bold">{t('patients')}</h1>
           <p className="text-muted-foreground mt-2">
-            Manage patient records and information
+            {language === 'es' ? 'Gestione los registros e información de sus pacientes' : 'Manage patient records and information'}
           </p>
         </div>
         <Button className="gap-2" onClick={() => handleOpenDialog()}>
