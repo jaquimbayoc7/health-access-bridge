@@ -41,8 +41,8 @@ function buildCharts(summary: AnalyticsSummary, L: Labels): { patients: ChartDef
     id, title,
     render: (size) => (
       <Chart size={size}>
-        <PieChart width={size?.width} height={size?.height}>
-          <Pie data={data} dataKey="count" nameKey="key" outerRadius="70%" isAnimationActive={false}
+        <PieChart accessibilityLayer={false} width={size?.width} height={size?.height}>
+          <Pie rootTabIndex={-1} data={data} dataKey="count" nameKey="key" outerRadius="70%" isAnimationActive={false}
                label={({ name, value }) => `${name}: ${value}`}>
             {data.map((d, i) => <Cell key={i} fill={PALETTE[i % PALETTE.length]} />)}
           </Pie>
@@ -55,7 +55,7 @@ function buildCharts(summary: AnalyticsSummary, L: Labels): { patients: ChartDef
     id, title,
     render: (size) => (
       <Chart size={size} height={horizontal ? Math.max(220, data.length * 34) : 260}>
-        <BarChart data={data} layout={horizontal ? 'vertical' : 'horizontal'} width={size?.width} height={size?.height}
+        <BarChart accessibilityLayer={false} data={data} layout={horizontal ? 'vertical' : 'horizontal'} width={size?.width} height={size?.height}
                   margin={{ left: horizontal ? 40 : 0, right: 16 }}>
           <CartesianGrid strokeDasharray="3 3" />
           {horizontal ? (
@@ -97,7 +97,7 @@ function buildCharts(summary: AnalyticsSummary, L: Labels): { patients: ChartDef
     id: 'status', title: L.chStatus, note: L.statusLegend,
     render: (size) => (
       <Chart size={size}>
-        <BarChart data={statusData} width={size?.width} height={size?.height}>
+        <BarChart accessibilityLayer={false} data={statusData} width={size?.width} height={size?.height}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" tick={{ fontSize: 11 }} />
           <YAxis allowDecimals={false} />
