@@ -44,7 +44,7 @@ VARIANTS = {
     "V6 V1 + V3": dict(s_evidence=True, b_candidates=16, motor_candidates=3),
     "V7 b con vinculo de movilidad": dict(motor_link=True),
     "V8 V1 + V7": dict(s_evidence=True, motor_link=True),
-    "V9 V8 + vinculo mental (27-oct)": dict(s_evidence=True, motor_link=True, mental_link=True),
+    "V9 V8 + vinculo mental (26-oct)": dict(s_evidence=True, motor_link=True, mental_link=True),
 }
 
 

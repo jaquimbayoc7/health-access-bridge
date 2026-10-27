@@ -108,7 +108,7 @@ def without_zero_severity(
 ) -> Tuple[Dict[str, Dict[str, Set[str]]], Dict[str, Dict[str, int]]]:
     """Quita de lo esperado (Fase A) los codigos que la revisora califico con gravedad 0: en la CIF el calificador 0
     significa "no hay problema" (OMS 2001), asi que no es un codigo que el sistema deba sugerir. Definicion fijada el
-    27-oct-2026, antes de la tercera ronda (protocolo, seccion 12); la medicion de las rondas 1 y 2 no la usa."""
+    26-oct-2026, antes de la tercera ronda (protocolo, seccion 12); la medicion de las rondas 1 y 2 no la usa."""
     zero = {case: {code for code, level in q.items() if level == 0} for case, q in blind_qualifiers.items()}
     kept = {
         case: {comp: {c for c in codes if c not in zero.get(case, set())} for comp, codes in comps.items()}

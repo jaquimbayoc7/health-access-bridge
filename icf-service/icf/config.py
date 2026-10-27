@@ -24,7 +24,7 @@ class Settings:
     num_predict: int = 300
     num_ctx: int = 2048
     s_evidence: bool = True  # estructuras (s) solo con evidencia en el caso, sin completar la cuota de 3 (HU-07g, 26-oct-2026)
-    mental_link: bool = True  # sin deficiencia fisica pero con psicosocial, estructuras en el capitulo 1 (s110; HU-07g, 27-oct-2026)
+    mental_link: bool = True  # sin deficiencia fisica pero con psicosocial, estructuras en el capitulo 1 (s110; HU-07g, 26-oct-2026)
     motor_link: bool = True  # dificultad de movilidad (D4) -> candidatos b710, b730, b735, b760 y b770 (HU-07g, 26-oct-2026)
     use_llm: bool = True  # False: funciones y estructuras solo por similitud (sin modelo de generacion)
 

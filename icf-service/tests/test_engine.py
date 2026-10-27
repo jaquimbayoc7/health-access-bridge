@@ -428,7 +428,7 @@ def test_new_settings_default_on_and_can_be_turned_off(monkeypatch):
 
 
 def test_mobility_link_needs_a_severe_motor_limitation():
-    """Segunda version (27-oct): D4 >= 50 y deficiencia fisica >= moderada; antes bastaba cualquier dificultad en D4."""
+    """Segunda version (26-oct): D4 >= 50 y deficiencia fisica >= moderada; antes bastaba cualquier dificultad en D4."""
     levels = {"D1": 3, "D2": 0, "D3": 0, "D4": 60, "D5": 10, "D6": 0}
     assert rules.mobility_link_applies("Severa", levels)
     assert rules.mobility_link_applies("Moderada", {**levels, "D4": 50})

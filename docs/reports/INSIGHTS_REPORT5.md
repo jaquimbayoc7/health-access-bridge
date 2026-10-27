@@ -316,7 +316,7 @@ Se preparó **HU-07g** y se verificaron las licencias. HU-07g **no se da por com
 |---|---|
 | Licencias de Gemma y MedGemma sin verificar | 🟢 Cerrado: Gemma 4 Apache 2.0; MedGemma descartado |
 | Confiabilidad clínica sin medir | 🟡 Instrumento listo; falta la revisión (HU-07g) |
-| Encuadre regulatorio (¿dispositivo médico?) | ⚪ Descartado el 27-oct-2026 por decisión del responsable (no se consultará al INVIMA); se mantiene sin uso clínico real |
+| Encuadre regulatorio (¿dispositivo médico?) | ⚪ Descartado el 26-oct-2026 por decisión del responsable (no se consultará al INVIMA); se mantiene sin uso clínico real |
 
 Detalle: [`LICENCIAS_COMPONENTES_ICF.md`](./LICENCIAS_COMPONENTES_ICF.md) y [`PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](./PROTOCOLO_VALIDACION_CLINICA_HU07G.md).
 
@@ -324,9 +324,9 @@ Detalle: [`LICENCIAS_COMPONENTES_ICF.md`](./LICENCIAS_COMPONENTES_ICF.md) y [`PR
 
 *Datos extraídos de la API de GitHub (`gh api`), `git log` local y las mediciones ejecutadas en el servidor físico el 5 y 6 de octubre de 2026 (detalle en `PRUEBAS_HU07_SERVIDOR_FISICO.md`).*
 
-## Cuarta adenda (27 de octubre de 2026): cierre de la validación clínica (HU-07g)
+## Cuarta adenda (26 de octubre de 2026): cierre de la validación clínica (HU-07g)
 
-HU-07g se cerró el 27 de octubre con tres rondas de revisión de la profesional de salud. **Las lecciones** (detalle y fuentes en `PROTOCOLO_VALIDACION_CLINICA_HU07G.md`, secciones 8 a 14, y en `presentation/reporte-afinamiento-icf.html`):
+HU-07g se cerró el 26 de octubre con tres rondas de revisión de la profesional de salud. **Las lecciones** (detalle y fuentes en `PROTOCOLO_VALIDACION_CLINICA_HU07G.md`, secciones 8 a 14, y en `presentation/reporte-afinamiento-icf.html`):
 
 - **Medir con un profesional cambió el diagnóstico.** Con pistas orientativas no se veía que las estructuras rellenaban la cuota de 3 códigos (la 2.ª y la 3.ª solo eran «Adecuado/Aceptable» en el 57 % y el 38 %) ni que la búsqueda de funciones solo traía 18 de los 39 códigos que la médica elegía.
 - **El mayor avance vino de reglas clínicas explícitas, no de un modelo mayor.** Se probó y se descartó ampliar los candidatos; el vínculo de movilidad subió la cobertura de funciones de 17/40 a 24–26/40 sin cambiar de modelo ni la latencia (~2 s).

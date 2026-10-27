@@ -466,7 +466,7 @@ Con la implementación de HU-13, el frontend cuenta con **16 pruebas unitarias a
 
 | Capa | Archivos | Resultado |
 |------|----------|-----------|
-| Servicio ICF (pytest) | `icf-service/tests/` | **92 pasan, 9 omitidas** (101 en total, medido el 27-oct-2026 con Python 3.11; incluyen las de las métricas de validación clínica y los vínculos del motor) |
+| Servicio ICF (pytest) | `icf-service/tests/` | **92 pasan, 9 omitidas** (101 en total, medido el 26-oct-2026 con Python 3.11; incluyen las de las métricas de validación clínica y los vínculos del motor) |
 | Backend (pytest) | `backend/app/tests/` (`test_icf_suggestions.py` 39, `test_icf_causes.py` 6, `test_icf_health.py` 8) | **123 pasan** en total (53 de ICF y 18 de analítica de HU-08), cobertura 90,7 % |
 | Frontend unitarias (Vitest) | `FunctionalProfile.test.tsx` 15, `IcfGuide.test.tsx` 7 | **61 pasan** en total (22 de ICF y 23 del dashboard de HU-08: `Analytics.test.tsx` 12, `analyticsExport.test.ts` 11) |
 | E2E (Playwright, Chromium) | `frontend/e2e/functional-profile.spec.ts` | **5 de 5** contra el frontend DEV |
