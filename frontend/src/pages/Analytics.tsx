@@ -249,7 +249,7 @@ export default function Analytics() {
       {defs.map((c) => (
         <Card key={c.id} className={c.id === 'cause' ? 'md:col-span-2' : undefined}>
           <CardHeader><CardTitle className="text-base">{c.title}</CardTitle></CardHeader>
-          <CardContent role="img" aria-label={c.title}>{c.render()}</CardContent>
+          <CardContent role="img" aria-label={c.title}><div aria-hidden="true">{c.render()}</div></CardContent>
         </Card>
       ))}
     </div>

@@ -170,9 +170,9 @@ export default function Dashboard() {
                   : 'Users organized by role type'}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent role="img" aria-label={language === 'es' ? 'Gráfico de usuarios por rol' : 'Chart of users by role'}>
               {totalUsers > 0 ? (
-                <ResponsiveContainer width="100%" height={250}>
+                <div aria-hidden="true"><ResponsiveContainer width="100%" height={250}>
                   <PieChart>
                     <Pie
                       data={roleDistributionData}
@@ -190,7 +190,7 @@ export default function Dashboard() {
                     </Pie>
                     <Tooltip />
                   </PieChart>
-                </ResponsiveContainer>
+                </ResponsiveContainer></div>
               ) : (
                 <div className="flex items-center justify-center h-[250px] text-muted-foreground">
                   {language === 'es' ? 'No hay datos disponibles' : 'No data available'}
@@ -210,9 +210,9 @@ export default function Dashboard() {
                   : 'Active vs inactive users'}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent role="img" aria-label={language === 'es' ? 'Gráfico de usuarios activos e inactivos' : 'Chart of active and inactive users'}>
               {totalUsers > 0 ? (
-                <ResponsiveContainer width="100%" height={250}>
+                <div aria-hidden="true"><ResponsiveContainer width="100%" height={250}>
                   <PieChart>
                     <Pie
                       data={statusDistributionData}
@@ -230,7 +230,7 @@ export default function Dashboard() {
                     </Pie>
                     <Tooltip />
                   </PieChart>
-                </ResponsiveContainer>
+                </ResponsiveContainer></div>
               ) : (
                 <div className="flex items-center justify-center h-[250px] text-muted-foreground">
                   {language === 'es' ? 'No hay datos disponibles' : 'No data available'}
