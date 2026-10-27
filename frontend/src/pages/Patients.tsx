@@ -376,16 +376,18 @@ export default function Patients() {
                             <Button 
                               variant="ghost" 
                               size="icon"
+                              aria-label={`${t('edit')}: ${patient.nombre_apellidos}`}
                               onClick={() => handleOpenDialog(patient)}
                             >
-                              <Edit className="h-4 w-4" />
+                              <Edit className="h-4 w-4" aria-hidden="true" />
                             </Button>
                             <Button 
                               variant="ghost" 
                               size="icon"
+                              aria-label={`${t('delete')}: ${patient.nombre_apellidos}`}
                               onClick={() => setDeletePatient(patient)}
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-4 w-4" aria-hidden="true" />
                             </Button>
                           </div>
                         </TableCell>
@@ -411,16 +413,18 @@ export default function Patients() {
                           <Button 
                             variant="ghost" 
                             size="icon"
+                            aria-label={`${t('edit')}: ${patient.nombre_apellidos}`}
                             onClick={() => handleOpenDialog(patient)}
                           >
-                            <Edit className="h-4 w-4" />
+                            <Edit className="h-4 w-4" aria-hidden="true" />
                           </Button>
                           <Button 
                             variant="ghost" 
                             size="icon"
+                            aria-label={`${t('delete')}: ${patient.nombre_apellidos}`}
                             onClick={() => setDeletePatient(patient)}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4" aria-hidden="true" />
                           </Button>
                         </div>
                       </div>
