@@ -231,7 +231,7 @@ En un teléfono el menú se contrae y las tablas se convierten en **tarjetas**:
 
 ![Pacientes en el teléfono](img/18-movil-pacientes.jpg)
 
-HAB se puede usar **solo con el teclado**: **Tab** y **Mayús+Tab** para moverse, **Enter** o **Espacio** para pulsar, **Esc** para cerrar un cuadro. Los botones de íconos tienen nombre para lectores de pantalla y los colores cumplen los contrastes de WCAG 2.2 nivel AA (verificado con herramientas automáticas; la revisión con lector de pantalla está pendiente).
+HAB se puede usar **solo con el teclado**: **Tab** y **Mayús+Tab** para moverse, **Enter** o **Espacio** para pulsar, **Esc** para cerrar un cuadro. Los botones de íconos tienen nombre para lectores de pantalla y los colores cumplen los contrastes de WCAG 2.2 nivel AA (verificado con herramientas automáticas y con el teclado; no se probó con lectores de pantalla).
 
 ## 11. Privacidad y buenas prácticas
 - Los datos de salud son **sensibles** (Ley 1581 de 2012). Use HAB solo para su trabajo clínico.

@@ -65,7 +65,9 @@ La relación `docs` > `fix` > `feat` es coherente con un Momento 3 dominado por 
 | Calificador ICF con concordancia baja (κ 0,312) | El médico lo edita; no se aprueba uso clínico autónomo |
 | Sin migraciones de base de datos (`create_all`) | Deuda técnica; recomendado Alembic para cambios de esquema |
 | Rendimiento con 200 usuarios simultáneos en plan gratuito (DEUDA-01) | Sin resolver; producción usa base de pago |
-| Revisión de accesibilidad con lector de pantalla | Pendiente |
+| Revisión de accesibilidad con lector de pantalla | No se hará por tiempo (decisión del responsable, 27-oct); queda solo la verificación con axe-core y teclado |
+| Segunda revisora clínica del motor ICF | No se hará por tiempo (decisión del responsable, 27-oct); no se mide el acuerdo entre profesionales |
+| Lint y tipos como puerta del CI | No se exigen (decisión del responsable, 27-oct); están en cero errores pero una regresión no frenaría un despliegue |
 | Documentación integral con la plantilla del Trabajo Integrador II | Pendiente (falta la plantilla) |
 
 ## 7. Pendiente para el cierre
