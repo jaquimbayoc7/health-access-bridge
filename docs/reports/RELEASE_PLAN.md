@@ -97,15 +97,15 @@
 | HU-07 | Perfil Funcional ICF con RAG y LLM local para sugerencia de códigos CIF-IA según el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022 — sub-historias 07a (servidor y catálogo, 5, ✅), 07b (motor y evaluación, 8, ✅), 07c (backend, 5, ✅), 07d (frontend, 5, ✅), 07e (pruebas y docs, 2, ✅), 07f (escalera de modelos abiertos y modelo mínimo viable `gemma4:e4b`, 2, ✅), 07g (validación clínica y umbral de confiabilidad, 3, ✅ cerrada el 26-oct-2026: tres rondas, NO CUMPLE por el calificador, acreditada por decisión del responsable), 07h (despliegue y operación en el PC de producción, 3, ✅) | 33 (reestimado desde 21 el 05-oct-2026 y desde 25 el 06-oct-2026) | Sprint 8-9 |
 | HU-08 | Dashboard de Análisis y Exportación — ✅ completada el 26-oct-2026 (adelantada) | 13 | Sprint 10-11 (hecha en el 8-9) |
 | HU-09 | Pruebas Completas y Feedback de Usuarios (UAT) | 8 | Sprint 11 ✅ (27-oct-2026) |
-| HU-10 | Despliegue Final y Generación de Manuales | 5 | Sprint 12 |
+| HU-10 | Despliegue Final y Generación de Manuales — 🟡 en curso (27-oct-2026): manuales de usuario, técnico y del servicio ICF escritos y aprobados; pendientes el despliegue final, los reportes finales y la documentación integral con la plantilla del Trabajo Integrador II | 5 | Sprint 12 |
 
 **Criterios de salida (Definition of Done de release):**
 - El servidor local queda operativo, con el catálogo CIF y los embeddings cargados, accesible desde el backend solo por un túnel autenticado (✅ verificado en QA el 06-oct-2026), y el modelo de generación (el mínimo viable de la escalera Gemma/MedGemma, HU-07f) corre en infraestructura propia, con respaldo por similitud si falla; hay una recomendación documentada de la máquina de producción (HU-07h).
 - La confiabilidad clínica del motor queda medida con la revisión de un médico y el umbral de uso definido con él (HU-07g).
 - Dado un registro con niveles D1-D6, el sistema sugiere el perfil de funcionamiento (máximo 3 códigos CIF-IA por componente: funciones, estructuras, actividades y participación) con calificador y justificación; el médico puede aceptarlos, editarlos o rechazarlos, y el reporte se presenta como borrador de apoyo, no como certificado.
-- Dashboard de análisis exporta a Excel/PDF sin errores.
-- Pruebas UAT documentadas con feedback de usuarios reales, corregido antes del cierre.
-- Aplicación desplegada en producción con manuales técnicos y de usuario entregados.
+- Dashboard de análisis exporta a Excel/PDF sin errores. ✅ (HU-08, 26-oct-2026)
+- Pruebas UAT documentadas con feedback de usuarios reales, corregido antes del cierre. ✅ (HU-09, 27-oct-2026: UAT 18/18, WCAG 2.2 AA sin violaciones, SUS 81,25 con 10 usuarios)
+- Aplicación desplegada en producción con manuales técnicos y de usuario entregados. 🟡 Manuales entregados en `docs/manuals/`; falta el despliegue de la última versión a producción y la verificación posterior.
 
 **Dependencia de infraestructura física:** a diferencia de R1/R2 (100% cloud, Render), R3 usa un servidor propio para el catálogo CIF, los embeddings y la búsqueda; es la única release del proyecto con un componente fuera de la nube. El servidor ya está operativo (06-oct-2026). La inferencia de un modelo de generación útil no corre allí: las pruebas mostraron que el i3 sin GPU no da la velocidad ni la calidad necesarias; se prueban modelos abiertos en un PC con GPU (HU-07f) para dimensionar la máquina de producción (HU-07h), que no tiene presupuesto aprobado.
 

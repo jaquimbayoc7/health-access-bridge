@@ -603,7 +603,7 @@ Es la primera vez que las precisiones y la cobertura cumplen a la vez **sobre ca
 
 **Tareas:**
 - Despliegue en Render.
-- Documentación técnica y manuales de usuario (incluye el manual de operación del servicio ICF: servidor propio, túnel, instalación de Ollama y de los modelos, y requisitos de la máquina). **Elaborados el 27-oct-2026** en `docs/manuals/` (manual de usuario con capturas, manual técnico y manual del servicio ICF, en Markdown y PDF); **pendientes de revisión del equipo** antes de acreditar.
+- Documentación técnica y manuales de usuario (incluye el manual de operación del servicio ICF: servidor propio, túnel, instalación de Ollama y de los modelos, y requisitos de la máquina). **Elaborados el 27-oct-2026** en `docs/manuals/` (manual de usuario con capturas, manual técnico y manual del servicio ICF, en Markdown y PDF); **aprobados por el responsable el 27-oct-2026**. Los puntos de HU-10 se acreditan al cerrar sus tareas pendientes (despliegue final, reportes finales y documentación integral).
 - Reportes finales.
 - **Documentación integral del proceso (PENDIENTE):** construir la documentación de todo el proceso —**técnico, investigativo y de usuario**— bajo la **plantilla del Trabajo Integrador II**. Insumos ya existentes: BACKLOG, `docs/reports/` (estado, pruebas, insights, validación clínica y 51 referencias), `docs/HCI/` (investigación con usuarios), `docs/uat/` y los manuales. Falta la plantilla oficial del Trabajo Integrador II (no está en el repositorio): entregarla para mapear cada sección a su evidencia.
 
