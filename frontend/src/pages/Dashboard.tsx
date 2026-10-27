@@ -185,7 +185,7 @@ export default function Dashboard() {
                       dataKey="value"
                     >
                       {roleDistributionData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} aria-label={`${entry.name}: ${entry.value}`} />
+                        <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -225,7 +225,7 @@ export default function Dashboard() {
                       dataKey="value"
                     >
                       {statusDistributionData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} aria-label={`${entry.name}: ${entry.value}`} />
+                        <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
                     <Tooltip />

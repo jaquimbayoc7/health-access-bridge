@@ -229,7 +229,7 @@ export default function AdminPanel() {
               />
             </div>
             <Select value={roleFilter} onValueChange={(value: 'all' | 'admin' | 'médico') => setRoleFilter(value)}>
-              <SelectTrigger className="w-full sm:w-[200px]">
+              <SelectTrigger className="w-full sm:w-[200px]" aria-label={language === 'es' ? 'Filtrar por rol' : 'Filter by role'}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
