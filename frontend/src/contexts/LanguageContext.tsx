@@ -11,6 +11,7 @@ interface LanguageContextType {
 const translations = {
   en: {
     // Navigation
+    mainMenu: 'Main menu',
     dashboard: 'Dashboard',
     patients: 'Patients',
     predictions: 'Predictions',
@@ -118,6 +119,7 @@ const translations = {
   },
   es: {
     // Navegación
+    mainMenu: 'Menú principal',
     dashboard: 'Panel',
     patients: 'Pacientes',
     predictions: 'Predicciones',
@@ -275,14 +277,14 @@ export const icfDimensionsContent = {
 
 export const predictionProfilesContent = {
   en: [
-    { profile: 0, label: 'Profile 0 — Low or Focused Barriers', color: 'bg-gray-500', description: 'The patient reports low difficulty levels in most domains. They have developed effective coping strategies or have an environment with few significant barriers. High autonomy and overall functionality.' },
-    { profile: 1, label: 'Profile 1 — Moderate or Mixed Barriers', color: 'bg-green-500', description: 'The patient shows a heterogeneous experience: low levels in some domains and significantly high in others. Barriers are contextual and specific, not generalized. Requires targeted interventions.' },
-    { profile: 2, label: 'Profile 2 — High and Generalized Barriers', color: 'bg-blue-500', description: 'The patient perceives high difficulty levels in most or all evaluated domains. Barriers have a significant cross-cutting impact on their life, autonomy and social participation. Requires priority, multidisciplinary intervention.' },
+    { profile: 0, label: 'Profile 0 — Low or Focused Barriers', color: 'bg-gray-600', description: 'The patient reports low difficulty levels in most domains. They have developed effective coping strategies or have an environment with few significant barriers. High autonomy and overall functionality.' },
+    { profile: 1, label: 'Profile 1 — Moderate or Mixed Barriers', color: 'bg-green-700', description: 'The patient shows a heterogeneous experience: low levels in some domains and significantly high in others. Barriers are contextual and specific, not generalized. Requires targeted interventions.' },
+    { profile: 2, label: 'Profile 2 — High and Generalized Barriers', color: 'bg-blue-700', description: 'The patient perceives high difficulty levels in most or all evaluated domains. Barriers have a significant cross-cutting impact on their life, autonomy and social participation. Requires priority, multidisciplinary intervention.' },
   ],
   es: [
-    { profile: 0, label: 'Perfil 0 — Barreras Bajas o Focalizadas', color: 'bg-gray-500', description: 'El paciente reporta niveles de dificultad bajos en la mayoría de dominios. Ha desarrollado estrategias de afrontamiento efectivas o cuenta con un entorno con pocas barreras significativas. Alta autonomía y funcionalidad general.' },
-    { profile: 1, label: 'Perfil 1 — Barreras Moderadas o Mixtas', color: 'bg-green-500', description: 'El paciente presenta una experiencia heterogénea: niveles bajos en algunos dominios y significativamente altos en otros. Las barreras son contextuales y específicas, no generalizadas. Requiere intervenciones focalizadas.' },
-    { profile: 2, label: 'Perfil 2 — Barreras Altas y Generalizadas', color: 'bg-blue-500', description: 'El paciente percibe niveles de dificultad altos en la mayoría o todos los dominios evaluados. Las barreras tienen un impacto transversal significativo en su vida, autonomía y participación social. Requiere intervención prioritaria y enfoque multidisciplinario.' },
+    { profile: 0, label: 'Perfil 0 — Barreras Bajas o Focalizadas', color: 'bg-gray-600', description: 'El paciente reporta niveles de dificultad bajos en la mayoría de dominios. Ha desarrollado estrategias de afrontamiento efectivas o cuenta con un entorno con pocas barreras significativas. Alta autonomía y funcionalidad general.' },
+    { profile: 1, label: 'Perfil 1 — Barreras Moderadas o Mixtas', color: 'bg-green-700', description: 'El paciente presenta una experiencia heterogénea: niveles bajos en algunos dominios y significativamente altos en otros. Las barreras son contextuales y específicas, no generalizadas. Requiere intervenciones focalizadas.' },
+    { profile: 2, label: 'Perfil 2 — Barreras Altas y Generalizadas', color: 'bg-blue-700', description: 'El paciente percibe niveles de dificultad altos en la mayoría o todos los dominios evaluados. Las barreras tienen un impacto transversal significativo en su vida, autonomía y participación social. Requiere intervención prioritaria y enfoque multidisciplinario.' },
   ],
 } as const;
 

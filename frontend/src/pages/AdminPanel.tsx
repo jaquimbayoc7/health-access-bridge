@@ -123,6 +123,7 @@ export default function AdminPanel() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      <h1 className="text-3xl font-bold">{language === 'es' ? 'Administración de usuarios' : 'User administration'}</h1>
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
@@ -228,7 +229,7 @@ export default function AdminPanel() {
               />
             </div>
             <Select value={roleFilter} onValueChange={(value: 'all' | 'admin' | 'médico') => setRoleFilter(value)}>
-              <SelectTrigger className="w-full sm:w-[200px]">
+              <SelectTrigger className="w-full sm:w-[200px]" aria-label={language === 'es' ? 'Filtrar por rol' : 'Filter by role'}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
