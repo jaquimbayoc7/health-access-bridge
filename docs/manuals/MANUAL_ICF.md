@@ -4,6 +4,12 @@
 **Para:** quien instala, opera y mantiene el servicio de IA que sugiere códigos CIF. No requiere programar, pero sí usar PowerShell y Docker con calma.
 **Complementa:** [Manual técnico](MANUAL_TECNICO.md) · [Manual de usuario](MANUAL_USUARIO.md) · [`icf-service/deploy/windows/`](../../icf-service/deploy/windows/) (archivos de despliegue) · [Diseño del RAG](../diagrams/rag-icf-postgresql.md).
 
+## Cómo funciona, de un vistazo
+![Servicio ICF por dentro: entrada segura, reglas del Anexo, embedding, pgvector, selección por la IA, respaldo y validación final](img/diagrama-servicio-icf.png)
+
+*El backend envía un JSON sin nombre ni documento; las reglas del Anexo 1239 fijan edad y calificador; la búsqueda por significado trae 12 candidatos del catálogo; la IA solo elige entre ellos; todo se valida contra el catálogo y, si el modelo falla, entra el respaldo por similitud.*
+**Versión interactiva y animada (Archify):** abra [`servicio-icf.html`](../presentation/animaciones/servicio-icf.html) en el navegador (clone el repositorio o descargue el archivo; GitHub muestra su código, no el diagrama). Para el contexto completo (Render, túnel, CI/CD) use [`arquitectura-hab.html`](../presentation/animaciones/arquitectura-hab.html).
+
 ## Contenido
 1. Qué es y qué no es
 2. Arquitectura y flujo de una sugerencia

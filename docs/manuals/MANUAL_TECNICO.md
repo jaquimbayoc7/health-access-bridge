@@ -4,6 +4,12 @@
 **Para:** desarrolladores y operadores que instalan, prueban, despliegan y mantienen el sistema.
 **Complementa:** [Manual de usuario](MANUAL_USUARIO.md) · [Manual del servicio ICF](MANUAL_ICF.md) · [Referencia de la API (ReDoc)](../api/redoc-api.html) · [Diagramas C4](../diagrams/).
 
+## Cómo funciona, de un vistazo
+![Arquitectura completa de HAB: actores, Render, túnel autenticado, PC propio con la IA y CI/CD](img/diagrama-arquitectura.png)
+
+*El médico y el administrador usan el frontend; el backend guarda los datos en PostgreSQL y solo para el perfil funcional llama, por un túnel con token, al servicio de IA del PC propio. GitHub Actions prueba cada cambio y Render despliega los tres ambientes.*
+**Versión interactiva y animada (Archify):** abra [`arquitectura-hab.html`](../presentation/animaciones/arquitectura-hab.html) en el navegador (clone el repositorio o descargue el archivo; GitHub muestra su código, no el diagrama). Permite trazar rutas entre nodos, exportar a PNG, SVG o video y ver los otros cinco diagramas desde [`index.html`](../presentation/animaciones/index.html).
+
 ## Contenido
 1. Visión general y arquitectura
 2. Estructura del repositorio
