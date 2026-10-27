@@ -217,8 +217,10 @@ test.describe('Administrador', () => {
     await page.goto('/analytics');
     await expect(page.getByTestId('kpi-patients')).toBeVisible({ timeout: 60000 });
     await expect(page.getByText(/todos los pacientes|all patients/i).first()).toBeVisible();
-    const medicos = (await page.locator('#f-owner option').allTextContents()).filter((o) => o && !/^(todos|all)$/i.test(o.trim()));
-    expect(medicos.length).toBeGreaterThanOrEqual(2);
+    const listarMedicos = async () => (await page.locator('#f-owner option').allTextContents()).filter((o) => o && !/^(todos|all)$/i.test(o.trim()));
+    // los médicos del filtro llegan de /analytics/filters: se espera a que carguen
+    await expect.poll(async () => (await listarMedicos()).length, { timeout: 30000 }).toBeGreaterThanOrEqual(2);
+    const medicos = await listarMedicos();
     await page.locator('#f-owner').selectOption({ label: medicos[0] });
     await expect(page.getByText(/mis pacientes|my patients/i).first()).toBeVisible({ timeout: 30000 });
     await shot(page, 'UAT-A03-admin-analisis');
