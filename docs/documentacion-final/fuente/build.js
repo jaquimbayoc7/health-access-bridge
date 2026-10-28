@@ -4,12 +4,12 @@ const D = require('docx');
 const {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun, Header, AlignmentType, HeadingLevel,
   WidthType, ShadingType, BorderStyle, TableOfContents, PageNumber, PageOrientation, LevelFormat, NumberFormat,
-  SectionType, VerticalAlign, TabStopType,
+  SectionType, VerticalAlign, TabStopType, ExternalHyperlink, UnderlineType,
 } = D;
 
 const HERE = __dirname;
 const REPO = 'C:/Users/jaqui/OneDrive/Documentos/GitHub/health-access-bridge';
-const OUT = path.join(REPO, 'docs/documentacion-final/Documentacion_Final_HAB_borrador_v0.2.docx');
+const OUT = path.join(REPO, 'docs/documentacion-final/Documentacion_Final_HAB_borrador_v0.3.docx');
 const REFS = require('./refs.js');
 
 // ------------------------------------------------------------------ medidas ICONTEC (NTC 1486), tamaño carta
@@ -118,17 +118,44 @@ function resolveText(s) {
   return s;
 }
 
-// ------------------------------------------------------------------ inline: **negrita**, *cursiva*, `código`
+// ------------------------------------------------------------------ inline: **negrita**, *cursiva*, `código` + enlaces
+const GH = 'https://github.com/jaquimbayoc7/health-access-bridge/';
+const LINK_RE = /(https?:\/\/[^\s\]»"]+|(?:docs|backend|frontend|icf-service)\/[\w.\-\/]+|\.github\/[\w.\-\/]+|\b(?:BACKLOG|README)\.md\b|\brender\.yaml\b)/g;
+function repoUrl(p) {
+  const isDir = p.endsWith('/') || !/\.[A-Za-z0-9]+$/.test(p.split('/').pop());
+  return GH + (isDir ? 'tree/master/' : 'blob/master/') + p.replace(/\/$/, '');
+}
+function emit(text, st) {
+  const out = [];
+  let last = 0;
+  text.replace(LINK_RE, (m, _g, off) => {
+    let raw = m;
+    let tail = '';
+    for (;;) {
+      const lastCh = raw.slice(-1);
+      const unbalanced = lastCh === ')' && (raw.match(/\)/g) || []).length > (raw.match(/\(/g) || []).length;
+      if (/[.,;:]/.test(lastCh) || unbalanced) { tail = lastCh + tail; raw = raw.slice(0, -1); } else break;
+    }
+    if (off > last) out.push(new TextRun({ ...st, text: text.slice(last, off) }));
+    const url = /^https?:/.test(raw) ? raw : repoUrl(raw);
+    out.push(new ExternalHyperlink({ link: url, children: [new TextRun({ ...st, text: raw, color: '0563C1', underline: { type: UnderlineType.SINGLE } })] }));
+    if (tail) out.push(new TextRun({ ...st, text: tail }));
+    last = off + m.length;
+    return m;
+  });
+  if (last < text.length) out.push(new TextRun({ ...st, text: text.slice(last) }));
+  return out;
+}
 function runs(text, o = {}) {
   const base = { font: FONT, size: o.size || 24, bold: o.bold, italics: o.italics, color: o.color };
   const out = [];
   const parts = resolveText(text).split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/);
   for (const p of parts) {
     if (!p) continue;
-    if (p.startsWith('**')) out.push(new TextRun({ ...base, text: p.slice(2, -2), bold: true }));
-    else if (p.startsWith('`')) out.push(new TextRun({ ...base, text: p.slice(1, -1), font: 'Consolas', size: (o.size || 24) - 2 }));
-    else if (p.startsWith('*') && p.length > 2) out.push(new TextRun({ ...base, text: p.slice(1, -1), italics: !o.italics }));
-    else out.push(new TextRun({ ...base, text: p }));
+    if (p.startsWith('**')) out.push(...emit(p.slice(2, -2), { ...base, bold: true }));
+    else if (p.startsWith('`')) out.push(...emit(p.slice(1, -1), { ...base, font: 'Consolas', size: (o.size || 24) - 2 }));
+    else if (p.startsWith('*') && p.length > 2) out.push(...emit(p.slice(1, -1), { ...base, italics: !o.italics }));
+    else out.push(...emit(p, base));
   }
   return out;
 }
@@ -243,7 +270,7 @@ const cover = [
   center('Grupo 01 · Periodo agosto – diciembre de 2026', { after: 500 }),
   center('Cali, Colombia', { after: 40 }),
   center('2026', { bold: true }),
-  center('Versión inicial para revisión (v0.2) · 28 de octubre de 2026', { size: 20, before: 200 }),
+  center('Versión inicial para revisión (v0.3) · 28 de octubre de 2026', { size: 20, before: 200 }),
 ];
 
 const h1Plain = (t) => new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun({ text: t })] });
@@ -304,7 +331,7 @@ sections.forEach((s, idx) => {
 
 const doc = new Document({
   creator: 'Julián Andrés Quimbayo Castro',
-  title: 'Health Access Bridge: documentación final del proyecto (v0.2)',
+  title: 'Health Access Bridge: documentación final del proyecto (v0.3)',
   description: 'Documentación final de Trabajo Integrador II y III, con formato ICONTEC (NTC 1486) y citación APA 7',
   features: { updateFields: true },
   styles: {
