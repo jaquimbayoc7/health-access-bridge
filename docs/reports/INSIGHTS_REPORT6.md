@@ -72,7 +72,7 @@ La relación `docs` > `fix` > `feat` es coherente con un Momento 3 dominado por 
 | Documentación integral del proyecto (guía de la profesora) | Entregada el 28-oct-2026; el autor debe completar el código estudiantil y revisar las referencias ajenas al `.bib` |
 
 ## 7. Cierre
-El proyecto se cerró el 28 de octubre de 2026 con 146 de 146 puntos. Se cerraron los issues #10 y #13 y el Milestone 3, se actualizaron la presentación, el backlog, el estado y el plan de liberación, y se retiraron los archivos de IA que el sistema no usa (brief de presentación, evidencias de la herramienta de diagramas y la configuración de un proveedor externo de modelos que el código no consume). Quedan como recomendaciones abiertas, sin bloquear: calificador del perfil CIF con rango 0 a 4, apagar `ICF_MENTAL_LINK`, una cuarta ronda de validación y más pruebas con usuarios.
+El proyecto se cerró el 28 de octubre de 2026 con 146 de 146 puntos. Se cerraron los issues #10 y #13 y el Milestone 3, se actualizaron la presentación, el backlog, el estado y el plan de liberación, y se retiraron los archivos de IA que el sistema no usa (brief de presentación, evidencias de la herramienta de diagramas la configuración de un proveedor externo de modelos y la del servicio externo de predicción que el código no consume, y se alineó el modelo por defecto del servicio ICF con el de producción). Quedan como recomendaciones abiertas, sin bloquear: calificador del perfil CIF con rango 0 a 4, apagar `ICF_MENTAL_LINK`, una cuarta ronda de validación y más pruebas con usuarios.
 
 ## Referencias
 - Cawley, G. C. y Talbot, N. L. C. (2010). On over-fitting in model selection and subsequent selection bias in performance evaluation. *Journal of Machine Learning Research, 11*, 2079–2107.
