@@ -29,10 +29,20 @@ Gradient Boosting con seis variables de dificultad funcional (partición 80-20):
 
 Gradient Boosting con la tríada: exactitud global de 92 %; F1 de 1,00 (alta) y 0,98 (moderada y baja); ROC-AUC entre 0,98 y 1,00 en los tres perfiles.
 
+## Conciliación de las cifras (verificación aritmética)
+
+| Cifra | Resultado de la verificación |
+|---|---|
+| Tríada: F1 de 1,00, 0,98 y 0,98 | Un F1 de 0,98 exige precisión y sensibilidad de al menos 0,95; la exactitud global (promedio de sensibilidades ponderado por clase) tendría que ser de al menos 95 % |
+| Exactitud de 92 % atribuida a la tríada | **Incompatible** con esos F1 |
+| Seis variables (tabla 2): sensibilidades 0,94, 1,00 y 0,83 | Exactitud de 92 % **alcanzable** según el peso de cada clase; es la lectura coherente del 92 % |
+| Tamaño de la prueba | El 20 % de 100 son 20 casos, pero las sensibilidades de 0,94 y 0,83 exigen al menos 16 y 6 casos en dos clases: las cifras parecen promedios de varias particiones |
+
+Acción recomendada: recalcular la exactitud de la tríada con los datos originales y corregir el manuscrito. Hasta entonces, el trabajo cita los F1 y el ROC-AUC tal como se reportan y presenta el 92 % como «reportado», sin usarlo para comparar modelos.
+
 ## Advertencias para quien use estas cifras
 
-- El manuscrito informa a la vez una exactitud de 92 % y F1 de 0,98 a 1,00 en las tres clases: ambas cifras deben conciliarse antes de citarlas como definitivas.
-- La metodología menciona las variables Q43 a Q45 como entrada del agrupamiento y los resultados las seis variables de dificultad funcional: debe aclararse.
+- La metodología menciona las variables Q43 a Q45 como entrada del agrupamiento y los resultados las seis variables de dificultad funcional (como la implementación): debe corregirse. Si el agrupamiento y el clasificador usan las mismas variables de dificultad, los perfiles son circulares y las métricas altas no prueban que predigan la percepción real de barreras.
 - Los autores indican que el modelo supervisado reproduce la lógica del agrupamiento que generó los perfiles; no son categorías clínicas. Límites declarados: diseño transversal, datos autorreportados, éxito específico de las barreras de transporte, n = 100 y variables ausentes.
 - En el estudio el perfil 0 es la percepción moderada, el 1 la alta y el 2 la baja; el backend de HAB describe 0 como bajas, 1 como moderadas y 2 como altas (`backend/app/routers/patients.py`). Verificar con los centroides del modelo que se use.
 - El *pipeline* que HAB entrena en cada despliegue (`backend/model/train_model.py`) usa 1.000 registros sintéticos y trece variables; las métricas anteriores no se trasladan a él sin reentrenar con los datos reales.

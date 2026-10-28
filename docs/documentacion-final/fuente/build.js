@@ -9,7 +9,7 @@ const {
 
 const HERE = __dirname;
 const REPO = 'C:/Users/jaqui/OneDrive/Documentos/GitHub/health-access-bridge';
-const OUT = path.join(REPO, 'docs/documentacion-final/Documentacion_Final_HAB_borrador_v0.4.docx');
+const OUT = path.join(REPO, 'docs/documentacion-final/Documentacion_Final_HAB_borrador_v0.5.docx');
 const REFS = require('./refs.js');
 
 // ------------------------------------------------------------------ medidas ICONTEC (NTC 1486), tamaño carta
@@ -270,7 +270,7 @@ const cover = [
   center('Grupo 01 · Periodo agosto – diciembre de 2026', { after: 500 }),
   center('Cali, Colombia', { after: 40 }),
   center('2026', { bold: true }),
-  center('Versión inicial para revisión (v0.4) · 28 de octubre de 2026', { size: 20, before: 200 }),
+  center('Versión inicial para revisión (v0.5) · 28 de octubre de 2026', { size: 20, before: 200 }),
 ];
 
 const h1Plain = (t) => new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun({ text: t })] });
@@ -331,7 +331,7 @@ sections.forEach((s, idx) => {
 
 const doc = new Document({
   creator: 'Julián Andrés Quimbayo Castro',
-  title: 'Health Access Bridge: documentación final del proyecto (v0.4)',
+  title: 'Health Access Bridge: documentación final del proyecto (v0.5)',
   description: 'Documentación final de Trabajo Integrador II y III, con formato ICONTEC (NTC 1486) y citación APA 7',
   features: { updateFields: true },
   styles: {
