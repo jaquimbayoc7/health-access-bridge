@@ -64,11 +64,11 @@ La relación `docs` > `fix` > `feat` es coherente con un Momento 3 dominado por 
 | Servicio ICF en un solo PC sin redundancia | Mitigado con el respaldo por similitud; persiste |
 | Calificador ICF con concordancia baja (κ 0,312) | El médico lo edita; no se aprueba uso clínico autónomo |
 | Sin migraciones de base de datos (`create_all`) | Deuda técnica; recomendado Alembic para cambios de esquema |
-| Rendimiento con 200 usuarios simultáneos en plan gratuito (DEUDA-01) | Sin resolver; producción usa base de pago |
+| Rendimiento con 200 usuarios simultáneos en plan gratuito (DEUDA-01) | Riesgo aceptado (23-sep-2026), sin escalar la infraestructura; producción usa base de pago |
 | Revisión de accesibilidad con lector de pantalla | No se hará por tiempo (decisión del responsable, 27-oct); queda solo la verificación con axe-core y teclado |
 | Segunda revisora clínica del motor ICF | No se hará por tiempo (decisión del responsable, 27-oct); no se mide el acuerdo entre profesionales |
 | Lint y tipos como puerta del CI | No se exigen (decisión del responsable, 27-oct); están en cero errores pero una regresión no frenaría un despliegue |
-| Documentación integral con la plantilla del Trabajo Integrador II | Pendiente (falta la plantilla) |
+| Documentación integral del proyecto (guía de la profesora) | Borrador v0.1 en Word entregado el 28-oct-2026; pendiente de revisión del autor |
 
 ## 7. Pendiente para el cierre
 HU-10: despliegue final de la última versión a QA y producción, reportes finales, documentación integral del proceso (técnico, investigativo y de usuario) y cierre de los issues #10 y #13 y del Milestone 3.
