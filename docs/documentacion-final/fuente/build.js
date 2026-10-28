@@ -9,7 +9,7 @@ const {
 
 const HERE = __dirname;
 const REPO = 'C:/Users/jaqui/OneDrive/Documentos/GitHub/health-access-bridge';
-const OUT = path.join(REPO, 'docs/documentacion-final/Documentacion_Final_HAB_borrador_v0.1.docx');
+const OUT = path.join(REPO, 'docs/documentacion-final/Documentacion_Final_HAB_borrador_v0.2.docx');
 const REFS = require('./refs.js');
 
 // ------------------------------------------------------------------ medidas ICONTEC (NTC 1486), tamaño carta
@@ -28,6 +28,8 @@ function imgPath(spec) {
   if (pre === 'fig') return path.join(HERE, 'fig', name);
   if (pre === 'man') return path.join(REPO, 'docs/manuals/img', name);
   if (pre === 'mock') return path.join(REPO, 'frontend/design/images', name);
+  if (pre === 'c4') return path.join(HERE, 'c4t', name);
+  if (pre === 'ani') return path.join(HERE, 'ani', name);
   throw new Error('prefijo de imagen desconocido: ' + spec);
 }
 function imgSize(file) {
@@ -227,11 +229,13 @@ const cover = [
   center('HEALTH ACCESS BRIDGE (HAB)', { size: 30, bold: true, before: 600, after: 160 }),
   center('Plataforma web para el registro de personas con discapacidad, la predicción de barreras de acceso y la sugerencia asistida por inteligencia artificial del perfil funcional CIF', { size: 24, after: 600 }),
   center('DOCUMENTACIÓN FINAL DEL PROYECTO', { size: 26, bold: true, after: 100 }),
-  center('Trabajo Integrador II (750128) y Trabajo Integrador III (750129)', { size: 24, after: 700 }),
+  center('Trabajo Integrador I, II (750128) y III (750129)', { size: 24, after: 600 }),
   center('JULIÁN ANDRÉS QUIMBAYO CASTRO', { bold: true, after: 60 }),
   center('[Código estudiantil: completar]', { after: 700 }),
-  center('Profesora asesora', { after: 40 }),
-  center('Beatriz Eugenia Florián Gaviria, Ph.D.', { bold: true, after: 700 }),
+  center('Docente de la asignatura', { after: 40 }),
+  center('Beatriz Eugenia Florián Gaviria, Ph.D.', { bold: true, after: 200 }),
+  center('Asesora del proyecto', { after: 40 }),
+  center('Deisy Chaves, Ph.D.', { bold: true, after: 600 }),
   center('UNIVERSIDAD DEL VALLE', { bold: true, after: 40 }),
   center('Facultad de Ingeniería', { after: 40 }),
   center('Escuela de Ingeniería de Sistemas y Computación', { after: 40 }),
@@ -239,7 +243,7 @@ const cover = [
   center('Grupo 01 · Periodo agosto – diciembre de 2026', { after: 500 }),
   center('Cali, Colombia', { after: 40 }),
   center('2026', { bold: true }),
-  center('Versión inicial para revisión (v0.1) · 28 de octubre de 2026', { size: 20, before: 300 }),
+  center('Versión inicial para revisión (v0.2) · 28 de octubre de 2026', { size: 20, before: 200 }),
 ];
 
 const h1Plain = (t) => new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun({ text: t })] });
@@ -300,7 +304,7 @@ sections.forEach((s, idx) => {
 
 const doc = new Document({
   creator: 'Julián Andrés Quimbayo Castro',
-  title: 'Health Access Bridge: documentación final del proyecto (v0.1)',
+  title: 'Health Access Bridge: documentación final del proyecto (v0.2)',
   description: 'Documentación final de Trabajo Integrador II y III, con formato ICONTEC (NTC 1486) y citación APA 7',
   features: { updateFields: true },
   styles: {

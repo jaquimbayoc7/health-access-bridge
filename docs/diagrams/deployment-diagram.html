@@ -81,16 +81,16 @@
 
   <!-- Left section: repo + trigger + tools -->
   <text x="441" y="1012" text-anchor="middle" class="t-sub">Repo: jaquimbayoc7/health-access-bridge</text>
-  <text x="441" y="1028" text-anchor="middle" class="t-sub">Trigger: push to master</text>
-  <text x="441" y="1044" text-anchor="middle" class="t-sub">Python 3.11 · Node 18</text>
-  <text x="441" y="1060" text-anchor="middle" class="t-sub">pytest (123) · vitest (61) · vite build</text>
+  <text x="441" y="1028" text-anchor="middle" class="t-sub">Trigger: push y PR a develop · staging · master</text>
+  <text x="441" y="1044" text-anchor="middle" class="t-sub">Python 3.11 · Node 20</text>
+  <text x="441" y="1060" text-anchor="middle" class="t-sub">pytest (123) · vitest (61) · icf (92) · vite build</text>
   <text x="441" y="1076" text-anchor="middle" class="t-sub">Deploy via render.yaml + Render API</text>
 
   <!-- Center section: 3 workflows -->
   <text x="831" y="1012" text-anchor="middle" class="t-sub" style="font-weight:bold">3 Workflows de Despliegue:</text>
-  <text x="831" y="1030" text-anchor="middle" class="t-sub">deploy-dev.yml    →    DEV  (auto)</text>
-  <text x="831" y="1048" text-anchor="middle" class="t-sub">deploy-qa.yml     →    QA   (auto)</text>
-  <text x="831" y="1066" text-anchor="middle" class="t-sub">deploy-prod.yml   →    PROD  (gate manual)</text>
+  <text x="831" y="1030" text-anchor="middle" class="t-sub">ci-dev.yml    →    DEV  (auto)</text>
+  <text x="831" y="1048" text-anchor="middle" class="t-sub">ci-qa.yml     →    QA   (auto, smoke)</text>
+  <text x="831" y="1066" text-anchor="middle" class="t-sub">ci-prod.yml   →    PROD  (gate manual)</text>
 
   <!-- Right section: gate badge -->
   <rect x="1058" y="1005" width="330" height="70" rx="3" class="gate"/>
@@ -113,7 +113,7 @@
     <!-- Frontend DEV -->
     <rect x="278" y="232" width="319" height="120" rx="4" class="ct"/>
     <text x="437" y="254" text-anchor="middle" class="t-head">Frontend SPA</text>
-    <text x="437" y="269" text-anchor="middle" class="t-sub">[Container: React 18 / Vite / Node 18]</text>
+    <text x="437" y="269" text-anchor="middle" class="t-sub">[Container: React 18 / Vite / Node 20]</text>
     <text x="437" y="286" text-anchor="middle" class="t-sub">hab-frontend-dev.onrender.com</text>
     <text x="437" y="302" text-anchor="middle" class="t-sub">VITE_API_URL → backend-dev</text>
     <text x="437" y="316" text-anchor="middle" class="t-sub">Auto-deploy on push</text>
@@ -129,7 +129,7 @@
       <text x="437" y="472" text-anchor="middle" class="t-ml">HybridModelDisability</text>
       <text x="437" y="487" text-anchor="middle" class="t-sub">[Component: ML Model · joblib]</text>
       <text x="437" y="502" text-anchor="middle" class="t-sub">Perfiles: Bajas / Moderadas / Altas</text>
-      <text x="437" y="517" text-anchor="middle" class="t-sub">model/hybrid_model.pkl</text>
+      <text x="437" y="517" text-anchor="middle" class="t-sub">model/model_pipeline.joblib</text>
 
     <!-- PostgreSQL DEV cylinder -->
     <ellipse cx="437" cy="578" rx="130" ry="13" class="db"/>
@@ -148,7 +148,7 @@
     <!-- Frontend QA -->
     <rect x="641" y="232" width="319" height="120" rx="4" class="ct"/>
     <text x="800" y="254" text-anchor="middle" class="t-head">Frontend SPA</text>
-    <text x="800" y="269" text-anchor="middle" class="t-sub">[Container: React 18 / Vite / Node 18]</text>
+    <text x="800" y="269" text-anchor="middle" class="t-sub">[Container: React 18 / Vite / Node 20]</text>
     <text x="800" y="286" text-anchor="middle" class="t-sub">hab-frontend-qa.onrender.com</text>
     <text x="800" y="302" text-anchor="middle" class="t-sub">VITE_API_URL → backend-qa</text>
     <text x="800" y="316" text-anchor="middle" class="t-sub">Auto-deploy on push</text>
@@ -163,7 +163,7 @@
       <text x="800" y="472" text-anchor="middle" class="t-ml">HybridModelDisability</text>
       <text x="800" y="487" text-anchor="middle" class="t-sub">[Component: ML Model · joblib]</text>
       <text x="800" y="502" text-anchor="middle" class="t-sub">Perfiles: Bajas / Moderadas / Altas</text>
-      <text x="800" y="517" text-anchor="middle" class="t-sub">model/hybrid_model.pkl</text>
+      <text x="800" y="517" text-anchor="middle" class="t-sub">model/model_pipeline.joblib</text>
 
     <!-- PostgreSQL QA cylinder -->
     <ellipse cx="800" cy="578" rx="130" ry="13" class="db"/>
@@ -186,7 +186,7 @@
     <!-- Frontend PROD -->
     <rect x="1004" y="254" width="379" height="120" rx="4" class="ct"/>
     <text x="1193" y="276" text-anchor="middle" class="t-head">Frontend SPA</text>
-    <text x="1193" y="291" text-anchor="middle" class="t-sub">[Container: React 18 / Vite / Node 18]</text>
+    <text x="1193" y="291" text-anchor="middle" class="t-sub">[Container: React 18 / Vite / Node 20]</text>
     <text x="1193" y="308" text-anchor="middle" class="t-sub">hab-frontend.onrender.com</text>
     <text x="1193" y="324" text-anchor="middle" class="t-sub">VITE_API_URL → backend-prod</text>
     <text x="1193" y="340" text-anchor="middle" class="t-sub">Deploy manual aprobado</text>
@@ -201,7 +201,7 @@
       <text x="1193" y="494" text-anchor="middle" class="t-ml">HybridModelDisability</text>
       <text x="1193" y="509" text-anchor="middle" class="t-sub">[Component: ML Model · joblib]</text>
       <text x="1193" y="524" text-anchor="middle" class="t-sub">Perfiles: Bajas / Moderadas / Altas</text>
-      <text x="1193" y="539" text-anchor="middle" class="t-sub">model/hybrid_model.pkl</text>
+      <text x="1193" y="539" text-anchor="middle" class="t-sub">model/model_pipeline.joblib</text>
 
     <!-- PostgreSQL PROD cylinder -->
     <ellipse cx="1193" cy="600" rx="155" ry="13" class="db"/>
@@ -267,7 +267,7 @@
   <text x="1600" y="483" text-anchor="middle" class="t-sub">RAG sobre el catálogo CIF-IA · reglas y calificador</text>
   <rect x="1438" y="504" width="324" height="56" rx="3" class="ml"/>
   <text x="1600" y="524" text-anchor="middle" class="t-head2">Ollama (en Windows, usa la GPU)</text>
-  <text x="1600" y="540" text-anchor="middle" class="t-sub">gemma4:e4b (~2 s) · bge-m3 (embeddings)</text>
+  <text x="1600" y="540" text-anchor="middle" class="t-sub">gemma4:e4b (~2,6 s) · bge-m3 (embeddings)</text>
   <rect x="1438" y="568" width="324" height="56" rx="3" class="db"/>
   <text x="1600" y="588" text-anchor="middle" class="t-head2">PostgreSQL + pgvector</text>
   <text x="1600" y="604" text-anchor="middle" class="t-sub">[Container Docker] catálogo y embeddings; sin datos de pacientes</text>

@@ -8,7 +8,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad, el anál
 
 ## Estado del Proyecto
 
-> **Corte: 27 de octubre de 2026** · **141 de 146 puntos (96,6 %)** · Momentos 1 y 2 al 100 % · Momento 3: 54 de 59 pts (HU-07, HU-08 y HU-09 completas; queda HU-10)
+> **Proyecto cerrado el 28 de octubre de 2026** · **146 de 146 puntos (100 %)** · Momentos 1, 2 y 3 al 100 % (HU-01 a HU-13 completas)
 
 | Capa | Estado | Detalle |
 |------|--------|----------|
@@ -162,7 +162,7 @@ La referencia completa de la API (ReDoc) está en [`docs/api/redoc-api.html`](./
 | [#6](https://github.com/jaquimbayoc7/health-access-bridge/issues/6) | [HU-06] Pruebas de Integración y Rendimiento API | Sprint 7 (Sem. 16-17) | 8 | ✅ Done |
 | — | [HU-05b] Ayuda contextual (Help + Tooltips ICF) traducida por idioma | Sprint 6-7 (Sem. 14-17) | 3 | ✅ Done |
 
-### Momento 3 — Trabajo Integrador III (Semanas 19-27) · [Milestone](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) · 🟡 54 de 59 pts
+### Momento 3 — Trabajo Integrador III (Semanas 19-27) · [Milestone](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) · ✅ 59 de 59 pts
 
 > Épica: [#13 EPICA-03 IA Generativa, Dashboards y Cierre](https://github.com/jaquimbayoc7/health-access-bridge/issues/13)
 
@@ -171,7 +171,7 @@ La referencia completa de la API (ReDoc) está en [`docs/api/redoc-api.html`](./
 | [#7](https://github.com/jaquimbayoc7/health-access-bridge/issues/7) | [HU-07] Perfil Funcional ICF con RAG y LLM local para sugerencia de códigos CIF (Colombia) — 07a a 07h, con la validación clínica 07g ([#71](https://github.com/jaquimbayoc7/health-access-bridge/issues/71)) | Sprint 8-9 (Sem. 19-22) | 33 | ✅ Done |
 | [#8](https://github.com/jaquimbayoc7/health-access-bridge/issues/8) | [HU-08] Dashboard de Análisis y Exportación | Sprint 8-9 (adelantada del 10-11) | 13 | ✅ Done |
 | [#9](https://github.com/jaquimbayoc7/health-access-bridge/issues/9) | [HU-09] Pruebas Completas y Feedback de Usuarios | Sprint 11 (Sem. 25-26) | 8 | ✅ Completada |
-| [#10](https://github.com/jaquimbayoc7/health-access-bridge/issues/10) | [HU-10] Despliegue Final y Generación de Manuales | Sprint 12 (Sem. 27) | 5 | 📋 Backlog |
+| [#10](https://github.com/jaquimbayoc7/health-access-bridge/issues/10) | [HU-10] Despliegue Final y Generación de Manuales | Sprint 12 (Sem. 27) | 5 | ✅ Completada |
 
 🔗 [Ver todas las issues](https://github.com/jaquimbayoc7/health-access-bridge/issues) · [Ver SCRUM Board](https://github.com/users/jaquimbayoc7/projects/1)
 
@@ -183,7 +183,7 @@ La referencia completa de la API (ReDoc) está en [`docs/api/redoc-api.html`](./
 |-------|-------|---------|-----|-----|--------|
 | [#11](https://github.com/jaquimbayoc7/health-access-bridge/issues/11) | EPICA-01 Estructuración, Diseño e Implementación M1 | 1 · Sem. 1-9 | HU-01, 02, 03, 04, 11, 12, 13 | 63 | ✅ Done |
 | [#12](https://github.com/jaquimbayoc7/health-access-bridge/issues/12) | EPICA-02 Funcionalidades Core y Capacidades Avanzadas | 2 · Sem. 10-18 | HU-05, 05b, 06 | 24 | ✅ Done |
-| [#13](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) | EPICA-03 IA Generativa, Dashboards y Cierre | 3 · Sem. 19-27 | HU-07 al 10 | 59 | 🟡 En progreso (46 de 59) |
+| [#13](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) | EPICA-03 IA Generativa, Dashboards y Cierre | 3 · Sem. 19-27 | HU-07 al 10 | 59 | ✅ Completa (59 de 59) |
 
 ---
 

@@ -1,6 +1,6 @@
-# Pendientes y punto de partida para la próxima sesión
+# Estado final del proyecto y recomendaciones abiertas
 
-**Corte:** 27 de octubre de 2026 · HU-07, HU-08 y HU-09 completas (54 de 59 pts del Momento 3; proyecto 141 de 146); queda HU-10. `develop`, `staging` y `master` quedaron al día por los PR #83 a #90 que hizo el responsable (producción, QA y DEV con el dashboard de análisis); solo falta promover lo posterior (corrección de fechas, nueva presentación, README y diagramas).
+**Corte:** 28 de octubre de 2026 · **proyecto cerrado: 146 de 146 pts (100 %)**; HU-01 a HU-13 completas. `develop`, `staging` y `master` quedaron al día por los PR #83 a #90 que hizo el responsable (producción, QA y DEV con el dashboard de análisis); solo falta promover lo posterior (corrección de fechas, nueva presentación, README y diagramas).
 **Uso:** abrir este archivo al empezar la sesión siguiente y seguir en orden. Complementa [`BACKLOG.md`](../BACKLOG.md) (fuente de verdad del alcance) y [`reports/PROJECT_STATUS_M3.md`](reports/PROJECT_STATUS_M3.md).
 
 ---
@@ -9,13 +9,13 @@
 
 | Dato | Valor |
 |---|---|
-| Avance del proyecto | **133 de 146 pts (91,1 %)** · Momento 1 100 % · Momento 2 100 % · **Momento 3: 46 de 59 pts (78,0 %)** |
+| Avance del proyecto | **146 de 146 pts (100 %)** · Momentos 1, 2 y 3 al 100 % · proyecto cerrado el 28-oct-2026 |
 | HU-07 (Perfil Funcional ICF) | **33 de 33 pts ✅**: 07a a 07h hechas. **07g cerrada el 26-oct** (3 pts acreditados por el responsable): tres rondas con la médica; con 24 casos nuevos cumplen precisión estricta 62,7 %, flexible 86,3 %, cobertura 69,0 % y actividades 100 %; el calificador (κ 0,312) no: NO CUMPLE por un criterio. Borrador de apoyo, sin uso clínico |
 | Recomendado (no bloquea) | Calificador con rango 0–4, apagar `ICF_MENTAL_LINK` (6 de 7 estructuras rechazadas en la ronda 3) y una cuarta ronda con casos nuevos. **Descartada** la segunda revisora (27-oct, por tiempo) |
 | Decisiones de alcance del 27-oct-2026 (por tiempo) | **No se harán:** segunda revisora clínica, revisión de accesibilidad con lector de pantalla y exigir lint y tipos en el CI. Quedan documentadas como limitaciones en los manuales, el reporte de HU-09 y el Insights Report 6 |
 | HU-08 (Dashboard y exportación) | **13 pts ✅ completada el 26-oct** (adelantada): dashboard con 10 gráficos y filtros, exportación a Excel y PDF, backend `/analytics/*`; verificada en DEV (CI verde, E2E 5/5 contra el frontend DEV) |
 | HU-09 (Pruebas y feedback) | **8 pts ✅ completada el 27-oct**: UAT 18/18 y accesibilidad WCAG 2.2 AA con 0 violaciones en DEV, sesión de 10 usuarios (SUS medio 81,25) y guía de calificadores ICF; ver `docs/reports/REPORTE_FINAL_PRUEBAS_HU09.md` |
-| HU-10 (Despliegue final y manuales, 5 pts) | **En curso (28-oct: retomar la documentación integral).** Despliegue final **hecho el 27-oct** (`develop`, `staging` y `master` alineadas; UAT 18/18 en DEV y QA; accesibilidad 3/3 en DEV, QA y producción). **Única tarea pendiente: revisar el borrador v0.1 de la documentación integral** (`docs/documentacion-final/Documentacion_Final_HAB_borrador_v0.1.docx`, elaborado el 28-oct con la guía de la profesora, formato ICONTEC y citación APA 7); faltan el código estudiantil, la ciudad, los aprendizajes personales y verificar las referencias que no vienen del `.bib`; luego se acreditan los 5 pts y se cierran #10, #13 y el Milestone 3. Antes: los tres manuales están escritos (`docs/manuals/`: usuario con capturas, técnico y servicio ICF; Markdown y PDF) y **fueron aprobados por el responsable el 27-oct**. Lint y tipos del frontend quedaron en cero errores y los subtítulos sin traducir se corrigieron. Faltan el despliegue final de la última versión a producción, los reportes finales y la **documentación integral del proceso técnico, investigativo y de usuario bajo la plantilla del Trabajo Integrador II** (hay que aportar la plantilla) |
+| HU-10 (Despliegue final y manuales, 5 pts) | **✅ completada el 28-oct-2026**: despliegue verificado en los tres ambientes, tres manuales (`docs/manuals/`), documentación final en Word según la guía de la profesora (`docs/documentacion-final/`), Insights Report 6, diagramas C4 y Archify actualizados y limpieza de archivos de IA sin uso |
 | Pruebas | backend 123 · frontend 61 · servicio ICF 101 (92 en CI, 9 locales) · E2E 20 (+18 de aceptación bajo demanda) · smoke 7 |
 | Producción de la IA | PC propio (i5-13450HX, 32 GB, RTX 5050 de 8 GB): `gemma4:e4b`, ~2,6 s por sugerencia con el modelo en memoria; Tailscale Funnel + Caddy con token |
 | Licencias | Verificadas: Gemma 4 Apache 2.0 (se usa); MedGemma no se usa (prohíbe uso clínico) → [`reports/LICENCIAS_COMPONENTES_ICF.md`](reports/LICENCIAS_COMPONENTES_ICF.md) |
@@ -31,7 +31,7 @@
 | 3 | Tablero de proyectos de GitHub | El token de `gh` no tiene el permiso `read:project`: **no se pudo actualizar el tablero**. Ejecutar `gh auth refresh -s read:project` (interactivo) y mover a Done HU-07g/#71 y HU-07/#7 (ambas ya están cerradas como issues desde el 26-oct), o hacerlo a mano en la web. |
 | 4 | ~~Consulta regulatoria (INVIMA)~~ **Descartada** | Decisión del responsable (26-oct-2026): **no se realizará en este proyecto**. Consecuencia que se mantiene: la pantalla se presenta como **borrador de apoyo** y el uso clínico real no está aprobado. |
 | 5 | ~~Catálogo de la OMS: permiso para mostrar títulos~~ **Descartado** | Decisión del responsable (26-oct-2026): **no se realizará en este proyecto**. Limitación aceptada: la aplicación muestra al médico el título de cada código; los reportes con títulos siguen sin publicarse (`data/private/`). |
-| 6 | Presentación en Kimi | Usar [`presentation/KIMI_BRIEF_M3.md`](presentation/KIMI_BRIEF_M3.md) y reunir las capturas que el brief lista en la sección 9. |
+| 6 | ~~Presentación en Kimi~~ **Retirada** | El brief para esa herramienta de IA se eliminó del repositorio el 28-oct-2026 (no se requiere para la operación); el dato de energía que contenía quedó en `docs/reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md`. |
 
 ## 3. Cierre de HU-07g (hecho el 26-oct-2026; se conserva como guía para una cuarta ronda)
 
@@ -95,5 +95,5 @@
 | Validación clínica y licencias | `docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md`, `docs/reports/LICENCIAS_COMPONENTES_ICF.md` |
 | Operación del servicio ICF | `docs/manuals/MANUAL_ICF.md`, `icf-service/deploy/windows/README.md` |
 | Diseño del RAG | `docs/diagrams/rag-icf-postgresql.md` |
-| Presentación | `docs/presentation/index.html` (publicada desde `master`), brief para Kimi: `docs/presentation/KIMI_BRIEF_M3.md` |
+| Presentación | `docs/presentation/index.html` (publicada desde `master`) |
 | Animaciones (Archify): arquitectura, recorridos del médico y del administrador, y validación clínica con la médica | `docs/presentation/animaciones/` (ver su `README.md` para regenerarlas) |

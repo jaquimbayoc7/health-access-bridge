@@ -1,7 +1,7 @@
 # Estado del Proyecto Health Access Bridge — Momento Integrador III (corte parcial)
 
 **Última actualización:** 26 de octubre de 2026 (cierre de HU-07g y de HU-08; el resto, al 7 de octubre)
-**Momento actual:** Momento 3 - Trabajo Integrador III (en progreso: HU-07, HU-08 y HU-09 completas, 54 de 59 pts; HU-10 por iniciar)
+**Momento actual:** Momento 3 - Trabajo Integrador III (**completado el 28-oct-2026**: HU-07, HU-08, HU-09 y HU-10 completas, 59 de 59 pts)
 
 > Este documento continúa a [`PROJECT_STATUS_M2.md`](./PROJECT_STATUS_M2.md) (cierre del Momento 2, septiembre de 2026). Es un **corte parcial**: el Momento 3 va a la mitad de HU-07 y las HU-08, HU-09 y HU-10 no han empezado. Para el análisis de lo ocurrido con el modelo local Qwen, ver [`INSIGHTS_REPORT5.md`](./INSIGHTS_REPORT5.md) y [`PRUEBAS_HU07_SERVIDOR_FISICO.md`](./PRUEBAS_HU07_SERVIDOR_FISICO.md).
 
@@ -24,7 +24,7 @@ Las **licencias** quedaron verificadas el 7 de octubre (`LICENCIAS_COMPONENTES_I
 ### 🟡 EPICA-03: IA Generativa, Dashboards y Cierre (EN PROGRESO)
 
 **Periodo:** Semanas 19-27
-**Puntos:** 59 pts (HU-07 33 + HU-08 13 + HU-09 8 + HU-10 5) — **54 pts completados (91,5 %)**
+**Puntos:** 59 pts (HU-07 33 + HU-08 13 + HU-09 8 + HU-10 5) — **59 pts completados (100 %)**
 
 > **Nota de seguimiento:** el milestone «Momento 3» de GitHub muestra 0 % porque las sub-historias de HU-07 viven en el `BACKLOG.md` y no como issues. El avance real es el de este documento.
 
@@ -56,7 +56,7 @@ Las **licencias** quedaron verificadas el 7 de octubre (`LICENCIAS_COMPONENTES_I
 **Tercera ronda (26-oct), 24 casos nuevos con reglas fijadas antes de ver las sugerencias:** precisión estricta 62,7 %, flexible 86,3 %, cobertura 69,0 % y actividades 100 % cumplen; el calificador (κ ponderado 0,312) no cumple: NO CUMPLE por un solo criterio (protocolo, secciones 12 y 13). **Cierre (26-oct):** el responsable deja las métricas tal como están y acredita los 3 pts; 33 de 59 en el Momento 3. Reporte final: `docs/presentation/reporte-afinamiento-icf.html`. **Segunda ronda (26-oct):** la médica valoró las sugerencias nuevas; el motor corregido da precisión estricta 71,0 %, flexible 87,1 % y κ 0,540 (cumplen) y cobertura 58,2 % (no cumple por 1,8 puntos): NO CUMPLE por un solo criterio; ver protocolo, sección 11. **Avance (26-oct):** el motor ya incluye estructuras solo con evidencia y el vínculo de movilidad para funciones (medición preliminar: cobertura de 0,52–0,55 a 0,58–0,60; protocolo, sección 10). Producción ya actualizada (26-oct). **Recomendado tras el cierre (no bloquea):** segunda revisora, calificador con rango 0–4, apagar `ICF_MENTAL_LINK` y una cuarta ronda con casos nuevos; ver `PROTOCOLO_VALIDACION_CLINICA_HU07G.md`, secciones 13 y 14.
 
 ### 📋 HU-08, HU-09, HU-10
-**HU-08 (completada el 26-oct, 13 pts):** dashboard de análisis con 10 gráficos, filtros, pestaña del perfil funcional ICF (tasa de aceptación de las sugerencias) y exportación a Excel (5 hojas) y PDF con gráficos; backend `/analytics/summary` y `/analytics/filters` con datos agregados; 18 pruebas de backend, 23 de frontend y 5 E2E, estos últimos también contra el frontend DEV desplegado (detalle en `BACKLOG.md`). **HU-09 (completada el 27-oct, 8 pts):** 18 escenarios de aceptación por rol (18/18 en DEV), accesibilidad WCAG 2.2 AA con axe-core (0 violaciones en 14 pantallas tras corregir 7 grupos de hallazgos) y sesión de usabilidad con 10 participantes (SUS medio 81,25; ver `REPORTE_FINAL_PRUEBAS_HU09.md`). En curso: Despliegue final y manuales (HU-10, 5 pts): los tres manuales (usuario, técnico y servicio ICF) están escritos y aprobados por el responsable; ver también el [Insights Report 6](./INSIGHTS_REPORT6.md); falta el despliegue final, los reportes finales y la documentación integral del proceso bajo la plantilla del Trabajo Integrador II.
+**HU-08 (completada el 26-oct, 13 pts):** dashboard de análisis con 10 gráficos, filtros, pestaña del perfil funcional ICF (tasa de aceptación de las sugerencias) y exportación a Excel (5 hojas) y PDF con gráficos; backend `/analytics/summary` y `/analytics/filters` con datos agregados; 18 pruebas de backend, 23 de frontend y 5 E2E, estos últimos también contra el frontend DEV desplegado (detalle en `BACKLOG.md`). **HU-09 (completada el 27-oct, 8 pts):** 18 escenarios de aceptación por rol (18/18 en DEV), accesibilidad WCAG 2.2 AA con axe-core (0 violaciones en 14 pantallas tras corregir 7 grupos de hallazgos) y sesión de usabilidad con 10 participantes (SUS medio 81,25; ver `REPORTE_FINAL_PRUEBAS_HU09.md`). **HU-10 (completada el 28-oct, 5 pts):** despliegue final verificado en los tres ambientes, manuales de usuario, técnico y del servicio ICF, documentación final en Word según la guía de la profesora (ICONTEC y APA 7), Insights Report 6, diagramas C4 y Archify al día y limpieza de archivos de IA sin uso. **Proyecto cerrado con 146 de 146 puntos.**
 
 ---
 

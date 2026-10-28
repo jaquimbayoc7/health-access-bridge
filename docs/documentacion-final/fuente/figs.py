@@ -297,9 +297,9 @@ deploy()
 # ---------------------------------------------------------------- Graficos de gestion y calidad
 def charts():
     # burndown
-    labels = ['Inicio', 'S1', 'S2', 'S3', 'S3.5', 'S4-5', 'S6-7', 'S7', 'S8', 'S8-9\n(26-oct)', 'S11\n(27-oct)']
-    real = [146, 138, 125, 99, 83, 83, 67, 59, 59, 13, 5]
-    ideal = [146 * (1 - i / 12) for i in range(11)]
+    labels = ['Inicio', 'S1', 'S2', 'S3', 'S3.5', 'S4-5', 'S6-7', 'S7', 'S8', 'S8-9\n(26-oct)', 'S11\n(27-oct)', 'Cierre\n(28-oct)']
+    real = [146, 138, 125, 99, 83, 83, 67, 59, 59, 13, 5, 0]
+    ideal = [146 * (1 - i / 11) for i in range(12)]
     fig, ax = plt.subplots(figsize=(8.2, 4.0))
     ax.plot(labels, ideal, color=GRAY, ls='--', lw=1.4, label='Ideal')
     ax.plot(labels, real, color=BLUE, lw=2.2, marker='o', label='Real (puntos restantes)')
@@ -314,9 +314,9 @@ def charts():
     save(fig, 'burndown.png')
 
     # velocity
-    sp = ['Sprint 1', 'Sprint 2', 'Sprint 3', 'Sprint 3.5', 'Sprint 4-5\n(adelantado)', 'Sprint 6-7', 'Sprint 7', 'Sprint 8-9\n(HU-07 + HU-08)', 'Sprint 11\n(HU-09)']
-    done = [8, 13, 26, 16, 21, 16, 8, 46, 8]
-    plan = [8, 13, 26, 16, 21, 16, 8, 33, 8]
+    sp = ['Sprint 1', 'Sprint 2', 'Sprint 3', 'Sprint 3.5', 'Sprint 4-5\n(adelantado)', 'Sprint 6-7', 'Sprint 7', 'Sprint 8-9\n(HU-07 + HU-08)', 'Sprint 11\n(HU-09)', 'Sprint 12\n(HU-10)']
+    done = [8, 13, 26, 16, 21, 16, 8, 46, 8, 5]
+    plan = [8, 13, 26, 16, 21, 16, 8, 33, 8, 5]
     fig, ax = plt.subplots(figsize=(8.4, 4.0))
     x = range(len(sp))
     ax.bar(x, done, color=BLUE, width=0.6, label='Completados')
