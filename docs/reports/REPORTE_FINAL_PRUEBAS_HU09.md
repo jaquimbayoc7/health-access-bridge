@@ -54,7 +54,7 @@ Nota de proceso: la primera versión de la corrección 7 (un `aria-label` en cad
 1. **Tamaño y alcance de la muestra.** n = 10 permite detectar los problemas frecuentes pero no estima el SUS con precisión; solo se observó una tarea (M06) y los participantes fueron evaluados en un solo día. Es un primer corte, no una validación clínica de usabilidad.
 2. axe-core **no sustituye** la revisión manual con lectores de pantalla (NVDA, VoiceOver). **No se realizará por tiempo** (decisión del responsable, 27-oct-2026): la accesibilidad queda verificada con axe-core y con el uso por teclado, y esta limitación se acepta.
 3. El guion UAT usa cuentas semilla de DEV y deja un usuario médico `uat.<marca>@salud.co` desactivado por cada ejecución.
-4. `tsc --noEmit` reporta errores de tipos preexistentes (`analyticsExport.test.ts`, `Analytics.tsx:234`); no afectan el build de Vite ni la CI y quedan para HU-10.
+4. Los errores de tipos (`tsc --noEmit`) y de lint preexistentes se corrigieron el 27-oct-2026 (cero errores); el CI no los exige como puerta (decisión del responsable).
 
 ## 5. Verificación tras la promoción (27-oct-2026)
 Tras los PR a `staging` y `master` (hasta el #100; las tres ramas quedaron alineadas) se repitieron las pruebas en los ambientes promovidos:
