@@ -15,7 +15,6 @@ Diagramas animados del proyecto desde la perspectiva del **médico** y del **adm
 | `video/proceso-validacion-clinica.png` | Captura del diagrama de validación clínica (portada de su tarjeta; el video se exporta desde el visor con **Exportar**) |
 | `fuentes/*.json` | Fuente de cada diagrama (esquema de Archify) |
 | `construir.mjs` | Valida y genera los HTML (agrega el idioma español) |
-| `.evidencia/` | Resúmenes de validación de la última construcción |
 
 Cada HTML es autosuficiente: se abre en el navegador sin instalar nada. Controles útiles: interruptor de movimiento (Activa / Quieta), **Ruta** (trazar el camino entre dos nodos), **Lente**, buscador de nodos, tema claro/oscuro y **Exportar** (PNG, SVG, WebM).
 

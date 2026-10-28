@@ -51,14 +51,6 @@ services:
         value: admin@hab-dev.local
       - key: DEFAULT_ADMIN_PASSWORD
         generateValue: true
-      - key: PREDICTION_API_URL
-        value: https://hybridmodeldisability.onrender.com
-      - key: PREDICTION_API_KEY
-        sync: false
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: LLM_MODEL
-        value: gpt-3.5-turbo
       # Servicio ICF local (HU-07): URL del tunel Tailscale Funnel y token se cargan en el panel de Render
       - key: ICF_LLM_URL
         sync: false
@@ -123,14 +115,6 @@ services:
         value: admin@hab-qa.local
       - key: DEFAULT_ADMIN_PASSWORD
         generateValue: true
-      - key: PREDICTION_API_URL
-        value: https://hybridmodeldisability.onrender.com
-      - key: PREDICTION_API_KEY
-        sync: false
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: LLM_MODEL
-        value: gpt-3.5-turbo
       # Servicio ICF local (HU-07): URL del tunel Tailscale Funnel y token se cargan en el panel de Render
       - key: ICF_LLM_URL
         sync: false
@@ -195,14 +179,6 @@ services:
         sync: false
       - key: DEFAULT_ADMIN_PASSWORD
         sync: false
-      - key: PREDICTION_API_URL
-        value: https://hybridmodeldisability.onrender.com
-      - key: PREDICTION_API_KEY
-        sync: false
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: LLM_MODEL
-        value: gpt-4
       # Servicio ICF local (HU-07): URL del tunel Tailscale Funnel y token se cargan en el panel de Render
       - key: ICF_LLM_URL
         sync: false

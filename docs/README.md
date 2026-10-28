@@ -1,6 +1,6 @@
 # Documentación del Proyecto — Health Access Bridge (HAB)
 
-> **Última actualización:** 27 de octubre de 2026 · 141 de 146 pts (96,6 %) · Momentos 1 y 2 completos; Momento 3 en 46 de 59 pts (HU-07 y HU-08 completas)
+> **Última actualización:** 28 de octubre de 2026 · **proyecto cerrado: 146 de 146 pts (100 %)** · Momentos 1, 2 y 3 completos
 
 **Punto de entrada:** [`presentation/index.html`](./presentation/index.html), una página por vistas (Resumen, Producto, Proceso y sprints, Calidad, IA y validación ICF, Usuarios y Documentos) con buscador de documentos.
 
@@ -86,7 +86,7 @@ Investigación HCI: [presentation/hci_report.html](./presentation/hci_report.htm
 
 - [EPICA-01 — Estructuración y Diseño](https://github.com/jaquimbayoc7/health-access-bridge/issues/11) ✅
 - [EPICA-02 — Funcionalidades Core](https://github.com/jaquimbayoc7/health-access-bridge/issues/12) ✅
-- [EPICA-03 — IA Generativa, Dashboards y Cierre](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) 🟡 54 de 59 pts (HU-07, HU-08 y HU-09 hechas; queda HU-10)
+- [EPICA-03 — IA Generativa, Dashboards y Cierre](https://github.com/jaquimbayoc7/health-access-bridge/issues/13) ✅ 59 de 59 pts (HU-07 a HU-10 hechas)
 - [Milestone 1 — Trabajo Integrador I](https://github.com/jaquimbayoc7/health-access-bridge/milestone/1) ✅
 - [Milestone 2 — Trabajo Integrador II](https://github.com/jaquimbayoc7/health-access-bridge/milestone/2) ✅
 - [Milestone 3 — Trabajo Integrador III](https://github.com/jaquimbayoc7/health-access-bridge/milestone/3) 🟡

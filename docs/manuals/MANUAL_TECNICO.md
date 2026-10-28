@@ -159,7 +159,6 @@ npm run dev                                       # http://localhost:5173
 | `ALLOWED_ORIGINS` | CORS: URL exacta del frontend del ambiente, separadas por coma |
 | `DEFAULT_ADMIN_EMAIL`, `DEFAULT_ADMIN_PASSWORD` 🔒 | Administrador inicial |
 | `RUN_SEED` | `true` para ejecutar el *seed* al arrancar (por defecto no se ejecuta) |
-| `PREDICTION_API_URL`, `PREDICTION_API_KEY` 🔒 | Servicio de predicción externo (cuando se usa) |
 | `ICF_LLM_URL`, `ICF_LLM_TOKEN` 🔒 | URL pública del túnel (sin barra final) y token del servicio ICF |
 | `ICF_LLM_MODEL`, `ICF_LLM_TIMEOUT_S`, `ICF_SUGGEST_TIMEOUT_S`, `ICF_LLM_KEEP_ALIVE` | Modelo (`gemma4:e4b`), tiempos de espera y permanencia del modelo en memoria |
 
@@ -201,7 +200,7 @@ Notas:
 4. Confirme `GET /health`, un inicio de sesión real y una predicción en producción.
 
 ### Primera instalación en Render
-`render.yaml` define las nueve piezas. Crear un Blueprint desde el repositorio, cargar los secretos marcados con 🔒 (`PREDICTION_API_KEY`, `ICF_LLM_URL`, `ICF_LLM_TOKEN`, etc.) y fijar `ALLOWED_ORIGINS` y `VITE_API_BASE_URL` con las URL reales. Las bases `hab-db-dev` y `hab-db-qa` son gratuitas; `hab-db-prod` es de pago.
+`render.yaml` define las nueve piezas. Crear un Blueprint desde el repositorio, cargar los secretos marcados con 🔒 (`ICF_LLM_URL`, `ICF_LLM_TOKEN`, etc.) y fijar `ALLOWED_ORIGINS` y `VITE_API_BASE_URL` con las URL reales. Las bases `hab-db-dev` y `hab-db-qa` son gratuitas; `hab-db-prod` es de pago.
 
 ### Reversión
 - **Servicio:** en Render, *Rollback* al despliegue anterior (backend y frontend se revierten por separado).

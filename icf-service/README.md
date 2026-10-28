@@ -137,7 +137,7 @@ Comprobación desde fuera de la tailnet: sin token o con token falso debe dar `4
 |---|---|
 | `ICF_LLM_URL` | URL pública de Funnel, sin `/` final |
 | `ICF_LLM_TOKEN` | el token del Caddyfile (secreto) |
-| `ICF_LLM_MODEL` | `qwen2.5:3b` |
+| `ICF_LLM_MODEL` | `gemma4:e4b` |
 | `ICF_LLM_TIMEOUT_S` | `20` (solo el diagnóstico `/icf/health`) |
 | `ICF_SUGGEST_TIMEOUT_S` | `90` por defecto (opcional; tiempo de espera de una sugerencia: ~3 s con GPU y ~15 s solo con CPU con `gemma4:e4b`) |
 | `ICF_LLM_KEEP_ALIVE` | `30m` |
