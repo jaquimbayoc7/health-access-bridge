@@ -155,7 +155,7 @@ def erd2():
     ax.text(7.7, 3.38, '1', ha='center', fontsize=9, fontweight='bold')
     ax.text(8.1, 3.38, 'N', ha='center', fontsize=9, fontweight='bold')
     ax.text(7.9, 3.05, 'tiene', ha='center', fontsize=8, color=GRAY)
-    ax.text(0.2, 3.35, 'Notas del modelo\n• Regenerar el perfil crea un lote nuevo\n  (batch_id) y conserva los anteriores:\n  queda la trazabilidad de qué sugirió\n  la máquina y qué decidió el médico.\n• No hay migraciones: las tablas se\n  crean con create_all.\n• El catálogo CIF-IA (1.593 códigos) y\n  sus embeddings viven en otra base\n  (PostgreSQL + pgvector) del PC del\n  servicio ICF y no guardan datos de\n  pacientes.', fontsize=8.2, va='top', color=INK, linespacing=1.45)
+    ax.text(0.2, 2.95, 'Notas del modelo\n• Regenerar el perfil crea un lote nuevo\n  (batch_id) y conserva los anteriores:\n  queda la trazabilidad de qué sugirió\n  la máquina y qué decidió el médico.\n• No hay migraciones: las tablas se\n  crean con create_all.\n• El catálogo CIF-IA (1.593 códigos) y\n  sus embeddings viven en otra base\n  (PostgreSQL + pgvector) del PC del\n  servicio ICF y no guardan datos de\n  pacientes.', fontsize=8.2, va='top', color=INK, linespacing=1.45)
     save(fig, 'modelo-datos.png')
 
 

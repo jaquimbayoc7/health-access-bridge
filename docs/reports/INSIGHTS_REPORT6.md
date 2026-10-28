@@ -2,7 +2,7 @@
 
 > **Fuente:** repositorio `jaquimbayoc7/health-access-bridge` (Git y API de GitHub) · **Corte:** 27 de octubre de 2026
 > **Período:** 26 de febrero – 27 de octubre de 2026 (acumulado) · **Anterior:** [Insights Report 4](./INSIGHTS_REPORT4.md) (23-sep) y [Insights Report 5](./INSIGHTS_REPORT5.md) (episodio del modelo local, con adendas hasta el cierre de HU-07g)
-> **Estado del proyecto en este corte:** 141 de 146 puntos (96,6 %). Falta HU-10 (5 pts).
+> **Estado del proyecto en este corte:** **146 de 146 puntos (100 %)**: proyecto cerrado el 28 de octubre de 2026.
 
 ## 1. Resumen
 | Indicador | Valor |
@@ -12,7 +12,7 @@
 | Pull requests | 73 (72 integrados) |
 | Issues cerradas / abiertas | 22 / 2 (#10 HU-10 y #13 épica 3) |
 | Ramas `develop`, `staging` y `master` | Alineadas hasta el PR #96; el trabajo posterior está en `develop` |
-| Puntos de historia | 141 de 146 (Momentos 1 y 2 al 100 %; Momento 3: 54 de 59) |
+| Puntos de historia | 146 de 146 (los tres momentos al 100 %) |
 
 ## 2. Tipos de cambio
 Clasificados por el prefijo del mensaje del commit (convención de commits):
@@ -39,7 +39,8 @@ La relación `docs` > `fix` > `feat` es coherente con un Momento 3 dominado por 
 | Validación clínica en 3 rondas (HU-07g) | 26-oct | 5 de 6 criterios; el calificador (κ 0,312) no cumple; se acreditan los 3 pts por decisión del responsable |
 | Dashboard de análisis y exportación (HU-08) | 26-oct | 10 gráficos, filtros, Excel y PDF |
 | Pruebas completas y feedback (HU-09) | 27-oct | UAT 18/18, WCAG 2.2 AA sin violaciones, SUS 81,25 con 10 usuarios |
-| Manuales de usuario, técnico y del servicio ICF (HU-10, en revisión) | 27-oct | Escritos y aprobados por el responsable |
+| Manuales de usuario, técnico y del servicio ICF (HU-10) | 27-oct | Escritos y aprobados por el responsable |
+| Documentación final (guía de la profesora) y cierre de HU-10 | 28-oct | Documento en Word con formato ICONTEC y citación APA 7; diagramas C4 y Archify al día; **proyecto cerrado: 146 de 146 puntos** |
 
 ## 4. Calidad: qué se midió y qué se encontró
 **Pruebas automáticas:** backend 123 (cobertura 90,7 %, el CI exige 80 %), frontend 61, servicio ICF 101 (92 en CI, 9 locales por la licencia del catálogo), E2E 20, *smoke* 7, más 18 escenarios de aceptación bajo demanda. Lint y tipos del frontend en cero errores desde el 27-oct.
@@ -68,10 +69,10 @@ La relación `docs` > `fix` > `feat` es coherente con un Momento 3 dominado por 
 | Revisión de accesibilidad con lector de pantalla | No se hará por tiempo (decisión del responsable, 27-oct); queda solo la verificación con axe-core y teclado |
 | Segunda revisora clínica del motor ICF | No se hará por tiempo (decisión del responsable, 27-oct); no se mide el acuerdo entre profesionales |
 | Lint y tipos como puerta del CI | No se exigen (decisión del responsable, 27-oct); están en cero errores pero una regresión no frenaría un despliegue |
-| Documentación integral del proyecto (guía de la profesora) | Borrador v0.1 en Word entregado el 28-oct-2026; pendiente de revisión del autor |
+| Documentación integral del proyecto (guía de la profesora) | Entregada el 28-oct-2026; el autor debe completar el código estudiantil y revisar las referencias ajenas al `.bib` |
 
-## 7. Pendiente para el cierre
-HU-10: despliegue final de la última versión a QA y producción, reportes finales, documentación integral del proceso (técnico, investigativo y de usuario) y cierre de los issues #10 y #13 y del Milestone 3.
+## 7. Cierre
+El proyecto se cerró el 28 de octubre de 2026 con 146 de 146 puntos. Se cerraron los issues #10 y #13 y el Milestone 3, se actualizaron la presentación, el backlog, el estado y el plan de liberación, y se retiraron los archivos de IA que el sistema no usa (brief de presentación, evidencias de la herramienta de diagramas la configuración de un proveedor externo de modelos y la del servicio externo de predicción que el código no consume, y se alineó el modelo por defecto del servicio ICF con el de producción). Quedan como recomendaciones abiertas, sin bloquear: calificador del perfil CIF con rango 0 a 4, apagar `ICF_MENTAL_LINK`, una cuarta ronda de validación y más pruebas con usuarios.
 
 ## Referencias
 - Cawley, G. C. y Talbot, N. L. C. (2010). On over-fitting in model selection and subsequent selection bias in performance evaluation. *Journal of Machine Learning Research, 11*, 2079–2107.

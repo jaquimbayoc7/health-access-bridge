@@ -217,7 +217,7 @@
           HAB system    : x=530-870, y=300-500
           PostgreSQL    : x=550-850, y=620-780
           ML Model      : x=1020-1320, y=540-710
-          OpenAI        : x=80-380,  y=540-700
+          Servicio ICF  : x=80-380,  y=540-700
           GitHub Actions: x=80-380,  y=740-930
           Render        : x=1020-1320, y=740-930
         -->
@@ -248,10 +248,10 @@
             <!-- 6. ML Model → HAB: up from ML Model top, left to HAB right -->
             <path class="arrow arrow-dashed" d="M 1050 540 L 1050 395 L 870 395" />
 
-            <!-- 7. HAB → OpenAI: left along y=380, down to OpenAI top -->
+            <!-- 7. HAB → Servicio ICF: left along y=380, down to Servicio ICF top -->
             <path class="arrow arrow-dashed" d="M 530 380 L 370 380 L 370 540" />
 
-            <!-- 8. OpenAI → HAB: up from OpenAI top, right to HAB left -->
+            <!-- 8. Servicio ICF → HAB: up from Servicio ICF top, right to HAB left -->
             <path class="arrow arrow-dashed" d="M 340 540 L 340 360 L 530 360" />
 
             <!-- 9. GitHub Actions → HAB: right to x=430 (gap), up to y=505, right to HAB bottom -->
@@ -308,11 +308,11 @@
             <div class="external-system-desc">Modelo de Machine Learning embebido (K-Means + Gradient Boosting). Predice perfiles de barreras de discapacidad basado en niveles de actividad D1-D6.</div>
         </div>
         
-        <!-- Servidor Local ICF (Future External System, antes OpenAI GPT-4 API) -->
+        <!-- Servidor Local ICF ((servicio de IA local)) -->
         <div class="external-system future-system" style="left: 80px; top: 540px;">
             <div class="external-system-title">Servicio ICF (servidor propio + modelo local)</div>
             <div class="external-system-type">[Software System]</div>
-            <div class="external-system-desc">Servidor propio con el catálogo CIF-IA en PostgreSQL/pgvector y embeddings (RAG); la selección la asiste un modelo local de pesos abiertos (sin APIs externas; se prueban Gemma 4 y MedGemma) con respaldo por similitud. Qwen 3B en el servidor i3 no mejoró la selección. Sugiere códigos CIF-IA y el médico acepta o edita. <strong>(HU-07 - En curso: 07a, 07b, 07c, 07d y 07f completadas)</strong></div>
+            <div class="external-system-desc">Servidor propio: catálogo CIF-IA (1.593 códigos) en PostgreSQL/pgvector, embeddings bge-m3 y el modelo local gemma4:e4b, que elige entre candidatos del catálogo (RAG, sin APIs externas, ~2,6 s). Respaldo por similitud. <strong>(HU-07 completa: 5 de 6 criterios clínicos)</strong></div>
         </div>
         
         <!-- GitHub Actions (CI/CD System) -->
@@ -326,7 +326,7 @@
         <div class="external-system cloud-system" style="right: 80px; top: 740px;">
             <div class="external-system-title">Render Cloud Platform</div>
             <div class="external-system-type">[Software System]</div>
-            <div class="external-system-desc">Plataforma de hosting cloud. Despliega backend (Python/FastAPI), frontend (Node.js/Vite) y PostgreSQL managed en 3 ambientes independientes con auto-deploy desde GitHub.</div>
+            <div class="external-system-desc">Plataforma de hosting cloud. Despliega backend (Python/FastAPI), frontend (sitio estático Vite) y PostgreSQL managed en 3 ambientes independientes con auto-deploy desde GitHub.</div>
         </div>
         
         <!-- Arrow Labels (verified positions, no overlap with boxes) -->
@@ -342,10 +342,10 @@
         <!-- Label 4: on horizontal y=395, between HAB right(870) and ML Model left(1020) -->
         <div class="arrow-label" style="left: 878px; top: 378px;">Ejecuta predicciones<br>de perfiles ML</div>
 
-        <!-- Label 5: between OpenAI right(380) and HAB left(530), above OpenAI top(540) -->
+        <!-- Label 5: between Servicio ICF right(380) and HAB left(530), above Servicio ICF top(540) -->
         <div class="arrow-label" style="left: 395px; top: 345px;">Sugiere códigos CIF-IA<br>con RAG (túnel)</div>
 
-        <!-- Label 6: on vertical x=430 (gap 380-530), below OpenAI bottom(700) and above GitHub top(740) -->
+        <!-- Label 6: on vertical x=430 (gap 380-530), below Servicio ICF bottom(700) and above GitHub top(740) -->
         <div class="arrow-label" style="left: 440px; top: 710px;">Ejecuta CI/CD:<br>tests + build + deploy</div>
 
         <!-- Label 7: on horizontal y=825, between GitHub right(380) and Render left(1020) -->

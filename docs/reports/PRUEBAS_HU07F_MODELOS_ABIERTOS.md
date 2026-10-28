@@ -148,3 +148,18 @@ docker run --rm --network icf-net `
 ```
 
 Los resultados detallados por caso se guardan en `data/private/results/` (ruta ignorada por git).
+
+## Energía medida (GPU)
+
+Medición con 14 casos de prueba (50,9 s en total, incluida la carga inicial del modelo) en la RTX 5050 de 8 GB:
+
+| Indicador | Valor |
+|---|---|
+| Potencia en reposo | 4,4 W |
+| Potencia media | 38,4 W |
+| Pico | 75 W |
+| Utilización media de la GPU | 45 % |
+| Energía para 13 sugerencias | ≈ 0,54 Wh |
+| Energía por sugerencia | ≈ 0,042 Wh (≈ 24 sugerencias por Wh; 1.000 sugerencias ≈ 42 Wh) |
+
+Es una cota superior que cubre solo la GPU: no incluye la CPU ni el resto del equipo. El costo de las APIs de IA es de 0 USD porque el modelo es local y de código abierto.
