@@ -27,15 +27,16 @@
 | HU-03 Integración Frontend-Backend y Despliegue Cloud (5 pts) | — | — |
 | HU-04 Modelo Predictivo ML (21 pts) *(adelantada en M1)* | — | — |
 | HU-08 Dashboard de Análisis y Exportación (13 pts) ✅ | — | — |
-| [#14 HU-11](https://github.com/jaquimbayoc7/health-access-bridge/issues/14) Pruebas Smoke en Producción (3 pts) | — | HU-09 Pruebas Completas y Feedback (8 pts) |
-| [#15 HU-12](https://github.com/jaquimbayoc7/health-access-bridge/issues/15) Pruebas de Integración Backend (5 pts) | — | HU-10 Despliegue Final y Manuales (5 pts) |
+| HU-09 Pruebas Completas y Feedback de Usuarios (8 pts) ✅ (27-oct-2026) | HU-10 Despliegue Final y Manuales (5 pts): manuales hechos; falta la documentación integral con la plantilla del Trabajo Integrador II | — |
+| [#14 HU-11](https://github.com/jaquimbayoc7/health-access-bridge/issues/14) Pruebas Smoke en Producción (3 pts) | — | — |
+| [#15 HU-12](https://github.com/jaquimbayoc7/health-access-bridge/issues/15) Pruebas de Integración Backend (5 pts) | — | — |
 | [#16 HU-13](https://github.com/jaquimbayoc7/health-access-bridge/issues/16) Pruebas de Diseño y UI Frontend (8 pts) | — | — |
 | HU-05 Mejoras de Usabilidad (HCI) (13 pts) | — | — |
 | HU-05b Ayuda contextual traducida (3 pts) | — | — |
 | [#6 HU-06](https://github.com/jaquimbayoc7/health-access-bridge/issues/6) Pruebas de Integración y Rendimiento (8 pts) | — | — |
 
-**Puntos completados: 133 pts · Puntos pendientes: 13 pts · Total: 146 pts** *(HU-07 reestimada de 21 a 25 pts el 05-oct-2026 y de 25 a 33 pts el 06-oct-2026 por los hallazgos de las pruebas en el servidor físico; HU-07a y HU-07b completadas el 06-oct-2026 y HU-07c, HU-07d, HU-07e, HU-07f y HU-07h el 07-oct-2026: +30 pts; HU-07g el 26-oct-2026: +3 pts; HU-08 el 26-oct-2026: +13 pts)*  
-**Avance general: 91% (133 de 146 pts) · Momento 1 100% completado (Sprint 3.5 incluido) · Momento 2 100% completado · Momento 3 en curso: 46 de 59 pts (78,0 %)**
+**Puntos completados: 141 pts · Puntos pendientes: 5 pts · Total: 146 pts** *(HU-07 reestimada de 21 a 25 pts el 05-oct-2026 y de 25 a 33 pts el 06-oct-2026 por los hallazgos de las pruebas en el servidor físico; HU-07a y HU-07b completadas el 06-oct-2026 y HU-07c, HU-07d, HU-07e, HU-07f y HU-07h el 07-oct-2026: +30 pts; HU-07g el 26-oct-2026: +3 pts; HU-08 el 26-oct-2026: +13 pts)*  
+**Avance general: 96,6 % (141 de 146 pts) · Momento 1 100% completado (Sprint 3.5 incluido) · Momento 2 100% completado · Momento 3 en curso: 54 de 59 pts (91,5 %)**
 
 ---
 
@@ -605,7 +606,7 @@ Es la primera vez que las precisiones y la cobertura cumplen a la vez **sobre ca
 - Despliegue en Render.
 - Documentación técnica y manuales de usuario (incluye el manual de operación del servicio ICF: servidor propio, túnel, instalación de Ollama y de los modelos, y requisitos de la máquina). **Elaborados el 27-oct-2026** en `docs/manuals/` (manual de usuario con capturas, manual técnico y manual del servicio ICF, en Markdown y PDF); **aprobados por el responsable el 27-oct-2026**. Los puntos de HU-10 se acreditan al cerrar sus tareas pendientes (despliegue final, reportes finales y documentación integral).
 - Reportes finales.
-- **Documentación integral del proceso (PENDIENTE — tarea del último sprint, Sprint 12; se retoma el 28-oct-2026 cuando el responsable aporte la plantilla):** construir la documentación de todo el proceso —**técnico, investigativo y de usuario**— bajo la **plantilla del Trabajo Integrador II**. Insumos ya existentes: BACKLOG, `docs/reports/` (estado, pruebas, insights, validación clínica y 51 referencias), `docs/HCI/` (investigación con usuarios), `docs/uat/` y los manuales. Falta la plantilla oficial del Trabajo Integrador II (no está en el repositorio): entregarla para mapear cada sección a su evidencia.
+- **Documentación integral del proceso (PENDIENTE — tarea del último sprint, Sprint 12; se retoma el 28-oct-2026 cuando el responsable aporte la plantilla):** construir la documentación de todo el proceso —**técnico, investigativo y de usuario**— bajo la **plantilla del Trabajo Integrador II**. Insumos ya existentes: BACKLOG, `docs/reports/` (estado, pruebas, insights, validación clínica y 51 referencias), `docs/HCI/` (investigación con usuarios), `docs/uat/` y los manuales. La guía de la profesora (10 secciones, con componentes obligatorios marcados con [$]) se recibió el 28-oct-2026 y con ella se elaboró el **borrador v0.1 en Word** (`docs/documentacion-final/`, formato ICONTEC y citación APA 7); queda su revisión por el autor (código estudiantil, ciudad, aprendizajes personales y verificación de las referencias ajenas al `.bib`).
 
 **DoD:** Aplicación en producción, documentación entregada.  
 **Estimación:** 5 puntos.
