@@ -84,7 +84,9 @@ Tres tablas (`backend/app/models.py`). **No hay migraciones**: las tablas se cre
 |---|---|
 | `users` | `id`, `email` (único), `full_name`, `hashed_password`, `is_active`, `role` (`admin` o `médico`) |
 | `patients` | `numero_documento`, `nombre_apellidos`, `fecha_nacimiento`, `edad`, `genero`, `orientacion_sexual`, `causa_deficiencia`, `cat_fisica`, `cat_psicosocial`, `nivel_d1`…`nivel_d6`, `nivel_global`, `prediction_profile`, `prediction_description`, `is_active` (borrado lógico), `owner_id` → `users` |
-| `icf_suggestions` | `patient_id`, `batch_id` (un lote por generación), `component` (b/s/d), `code`, `title`, `qualifier` (0–4), `qualifier_cn`/`qualifier_cl` (solo estructuras), `justification`, `origin` (llm/similarity/rules), `status` (sugerido/aceptado/editado/rechazado), `original_code`, `model`, instantáneas de diagnóstico y notas, `created_at` |
+| `icf_suggestions` | `patient_id`, `batch_id` (un lote por generación), `component` (b/s/d), `code`, `title`, `qualifier` (0–4), `qualifier_suggested` (lo que sugirió el sistema; b y s) y `qualifier_confirmed` (el médico confirmó la gravedad), `qualifier_cn`/`qualifier_cl` (solo estructuras), `justification`, `origin` (llm/similarity/rules), `status` (sugerido/aceptado/editado/rechazado), `original_code`, `model`, instantáneas de diagnóstico y notas, `created_at` |
+
+Las columnas `qualifier_suggested` y `qualifier_confirmed` (HU-07i) se agregan solas al arrancar el backend si la tabla ya existía (`ensure_icf_columns` en `database.py`; el proyecto no usa migraciones y `create_all` no altera tablas existentes). Las filas anteriores quedan con `qualifier_suggested` nulo y `qualifier_confirmed` en falso.
 
 Regenerar un perfil crea un **lote nuevo** y conserva los anteriores: queda la trazabilidad de qué sugirió la máquina y qué decidió el profesional.
 
@@ -98,7 +100,7 @@ Regenerar un perfil crea un **lote nuevo** y conserva los anteriores: queda la t
 | `/users` | `routers/users.py` | `POST /login` (JWT), `GET /me` |
 | `/admin` | `routers/admin.py` | Listar/crear usuarios, activar/desactivar, `reset-seed` (¡destructivo!) |
 | `/patients` | `routers/patients.py` | CRUD con búsqueda y paginación; `POST /{id}/predict` |
-| `/patients/{id}/icf-suggestions`, `/icf` | `routers/icf.py` | Generar y leer sugerencias, decidir (`PATCH /icf/suggestions/{id}`), causas y diagnóstico del servicio |
+| `/patients/{id}/icf-suggestions`, `/icf` | `routers/icf.py` | Generar y leer sugerencias, decidir (`PATCH /icf/suggestions/{id}`; en b y s, `aceptado` exige la gravedad confirmada en `qualifier`, y cambiarla requiere `editado`), causas y diagnóstico del servicio |
 | `/analytics` | `routers/analytics.py` | `GET /summary` y `GET /filters`: agregados del dashboard |
 | `/health`, `/` | `main.py` | Salud y bienvenida |
 
@@ -242,7 +244,7 @@ Notas:
 - **Rendimiento con carga alta** en el plan gratuito: con 200 usuarios simultáneos el p95 fue de 54,6 s (DEUDA-01; ver `docs/test-report.md`).
 - Lint (`eslint .`) y tipos (`tsc --noEmit`) están en cero errores desde el 27-oct-2026, pero **el CI no los exige** (decisión del responsable por tiempo, 27-oct-2026): una regresión no frenaría un despliegue. Quien mantenga el proyecto puede agregarlos como pasos del flujo (`npx eslint .` y `npx tsc --noEmit -p tsconfig.app.json`).
 - El servicio ICF corre en **un solo PC sin redundancia**; el respaldo por similitud mitiga una caída.
-- Validación clínica del ICF: **no habrá segunda revisora** (decisión del responsable por tiempo, 27-oct-2026), por lo que no se mide el acuerdo entre profesionales y el resultado refleja el criterio de una sola persona. Quedan como recomendaciones el calificador 0–4 y apagar `ICF_MENTAL_LINK` (ver `docs/PENDIENTES_PROXIMA_SESION.md`).
+- Validación clínica del ICF: **no habrá segunda revisora** (decisión del responsable por tiempo, 27-oct-2026), por lo que no se mide el acuerdo entre profesionales y el resultado refleja el criterio de una sola persona. Quedan como recomendaciones apagar `ICF_MENTAL_LINK` y, si hubiera una revisora, repetir la medición del calificador. Desde el 13-nov-2026 la gravedad de b y s la confirma el médico en la pantalla (HU-07i) y se registra qué sugirió el sistema y qué fijó el profesional; la exploración del calificador con los 125 códigos de las rondas 1 y 3 no encontró una variante mejor que las reglas actuales.
 - **No se hizo revisión con lectores de pantalla** (NVDA, VoiceOver) por tiempo (decisión del responsable, 27-oct-2026); la accesibilidad se verificó solo con axe-core, que cubre una parte de los criterios de WCAG, más el uso con teclado.
 
 ## 16. Referencias
