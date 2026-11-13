@@ -60,7 +60,7 @@ Médico ─▶ Frontend ─▶ Backend (Render) ──HTTPS + token──▶ Tai
 | **Tailscale Funnel** | Publica solo el puerto 11435 con HTTPS | Aplicación de Windows |
 | **Backend de HAB** | Pide la sugerencia y **guarda** resultado y decisiones del médico | Render |
 
-El PC **no guarda datos de pacientes**: las sugerencias y decisiones viven en la base del backend. La base del PC (catálogo y embeddings) se puede reconstruir.
+El PC **no guarda identificadores de pacientes**: las sugerencias y decisiones viven en la base del backend. Desde la memoria de casos (HU-07j, 13-nov-2026) la base del PC guarda además, de los casos que el médico confirma, el texto clínico (diagnóstico y notas) sin identificadores, con los códigos confirmados. El catálogo y sus embeddings se pueden reconstruir; **los casos no**.
 
 ## 3. Cómo decide el motor
 Para cada pedido a `POST /suggest`:
@@ -214,7 +214,7 @@ docker run --rm --network hab-icf_default `
 Cuando cambie el código de `icf-service/`: `git pull`, `docker compose --env-file "$env:USERPROFILE\.hab-icf\.env" up -d --build` y `.\check.ps1 -Public -Suggest`.
 
 ### 8.5 Copias de seguridad
-El PC no tiene datos de pacientes. Lo que conviene respaldar: el archivo `%USERPROFILE%\.hab-icf\.env` (en un lugar seguro, **no** en OneDrive ni en el repositorio) y el archivo del catálogo `catalog_cifia.tsv`.
+El PC no tiene identificadores de pacientes. Lo que conviene respaldar: el archivo `%USERPROFILE%\.hab-icf\.env` (en un lugar seguro, **no** en OneDrive ni en el repositorio), el archivo del catálogo `catalog_cifia.tsv` y, desde HU-07j, **las tablas de la memoria de casos** (`icf_cases` e `icf_case_codes`), que no se pueden reconstruir: `docker exec icf-db pg_dump -U icf_user -d icf -t icf_cases -t icf_case_codes > casos.sql` (guardar el archivo fuera de OneDrive y del repositorio: contiene texto clínico).
 
 ## 9. Seguridad y privacidad
 - **Qué viaja al servicio:** edad, género, causa, categorías, niveles D1–D6, la predicción y, si el médico los escribe, diagnóstico y notas. **Nunca** el nombre, el documento ni la orientación sexual. El servicio guarda las notas **solo** de los casos que el médico confirma o edita (memoria de casos, sección 3), siempre sin identificadores y dentro del PC propio; sin esa confirmación no se guarda nada.

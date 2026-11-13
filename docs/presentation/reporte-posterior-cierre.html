@@ -67,8 +67,9 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
       <tr><td class="whitespace-nowrap">28-oct-2026</td><td>Se retira del proyecto la configuración de IA que el código no usaba (servicio externo de predicción, restos de OpenAI) y se alinea el modelo por defecto del servicio ICF con producción. Documentación v0.5 con las ediciones del autor en Word.</td><td><code>091d4db</code> <code>6b8e82c</code></td></tr>
       <tr><td class="whitespace-nowrap">29-oct a 12-nov</td><td>Sin cambios en el repositorio. El autor continuó editando el Word (versión 1.0, local).</td><td>—</td></tr>
       <tr><td class="whitespace-nowrap">13-nov-2026</td><td><b>Exploración del calificador</b> sin la revisora (125 códigos calificados a ciegas) y <b>HU-07i</b>: la gravedad de funciones y estructuras la confirma el médico.</td><td><code>31f36e5</code> <code>236115c</code> <code>a748ce3</code></td></tr>
-      <tr><td class="whitespace-nowrap">13-nov-2026</td><td>Documentación final v1.1 (sección 5.5.4). El responsable promueve <code>develop</code> a <code>staging</code> (PR #107); el despliegue de QA queda a su cargo.</td><td><code>ae6fe2c</code> · PR #107</td></tr>
+      <tr><td class="whitespace-nowrap">13-nov-2026</td><td>Documentación final v1.1 (sección 5.5.4). El responsable promueve <code>develop</code> a <code>staging</code> (PR #107) y <code>staging</code> a <code>master</code> (PR #108).</td><td><code>ae6fe2c</code> · PR #107, #108</td></tr>
       <tr><td class="whitespace-nowrap">13-nov-2026</td><td><b>HU-07j</b>: memoria de casos confirmados por el médico, uso como ejemplos y justificación editable en el reporte.</td><td><code>79baf38</code> <code>f489760</code></td></tr>
+      <tr><td class="whitespace-nowrap">13-nov-2026</td><td>Reporte posterior al cierre, referencia de la API, README y reportes de pruebas al día; HU-07i y HU-07j se promueven a <code>staging</code> y <code>master</code> y el CI de producción pasa. Los tres backends publican los campos nuevos. Los contadores del repositorio de la presentación se actualizan (330 commits en <code>master</code>, 85 PR fusionados).</td><td><code>74cecd8</code> · PR #109, #110</td></tr>
     </tbody></table></div>
 </section>
 
@@ -155,10 +156,10 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
     <div class="bg-white border border-slate-200 rounded-xl p-5">
       <div class="font-semibold mb-2">Pendientes (a cargo del responsable)</div>
       <ul class="list-disc pl-5 text-slate-600 text-xs leading-relaxed space-y-1">
-        <li>Terminar los despliegues: <code>develop</code> → <code>staging</code> está fusionado (PR #107); falta <code>staging</code> → <code>master</code> y actualizar los contadores de esta presentación al promover.</li>
+        <li>Despliegues hechos: <code>develop</code>, <code>staging</code> y <code>master</code> con HU-07i y HU-07j (PR #107 a #110); el CI de producción pasó y los tres backends publican los campos nuevos.</li>
         <li>Activar la memoria en el PC del servicio ICF: reconstruir la imagen y aplicar el <code>Caddyfile</code> nuevo, que expone <code>/cases</code>. Las tablas se crean solas.</li>
         <li>Regenerar con la aplicación desplegada las capturas <code>img/09</code> a <code>img/11</code> y los PDF de los manuales; actualizar los campos del Word v1.1 (el Contenido).</li>
-        <li>Probar en QA con una sesión real de médico: perfil generado antes, perfil nuevo, confirmar la gravedad, editar la justificación y descargar el PDF.</li>
+        <li>Probar con una sesión real de médico (QA o producción): perfil generado antes, perfil nuevo, confirmar la gravedad, editar la justificación y descargar el PDF.</li>
         <li>Si volviera a haber una revisora: repetir la medición del calificador y medir el efecto de los ejemplos.</li>
       </ul>
     </div>
