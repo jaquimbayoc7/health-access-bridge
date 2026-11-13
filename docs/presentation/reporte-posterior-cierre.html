@@ -70,6 +70,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
       <tr><td class="whitespace-nowrap">13-nov-2026</td><td>Documentación final v1.1 (sección 5.5.4). El responsable promueve <code>develop</code> a <code>staging</code> (PR #107) y <code>staging</code> a <code>master</code> (PR #108).</td><td><code>ae6fe2c</code> · PR #107, #108</td></tr>
       <tr><td class="whitespace-nowrap">13-nov-2026</td><td><b>HU-07j</b>: memoria de casos confirmados por el médico, uso como ejemplos y justificación editable en el reporte.</td><td><code>79baf38</code> <code>f489760</code></td></tr>
       <tr><td class="whitespace-nowrap">13-nov-2026</td><td>Reporte posterior al cierre, referencia de la API, README y reportes de pruebas al día; HU-07i y HU-07j se promueven a <code>staging</code> y <code>master</code> y el CI de producción pasa. Los tres backends publican los campos nuevos. Los contadores del repositorio de la presentación se actualizan (330 commits en <code>master</code>, 85 PR fusionados).</td><td><code>74cecd8</code> · PR #109, #110</td></tr>
+      <tr><td class="whitespace-nowrap">13-nov-2026</td><td>Al activar la memoria en el PC del servicio se descubrió un fallo propio: el <code>Dockerfile</code> no copiaba <code>sql/002_cases.sql</code> y <code>POST /cases</code> respondía 500 (las pruebas corrían desde el repositorio y no lo vieron). Se corrigió, se agregaron dos pruebas que vigilan el contenedor y se verificó de extremo a extremo; la memoria quedó funcionando.</td><td><code>b46f361</code> → <code>42fb108</code></td></tr>
     </tbody></table></div>
 </section>
 
@@ -157,7 +158,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
       <div class="font-semibold mb-2">Pendientes (a cargo del responsable)</div>
       <ul class="list-disc pl-5 text-slate-600 text-xs leading-relaxed space-y-1">
         <li>Despliegues hechos: <code>develop</code>, <code>staging</code> y <code>master</code> con HU-07i y HU-07j (PR #107 a #110); el CI de producción pasó y los tres backends publican los campos nuevos.</li>
-        <li>Activar la memoria en el PC del servicio ICF: reconstruir la imagen y aplicar el <code>Caddyfile</code> nuevo, que expone <code>/cases</code>. Las tablas se crean solas.</li>
+        <li>Memoria activa en el PC del servicio ICF desde el 13-nov (imagen reconstruida y <code>Caddyfile</code> con <code>/cases</code>); una prueba real dejó 7 códigos confirmados en <code>icf_case_codes</code>. Falta respaldarla con <code>pg_dump</code> (no se reconstruye).</li>
         <li>Regenerar con la aplicación desplegada las capturas <code>img/09</code> a <code>img/11</code> y los PDF de los manuales; actualizar los campos del Word v1.1 (el Contenido).</li>
         <li>Probar con una sesión real de médico (QA o producción): perfil generado antes, perfil nuevo, confirmar la gravedad, editar la justificación y descargar el PDF.</li>
         <li>Si volviera a haber una revisora: repetir la medición del calificador y medir el efecto de los ejemplos.</li>
