@@ -18,7 +18,7 @@
       "info": {
         "title": "Health Access Bridge API",
         "version": "1.2.0",
-        "description": "## Descripción\n\nAPI RESTful para la plataforma **Health Access Bridge (HAB)**, orientada a la gestión clínica de pacientes con discapacidad y al análisis predictivo de perfiles de barreras de acceso a la salud en zonas rurales de Colombia y Latinoamérica.\n\n## Funcionalidades principales\n\n- 🔐 **Autenticación y RBAC** — JWT con claims de rol (Admin / Médico)\n- 👤 **Gestión de usuarios** — creación, activación/desactivación, perfil\n- 🏥 **Gestión de pacientes** — CRUD completo + búsqueda + paginación + soft delete\n- 🤖 **Predicción ML** — modelo HybridModelDisability (K-Means + Gradient Boosting) integrado en backend\n- 🧠 **Perfil funcional ICF (HU-07)** — sugerencia de códigos CIF-IA con un modelo local (RAG, sin APIs externas); el médico acepta, edita o rechaza cada código\n- 📊 **Dashboard de análisis (HU-08)** — estadísticas agregadas de los pacientes y del perfil ICF, sin datos identificables\n\n## Seguridad\n\nTodos los endpoints excepto `POST /users/login`, `GET /`, y `GET /health` requieren autenticación Bearer JWT.\n\n## Ambientes\n\n| Ambiente | URL |\n|----------|-----|\n| DEV | https://hab-backend-dev.onrender.com |\n| QA | https://hab-backend-qa.onrender.com |\n| PROD | https://hab-backend-szj1.onrender.com |\n\n## Credenciales de prueba\n\n| Rol | Email | Contraseña |\n|-----|-------|------------|\n| Admin | administrador@salud.co | adminpassword |\n| Médico 1 | medico1@salud.co | medico123 |\n| Médico 2 | medico2@salud.co | medico123 |",
+        "description": "## Descripción\n\nAPI RESTful para la plataforma **Health Access Bridge (HAB)**, orientada a la gestión clínica de pacientes con discapacidad y al análisis predictivo de perfiles de barreras de acceso a la salud en zonas rurales de Colombia y Latinoamérica.\n\n## Funcionalidades principales\n\n- 🔐 **Autenticación y RBAC** — JWT con claims de rol (Admin / Médico)\n- 👤 **Gestión de usuarios** — creación, activación/desactivación, perfil\n- 🏥 **Gestión de pacientes** — CRUD completo + búsqueda + paginación + soft delete\n- 🤖 **Predicción ML** — modelo HybridModelDisability (K-Means + Gradient Boosting) integrado en backend\n- 🧠 **Perfil funcional ICF (HU-07)** — sugerencia de códigos CIF-IA con un modelo local (RAG, sin APIs externas); el médico acepta, edita o rechaza cada código y confirma la gravedad de funciones y estructuras; sus casos confirmados alimentan una memoria de ejemplos\n- 📊 **Dashboard de análisis (HU-08)** — estadísticas agregadas de los pacientes y del perfil ICF, sin datos identificables\n\n## Seguridad\n\nTodos los endpoints excepto `POST /users/login`, `GET /`, y `GET /health` requieren autenticación Bearer JWT.\n\n## Ambientes\n\n| Ambiente | URL |\n|----------|-----|\n| DEV | https://hab-backend-dev.onrender.com |\n| QA | https://hab-backend-qa.onrender.com |\n| PROD | https://hab-backend-szj1.onrender.com |\n\n## Credenciales de prueba\n\n| Rol | Email | Contraseña |\n|-----|-------|------------|\n| Admin | administrador@salud.co | adminpassword |\n| Médico 1 | medico1@salud.co | medico123 |\n| Médico 2 | medico2@salud.co | medico123 |",
         "contact": {
           "name": "Health Access Bridge",
           "url": "https://github.com/jaquimbayoc7/health-access-bridge"
@@ -452,7 +452,7 @@
                 "nullable": true,
                 "minimum": 0,
                 "maximum": 4,
-                "description": "Calificador de gravedad calculado por reglas"
+                "description": "Calificador de gravedad. En actividades (d) lo calculan las reglas; en funciones (b) y estructuras (s) es una sugerencia por reglas, sin validación suficiente, que el médico confirma (HU-07i)."
               },
               "qualifier_cn": {
                 "type": "integer",
@@ -466,7 +466,8 @@
               },
               "justification": {
                 "type": "string",
-                "nullable": true
+                "nullable": true,
+                "description": "Justificación del modelo o de las reglas."
               },
               "origin": {
                 "type": "string",
@@ -489,6 +490,23 @@
                 "type": "string",
                 "nullable": true,
                 "description": "Código sugerido, si el médico lo cambió al editar"
+              },
+              "qualifier_suggested": {
+                "type": "integer",
+                "nullable": true,
+                "minimum": 0,
+                "maximum": 4,
+                "description": "Gravedad que sugirió el sistema (b y s). No cambia al decidir: permite medir el acuerdo con el médico."
+              },
+              "qualifier_confirmed": {
+                "type": "boolean",
+                "description": "El médico confirmó o fijó la gravedad de esta función o estructura."
+              },
+              "justification_medico": {
+                "type": "string",
+                "nullable": true,
+                "maxLength": 500,
+                "description": "Justificación que el médico escribió o corrigió (HU-07j); sale en el reporte en lugar de la del modelo."
               }
             }
           },
@@ -563,7 +581,7 @@
           },
           "IcfDecision": {
             "type": "object",
-            "description": "Decisión del médico. Solo «editado» permite cambiar calificadores o, con código y título juntos, el código.",
+            "description": "Decisión del médico. Solo «editado» permite cambiar calificadores, la justificación o, con código y título juntos, el código. En funciones (b) y estructuras (s), «aceptado» debe llevar la gravedad que el médico confirma en `qualifier` (igual a la sugerida; para cambiarla se usa «editado»).",
             "required": [
               "status"
             ],
@@ -599,6 +617,11 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 300
+              },
+              "justification": {
+                "type": "string",
+                "maxLength": 500,
+                "description": "Justificación del médico (solo con «editado»); vacía, la borra."
               }
             },
             "additionalProperties": false
@@ -1638,7 +1661,7 @@
               "ICF"
             ],
             "summary": "Aceptar, editar o rechazar un código",
-            "description": "El médico decide sobre un código sugerido. Al editar puede ajustar calificadores y, enviando `code` y `title` juntos, cambiar el código (queda guardado el original). `aceptado` y `rechazado` no cambian el contenido.\n\n**Acceso:** Admin o Médico (dueño del paciente).",
+            "description": "El médico decide sobre un código sugerido. Al editar puede ajustar calificadores, la justificación y, enviando `code` y `title` juntos, cambiar el código (queda guardado el original). En funciones (b) y estructuras (s), aceptar exige enviar la gravedad confirmada en `qualifier` (HU-07i). Tras una decisión confirmada, el backend envía el caso (sin datos identificables) a la memoria del servicio ICF en segundo plano (HU-07j); un fallo de la memoria no afecta la respuesta.\n\n**Acceso:** Admin o Médico (dueño del paciente).",
             "operationId": "decide_icf_suggestion",
             "parameters": [
               {
@@ -1659,7 +1682,8 @@
                   },
                   "example": {
                     "status": "editado",
-                    "qualifier": 2
+                    "qualifier": 4,
+                    "justification": "No camina sin ayuda."
                   }
                 }
               }
@@ -1685,7 +1709,7 @@
                 "description": "Sugerencia no encontrada."
               },
               "422": {
-                "description": "Decisión inválida."
+                "description": "Decisión inválida (por ejemplo, aceptar una función o estructura sin confirmar la gravedad)."
               }
             }
           }

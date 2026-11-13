@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Health Access Bridge — Presentación del proyecto</title>
-<meta name="description" content="Health Access Bridge: gestión clínica, predicción de barreras de acceso y perfil funcional ICF con IA local. Estado, calidad, sprints y métricas al 26 de octubre de 2026."/>
+<meta name="description" content="Health Access Bridge: gestión clínica, predicción de barreras de acceso y perfil funcional ICF con IA local. Estado, calidad, sprints y métricas al 13 de noviembre de 2026."/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -68,6 +68,7 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
       <button class="tab" role="tab" data-tab="calidad" aria-selected="false">Calidad</button>
       <button class="tab" role="tab" data-tab="ia" aria-selected="false">IA y validación ICF</button>
       <button class="tab" role="tab" data-tab="usuarios" aria-selected="false">Usuarios (HCI)</button>
+      <button class="tab" role="tab" data-tab="posterior" aria-selected="false">Después del cierre</button>
       <button class="tab" role="tab" data-tab="docs" aria-selected="false">Documentos</button>
     </nav>
     <div class="flex items-center gap-2 shrink-0">
@@ -88,7 +89,7 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
       <span class="inline-flex items-center gap-2 bg-plight text-primary text-xs font-semibold px-3 py-1 rounded-full mb-4">Momentos 1 a 3 · cierre del 28 de octubre de 2026</span>
       <h1 class="text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-3">Health Access Bridge</h1>
       <p class="text-slate-600 text-base leading-relaxed mb-3 max-w-2xl">Plataforma web para que los médicos gestionen pacientes con discapacidad en zonas rurales de Colombia, <strong>predigan su perfil de barreras de acceso a la salud</strong> (modelo de ML) y documenten su <strong>perfil funcional ICF</strong> con ayuda de una IA que corre en infraestructura propia, sin enviar datos clínicos a terceros.</p>
-      <p class="text-slate-500 text-sm leading-relaxed mb-6 max-w-2xl">Esta página resume el estado del proyecto en seis vistas: <em>Producto</em> (qué hace y cómo está armado), <em>Proceso</em> (sprints y métricas), <em>Calidad</em> (pruebas y defectos), <em>IA y validación ICF</em> (el motor y su validación con una profesional de salud), <em>Usuarios</em> (investigación HCI) y <em>Documentos</em>.</p>
+      <p class="text-slate-500 text-sm leading-relaxed mb-6 max-w-2xl">Esta página resume el estado del proyecto en ocho vistas: <em>Producto</em> (qué hace y cómo está armado), <em>Proceso</em> (sprints y métricas), <em>Calidad</em> (pruebas y defectos), <em>IA y validación ICF</em> (el motor y su validación con una profesional de salud), <em>Usuarios</em> (investigación HCI), <em>Después del cierre</em> (lo realizado desde el 28 de octubre) y <em>Documentos</em>.</p>
       <div class="flex flex-wrap gap-3">
         <a href="https://hab-frontend.onrender.com/login" target="_blank" rel="noopener" class="bg-primary text-white px-5 py-2.5 rounded-lg font-medium hover:bg-pdark transition-colors shadow-sm text-sm">Abrir la app en producción</a>
         <a href="https://hab-backend-szj1.onrender.com/docs" target="_blank" rel="noopener" class="border border-primary text-primary px-5 py-2.5 rounded-lg font-medium hover:bg-plight transition-colors text-sm">API docs</a>
@@ -143,7 +144,7 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
     <div class="grid md:grid-cols-3 gap-4 text-sm">
       <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="flex justify-between items-start mb-2"><b>HU-09 · Pruebas completas y feedback</b><span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">8 pts ✅</span></div><p class="text-slate-600 text-xs">18 escenarios de aceptación (18/18), accesibilidad WCAG 2.2 AA sin violaciones en 14 pantallas y sesión de usabilidad con 10 usuarios (SUS 81,25).</p></div>
       <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="flex justify-between items-start mb-2"><b>HU-10 · Despliegue final y manuales</b><span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">5 pts ✅</span></div><p class="text-slate-600 text-xs">Despliegue verificado en los tres ambientes, manuales de usuario, técnico y del servicio ICF (con capturas y diagramas), documentación final con la guía de la profesora e Insights Report 6.</p></div>
-      <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="flex justify-between items-start mb-2"><b>Recomendado, sin bloquear</b><span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded">ICF</span></div><p class="text-slate-600 text-xs">Calificador del perfil con rango 0–4, apagar <code>ICF_MENTAL_LINK</code>, una cuarta ronda de validación con casos nuevos y más pruebas con usuarios. No se hicieron por tiempo: segunda revisora, revisión con lectores de pantalla, lint y tipos en el CI, consulta regulatoria y permiso de la OMS.</p></div>
+      <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="flex justify-between items-start mb-2"><b>Recomendado, sin bloquear</b><span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded">ICF</span></div><p class="text-slate-600 text-xs">Apagar <code>ICF_MENTAL_LINK</code>, repetir la validación del calificador y medir el efecto de los ejemplos si hay una revisora, y más pruebas con usuarios. La gravedad de b y s ya la confirma el médico (HU-07i, ver «Después del cierre»). No se hicieron por tiempo: segunda revisora, revisión con lectores de pantalla, lint y tipos en el CI, consulta regulatoria y permiso de la OMS.</p></div>
     </div>
   </section>
 </div>
@@ -967,9 +968,9 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
     <div class="bg-white rounded-xl border border-slate-200 p-5 overflow-x-auto"><div class="flex flex-wrap items-center gap-2 text-xs min-w-max">
       <span class="bg-slate-800 text-white px-3 py-1.5 rounded-lg font-mono">git push</span><span class="text-slate-400">→</span>
       <span class="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg">GitHub Actions</span><span class="text-slate-400">→</span>
-      <span class="bg-green-100 text-green-700 px-3 py-1.5 rounded-lg">pytest backend (123) · cobertura ≥ 80 %</span><span class="text-slate-400">→</span>
+      <span class="bg-green-100 text-green-700 px-3 py-1.5 rounded-lg">pytest backend (141) · cobertura ≥ 80 %</span><span class="text-slate-400">→</span>
       <span class="bg-cyan-100 text-cyan-700 px-3 py-1.5 rounded-lg">pytest servicio ICF (92 en CI)</span><span class="text-slate-400">→</span>
-      <span class="bg-yellow-100 text-yellow-700 px-3 py-1.5 rounded-lg">lockfile · npm test (61) · build</span><span class="text-slate-400">→</span>
+      <span class="bg-yellow-100 text-yellow-700 px-3 py-1.5 rounded-lg">lockfile · npm test (69) · build</span><span class="text-slate-400">→</span>
       <span class="bg-orange-100 text-orange-700 px-3 py-1.5 rounded-lg">smoke (QA 4 · PROD 3) · E2E (17)</span><span class="text-slate-400">→</span>
       <span class="bg-teal-100 text-teal-700 px-3 py-1.5 rounded-lg">deploy en Render ✅</span>
     </div></div>
@@ -1006,7 +1007,7 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
       <tbody class="divide-y divide-slate-100 text-slate-600">
         <tr><td class="px-4 py-2">1–3 Smoke y backend (auth, pacientes)</td><td class="px-4">HU-11, HU-12</td><td class="px-4 font-mono">test_auth, test_patients</td><td class="text-right px-4">37</td></tr>
         <tr><td class="px-4 py-2">4–7 Frontend (AuthContext, Login, Layout, Pacientes)</td><td class="px-4">HU-13</td><td class="px-4 font-mono">*.test.tsx</td><td class="text-right px-4">16</td></tr>
-        <tr><td class="px-4 py-2">8 Servicio ICF (motor RAG, reglas, validación)</td><td class="px-4">HU-07a/b/f/g</td><td class="px-4 font-mono">icf-service/tests</td><td class="text-right px-4">101</td></tr>
+        <tr><td class="px-4 py-2">8 Servicio ICF (motor RAG, reglas, validación)</td><td class="px-4">HU-07a/b/f/g</td><td class="px-4 font-mono">icf-service/tests</td><td class="text-right px-4">119</td></tr>
         <tr><td class="px-4 py-2">9 Backend ICF (sugerencias, decisiones, causas)</td><td class="px-4">HU-07c</td><td class="px-4 font-mono">test_icf_*</td><td class="text-right px-4">53</td></tr>
         <tr><td class="px-4 py-2">10 Frontend ICF (perfil funcional y guía)</td><td class="px-4">HU-07d</td><td class="px-4 font-mono">FunctionalProfile, IcfGuide</td><td class="text-right px-4">22</td></tr>
         <tr><td class="px-4 py-2">11 E2E del perfil funcional ICF</td><td class="px-4">HU-07e</td><td class="px-4 font-mono">functional-profile.spec</td><td class="text-right px-4">5</td></tr>
@@ -1506,7 +1507,7 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
     <div class="grid md:grid-cols-3 gap-4 mb-8 text-sm">
       <div class="bg-white border border-slate-200 rounded-xl p-5 card"><div class="font-semibold mb-1">Qué falló</div><p class="text-slate-600 text-xs leading-relaxed">En estructuras el modelo completaba la cuota de 3 códigos (la 2.ª y la 3.ª solo eran «Adecuado/Aceptable» en el 57 % y el 38 %); en funciones la búsqueda traía 18 de los 39 códigos que la médica elegía (faltaban fuerza, control del movimiento y marcha).</p></div>
       <div class="bg-white border border-slate-200 rounded-xl p-5 card"><div class="font-semibold mb-1">Qué se corrigió</div><p class="text-slate-600 text-xs leading-relaxed">Estructuras solo con evidencia en el caso y un vínculo de movilidad acotado a limitación motora grave. Sin cambiar de modelo (<code>gemma4:e4b</code>) y a ~2 s por sugerencia. Ampliar candidatos no ayudó; el vínculo mental fue un error de diseño propio.</p></div>
-      <div class="bg-white border border-slate-200 rounded-xl p-5 card"><div class="font-semibold mb-1">Qué queda</div><p class="text-slate-600 text-xs leading-relaxed">El calificador del sistema solo usa 2 y 3 y la médica usa 2, 3 y 4 (queda un nivel por debajo en 21 de 40 pares). Es un borrador de apoyo con calificador editable; no se aprueba uso clínico. Recomendado: segunda revisora y una cuarta ronda.</p></div>
+      <div class="bg-white border border-slate-200 rounded-xl p-5 card"><div class="font-semibold mb-1">Qué queda</div><p class="text-slate-600 text-xs leading-relaxed">El calificador del sistema solo usa 2 y 3 y la médica usa 2, 3 y 4 (queda un nivel por debajo en 21 de 40 pares). Es un borrador de apoyo; no se aprueba uso clínico. Después del cierre, la gravedad de funciones y estructuras pasó a ser una decisión explícita del médico (HU-07i) y ninguna variante de reglas ni del modelo local mejoró el κ sin la revisora (ver «Después del cierre»). Recomendado, si hay revisora: repetir la medición.</p></div>
     </div>
 
     <div class="flex flex-wrap gap-3">
@@ -1736,6 +1737,35 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
 </div>
 
 <!-- ===================== DOCUMENTOS ===================== -->
+<!-- ===================== DESPUES DEL CIERRE ===================== -->
+<div class="view" id="view-posterior" data-view="posterior" hidden>
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+    <div><h1 class="text-2xl font-bold text-slate-900">Después del cierre</h1><p class="text-slate-500 text-sm">Lo realizado desde el cierre del proyecto (28 de octubre de 2026) hasta el 13 de noviembre de 2026. No suma puntos: 146 de 146.</p></div>
+  </div>
+  <section id="posterior-resumen" class="anchor mb-10">
+    <div class="grid md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-primary">12</div><div class="text-xs text-blue-600 mt-1 font-medium">commits en <code>develop</code> desde el cierre (con el de este reporte)</div></div>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-amber-700">0,533</div><div class="text-xs text-amber-600 mt-1 font-medium">κ del calificador con 125 códigos (oficial, ronda 3: 0,312)</div></div>
+      <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-green-700">2</div><div class="text-xs text-green-600 mt-1 font-medium">mejoras del perfil ICF: HU-07i y HU-07j</div></div>
+      <div class="bg-purple-50 border border-purple-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-purple-700">141 · 69 · 119</div><div class="text-xs text-purple-600 mt-1 font-medium">pruebas de backend, frontend y servicio ICF (antes 123 · 61 · 101)</div></div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-4 text-sm mb-8">
+      <div class="bg-white border border-slate-200 rounded-xl p-5 card"><div class="font-semibold mb-1">Exploración del calificador</div><p class="text-slate-600 text-xs leading-relaxed">Sin acceso a la revisora, se compararon variantes de la regla y <code>gemma4:e4b</code> con los 125 códigos que ella calificó a ciegas. Ninguna mejora de forma distinguible (reglas 0,533; modelo 0,545, intervalos solapados). No se cambió ninguna regla ni el veredicto de la ronda 3.</p></div>
+      <div class="bg-white border border-slate-200 rounded-xl p-5 card"><div class="font-semibold mb-1">HU-07i · La gravedad la confirma el médico</div><p class="text-slate-600 text-xs leading-relaxed">En funciones y estructuras la gravedad aparece «por confirmar» en un selector 0–4 por fila y Aceptar se bloquea hasta confirmarla, con una ayuda (escala, categorías, niveles D1–D6 y el sesgo medido). El backend guarda lo que sugirió el sistema y lo que fijó el médico.</p></div>
+      <div class="bg-white border border-slate-200 rounded-xl p-5 card"><div class="font-semibold mb-1">HU-07j · Memoria de casos y justificación</div><p class="text-slate-600 text-xs leading-relaxed">Cada código confirmado se guarda en la base vectorial (sin identificadores) y los casos parecidos se usan como ejemplos. El médico corrige la justificación, que sale en el reporte con lo que cambió. <b>El efecto de los ejemplos no está medido.</b></p></div>
+    </div>
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-sm text-amber-900 mb-8">
+      <div class="font-semibold mb-1">Estado de los despliegues</div>
+      <p class="text-xs leading-relaxed">Todo está en <code>develop</code>. La promoción a <code>staging</code> (PR #107) incluyó HU-07i; HU-07j todavía no. <code>staging</code> → <code>master</code> y la activación de la memoria en el PC del servicio ICF (imagen nueva y <code>Caddyfile</code> con <code>/cases</code>) las realiza el responsable. Hasta entonces, producción muestra el comportamiento del cierre.</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <a href="reporte-posterior-cierre.html" class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-medium hover:bg-pdark transition-colors shadow-md text-sm">Leer el reporte completo →</a>
+      <a href="https://github.com/jaquimbayoc7/health-access-bridge/blob/develop/docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md" target="_blank" rel="noopener" class="flex items-center gap-2 border border-slate-300 text-slate-600 px-5 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm">Protocolo, secciones 15 y 16</a>
+      <a href="https://github.com/jaquimbayoc7/health-access-bridge/blob/develop/docs/PENDIENTES_PROXIMA_SESION.md" target="_blank" rel="noopener" class="flex items-center gap-2 border border-slate-300 text-slate-600 px-5 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm">Pendientes</a>
+    </div>
+  </section>
+</div>
+
 <div class="view" id="view-docs" data-view="docs" hidden>
   <div class="mb-6"><h1 class="text-2xl font-bold text-slate-900">Documentos</h1><p class="text-slate-500 text-sm">Todos los informes, protocolos, manuales y diagramas del proyecto, con buscador y filtros.</p></div>
   <div class="flex flex-wrap items-center gap-3 mb-4 no-print">
@@ -1815,7 +1845,7 @@ const D = {
     { n: 'Sprint 11', w: '25-26', scope: 'HU-09 Pruebas completas y feedback', sp: 8, st: 'done' },
     { n: 'Sprint 12', w: '27', scope: 'HU-10 Despliegue final y manuales', sp: 5, st: 'done' },
   ],
-  tests: { backend: 123, frontend: 61, icf: 101, e2e: 20, smoke: 7, local: 9 },
+  tests: { backend: 141, frontend: 69, icf: 119, e2e: 20, smoke: 7, local: 13 },
   defects: [
     ['sep-2026', 'Caída del endpoint /users/login en producción', 'Pruebas de integración y E2E (HU-06)', 'Corregido y cubierto por pruebas'],
     ['sep-2026', 'El borrado lógico no se filtraba en GET/PUT/DELETE por id', 'Pruebas de integración y E2E (HU-06)', 'Filtro agregado a todas las consultas por id'],
@@ -1844,6 +1874,7 @@ D.docs = [
   ['Estado y planeación', 'Estado del proyecto — Momento 1', 'Cierre del Momento 1.', G + 'docs/reports/PROJECT_STATUS.md'],
   ['Estado y planeación', 'Release Plan', 'Releases por Momento, alcance, riesgos y ambientes.', G + 'docs/reports/RELEASE_PLAN.md'],
   ['Estado y planeación', 'Prácticas ágiles (SCRUM)', 'Roles, eventos y artefactos con su evidencia en el repo.', G + 'docs/reports/AGILE_PRACTICES.md'],
+  ['Estado y planeación', 'Reporte posterior al cierre', 'Lo realizado del 28 de octubre al 13 de noviembre: documentación final, exploración del calificador, HU-07i y HU-07j.', 'reporte-posterior-cierre.html', true],
   ['Estado y planeación', 'Pendientes para la próxima sesión', 'Punto de partida, pendientes y cuidados recurrentes.', G + 'docs/PENDIENTES_PROXIMA_SESION.md'],
   ['Estado y planeación', 'Insights Report 6', 'Cierre del Momento 3: métricas del repositorio, hallazgos de las pruebas, lecciones y riesgos abiertos.', G + 'docs/reports/INSIGHTS_REPORT6.md'],
   ['Estado y planeación', 'Insights Report 5', 'El episodio del modelo local, lecciones y adendas hasta el cierre de HU-07g.', G + 'docs/reports/INSIGHTS_REPORT5.md'],
@@ -2067,7 +2098,7 @@ const charts = {
 // ============================================================================
 // Enrutador por pestañas (el hash identifica la vista o una sección dentro de una vista)
 // ============================================================================
-const VIEWS = ['resumen', 'producto', 'proceso', 'calidad', 'ia', 'usuarios', 'docs'];
+const VIEWS = ['resumen', 'producto', 'proceso', 'calidad', 'ia', 'usuarios', 'posterior', 'docs'];
 function showView(name) {
   $$('.view').forEach((v) => { v.hidden = v.dataset.view !== name; });
   $$('.tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === name)));

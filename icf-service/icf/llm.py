@@ -72,15 +72,28 @@ def _listing(title: str, pairs: Sequence[Pair]) -> str:
     return title + "\n" + "\n".join(f"{code} {name}" for code, name in pairs)
 
 
+EXAMPLES_HEADER = "Casos previos confirmados por medicos (orientativos; elige solo de las listas):"
+
+
+def examples_block(examples: Sequence[Dict[str, Any]]) -> str:
+    """Hasta unas pocas lineas 'diagnostico: codigos' de casos parecidos que un medico ya reviso (HU-07j)."""
+    lines = [f"- {str(e.get('diag') or 'sin diagnostico')[:80]}: {', '.join(e['codes'])}" for e in examples if e.get('codes')]
+    return EXAMPLES_HEADER + "\n" + "\n".join(lines) if lines else ""
+
+
 def build_messages(
     patient_summary: str, b_pairs: Sequence[Pair], s_pairs: Sequence[Pair], justify: bool = False,
-    evidence: bool = False,
+    evidence: bool = False, examples: Sequence[Dict[str, Any]] = (),
 ) -> List[Dict[str, str]]:
     blocks = [patient_summary]
     if b_pairs:
         blocks.append(_listing("b:", b_pairs))
     if s_pairs:
         blocks.append(_listing("s:", s_pairs))
+    if examples:
+        block = examples_block(examples)
+        if block:
+            blocks.append(block)
     return [
         {"role": "system", "content": system_prompt(justify, evidence)},
         {"role": "user", "content": "\n".join(blocks)},

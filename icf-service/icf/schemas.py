@@ -3,7 +3,7 @@
 La entrada NO admite nombre, documento ni orientacion sexual: `extra="forbid"` rechaza cualquier campo
 no previsto, de modo que un dato identificable no puede llegar al servicio por descuido.
 """
-from typing import Dict, List, Optional
+from typing import Dict, List, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -57,3 +57,22 @@ class SuggestionResult(BaseModel):
     structures: List[SuggestedCode] = Field(default_factory=list)
     activities: List[SuggestedCode] = Field(default_factory=list)
     warnings: List[str] = Field(default_factory=list)
+    case_examples: int = 0  # casos confirmados por medicos que se usaron como ejemplos (HU-07j)
+
+
+class CaseRecord(BaseModel):
+    """Decision de un medico sobre un codigo (HU-07j). `patient` es el mismo contexto de /suggest (sin nombre, documento
+    ni orientacion sexual); `case_key` e `item_ref` son identificadores internos del backend, no de la persona."""
+    model_config = ConfigDict(extra="forbid")
+
+    case_key: str = Field(min_length=8, max_length=64)
+    item_ref: int = Field(ge=1)
+    component: Literal["b", "s", "d"]
+    code: str = Field(pattern=r"^[bsd][0-9]{3,5}$")
+    status: Literal["aceptado", "editado", "rechazado"]
+    qualifier: Optional[int] = Field(default=None, ge=0, le=4)
+    qualifier_cn: Optional[int] = Field(default=None, ge=0, le=9)
+    qualifier_cl: Optional[int] = Field(default=None, ge=0, le=9)
+    qualifier_suggested: Optional[int] = Field(default=None, ge=0, le=4)
+    justification: Optional[str] = Field(default=None, max_length=600)
+    patient: PatientContext

@@ -78,3 +78,11 @@ El proyecto se cerró el 28 de octubre de 2026 con 146 de 146 puntos. Se cerraro
 - Cawley, G. C. y Talbot, N. L. C. (2010). On over-fitting in model selection and subsequent selection bias in performance evaluation. *Journal of Machine Learning Research, 11*, 2079–2107.
 - Nosek, B. A. et al. (2018). The preregistration revolution. *PNAS, 115*(11), 2600–2606.
 - Convención de commits: https://www.conventionalcommits.org/es/v1.0.0/
+
+## Adenda posterior al cierre (13 de noviembre de 2026)
+
+- **Lo que cambió:** HU-07i y HU-07j sobre el perfil ICF, y la documentación final hasta la v1.1. El proyecto sigue en 146 de 146 puntos.
+- **Lección:** con una sola revisora y 40 pares, el κ del calificador (0,312) resultó inestable (0,533 con los 125 códigos de las rondas 1 y 3); ninguna variante de reglas ni del modelo local lo mejoró, de modo que la respuesta fue de diseño: la gravedad la confirma el médico y el sistema registra qué sugirió y qué fijó el profesional.
+- **Riesgo abierto nuevo:** la memoria de casos confirmados (ejemplos para el modelo) no está validada; un caso confirmado no es un caso verificado. Se apaga con `ICF_CASE_EXAMPLES=0`.
+- Reporte: [reporte posterior al cierre](../presentation/reporte-posterior-cierre.html).
+- Goddard, K., Roudsari, A., y Wyatt, J. C. (2012). Automation bias: a systematic review of frequency, effect mediators, and mitigators. *Journal of the American Medical Informatics Association, 19*(1), 121–127. https://doi.org/10.1136/amiajnl-2011-000089

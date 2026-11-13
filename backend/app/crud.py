@@ -200,6 +200,8 @@ def decide_icf_suggestion(db: Session, row: models.IcfSuggestion, decision: sche
         if decision.qualifier is not None:
             row.qualifier = decision.qualifier
             row.qualifier_confirmed = True  # el medico fijo la gravedad
+        if decision.justification is not None:
+            row.justification_medico = decision.justification.strip() or None
         if decision.qualifier_cn is not None:
             row.qualifier_cn = decision.qualifier_cn
         if decision.qualifier_cl is not None:

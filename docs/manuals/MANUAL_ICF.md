@@ -78,6 +78,12 @@ Para cada pedido a `POST /suggest`:
 | `ICF_S_EVIDENCE` | Las **estructuras** (s) se sugieren solo si hay evidencia en el diagnóstico o las notas; evita completar la cuota de tres con estructuras sin sustento |
 | `ICF_MOTOR_LINK` | Para cuadros motores, añade a los candidatos de **funciones** los códigos de fuerza, control del movimiento y marcha que la búsqueda por sí sola no traía |
 | `ICF_MENTAL_LINK` | Vínculo equivalente para cuadros mentales. **Se recomienda apagarlo (`false`)**: en la ronda 3 contribuyó a 6 de 7 estructuras rechazadas |
+| `ICF_CASE_MEMORY` | `true` por defecto: guarda en la base vectorial los casos que el médico confirma o edita (ver abajo). `false` desactiva `POST /cases` |
+| `ICF_CASE_EXAMPLES` | `3` por defecto: cuántos casos parecidos ya confirmados se muestran al modelo como ejemplos y aportan sus códigos como candidatos. **`0` apaga el uso** y deja el motor como se midió en la validación clínica |
+| `ICF_CASE_MIN_SIMILARITY` | `0.80` por defecto: similitud coseno mínima para usar un caso como ejemplo (valor inicial sin calibrar: ajústelo mirando casos reales) |
+
+
+**Memoria de casos (HU-07j, 13-nov-2026).** Cuando el médico acepta o edita un código, el backend envía a `POST /cases` el diagnóstico CIE y las notas (el mismo contexto de `/suggest`, sin nombre, documento ni orientación sexual), el código, la gravedad sugerida y la confirmada y la justificación. El servicio vectoriza el texto con `bge-m3` y lo guarda en `icf_cases` e `icf_case_codes` (se crean solas al arrancar; `sql/002_cases.sql`); rechazar un código lo retira. En `/suggest`, si un caso guardado supera la similitud mínima, sus códigos b y s entran como candidatos (solo si el capítulo aplica y existen en el catálogo) y el modelo ve una línea «diagnóstico: códigos» por caso; el modelo sigue eligiendo únicamente entre candidatos del catálogo y los calificadores siguen saliendo de las reglas. **Importante:** la validación clínica de la sección 11 se midió **sin** esta memoria; con ella el motor cambia y no está medido. El registro de la gravedad sugerida y la confirmada permite medir el acuerdo con el uso real. Un caso confirmado no es un caso verificado: un error que se acepte puede repetirse como ejemplo; si se observa, apague el uso con `ICF_CASE_EXAMPLES=0` o borre filas de `icf_cases`. El backend (Render) tiene su propia variable `ICF_CASE_MEMORY` (`false` deja de enviar los casos).
 
 Modos (`ICF_MODE`): **calidad** (predeterminado; 12 candidatos, justificación del modelo) y **rápido** (6 candidatos, solo códigos). `ICF_USE_LLM=false` desactiva el modelo y deja solo similitud (~0,6 s).
 
@@ -147,6 +153,7 @@ Si en el futuro se monta el servicio en un servidor **Linux**, la guía está en
 | PC | `ICF_MODE` | `calidad` (por defecto) o `rapido` |
 | PC | `ICF_USE_LLM` | `true` por defecto; `false` = solo similitud |
 | PC | `ICF_S_EVIDENCE`, `ICF_MOTOR_LINK`, `ICF_MENTAL_LINK` | Ver sección 3; recomendado `ICF_MENTAL_LINK=false` |
+| PC | `ICF_CASE_MEMORY`, `ICF_CASE_EXAMPLES`, `ICF_CASE_MIN_SIMILARITY` | Memoria de casos (sección 3); `ICF_CASE_EXAMPLES=0` apaga su uso |
 | PC | `ICF_LLM_KEEP_ALIVE` | Cuánto permanece el modelo en memoria (`30m`) |
 | PC | `ICF_BODY_CANDIDATES`, `ICF_LLM_JUSTIFY`, `ICF_LLM_NUM_PREDICT`, `ICF_LLM_NUM_CTX` | Afinan el modo; los define `ICF_MODE` |
 | Render (3 ambientes) | `ICF_LLM_URL` | URL pública del túnel, sin barra final |
@@ -210,11 +217,11 @@ Cuando cambie el código de `icf-service/`: `git pull`, `docker compose --env-fi
 El PC no tiene datos de pacientes. Lo que conviene respaldar: el archivo `%USERPROFILE%\.hab-icf\.env` (en un lugar seguro, **no** en OneDrive ni en el repositorio) y el archivo del catálogo `catalog_cifia.tsv`.
 
 ## 9. Seguridad y privacidad
-- **Qué viaja al servicio:** edad, género, causa, categorías, niveles D1–D6, la predicción y, si el médico los escribe, diagnóstico y notas. **Nunca** el nombre, el documento ni la orientación sexual. El servicio **no guarda** las notas.
-- **Puerta:** Caddy exige el token Bearer en **todas** las rutas y solo deja pasar `/suggest`, `/health` y `/api/tags`; lo demás responde 404 (por ejemplo, `/api/generate` de Ollama no se expone).
+- **Qué viaja al servicio:** edad, género, causa, categorías, niveles D1–D6, la predicción y, si el médico los escribe, diagnóstico y notas. **Nunca** el nombre, el documento ni la orientación sexual. El servicio guarda las notas **solo** de los casos que el médico confirma o edita (memoria de casos, sección 3), siempre sin identificadores y dentro del PC propio; sin esa confirmación no se guarda nada.
+- **Puerta:** Caddy exige el token Bearer en **todas** las rutas y solo deja pasar `/suggest`, `/cases`, `/health` y `/api/tags`; lo demás responde 404 (por ejemplo, `/api/generate` de Ollama no se expone).
 - **Red:** Tailscale Funnel publica **solo** el puerto 11435; la base y el servicio no tienen puertos abiertos al exterior.
 - **Secretos:** en `%USERPROFILE%\.hab-icf\.env`, fuera del repositorio y de OneDrive.
-- **Notas libres:** pueden contener datos identificables si el médico los escribe; la pantalla lo advierte.
+- **Notas libres:** pueden contener datos identificables si el médico los escribe; la pantalla lo advierte, y ahora también quedan en la memoria de casos si el médico confirma el código: para borrar un caso, `DELETE FROM icf_cases WHERE case_key = '…'` (sus códigos se borran en cascada). Minimización de datos (Ley 1581 de 2012): no se guarda edad ni género, solo el grupo de edad.
 - **Marco legal:** Ley 1581 de 2012 (protección de datos personales). El perfil es un **borrador de apoyo**; la decisión es del profesional.
 - **Auditoría:** cada sugerencia guarda el modelo que la generó, el lote y la decisión del médico (en el backend).
 

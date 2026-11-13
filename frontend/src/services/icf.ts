@@ -17,6 +17,8 @@ export interface IcfItem {
   qualifier_suggested?: number | null;
   qualifier_confirmed?: boolean;
   justification: string | null;
+  /** Justificacion que escribio o corrigio el medico (HU-07j); sale en el reporte en lugar de la del modelo. */
+  justification_medico?: string | null;
   origin: IcfOrigin;
   status: IcfStatus;
   original_code: string | null;
@@ -45,6 +47,7 @@ export interface IcfDecision {
   qualifier?: number;
   qualifier_cn?: number;
   qualifier_cl?: number;
+  justification?: string;
 }
 
 // La sugerencia puede tardar (hasta ~15 s solo con CPU); el backend espera hasta 90 s.

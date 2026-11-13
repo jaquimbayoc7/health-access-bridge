@@ -40,6 +40,16 @@ def _service_result(**overrides):
     return result
 
 
+@pytest.fixture(autouse=True)
+def case_calls(monkeypatch):
+    """HU-07j: la memoria de casos no usa la red en las pruebas; devuelve lo que se habria enviado al servicio."""
+    calls = []
+    monkeypatch.setattr(
+        icf_client, "post_case", lambda url, token, payload, timeout: calls.append(payload) or {"status": "stored"}
+    )
+    return calls
+
+
 @pytest.fixture
 def configured(monkeypatch):
     monkeypatch.setenv("ICF_LLM_URL", SECRET_URL)
@@ -400,7 +410,7 @@ class TestSchemaUpgrade:
         ensure_icf_columns(engine)
         ensure_icf_columns(engine)  # idempotente
         names = {col["name"] for col in inspect(engine).get_columns("icf_suggestions")}
-        assert {"qualifier_suggested", "qualifier_confirmed"} <= names
+        assert {"qualifier_suggested", "qualifier_confirmed", "justification_medico"} <= names
         with engine.connect() as c:
             row = c.execute(text("SELECT qualifier, qualifier_suggested, qualifier_confirmed FROM icf_suggestions")).one()
         assert tuple(row) == (3, None, 0)
@@ -410,3 +420,101 @@ class TestSchemaUpgrade:
         from app.database import ensure_icf_columns
 
         ensure_icf_columns(create_engine("sqlite://"))
+
+
+class TestJustificationAndCaseMemory:
+    """HU-07j: el medico corrige la justificacion (sale en el reporte) y cada decision confirmada va a la memoria de casos."""
+
+    @pytest.fixture
+    def generated(self, client, auth_headers_medico, patient, fake_service):
+        _generate(client, auth_headers_medico, patient.id, {"diag_cie": "G80 Paralisis cerebral", "clinical_notes": "Espasticidad"})
+        return patient
+
+    def _patch(self, client, headers, item_id, body):
+        return client.patch(f"/icf/suggestions/{item_id}", json=body, headers=headers)
+
+    def test_the_doctor_justification_is_saved_and_the_model_one_is_kept(self, client, auth_headers_medico, generated):
+        item = _first_item(client, auth_headers_medico, generated.id)
+        r = self._patch(client, auth_headers_medico, item["id"], {"status": "editado", "justification": "  Camina con bastón.  "})
+        assert r.status_code == 200
+        body = r.json()
+        assert body["justification_medico"] == "Camina con bastón." and body["justification"] == item["justification"]
+        assert body["qualifier_confirmed"] is False  # solo la justificacion: la gravedad sigue sin confirmar
+        again = _first_item(client, auth_headers_medico, generated.id)
+        assert again["justification_medico"] == "Camina con bastón."
+
+    def test_an_empty_justification_clears_it(self, client, auth_headers_medico, generated):
+        item = _first_item(client, auth_headers_medico, generated.id)
+        self._patch(client, auth_headers_medico, item["id"], {"status": "editado", "justification": "texto"})
+        r = self._patch(client, auth_headers_medico, item["id"], {"status": "editado", "justification": "   "})
+        assert r.json()["justification_medico"] is None
+
+    def test_only_editing_can_change_the_justification(self, client, auth_headers_medico, generated):
+        item = _first_item(client, auth_headers_medico, generated.id)
+        for status in ("aceptado", "rechazado"):
+            body = {"status": status, "justification": "x", **({"qualifier": item["qualifier"]} if status == "aceptado" else {})}
+            assert self._patch(client, auth_headers_medico, item["id"], body).status_code == 422
+        too_long = {"status": "editado", "justification": "x" * 501}
+        assert self._patch(client, auth_headers_medico, item["id"], too_long).status_code == 422
+
+    def test_a_confirmed_decision_is_sent_to_the_case_memory_without_identifying_data(
+        self, client, auth_headers_medico, generated, case_calls
+    ):
+        item = _first_item(client, auth_headers_medico, generated.id)
+        r = self._patch(client, auth_headers_medico, item["id"], {"status": "editado", "qualifier": 4, "justification": "Parálisis completa"})
+        assert r.status_code == 200 and len(case_calls) == 1
+        sent = case_calls[0]
+        assert sent["case_key"] == r.json().get("batch_id", sent["case_key"]) and sent["item_ref"] == item["id"]
+        assert (sent["code"], sent["status"], sent["qualifier"], sent["qualifier_suggested"]) == (item["code"], "editado", 4, 3)
+        assert sent["justification"] == "Parálisis completa"
+        assert sent["patient"]["diag_cie"] == "G80 Paralisis cerebral" and sent["patient"]["clinical_notes"] == "Espasticidad"
+        text = json.dumps(sent, ensure_ascii=False)
+        for secret in ("Juan Pérez", "1001234567", "heterosexual", "nombre_apellidos", "numero_documento", "orientacion"):
+            assert secret not in text
+
+    def test_the_model_justification_is_sent_when_the_doctor_wrote_none(self, client, auth_headers_medico, generated, case_calls):
+        item = _first_item(client, auth_headers_medico, generated.id, "activities")
+        self._patch(client, auth_headers_medico, item["id"], {"status": "aceptado"})
+        assert len(case_calls) == 1 and case_calls[0]["component"] == "d"
+        assert case_calls[0]["justification"] == item["justification"]
+
+    def test_rejecting_tells_the_memory_to_remove_the_code(self, client, auth_headers_medico, generated, case_calls):
+        item = _first_item(client, auth_headers_medico, generated.id)
+        self._patch(client, auth_headers_medico, item["id"], {"status": "rechazado"})
+        assert [c["status"] for c in case_calls] == ["rechazado"] and case_calls[0]["item_ref"] == item["id"]
+
+    def test_function_or_structure_without_confirmed_severity_is_not_sent(self, client, auth_headers_medico, generated, case_calls):
+        item = _first_item(client, auth_headers_medico, generated.id)
+        self._patch(client, auth_headers_medico, item["id"], {"status": "editado", "justification": "solo texto"})
+        assert case_calls == []
+
+    def test_a_memory_failure_never_blocks_the_decision(self, client, auth_headers_medico, generated, monkeypatch):
+        def _boom(*args):
+            raise error.URLError("sin red")
+
+        monkeypatch.setattr(icf_client, "post_case", _boom)
+        item = _first_item(client, auth_headers_medico, generated.id)
+        r = self._patch(client, auth_headers_medico, item["id"], {"status": "aceptado", "qualifier": item["qualifier"]})
+        assert r.status_code == 200 and r.json()["status"] == "aceptado"
+
+    def test_it_can_be_turned_off(self, client, auth_headers_medico, generated, case_calls, monkeypatch):
+        monkeypatch.setenv("ICF_CASE_MEMORY", "false")
+        item = _first_item(client, auth_headers_medico, generated.id)
+        self._patch(client, auth_headers_medico, item["id"], {"status": "aceptado", "qualifier": item["qualifier"]})
+        assert case_calls == []
+
+    def test_nothing_is_sent_when_the_service_is_not_configured(self, client, auth_headers_medico, generated, case_calls, monkeypatch):
+        monkeypatch.delenv("ICF_LLM_URL", raising=False)
+        monkeypatch.delenv("ICF_LLM_TOKEN", raising=False)
+        item = _first_item(client, auth_headers_medico, generated.id, "activities")
+        assert self._patch(client, auth_headers_medico, item["id"], {"status": "aceptado"}).status_code == 200
+        assert case_calls == []
+
+    def test_send_case_does_not_leak_the_url_or_token_when_it_fails(self, monkeypatch, caplog, configured):
+        def _boom(*args):
+            raise error.URLError(f"{SECRET_URL} {SECRET_TOKEN}")
+
+        monkeypatch.setattr(icf_client, "post_case", _boom)
+        with caplog.at_level("WARNING"):
+            assert icf_client.send_case({"x": 1}) is False
+        assert SECRET_URL not in caplog.text and SECRET_TOKEN not in caplog.text and "URLError" in caplog.text

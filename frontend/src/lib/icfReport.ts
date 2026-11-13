@@ -81,6 +81,36 @@ export function qualifierFromLevel(level: number): number {
   return 4;
 }
 
+/** Justificacion que se muestra y se imprime: la del medico si la escribio o corrigio; si no, la del modelo. */
+export function justificationText(item: Pick<IcfItem, 'justification' | 'justification_medico'>): string {
+  return (item.justification_medico || item.justification || '').trim();
+}
+
+/** Que cambio el medico respecto de lo sugerido (HU-07j), para el reporte y la tabla; vacio si no cambio nada. */
+export function decisionNote(item: IcfItem, lang: 'es' | 'en' = 'es'): string {
+  if (item.status !== 'aceptado' && item.status !== 'editado') return '';
+  const es = lang === 'es';
+  const parts: string[] = [];
+  if (item.component !== 'd' && item.qualifier_confirmed && item.qualifier !== null) {
+    const suggested = item.qualifier_suggested;
+    parts.push(
+      suggested !== null && suggested !== undefined && suggested !== item.qualifier
+        ? es
+          ? `Gravedad ajustada por el médico: ${suggested} → ${item.qualifier}`
+          : `Severity adjusted by the physician: ${suggested} → ${item.qualifier}`
+        : es
+          ? `Gravedad confirmada por el médico: ${item.qualifier}`
+          : `Severity confirmed by the physician: ${item.qualifier}`
+    );
+  }
+  if (item.original_code) {
+    parts.push(
+      es ? `Código ajustado por el médico (sugerido: ${item.original_code})` : `Code adjusted by the physician (suggested: ${item.original_code})`
+    );
+  }
+  return parts.join('. ');
+}
+
 export const ORIGIN_LABELS: Record<string, string> = {
   llm: 'Modelo',
   similarity: 'Similitud',
@@ -109,6 +139,10 @@ export function buildReportText(set: IcfSuggestionSet, patientLabel: string): st
     if (section.rows.length === 0) lines.push('  (sin códigos)');
     for (const row of section.rows) {
       lines.push(`  ${formatCode(row)}  ${row.title}  [${reportQualifierText(row)}]${row.status === 'editado' ? ' (editado)' : ''}`);
+      const why = justificationText(row);
+      if (why) lines.push(`      Justificación${row.justification_medico ? ' (del médico)' : ''}: ${why}`);
+      const note = decisionNote(row);
+      if (note) lines.push(`      ${note}`);
     }
     lines.push('');
   }

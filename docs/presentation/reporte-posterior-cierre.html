@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Reporte posterior al cierre — Health Access Bridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']},colors:{primary:'#2563EB',pdark:'#1D4ED8',plight:'#EFF6FF'}}}}</script>
+<style>
+html{scroll-behavior:smooth}
+.section-title::after{content:'';display:block;width:48px;height:4px;background:#2563EB;border-radius:2px;margin-top:8px}
+table{border-collapse:collapse;width:100%}
+th,td{padding:.5rem .75rem;text-align:left;font-size:.8rem;border-bottom:1px solid #e2e8f0;vertical-align:top}
+th{background:#f1f5f9;color:#475569;font-weight:600}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.ok{color:#15803d;font-weight:600}.no{color:#b91c1c;font-weight:600}
+@media print{nav{display:none!important}body{background:#fff!important}section{page-break-inside:avoid}}
+</style>
+</head>
+<body class="bg-slate-100 font-sans text-slate-800 antialiased">
+
+<nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+  <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between text-sm">
+    <a href="index.html#posterior" class="font-semibold text-slate-900">← Health Access Bridge</a>
+    <div class="hidden md:flex gap-5 text-slate-600 font-medium">
+      <a href="#resumen" class="hover:text-primary">Resumen</a><a href="#linea" class="hover:text-primary">Línea de tiempo</a>
+      <a href="#calificador" class="hover:text-primary">Calificador</a><a href="#cambios" class="hover:text-primary">Cambios</a>
+      <a href="#pruebas" class="hover:text-primary">Pruebas</a><a href="#riesgos" class="hover:text-primary">Riesgos</a><a href="#fuentes" class="hover:text-primary">Fuentes</a>
+    </div>
+  </div>
+</nav>
+
+<header class="bg-white pt-14 pb-12 border-b border-slate-200">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="inline-flex items-center gap-2 bg-plight text-primary text-xs font-semibold px-3 py-1 rounded-full mb-4">Posterior al cierre · 28 de octubre al 13 de noviembre de 2026</div>
+    <h1 class="text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-3">Después del cierre: el calificador queda en manos del médico y el sistema aprende de lo que el médico confirma</h1>
+    <p class="text-slate-500 max-w-3xl">Reporte de lo realizado desde el cierre del proyecto (146 de 146 puntos, 28 de octubre de 2026) hasta hoy: la documentación final, la exploración del calificador sin acceso a la revisora y dos mejoras del perfil funcional ICF (HU-07i y HU-07j). Ninguna cambia los puntos del proyecto.</p>
+    <p class="text-xs text-slate-400 mt-3">Autor: @jaquimbayoc7 · Fuente: historial de <code>develop</code>, <code>docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md</code> (secciones 15 y 16) y <code>BACKLOG.md</code>.</p>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-6 py-10 space-y-14">
+
+<section id="resumen">
+  <h2 class="text-xl font-bold mb-1 section-title">Resumen</h2>
+  <div class="grid md:grid-cols-4 gap-4 mt-6 mb-6">
+    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-primary">146/146</div><div class="text-xs text-blue-600 mt-1 font-medium">puntos: sin cambio (el trabajo posterior no suma puntos)</div></div>
+    <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-green-700">12</div><div class="text-xs text-green-600 mt-1 font-medium">commits en <code>develop</code> desde el cierre (con el de este reporte)</div></div>
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-amber-700">0,533</div><div class="text-xs text-amber-600 mt-1 font-medium">κ del calificador con los 125 códigos de las rondas 1 y 3 (oficial de la ronda 3: 0,312)</div></div>
+    <div class="bg-purple-50 border border-purple-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-purple-700">2</div><div class="text-xs text-purple-600 mt-1 font-medium">mejoras del perfil ICF: HU-07i y HU-07j</div></div>
+  </div>
+  <div class="bg-white border border-slate-200 rounded-xl p-5 text-sm text-slate-600 space-y-3">
+    <p><b class="text-slate-800">Qué pasó.</b> Tras el cierre se completó la documentación final (versiones 0.2 a 0.5 el mismo 28 de octubre). Entre el 29 de octubre y el 12 de noviembre el repositorio no tuvo cambios. El 13 de noviembre, sin acceso a la profesional que validó el motor, se exploró si el calificador podía mejorarse con los datos ya existentes; como ninguna variante ganó, la gravedad de funciones y estructuras pasó a ser una decisión explícita del médico (HU-07i), y el sistema empezó a guardar los casos que el médico confirma para usarlos como ejemplos y a dejarle corregir la justificación que sale en el reporte (HU-07j).</p>
+    <p><b class="text-slate-800">Qué no cambió.</b> El veredicto oficial de la validación clínica (NO CUMPLE por un solo criterio, el calificador, κ ponderado de 0,312 en la ronda 3), las reglas y los umbrales. El perfil sigue siendo un borrador de apoyo; no se aprueba el uso clínico autónomo.</p>
+    <p><b class="text-slate-800">Qué no se midió.</b> El efecto de usar los casos confirmados como ejemplos: la validación se hizo con el motor sin esa memoria.</p>
+  </div>
+</section>
+
+<section id="linea">
+  <h2 class="text-xl font-bold mb-1 section-title">Línea de tiempo</h2>
+  <div class="overflow-x-auto mt-6 bg-white border border-slate-200 rounded-xl"><table>
+    <thead><tr><th>Fecha</th><th>Qué se hizo</th><th>Commits o evidencia</th></tr></thead>
+    <tbody>
+      <tr><td class="whitespace-nowrap">28-oct-2026</td><td><b>Cierre del proyecto</b>: HU-10 y 146/146 puntos; documentación final v0.2 con diagramas C4, Archify y BPMN.</td><td><code>d89abe6</code></td></tr>
+      <tr><td class="whitespace-nowrap">28-oct-2026</td><td>Documentación final v0.3 a v0.5: origen del modelo predictivo (HybridModelDisability), explicación del código del servicio ICF, métricas del estudio de origen y conciliación de las cifras del manuscrito.</td><td><code>daf03fa</code> <code>17b16e6</code> <code>63a8492</code></td></tr>
+      <tr><td class="whitespace-nowrap">28-oct-2026</td><td>Se retira del proyecto la configuración de IA que el código no usaba (servicio externo de predicción, restos de OpenAI) y se alinea el modelo por defecto del servicio ICF con producción. Documentación v0.5 con las ediciones del autor en Word.</td><td><code>091d4db</code> <code>6b8e82c</code></td></tr>
+      <tr><td class="whitespace-nowrap">29-oct a 12-nov</td><td>Sin cambios en el repositorio. El autor continuó editando el Word (versión 1.0, local).</td><td>—</td></tr>
+      <tr><td class="whitespace-nowrap">13-nov-2026</td><td><b>Exploración del calificador</b> sin la revisora (125 códigos calificados a ciegas) y <b>HU-07i</b>: la gravedad de funciones y estructuras la confirma el médico.</td><td><code>31f36e5</code> <code>236115c</code> <code>a748ce3</code></td></tr>
+      <tr><td class="whitespace-nowrap">13-nov-2026</td><td>Documentación final v1.1 (sección 5.5.4). El responsable promueve <code>develop</code> a <code>staging</code> (PR #107); el despliegue de QA queda a su cargo.</td><td><code>ae6fe2c</code> · PR #107</td></tr>
+      <tr><td class="whitespace-nowrap">13-nov-2026</td><td><b>HU-07j</b>: memoria de casos confirmados por el médico, uso como ejemplos y justificación editable en el reporte.</td><td><code>79baf38</code> <code>f489760</code></td></tr>
+    </tbody></table></div>
+</section>
+
+<section id="calificador">
+  <h2 class="text-xl font-bold mb-1 section-title">Exploración del calificador sin la revisora</h2>
+  <p class="text-slate-500 text-sm mb-5 mt-4">La profesional ya no estaba disponible para una cuarta ronda. Se reunieron los 125 códigos de funciones y estructuras que calificó a ciegas (67 de la ronda 1 y 58 de la ronda 3) y se compararon variantes de la regla y un modelo de lenguaje con un mensaje fijado antes de ver los resultados. Es un análisis exploratorio: una sola revisora, casos sintéticos y los mismos casos con los que se analizaron los errores; no sustituye la medición de la ronda 3.</p>
+  <div class="grid lg:grid-cols-2 gap-6">
+    <div class="bg-white border border-slate-200 rounded-xl p-5 overflow-x-auto">
+      <table>
+        <thead><tr><th>Variante</th><th class="n">Todos (125)</th><th class="n">Ronda 1</th><th class="n">Ronda 3</th></tr></thead>
+        <tbody>
+          <tr><td>A. Reglas actuales (categoría de HAB)</td><td class="n">0,533</td><td class="n">0,615</td><td class="n">0,376</td></tr>
+          <tr><td>B. Subir un nivel si la categoría es moderada o mayor</td><td class="n">0,501</td><td class="n">0,586</td><td class="n">0,333</td></tr>
+          <tr><td>Mayor de las dos categorías</td><td class="n">0,469</td><td class="n">0,531</td><td class="n">0,360</td></tr>
+          <tr><td>Nivel D del dominio relacionado</td><td class="n">0,363</td><td class="n">0,383</td><td class="n">0,340</td></tr>
+          <tr><td>D1. <code>gemma4:e4b</code> con el caso</td><td class="n">0,545</td><td class="n">0,607</td><td class="n">0,422</td></tr>
+          <tr><td>D2. <code>gemma4:e4b</code> con el caso y la regla</td><td class="n">0,541</td><td class="n">0,627</td><td class="n">0,384</td></tr>
+        </tbody>
+      </table>
+      <p class="text-[11px] text-slate-400 mt-3">κ ponderado (pesos lineales). IC 95 % por remuestreo de casos de aproximadamente 0,40 a 0,65 en «Todos»; se solapan en todas las variantes.</p>
+    </div>
+    <div class="bg-white border border-slate-200 rounded-xl p-5"><canvas id="chartCalif" height="230"></canvas></div>
+  </div>
+  <div class="grid md:grid-cols-3 gap-4 mt-6 text-sm">
+    <div class="bg-white border border-slate-200 rounded-xl p-5"><div class="font-semibold mb-1">Ninguna variante gana</div><p class="text-slate-600 text-xs leading-relaxed">El modelo local de 4B parámetros da 0,545 frente a 0,533 de las reglas; los intervalos se solapan por completo. No hay diferencia atribuible al modelo, y por eso las reglas no se cambiaron. Un modelo mayor no estaba disponible en el equipo (solo <code>gemma4:e4b</code>, <code>gemma4:e2b</code>, <code>qwen2.5:3b</code> y <code>medgemma:4b</code>).</p></div>
+    <div class="bg-white border border-slate-200 rounded-xl p-5"><div class="font-semibold mb-1">La escala de la revisora cambió</div><p class="text-slate-600 text-xs leading-relaxed">En la ronda 1 coincidía con la regla (sesgo medio de +0,34 niveles); en la ronda 3 calificó un nivel por encima en 24 de 58 códigos (+0,45). Subir un nivel no ayuda porque el desvío no es constante. Es coherente con la baja confiabilidad humana de los calificadores de la CIF (Okochi 2005; Chen 2016), aunque con una sola revisora no puede separarse del error del sistema.</p></div>
+    <div class="bg-white border border-slate-200 rounded-xl p-5"><div class="font-semibold mb-1">El 0,312 es inestable</div><p class="text-slate-600 text-xs leading-relaxed">Con los 125 códigos la regla actual alcanza 0,533, por encima de la meta de 0,50. Aun así el resultado oficial sigue siendo el de la ronda 3 (40 pares) y no se movió ninguna meta para que el resultado cumpliera (Nosek 2018).</p></div>
+  </div>
+</section>
+
+<section id="cambios">
+  <h2 class="text-xl font-bold mb-1 section-title">Cambios en el producto</h2>
+  <div class="grid md:grid-cols-2 gap-6 mt-6 text-sm">
+    <div class="bg-white border border-slate-200 rounded-xl p-5">
+      <div class="flex justify-between items-start mb-2"><b>HU-07i · La gravedad la confirma el médico</b><span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">13-nov</span></div>
+      <ul class="list-disc pl-5 text-slate-600 text-xs leading-relaxed space-y-1">
+        <li>En cada fila de funciones (b) y estructuras (s), la gravedad es un selector 0–4 marcado «por confirmar · sugerida por reglas».</li>
+        <li>El botón de aceptar queda bloqueado hasta que el médico la confirma o la cambia; si la cambia, se guarda como edición. Las actividades (d) se aceptan directamente.</li>
+        <li>Una ayuda a la vista muestra la escala con porcentajes, las categorías de HAB, los niveles D1–D6 con su calificador equivalente y el sesgo medido (el sistema solo sugirió 2 o 3; la profesional usó también 4).</li>
+        <li>El backend exige la gravedad para aceptar una b o s y guarda <code>qualifier_suggested</code> y <code>qualifier_confirmed</code>, con lo que el acuerdo sistema–médico podrá medirse con el uso real. Las columnas se agregan solas al arrancar.</li>
+        <li>El PDF y el texto copiado marcan «gravedad sugerida, sin confirmar» y llevan una nota sobre el κ de 0,312.</li>
+      </ul>
+      <p class="text-[11px] text-slate-400 mt-3">Sustento: el valor precargado que se acepta con un clic favorece el sesgo de automatización, que se reduce al hacer visible la responsabilidad del usuario y la ayuda en pantalla (Goddard 2012).</p>
+    </div>
+    <div class="bg-white border border-slate-200 rounded-xl p-5">
+      <div class="flex justify-between items-start mb-2"><b>HU-07j · Memoria de casos y justificación editable</b><span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">13-nov</span></div>
+      <ul class="list-disc pl-5 text-slate-600 text-xs leading-relaxed space-y-1">
+        <li>Cada código que el médico acepta o edita (en b y s, con la gravedad confirmada) se guarda en la base vectorial del servicio ICF con el diagnóstico y las notas, sin nombre, documento, orientación sexual, edad ni género. Si lo rechaza después, se retira.</li>
+        <li>Cuando un caso nuevo se parece a uno confirmado (similitud coseno ≥ 0,80, hasta 3), sus códigos entran como candidatos —siempre dentro del catálogo y de los capítulos que aplican— y se muestran al modelo como ejemplos.</li>
+        <li>El médico corrige la justificación de cada código en el cuadro de edición; la tabla la marca «Del médico» y anota lo que cambió. El reporte y el PDF incluyen la justificación y esas notas, para que el paciente tenga una visión más completa de su perfil.</li>
+        <li>Un fallo de la memoria nunca bloquea la decisión del médico. <code>ICF_CASE_EXAMPLES=0</code> apaga el uso como ejemplos y <code>ICF_CASE_MEMORY=false</code> deja de guardar.</li>
+      </ul>
+      <p class="text-[11px] text-slate-400 mt-3">Sustento: mantener el conocimiento en una memoria consultable que se actualiza sin reentrenar es la idea de la generación aumentada por recuperación (Lewis 2020).</p>
+    </div>
+  </div>
+</section>
+
+<section id="pruebas">
+  <h2 class="text-xl font-bold mb-1 section-title">Pruebas</h2>
+  <div class="overflow-x-auto mt-6 bg-white border border-slate-200 rounded-xl"><table>
+    <thead><tr><th>Suite</th><th class="n">Al cierre (28-oct)</th><th class="n">Hoy (13-nov)</th><th>Observación</th></tr></thead>
+    <tbody>
+      <tr><td>Backend (pytest)</td><td class="n">123</td><td class="n">141</td><td>Todas pasan; cobertura de 91,3 % (el CI exige al menos 80 %).</td></tr>
+      <tr><td>Frontend (Vitest)</td><td class="n">61</td><td class="n">69</td><td>Todas pasan; <code>tsc</code> y <code>eslint</code> sin errores.</td></tr>
+      <tr><td>Servicio ICF (pytest)</td><td class="n">101</td><td class="n">119</td><td>106 pasan en el CI y 13 son locales (catálogo de la OMS o una base con pgvector).</td></tr>
+      <tr><td>Memoria de casos contra PostgreSQL + pgvector reales</td><td class="n">—</td><td class="n">2</td><td>Corridas en un contenedor Docker propio: validan el SQL (guardar, buscar, actualizar, retirar, tablas inexistentes).</td></tr>
+      <tr><td>E2E de Playwright</td><td class="n">20</td><td class="n">20</td><td>Se actualizó el caso de aceptar (confirmar la gravedad antes); <b>no se ejecutó</b> en esta sesión.</td></tr>
+    </tbody></table></div>
+</section>
+
+<section id="riesgos">
+  <h2 class="text-xl font-bold mb-1 section-title">Riesgos y lo que queda</h2>
+  <div class="grid md:grid-cols-2 gap-6 mt-6 text-sm">
+    <div class="bg-white border border-slate-200 rounded-xl p-5">
+      <div class="font-semibold mb-2">Riesgos de lo nuevo</div>
+      <ul class="list-disc pl-5 text-slate-600 text-xs leading-relaxed space-y-1">
+        <li><b>Los ejemplos no están medidos.</b> Las métricas de la validación clínica se obtuvieron sin la memoria; con ella el motor cambia (Kapoor y Narayanan 2023). Con la memoria vacía el comportamiento es idéntico al medido.</li>
+        <li><b>Un caso confirmado no es un caso verificado:</b> un error aceptado puede repetirse como ejemplo.</li>
+        <li><b>El umbral de similitud (0,80) es un valor inicial sin calibrar.</b></li>
+        <li><b>Privacidad:</b> las notas son texto libre; la pantalla advierte al médico que no escriba datos identificables (Ley 1581 de 2012). Para retirar un caso: <code>DELETE FROM icf_cases WHERE case_key = '…'</code>.</li>
+        <li>El calificador sigue sin validarse; la medición oficial queda en NO CUMPLE.</li>
+      </ul>
+    </div>
+    <div class="bg-white border border-slate-200 rounded-xl p-5">
+      <div class="font-semibold mb-2">Pendientes (a cargo del responsable)</div>
+      <ul class="list-disc pl-5 text-slate-600 text-xs leading-relaxed space-y-1">
+        <li>Terminar los despliegues: <code>develop</code> → <code>staging</code> está fusionado (PR #107); falta <code>staging</code> → <code>master</code> y actualizar los contadores de esta presentación al promover.</li>
+        <li>Activar la memoria en el PC del servicio ICF: reconstruir la imagen y aplicar el <code>Caddyfile</code> nuevo, que expone <code>/cases</code>. Las tablas se crean solas.</li>
+        <li>Regenerar con la aplicación desplegada las capturas <code>img/09</code> a <code>img/11</code> y los PDF de los manuales; actualizar los campos del Word v1.1 (el Contenido).</li>
+        <li>Probar en QA con una sesión real de médico: perfil generado antes, perfil nuevo, confirmar la gravedad, editar la justificación y descargar el PDF.</li>
+        <li>Si volviera a haber una revisora: repetir la medición del calificador y medir el efecto de los ejemplos.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="fuentes">
+  <h2 class="text-xl font-bold mb-1 section-title">Documentos actualizados y fuentes</h2>
+  <p class="text-slate-600 text-sm mt-4 mb-3"><b>Documentos:</b> manuales de usuario, técnico y del servicio ICF; protocolo de validación (secciones 15 y 16); <code>BACKLOG.md</code>; <code>PENDIENTES_PROXIMA_SESION.md</code>; README del servicio ICF; documentación final v1.1 (secciones 5.3.2, 5.3.4 a 5.3.6, 5.5.3, 5.5.4, 5.6, 5.7, 7.3, 9 y conclusiones) y esta presentación.</p>
+  <ul class="text-xs text-slate-600 space-y-2 bg-white border border-slate-200 rounded-xl p-5 leading-relaxed">
+    <li>Chen, S., Tao, J., Tao, Q., et al. (2016). Rater experience influences reliability and validity of the Brief ICF Core Set for Stroke. <i>Journal of Rehabilitation Medicine, 48</i>(3), 265–272. <a class="text-primary underline" href="https://doi.org/10.2340/16501977-2063">doi:10.2340/16501977-2063</a></li>
+    <li>Goddard, K., Roudsari, A., y Wyatt, J. C. (2012). Automation bias: A systematic review of frequency, effect mediators, and mitigators. <i>Journal of the American Medical Informatics Association, 19</i>(1), 121–127. <a class="text-primary underline" href="https://doi.org/10.1136/amiajnl-2011-000089">doi:10.1136/amiajnl-2011-000089</a> (verificada el 13-nov-2026)</li>
+    <li>Kapoor, S., y Narayanan, A. (2023). Leakage and the reproducibility crisis in machine-learning-based science. <i>Patterns, 4</i>(9), 100804. <a class="text-primary underline" href="https://doi.org/10.1016/j.patter.2023.100804">doi:10.1016/j.patter.2023.100804</a></li>
+    <li>Lewis, P., Perez, E., Piktus, A., et al. (2020). Retrieval-augmented generation for knowledge-intensive NLP tasks. <i>Advances in Neural Information Processing Systems, 33</i>, 9459–9474.</li>
+    <li>Nosek, B. A., Ebersole, C. R., DeHaven, A. C., y Mellor, D. T. (2018). The preregistration revolution. <i>PNAS, 115</i>(11), 2600–2606. <a class="text-primary underline" href="https://doi.org/10.1073/pnas.1708274114">doi:10.1073/pnas.1708274114</a></li>
+    <li>Okochi, J., Utsunomiya, S., Takahashi, T., et al. (2005). Health measurement using the ICF: Test-retest reliability study of ICF codes and qualifiers in geriatric care. <i>Health and Quality of Life Outcomes, 3</i>, 46. <a class="text-primary underline" href="https://doi.org/10.1186/1477-7525-3-46">doi:10.1186/1477-7525-3-46</a></li>
+    <li>Congreso de la República de Colombia. (2012). <i>Ley 1581 de 2012</i>, por la cual se dictan disposiciones generales para la protección de datos personales.</li>
+  </ul>
+</section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 text-xs text-center py-6">Health Access Bridge · Reporte posterior al cierre · 13 de noviembre de 2026 · <a href="index.html#posterior" class="hover:text-white">Volver a la presentación</a></footer>
+
+<script>
+window.addEventListener('load', () => {
+  if (!window.Chart) return;
+  new Chart(document.getElementById('chartCalif'), {
+    type: 'bar',
+    data: {
+      labels: ['Reglas actuales', 'Subir un nivel', 'Mayor categoría', 'Nivel D', 'gemma4:e4b (caso)', 'gemma4:e4b + regla'],
+      datasets: [
+        { label: 'Ronda 1', data: [0.615, 0.586, 0.531, 0.383, 0.607, 0.627], backgroundColor: '#93C5FD' },
+        { label: 'Ronda 3', data: [0.376, 0.333, 0.360, 0.340, 0.422, 0.384], backgroundColor: '#2563EB' },
+        { label: 'Meta 0,50', type: 'line', data: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5], borderColor: '#EF4444', borderDash: [5, 4], pointRadius: 0 },
+      ],
+    },
+    options: { responsive: true, plugins: { title: { display: true, text: 'κ ponderado del calificador por variante' }, legend: { labels: { font: { size: 10 }, boxWidth: 10 } } }, scales: { y: { min: 0, max: 0.8, grid: { color: '#F1F5F9' } }, x: { ticks: { font: { size: 10 } }, grid: { display: false } } } },
+  });
+});
+</script>
+</body></html>
