@@ -1756,7 +1756,7 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
     </div>
     <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-sm text-amber-900 mb-8">
       <div class="font-semibold mb-1">Estado de los despliegues (13-nov-2026)</div>
-      <p class="text-xs leading-relaxed">HU-07i y HU-07j están en <code>develop</code>, <code>staging</code> y <code>master</code> (PR #107 a #110, 13 de noviembre) y los tres backends (DEV, QA y producción) ya publican los campos nuevos en su <code>/openapi.json</code>. Falta, a cargo del responsable, activar la memoria en el PC del servicio ICF (imagen nueva y <code>Caddyfile</code> con <code>/cases</code>): sin eso el backend no logra guardar los casos y el servicio sigue sin ejemplos.</p>
+      <p class="text-xs leading-relaxed">HU-07i y HU-07j están en <code>develop</code>, <code>staging</code> y <code>master</code> (PR #107 a #110, 13 de noviembre) y los tres backends (DEV, QA y producción) ya publican los campos nuevos en su <code>/openapi.json</code>. La memoria quedó activa y verificada en el PC del servicio ICF: tras corregir que el contenedor no incluía el esquema SQL, una prueba real guardó 7 códigos confirmados en la base vectorial.</p>
     </div>
     <div class="flex flex-wrap gap-3">
       <a href="reporte-posterior-cierre.html" class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-medium hover:bg-pdark transition-colors shadow-md text-sm">Leer el reporte completo →</a>

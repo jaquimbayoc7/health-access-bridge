@@ -19,7 +19,7 @@ import FunctionalProfile from '@/pages/FunctionalProfile';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { patientService } from '@/services/patients';
 import { icfService } from '@/services/icf';
-import { buildReportText, decisionNote, formatCode, justificationText } from '@/lib/icfReport';
+import { buildReportText, decisionNote, formatCode, justificationText, pdfSafe } from '@/lib/icfReport';
 import { CAUSE_GROUPS, OFFICIAL_CAUSES, isOfficialCause } from '@/lib/causes';
 
 const PATIENT = {
@@ -342,6 +342,14 @@ describe('icfReport y causas', () => {
     );
     expect(justificationText({ justification: ' del modelo ', justification_medico: null })).toBe('del modelo');
     expect(justificationText({ justification: 'del modelo', justification_medico: 'del médico' })).toBe('del médico');
+  });
+
+  it('el PDF no usa caracteres que su fuente no dibuja (κ y flechas descomponían el texto)', () => {
+    expect(pdfSafe('κ ponderado de 0,312')).toBe('kappa ponderado de 0,312');
+    expect(pdfSafe('Gravedad ajustada por el médico: 3 → 4')).toBe('Gravedad ajustada por el médico: 3 a 4');
+    expect(pdfSafe('Sensación de dolor — “fuerte” … ñ')).toBe('Sensación de dolor — “fuerte” … ñ');
+    expect(pdfSafe('prueba ✓ 😀')).toBe('prueba ? ?');
+    expect(pdfSafe(`${'x'}≥2`)).toBe('x>=2');
   });
 
   it('la lista de causas tiene 21 opciones oficiales en 3 grupos', () => {

@@ -111,6 +111,20 @@ export function decisionNote(item: IcfItem, lang: 'es' | 'en' = 'es'): string {
   return parts.join('. ');
 }
 
+/**
+ * Texto apto para el PDF. jsPDF usa fuentes estandar (WinAnsi): un caracter fuera de ese juego, como la κ o la flecha →,
+ * no se dibuja y descompone todo el texto de la celda o del parrafo (letras separadas, texto cortado). Se sustituyen los
+ * que usa el reporte y cualquier otro fuera de WinAnsi pasa a «?».
+ */
+export function pdfSafe(text: string): string {
+  const winAnsiExtras = '€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ';
+  const mapped = text.replace(/κ/g, 'kappa').replace(/\s*→\s*/g, ' a ').replace(/≥/g, '>=').replace(/≤/g, '<=');
+  // Array.from recorre por caracter (un emoji cuenta como uno, no como dos mitades)
+  return Array.from(mapped)
+    .map((ch) => ((ch.codePointAt(0) ?? 0) <= 0xff || winAnsiExtras.includes(ch) ? ch : '?'))
+    .join('');
+}
+
 export const ORIGIN_LABELS: Record<string, string> = {
   llm: 'Modelo',
   similarity: 'Similitud',
