@@ -266,12 +266,44 @@ class TestDecide:
     def _patch(self, client, headers, item_id, body):
         return client.patch(f"/icf/suggestions/{item_id}", json=body, headers=headers)
 
-    def test_accept(self, client, auth_headers_medico, generated, db, medico_user):
-        item = _first_item(client, auth_headers_medico, generated.id)
+    def test_accept_activity_needs_no_severity(self, client, auth_headers_medico, generated, db, medico_user):
+        item = _first_item(client, auth_headers_medico, generated.id, "activities")
         r = self._patch(client, auth_headers_medico, item["id"], {"status": "aceptado"})
         assert r.status_code == 200 and r.json()["status"] == "aceptado"
         row = db.get(models.IcfSuggestion, item["id"])
         assert row.decided_by_id == medico_user.id and row.decided_at is not None
+
+    def test_accept_function_needs_confirmed_severity(self, client, auth_headers_medico, generated):
+        """HU-07i: la gravedad de b y s no se acepta en bloque."""
+        item = _first_item(client, auth_headers_medico, generated.id)
+        r = self._patch(client, auth_headers_medico, item["id"], {"status": "aceptado"})
+        assert r.status_code == 422 and "gravedad" in r.json()["detail"].lower()
+
+    def test_accept_with_the_suggested_severity_marks_it_confirmed(self, client, auth_headers_medico, generated, db):
+        for component in ("functions", "structures"):
+            item = _first_item(client, auth_headers_medico, generated.id, component)
+            assert item["qualifier_suggested"] == 3 and item["qualifier_confirmed"] is False
+            r = self._patch(client, auth_headers_medico, item["id"], {"status": "aceptado", "qualifier": 3})
+            assert r.status_code == 200
+            assert (r.json()["status"], r.json()["qualifier"], r.json()["qualifier_confirmed"]) == ("aceptado", 3, True)
+            assert db.get(models.IcfSuggestion, item["id"]).qualifier_confirmed is True
+
+    def test_accept_cannot_change_the_severity(self, client, auth_headers_medico, generated):
+        item = _first_item(client, auth_headers_medico, generated.id)
+        r = self._patch(client, auth_headers_medico, item["id"], {"status": "aceptado", "qualifier": 4})
+        assert r.status_code == 422 and "editado" in r.json()["detail"]
+
+    def test_edit_severity_keeps_what_the_system_suggested(self, client, auth_headers_medico, generated):
+        item = _first_item(client, auth_headers_medico, generated.id)
+        r = self._patch(client, auth_headers_medico, item["id"], {"status": "editado", "qualifier": 4})
+        body = r.json()
+        assert (body["qualifier"], body["qualifier_suggested"], body["qualifier_confirmed"]) == (4, 3, True)
+
+    def test_edit_without_severity_does_not_confirm_it(self, client, auth_headers_medico, generated):
+        item = _first_item(client, auth_headers_medico, generated.id)
+        r = self._patch(client, auth_headers_medico, item["id"],
+                        {"status": "editado", "code": "b7300", "title": "Potencia de músculos aislados"})
+        assert r.json()["qualifier_confirmed"] is False
 
     def test_reject(self, client, auth_headers_medico, generated):
         item = _first_item(client, auth_headers_medico, generated.id)
@@ -319,8 +351,11 @@ class TestDecide:
         assert self._patch(client, auth_headers_medico, item["id"], {"status": "editado", "qualifier_cn": 2}).status_code == 422
 
     def test_accept_cannot_change_content(self, client, auth_headers_medico, generated):
-        item = _first_item(client, auth_headers_medico, generated.id)
-        assert self._patch(client, auth_headers_medico, item["id"], {"status": "aceptado", "qualifier": 1}).status_code == 422
+        activity = _first_item(client, auth_headers_medico, generated.id, "activities")
+        assert self._patch(client, auth_headers_medico, activity["id"], {"status": "aceptado", "qualifier": 1}).status_code == 422
+        structure = _first_item(client, auth_headers_medico, generated.id, "structures")
+        r = self._patch(client, auth_headers_medico, structure["id"], {"status": "aceptado", "qualifier": 3, "qualifier_cn": 2})
+        assert r.status_code == 422
 
     def test_cannot_set_back_to_suggested(self, client, auth_headers_medico, generated):
         item = _first_item(client, auth_headers_medico, generated.id)
@@ -338,7 +373,8 @@ class TestDecide:
 
     def test_admin_can_decide(self, client, auth_headers_medico, auth_headers_admin, generated):
         item = _first_item(client, auth_headers_medico, generated.id)
-        assert self._patch(client, auth_headers_admin, item["id"], {"status": "aceptado"}).status_code == 200
+        body = {"status": "aceptado", "qualifier": item["qualifier"]}
+        assert self._patch(client, auth_headers_admin, item["id"], body).status_code == 200
 
     def test_unknown_item_and_no_auth(self, client, auth_headers_medico):
         assert self._patch(client, auth_headers_medico, 999999, {"status": "aceptado"}).status_code == 404
@@ -346,5 +382,31 @@ class TestDecide:
 
     def test_decision_is_returned_on_read(self, client, auth_headers_medico, generated):
         item = _first_item(client, auth_headers_medico, generated.id)
-        self._patch(client, auth_headers_medico, item["id"], {"status": "aceptado"})
+        self._patch(client, auth_headers_medico, item["id"], {"status": "aceptado", "qualifier": item["qualifier"]})
         assert _first_item(client, auth_headers_medico, generated.id)["status"] == "aceptado"
+
+
+class TestSchemaUpgrade:
+    """HU-07i: las bases ya desplegadas no tienen las columnas nuevas y no hay migraciones."""
+
+    def test_adds_missing_columns_once_and_keeps_rows(self):
+        from sqlalchemy import create_engine, inspect, text
+        from app.database import ensure_icf_columns
+
+        engine = create_engine("sqlite://")
+        with engine.begin() as c:
+            c.execute(text("CREATE TABLE icf_suggestions (id INTEGER PRIMARY KEY, qualifier INTEGER)"))
+            c.execute(text("INSERT INTO icf_suggestions (id, qualifier) VALUES (1, 3)"))
+        ensure_icf_columns(engine)
+        ensure_icf_columns(engine)  # idempotente
+        names = {col["name"] for col in inspect(engine).get_columns("icf_suggestions")}
+        assert {"qualifier_suggested", "qualifier_confirmed"} <= names
+        with engine.connect() as c:
+            row = c.execute(text("SELECT qualifier, qualifier_suggested, qualifier_confirmed FROM icf_suggestions")).one()
+        assert tuple(row) == (3, None, 0)
+
+    def test_does_nothing_when_the_table_does_not_exist(self):
+        from sqlalchemy import create_engine
+        from app.database import ensure_icf_columns
+
+        ensure_icf_columns(create_engine("sqlite://"))

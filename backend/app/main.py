@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from .database import engine, Base, SessionLocal
+from .database import engine, Base, SessionLocal, ensure_icf_columns
 from .routers import users, patients, admin, icf, analytics
 from . import crud, schemas
 from fastapi.middleware.cors import CORSMiddleware
@@ -200,6 +200,7 @@ def on_startup():
         # Intentar crear las tablas de forma rápida
         print("⚡ Inicializando esquema...")
         Base.metadata.create_all(bind=engine)
+        ensure_icf_columns(engine)
         print("✓ DB ready")
     except Exception as e:
         print(f"⚠ DB warning: {e}")

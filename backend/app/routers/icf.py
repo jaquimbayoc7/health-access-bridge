@@ -128,6 +128,7 @@ def decide_icf_suggestion(
     """
     El medico acepta, edita o rechaza un codigo sugerido. Al editar puede ajustar los calificadores y,
     enviando `code` y `title` juntos, cambiar el codigo (queda guardado el codigo original).
+    En funciones (b) y estructuras (s), aceptar exige enviar la gravedad confirmada (`qualifier`).
     """
     row = crud.get_icf_suggestion(db, suggestion_id)
     if row is None:
@@ -146,6 +147,17 @@ def decide_icf_suggestion(
             raise HTTPException(status_code=422, detail="El código nuevo debe ser del mismo componente.")
         if row.component != "s" and (decision.qualifier_cn is not None or decision.qualifier_cl is not None):
             raise HTTPException(status_code=422, detail="Naturaleza y localización solo aplican a estructuras (s).")
+    elif decision.status == schemas.IcfStatus.aceptado and row.component in ("b", "s"):
+        # HU-07i: la gravedad de b y s no se acepta en bloque; el medico la confirma de forma explicita.
+        if decision.qualifier is None:
+            raise HTTPException(
+                status_code=422,
+                detail="Confirme la gravedad (0 a 4) antes de aceptar una función o estructura.",
+            )
+        if any(value is not None for value in (decision.qualifier_cn, decision.qualifier_cl, decision.code, decision.title)):
+            raise HTTPException(status_code=422, detail="Solo la decisión «editado» permite cambiar el contenido.")
+        if row.qualifier is not None and decision.qualifier != row.qualifier:
+            raise HTTPException(status_code=422, detail="Para cambiar la gravedad use la decisión «editado».")
     elif any(value is not None for value in content):
         raise HTTPException(status_code=422, detail="Solo la decisión «editado» permite cambiar el contenido.")
 

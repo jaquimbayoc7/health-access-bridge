@@ -105,11 +105,13 @@ test.describe('Perfil Funcional ICF', () => {
     await page.getByRole('button', { name: /generar perfil funcional|generate functional profile/i }).click();
     await expect(page.getByTestId('code-101')).toBeVisible();
 
+    // HU-07i: la gravedad de b y s se confirma antes de aceptar; las actividades se aceptan/rechazan directo.
+    await page.getByRole('button', { name: /confirmar gravedad b730|confirm severity b730/i }).click();
     await page.getByRole('button', { name: /aceptar b730|accept b730/i }).click();
     await page.getByRole('button', { name: /rechazar d450|reject d450/i }).click();
 
     await expect.poll(() => captured.decisions.length).toBe(2);
-    expect(captured.decisions.map((d) => d.body)).toEqual([{ status: 'aceptado' }, { status: 'rechazado' }]);
+    expect(captured.decisions.map((d) => d.body)).toEqual([{ status: 'aceptado', qualifier: 3 }, { status: 'rechazado' }]);
   });
 
   test('si el servicio falla muestra un aviso y el resto de la aplicación sigue funcionando', async ({ page }) => {
