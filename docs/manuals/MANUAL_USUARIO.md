@@ -130,7 +130,7 @@ Menú **Perfil Funcional ICF**. El sistema propone **códigos de la CIF** (funci
 ### 6.2 Cómo leer los resultados
 Cada componente (**Funciones corporales (b)**, **Estructuras corporales (s)** y **Actividades y participación (d)**) muestra una tabla con hasta tres códigos:
 
-![Resultados del perfil funcional](img/11-perfil-decisiones.jpg)
+![Funciones corporales con la gravedad por confirmar (selector y etiqueta ámbar, ✓ deshabilitado), una función editada con su gravedad confirmada y otra con justificación del médico](img/11-perfil-decisiones.jpg)
 
 | Columna | Qué significa |
 |---|---|
@@ -160,6 +160,8 @@ Despliegue «**¿Qué significa el calificador (nivel de severidad)?**» en la p
 Es la escala genérica de la CIF (OMS, 2001). En las **actividades (d)** el calificador sale del nivel D del capítulo. En las **funciones (b)** y **estructuras (s)** el sistema solo **sugiere** una gravedad inicial a partir de la categoría de discapacidad de HAB (leve = 1, moderada = 2, severa = 3, completa = 4) y **no está validada**: en la revisión con una profesional de la salud el acuerdo fue bajo (κ ponderado de 0,312 frente a la meta de 0,50), porque el sistema solo propone 2 o 3 y ella también usó 4. Por eso **la gravedad de b y s la decide usted**, fila por fila (ver 6.4). En las **estructuras (s)** además se indican la *naturaleza del cambio* y la *localización*; por defecto quedan «sin especificar» (8), así que edítelas cuando las conozca.
 
 **Ayuda para calificar la gravedad.** Encima de las tablas hay un desplegable «**Ayuda para calificar la gravedad de funciones y estructuras**» con la escala y los porcentajes, las categorías de HAB y los niveles D1–D6 del paciente (cada nivel con su calificador equivalente) y un aviso: ante una pérdida completa (ceguera total, sordera profunda, parálisis de las piernas), valore el **4**. Los niveles D1–D6 miden actividades y participación, no el cuerpo: orientan, no determinan. La misma ayuda aparece (resumida) en el cuadro de edición.
+
+![Ayuda para calificar la gravedad](img/19-perfil-ayuda-gravedad.jpg)
 
 ### 6.4 Aceptar, editar o rechazar
 - **Confirmar la gravedad (funciones y estructuras):** cada fila de b y s trae un selector 0–4 con la sugerencia del sistema y la etiqueta ámbar «*Por confirmar · Sugerida por reglas: n*». Mientras no la confirme, el botón ✓ está **deshabilitado**. Para confirmarla pulse **Confirmar** (si está de acuerdo) o **elija otro valor** en el selector; la etiqueta pasa a verde «*Confirmada*».
