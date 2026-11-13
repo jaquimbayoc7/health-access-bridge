@@ -14,7 +14,7 @@ servicio ICF ──▶ PostgreSQL + pgvector (contenedor, solo 127.0.0.1:5433) y
 - **Caddy** exige el token Bearer en todas las rutas y solo deja pasar `/suggest`, `/cases` (memoria de casos, HU-07j), `/health` y `/api/tags`; el resto responde 404 (por ejemplo, `/api/generate` de Ollama no se expone).
 - **Tailscale Funnel** publica solo el puerto 11435.
 - **Los secretos** (token y clave de la base) viven en `%USERPROFILE%\.hab-icf\.env`, **fuera del repositorio y de OneDrive**.
-- **Nada de pacientes se guarda en este PC.** La base solo tiene el catálogo CIF-IA y sus embeddings (se reconstruyen, ver abajo). Las sugerencias y las decisiones del médico se guardan en la base del backend en Render.
+- **Ningún identificador de pacientes se guarda en este PC.** La base tiene el catálogo CIF-IA y sus embeddings (se reconstruyen, ver abajo) y, desde HU-07j, la memoria de casos: el texto clínico (diagnóstico y notas, sin nombre ni documento) de los casos que el médico confirma, con sus códigos. Esas tablas (`icf_cases` e `icf_case_codes`) **no se reconstruyen**: respáldalas con `docker exec icf-db pg_dump -U icf_user -d icf -t icf_cases -t icf_case_codes > casos.sql` (fuera de OneDrive y del repositorio). Las sugerencias y las decisiones del médico se guardan en la base del backend en Render.
 
 ## Mediciones (07-oct-2026, RTX 5050 de 8 GB)
 
@@ -26,6 +26,16 @@ servicio ICF ──▶ PostgreSQL + pgvector (contenedor, solo 127.0.0.1:5433) y
 | 5 médicos a la vez | 2,7 a 11,6 s |
 
 El backend espera hasta 90 s (`ICF_SUGGEST_TIMEOUT_S`). Si el servicio no responde, la pantalla avisa y el resto de la aplicación sigue funcionando.
+
+## Actualizar el servicio (por ejemplo, para activar la memoria de casos, HU-07j)
+
+```powershell
+git pull origin master
+cd icf-service\deploy\windows
+docker compose --env-file "$env:USERPROFILE\.hab-icf\.env" up -d --build   # reconstruye icf-service; las tablas de la memoria se crean solas
+docker compose --env-file "$env:USERPROFILE\.hab-icf\.env" restart caddy    # lee el Caddyfile nuevo (expone /cases)
+.\check.ps1 -Public -Suggest                                                  # debe terminar en "Todo correcto." (incluye /cases)
+```
 
 ## Primera instalación (ya hecha el 07-oct-2026)
 
