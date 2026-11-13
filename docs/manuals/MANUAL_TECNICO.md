@@ -84,9 +84,9 @@ Tres tablas (`backend/app/models.py`). **No hay migraciones**: las tablas se cre
 |---|---|
 | `users` | `id`, `email` (único), `full_name`, `hashed_password`, `is_active`, `role` (`admin` o `médico`) |
 | `patients` | `numero_documento`, `nombre_apellidos`, `fecha_nacimiento`, `edad`, `genero`, `orientacion_sexual`, `causa_deficiencia`, `cat_fisica`, `cat_psicosocial`, `nivel_d1`…`nivel_d6`, `nivel_global`, `prediction_profile`, `prediction_description`, `is_active` (borrado lógico), `owner_id` → `users` |
-| `icf_suggestions` | `patient_id`, `batch_id` (un lote por generación), `component` (b/s/d), `code`, `title`, `qualifier` (0–4), `qualifier_suggested` (lo que sugirió el sistema; b y s) y `qualifier_confirmed` (el médico confirmó la gravedad), `qualifier_cn`/`qualifier_cl` (solo estructuras), `justification`, `origin` (llm/similarity/rules), `status` (sugerido/aceptado/editado/rechazado), `original_code`, `model`, instantáneas de diagnóstico y notas, `created_at` |
+| `icf_suggestions` | `patient_id`, `batch_id` (un lote por generación), `component` (b/s/d), `code`, `title`, `qualifier` (0–4), `qualifier_suggested` (lo que sugirió el sistema; b y s) y `qualifier_confirmed` (el médico confirmó la gravedad), `qualifier_cn`/`qualifier_cl` (solo estructuras), `justification` (la del modelo) y `justification_medico` (la que el médico escribe o corrige, ≤ 500; HU-07j), `origin` (llm/similarity/rules), `status` (sugerido/aceptado/editado/rechazado), `original_code`, `model`, instantáneas de diagnóstico y notas, `created_at` |
 
-Las columnas `qualifier_suggested` y `qualifier_confirmed` (HU-07i) se agregan solas al arrancar el backend si la tabla ya existía (`ensure_icf_columns` en `database.py`; el proyecto no usa migraciones y `create_all` no altera tablas existentes). Las filas anteriores quedan con `qualifier_suggested` nulo y `qualifier_confirmed` en falso.
+Las columnas `qualifier_suggested`, `qualifier_confirmed` (HU-07i) y `justification_medico` (HU-07j) se agregan solas al arrancar el backend si la tabla ya existía (`ensure_icf_columns` en `database.py`; el proyecto no usa migraciones y `create_all` no altera tablas existentes). Las filas anteriores quedan con `qualifier_suggested` nulo y `qualifier_confirmed` en falso.
 
 Regenerar un perfil crea un **lote nuevo** y conserva los anteriores: queda la trazabilidad de qué sugirió la máquina y qué decidió el profesional.
 
@@ -100,7 +100,7 @@ Regenerar un perfil crea un **lote nuevo** y conserva los anteriores: queda la t
 | `/users` | `routers/users.py` | `POST /login` (JWT), `GET /me` |
 | `/admin` | `routers/admin.py` | Listar/crear usuarios, activar/desactivar, `reset-seed` (¡destructivo!) |
 | `/patients` | `routers/patients.py` | CRUD con búsqueda y paginación; `POST /{id}/predict` |
-| `/patients/{id}/icf-suggestions`, `/icf` | `routers/icf.py` | Generar y leer sugerencias, decidir (`PATCH /icf/suggestions/{id}`; en b y s, `aceptado` exige la gravedad confirmada en `qualifier`, y cambiarla requiere `editado`), causas y diagnóstico del servicio |
+| `/patients/{id}/icf-suggestions`, `/icf` | `routers/icf.py` | Generar y leer sugerencias, decidir (`PATCH /icf/suggestions/{id}`; en b y s, `aceptado` exige la gravedad confirmada en `qualifier`, y cambiarla requiere `editado`), causas y diagnóstico del servicio. `justification` solo se acepta con `editado`. Tras una decisión confirmada, una tarea en segundo plano envía el caso a la memoria del servicio ICF (`POST /cases`); un fallo se registra sin URL ni token y **nunca** bloquea la decisión |
 | `/analytics` | `routers/analytics.py` | `GET /summary` y `GET /filters`: agregados del dashboard |
 | `/health`, `/` | `main.py` | Salud y bienvenida |
 
@@ -162,6 +162,7 @@ npm run dev                                       # http://localhost:5173
 | `DEFAULT_ADMIN_EMAIL`, `DEFAULT_ADMIN_PASSWORD` 🔒 | Administrador inicial |
 | `RUN_SEED` | `true` para ejecutar el *seed* al arrancar (por defecto no se ejecuta) |
 | `ICF_LLM_URL`, `ICF_LLM_TOKEN` 🔒 | URL pública del túnel (sin barra final) y token del servicio ICF |
+| `ICF_CASE_MEMORY` | `true` por defecto; `false` deja de enviar los casos confirmados a la memoria del servicio ICF (HU-07j) |
 | `ICF_LLM_MODEL`, `ICF_LLM_TIMEOUT_S`, `ICF_SUGGEST_TIMEOUT_S`, `ICF_LLM_KEEP_ALIVE` | Modelo (`gemma4:e4b`), tiempos de espera y permanencia del modelo en memoria |
 
 **Frontend:** `VITE_API_BASE_URL`, `VITE_ENVIRONMENT`.

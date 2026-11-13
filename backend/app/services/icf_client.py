@@ -7,6 +7,7 @@ Se usa urllib de la libreria estandar para no agregar dependencias al despliegue
 Nunca se devuelve ni se registra la URL completa ni el token.
 """
 import json
+import logging
 import os
 import time
 from typing import Any, Dict, Optional
@@ -14,8 +15,11 @@ from urllib import error, request
 
 from ..causes import normalize_cause
 
+logger = logging.getLogger(__name__)
+
 DEFAULT_MODEL = "gemma4:e4b"  # minimo viable provisional (HU-07f)
 DEFAULT_TIMEOUT_S = 20.0  # diagnostico de conexion
+CASE_TIMEOUT_S = 20.0  # guardar un caso: un embedding; si tarda mas, se omite
 DEFAULT_SUGGEST_TIMEOUT_S = 90.0  # una sugerencia: ~3 s con GPU, ~15 s solo CPU; con holgura para la carga del modelo
 
 
@@ -80,6 +84,36 @@ def post_suggest(url: str, token: str, payload: Dict[str, Any], timeout: float) 
     )
     with request.urlopen(req, timeout=timeout) as resp:
         return json.loads(resp.read().decode("utf-8"))
+
+
+def post_case(url: str, token: str, payload: Dict[str, Any], timeout: float) -> Dict[str, Any]:
+    """POST {url}/cases con el token Bearer (HU-07j). Lanza la excepcion de urllib si falla."""
+    req = request.Request(
+        f"{url}/cases",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+        method="POST",
+    )
+    with request.urlopen(req, timeout=timeout) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+
+def case_memory_enabled() -> bool:
+    return os.getenv("ICF_CASE_MEMORY", "true").strip().lower() not in ("0", "false", "no", "")
+
+
+def send_case(payload: Dict[str, Any]) -> bool:
+    """Envia al servicio la decision del medico para la memoria de casos (HU-07j). Es un extra: nunca lanza ni
+    bloquea la decision; devuelve False si no estaba configurado o fallo. No registra la URL ni el token."""
+    cfg = _config()
+    if not (cfg["url"] and cfg["token"] and case_memory_enabled()):
+        return False
+    try:
+        post_case(cfg["url"], cfg["token"], payload, CASE_TIMEOUT_S)
+    except Exception as exc:  # error.URLError, HTTPError, timeout, JSON invalido...
+        logger.warning("No se pudo guardar el caso en la memoria del servicio ICF (%s)", type(exc).__name__)
+        return False
+    return True
 
 
 def request_suggestion(payload: Dict[str, Any]) -> Dict[str, Any]:

@@ -865,3 +865,43 @@ Ejecutadas el 27-oct-2026 contra DEV con `e2e/uat-aceptacion.spec.ts` (`UAT=1`, 
 | UAT-A01 a A04 | Administrador: panel de usuarios, menú por rol, análisis global, alta y desactivación de un médico | ✅ |
 | UAT-X01, X02 | Teléfono de 390 px sin desplazamiento horizontal; inicio de sesión solo con teclado | ✅ |
 | A11Y-1 a A11Y-3 | axe-core sobre el inicio de sesión, 8 pantallas del médico y 5 del administrador | ✅ 0 violaciones |
+
+---
+
+## Suite 14 — Gravedad confirmada por el médico y memoria de casos (HU-07i y HU-07j)
+
+Ejecutadas el 13-nov-2026 (backend `test_icf_suggestions.py`, servicio `test_cases.py` y `test_cases_db.py`, frontend `FunctionalProfile.test.tsx`).
+
+```gherkin
+Scenario: Aceptar una función sin confirmar la gravedad
+  Given una sugerencia de función con gravedad sugerida 3
+  When el médico intenta aceptarla sin enviar la gravedad
+  Then el backend responde 422 y la pantalla mantiene el botón de aceptar deshabilitado
+
+Scenario: Cambiar la gravedad al aceptar
+  Given una función con gravedad sugerida 3
+  When el médico elige 4 en el selector de la fila y pulsa aceptar
+  Then se guarda una edición con gravedad 4, la sugerida sigue siendo 3 y la gravedad queda confirmada
+
+Scenario: Una decisión confirmada alimenta la memoria sin datos identificables
+  Given un caso con diagnóstico y notas
+  When el médico confirma un código
+  Then el servicio recibe el texto clínico, el código, la gravedad sugerida y la confirmada, y nunca nombre, documento ni orientación sexual
+
+Scenario: La memoria falla
+  Given el servicio ICF no responde
+  When el médico acepta un código
+  Then la decisión se guarda igual y la respuesta es 200
+
+Scenario: Un caso parecido ya confirmado
+  Given un caso guardado con similitud ≥ 0,80
+  When se pide una sugerencia
+  Then sus códigos entran como candidatos del catálogo y el modelo los ve como ejemplos
+```
+
+| ID | Escenario | Resultado |
+|---|---|---|
+| HU07I-1 a 6 | Aceptar con gravedad, sin ella, con otra; editar la gravedad conserva la sugerida; editar sin gravedad no la confirma; ayuda y aviso en pantalla | ✅ |
+| HU07J-1 a 9 | Justificación (guardar, vaciar, solo con `editado`); envío a la memoria; retiro al rechazar; sin gravedad confirmada no se envía; fallo, apagado y sin configurar | ✅ |
+| HU07J-10 a 16 | Servicio: guardar, no re-vectorizar, sin diagnóstico ni notas, retirar, ejemplos, capítulos que no aplican, memoria que falla | ✅ |
+| HU07J-17, 18 | PostgreSQL + pgvector reales: guardar, buscar, actualizar, retirar, tablas inexistentes | ✅ |

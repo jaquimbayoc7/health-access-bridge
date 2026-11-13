@@ -7,7 +7,7 @@ HU-07: sugerencia de codigos CIF-IA.
 """
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .. import crud, dependencies, models, schemas
@@ -24,6 +24,29 @@ patient_router = APIRouter(
 MIN_AGE_FOR_SUGGESTION = 6  # el Anexo 1239 no calcula niveles por dominio para 0-5 anios
 
 _GROUP_OF = {"b": "functions", "s": "structures", "d": "activities"}
+
+
+def _case_payload(row: models.IcfSuggestion, patient: models.Patient):
+    """HU-07j: lo que se envia a la memoria de casos del servicio ICF. Solo cuentan los codigos que el medico decidio:
+    aceptados o editados (en funciones y estructuras, con la gravedad confirmada) y, para retirarlos, los rechazados.
+    El contexto del paciente se arma con la misma lista blanca de /suggest: sin nombre, documento ni orientacion sexual."""
+    if row.status == "sugerido":
+        return None
+    if row.status != "rechazado" and row.component != "d" and not row.qualifier_confirmed:
+        return None
+    return {
+        "case_key": row.batch_id,
+        "item_ref": row.id,
+        "component": row.component,
+        "code": row.code,
+        "status": row.status,
+        "qualifier": row.qualifier,
+        "qualifier_cn": row.qualifier_cn,
+        "qualifier_cl": row.qualifier_cl,
+        "qualifier_suggested": row.qualifier_suggested,
+        "justification": row.justification_medico or row.justification,
+        "patient": icf_client.build_patient_context(patient, row.diag_cie, row.clinical_notes),
+    }
 
 
 def _build_set(patient_id: int, rows: List[models.IcfSuggestion], **extra) -> schemas.IcfSuggestionSet:
@@ -122,6 +145,7 @@ def read_icf_suggestions(
 def decide_icf_suggestion(
     suggestion_id: int,
     decision: schemas.IcfDecision,
+    background: BackgroundTasks,
     db: Session = Depends(dependencies.get_db),
     current_user: models.User = Depends(dependencies.get_current_active_user),
 ):
@@ -133,11 +157,11 @@ def decide_icf_suggestion(
     row = crud.get_icf_suggestion(db, suggestion_id)
     if row is None:
         raise HTTPException(status_code=404, detail="Sugerencia no encontrada")
-    dependencies.get_accessible_patient(db, row.patient_id, current_user)
+    patient = dependencies.get_accessible_patient(db, row.patient_id, current_user)
 
     if decision.status == schemas.IcfStatus.sugerido:
         raise HTTPException(status_code=422, detail="La decisión debe ser aceptado, editado o rechazado.")
-    content = (decision.qualifier, decision.qualifier_cn, decision.qualifier_cl, decision.code, decision.title)
+    content = (decision.qualifier, decision.qualifier_cn, decision.qualifier_cl, decision.code, decision.title, decision.justification)
     if decision.status == schemas.IcfStatus.editado:
         if all(value is None for value in content):
             raise HTTPException(status_code=422, detail="Para editar, indica al menos un calificador o un código.")
@@ -154,11 +178,15 @@ def decide_icf_suggestion(
                 status_code=422,
                 detail="Confirme la gravedad (0 a 4) antes de aceptar una función o estructura.",
             )
-        if any(value is not None for value in (decision.qualifier_cn, decision.qualifier_cl, decision.code, decision.title)):
+        if any(value is not None for value in (decision.qualifier_cn, decision.qualifier_cl, decision.code, decision.title, decision.justification)):
             raise HTTPException(status_code=422, detail="Solo la decisión «editado» permite cambiar el contenido.")
         if row.qualifier is not None and decision.qualifier != row.qualifier:
             raise HTTPException(status_code=422, detail="Para cambiar la gravedad use la decisión «editado».")
     elif any(value is not None for value in content):
         raise HTTPException(status_code=422, detail="Solo la decisión «editado» permite cambiar el contenido.")
 
-    return crud.decide_icf_suggestion(db, row, decision, current_user.id)
+    updated = crud.decide_icf_suggestion(db, row, decision, current_user.id)
+    payload = _case_payload(updated, patient)
+    if payload is not None:
+        background.add_task(icf_client.send_case, payload)
+    return updated

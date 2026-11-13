@@ -144,3 +144,9 @@ Las **licencias** quedaron verificadas el 7 de octubre (`LICENCIAS_COMPONENTES_I
 - [Servicio ICF](../../icf-service/README.md)
 - [Estado del Proyecto — Momento 2](./PROJECT_STATUS_M2.md)
 - [Estado del Proyecto — Momento 1](./PROJECT_STATUS.md)
+
+---
+
+## Adenda posterior al cierre (13 de noviembre de 2026)
+
+Sin cambio de puntos (146 de 146). Entre el 28-oct y el 13-nov: documentación final v0.2 a v1.1; exploración del calificador sin la revisora (125 códigos; reglas κ 0,533 y `gemma4:e4b` 0,545, sin diferencia); **HU-07i** (la gravedad de funciones y estructuras la confirma el médico) y **HU-07j** (memoria de casos confirmados, ejemplos y justificación editable). Pruebas: backend 141, frontend 69, servicio ICF 119. El efecto de los ejemplos no está medido. Detalle: [reporte posterior al cierre](../presentation/reporte-posterior-cierre.html).

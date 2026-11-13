@@ -29,6 +29,18 @@ _WHY_LLM = "Seleccionado por el modelo entre los códigos más cercanos al conte
 _WHY_SIMILARITY = "Mayor similitud con el contexto clínico."
 
 
+def case_context(patient: PatientContext) -> Optional[str]:
+    """Texto que identifica un caso en la memoria (HU-07j): el mismo que usa suggest() para buscar. None si el
+    medico no escribio diagnostico ni notas (no habria nada que comparar)."""
+    if not (patient.diag_cie or patient.clinical_notes):
+        return None
+    plan = rules.activity_plan(patient.levels)
+    return rules.context_text(
+        patient.cause, patient.cat_fisica, patient.cat_psicosocial, patient.diag_cie,
+        patient.clinical_notes, [_CHAPTER_NAME[ch] for ch, _, _ in plan],
+    )
+
+
 def _patient_summary(patient: PatientContext, plan: List[Tuple[int, int, int]], motor_link: bool = False) -> str:
     """Resumen breve para el modelo (sin acentos y sin relleno: cada token de entrada cuesta tiempo)."""
     lines = [f"Paciente {patient.age} anios."]
@@ -88,6 +100,8 @@ def suggest(
     s_evidence: bool = False,
     motor_link: bool = False,
     mental_link: bool = False,
+    case_examples: int = 0,
+    case_min_similarity: float = 0.80,
 ) -> SuggestionResult:
     started = time.perf_counter()
     result = SuggestionResult(applicable=True, model=model)
@@ -174,6 +188,7 @@ def suggest(
     b_pairs: List[Pair] = []
     s_pairs: List[Pair] = []
     mobility = False
+    examples: List[dict] = []
     if body_applies and vector is not None:
         # Solo cuentan b y s con calificador >= 1: los capitulos de una categoria 'Ninguna' se excluyen
         # dentro de la busqueda (filtrar despues dejaba la lista vacia, ej. esquizofrenia sin deficiencia fisica).
@@ -191,13 +206,36 @@ def suggest(
             b_pairs += [pair for pair in repo.titles(rules.MOBILITY_BODY_CODES) if pair[0] not in known]
         s_pairs = repo.search("s", vector, body_candidates, rules.body_chapters("s", patient.cat_fisica, patient.cat_psicosocial, mental_link))
         result.timings["search"] = round((time.perf_counter() - t0) * 1000)
+        # Casos parecidos que un medico ya confirmo (HU-07j): sus codigos entran como candidatos (si el capitulo aplica)
+        # y se muestran al modelo como ejemplos. El modelo sigue eligiendo solo entre los candidatos del catalogo.
+        if case_examples and (b_pairs or s_pairs):
+            try:
+                found = timed("cases", repo.similar_cases, vector, case_examples, case_min_similarity)
+            except Exception:  # la memoria nunca debe impedir una sugerencia
+                found = []
+            s_chapters = rules.body_chapters("s", patient.cat_fisica, patient.cat_psicosocial, mental_link)
+            allowed = {"b": set(b_chapters), "s": set(s_chapters)}
+            wanted = {"b": [], "s": []}
+            for case in found:
+                codes = [c["code"] for c in case["codes"] if int(c["code"][1]) in allowed[c["component"]]]
+                if codes:
+                    examples.append({"diag": case.get("diag"), "codes": codes})
+                    for item in case["codes"]:
+                        if item["code"] in codes and item["code"] not in wanted[item["component"]]:
+                            wanted[item["component"]].append(item["code"])
+            for component, pairs in (("b", b_pairs), ("s", s_pairs)):
+                known = {code for code, _ in pairs}
+                missing = [code for code in wanted[component] if code not in known][: rules.MAX_PER_COMPONENT]
+                if missing:
+                    pairs += repo.titles(missing)
+            result.case_examples = len(examples)
     b_titles, s_titles = dict(b_pairs), dict(s_pairs)
 
     parsed: Optional[Dict[str, List[Tuple[str, str]]]] = None
     if use_llm and (b_pairs or s_pairs):
         try:
             schema = llm.build_schema([c for c, _ in b_pairs], [c for c, _ in s_pairs], justify, s_evidence)
-            messages = llm.build_messages(_patient_summary(patient, plan, mobility), b_pairs, s_pairs, justify, s_evidence)
+            messages = llm.build_messages(_patient_summary(patient, plan, mobility), b_pairs, s_pairs, justify, s_evidence, examples)
             text = timed("llm", chat_fn, messages, schema)
             parsed = llm.parse_response(text, [c for c, _ in b_pairs], [c for c, _ in s_pairs])
             result.llm_used = True

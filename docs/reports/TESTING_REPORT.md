@@ -730,3 +730,19 @@ ENVIRONMENT=testing
 ---
 
 **Fin del Reporte**
+
+---
+
+## Adenda del 13 de noviembre de 2026 (posterior al cierre: HU-07i y HU-07j)
+
+Las cifras de este reporte son las del cierre (28-oct-2026) y no se modifican. Después se agregaron pruebas para la confirmación de la gravedad (HU-07i) y para la memoria de casos y la justificación editable (HU-07j):
+
+| Suite | Al cierre | Al 13-nov | Qué se agregó |
+|---|---|---|---|
+| Backend (pytest) | 123 | **141** (cobertura 91,3 %) | Aceptar b y s exige la gravedad (422 sin ella o si difiere; cambiarla requiere `editado`); `qualifier_suggested` y `qualifier_confirmed`; migración liviana de columnas (idempotente); justificación del médico (solo con `editado`, vacía la borra); el caso se envía a la memoria sin datos identificables, un fallo no bloquea la decisión, se puede apagar y no filtra la URL ni el token |
+| Frontend (Vitest) | 61 | **69** | Aceptar bloqueado hasta confirmar la gravedad (las actividades no); cambiar la gravedad guarda una edición; ayuda con niveles D1–D6 y aviso del κ; reporte con «gravedad sugerida, sin confirmar»; justificación editable, nota de lo que cambió el médico |
+| Servicio ICF (pytest) | 101 | **119** (106 en CI, 13 locales) | Guardar, retirar y no re-vectorizar; ejemplos que entran al prompt y como candidatos del catálogo; capítulos que no aplican; memoria que falla; endpoint `POST /cases` (rechaza identificadores, apagable, 503 sin base) |
+| Memoria contra PostgreSQL + pgvector reales | — | **2** | Se corrieron en un contenedor Docker propio (guardar, buscar por similitud, actualizar, retirar y tablas inexistentes) |
+| E2E (Playwright) | 20 | 20 | Se ajustó el caso de aceptar (confirmar la gravedad antes); **no se ejecutó** en esta sesión |
+
+Detalle: [`PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](./PROTOCOLO_VALIDACION_CLINICA_HU07G.md), secciones 15 y 16, y el [reporte posterior al cierre](../presentation/reporte-posterior-cierre.html). El efecto de usar los casos confirmados como ejemplos **no está medido**.

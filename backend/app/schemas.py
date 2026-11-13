@@ -114,6 +114,7 @@ class IcfDecision(BaseModel):
     qualifier: Optional[int] = Field(default=None, ge=0, le=4)
     qualifier_cn: Optional[int] = Field(default=None, ge=0, le=9)
     qualifier_cl: Optional[int] = Field(default=None, ge=0, le=9)
+    justification: Optional[str] = Field(default=None, max_length=500)  # solo con `editado` (HU-07j); vacio la borra
     code: Optional[str] = Field(default=None, pattern=r"^[bsd][0-9]{3,5}$")
     title: Optional[str] = Field(default=None, min_length=1, max_length=300)
 
@@ -129,6 +130,7 @@ class IcfSuggestionItem(BaseModel):
     qualifier_suggested: Optional[int] = None
     qualifier_confirmed: bool = False
     justification: Optional[str] = None
+    justification_medico: Optional[str] = None
     origin: str
     status: str
     original_code: Optional[str] = None
