@@ -19,7 +19,7 @@ import FunctionalProfile from '@/pages/FunctionalProfile';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { patientService } from '@/services/patients';
 import { icfService } from '@/services/icf';
-import { buildReportText, formatCode } from '@/lib/icfReport';
+import { buildReportText, decisionNote, formatCode, justificationText } from '@/lib/icfReport';
 import { CAUSE_GROUPS, OFFICIAL_CAUSES, isOfficialCause } from '@/lib/causes';
 
 const PATIENT = {
@@ -236,6 +236,43 @@ describe('FunctionalProfile', () => {
     expect(screen.getByTestId('severity-notice')).toHaveTextContent(/0,312/);
   });
 
+  it('HU-07j: el médico corrige la justificación en el cuadro de edición y se envía solo si la cambió', async () => {
+    (icfService.generate as ReturnType<typeof vi.fn>).mockResolvedValue(SET);
+    (icfService.decide as ReturnType<typeof vi.fn>).mockResolvedValue(
+      item({ id: 11, status: 'editado', justification_medico: 'Camina con bastón y se cansa pronto.' })
+    );
+    renderPage();
+    const user = await choosePatient(/Juan Pérez/);
+    await user.click(screen.getByRole('button', { name: /generar perfil funcional/i }));
+    await user.click(await screen.findByRole('button', { name: /editar b730/i }));
+    const box = await screen.findByLabelText(/Justificación \(aparece en el reporte\)/i);
+    expect(box).toHaveValue('Debilidad'); // parte de la del modelo
+    await user.clear(box);
+    await user.type(box, 'Camina con bastón y se cansa pronto.');
+    await user.click(screen.getByRole('button', { name: /^guardar$/i }));
+    await waitFor(() =>
+      expect(icfService.decide).toHaveBeenCalledWith(11, {
+        status: 'editado',
+        qualifier: 3,
+        justification: 'Camina con bastón y se cansa pronto.',
+      })
+    );
+    expect(await screen.findByText('Camina con bastón y se cansa pronto.')).toBeInTheDocument();
+    expect(screen.getByText('Del médico')).toBeInTheDocument();
+  });
+
+  it('HU-07j: la tabla explica qué cambió el médico', async () => {
+    (icfService.getLatest as ReturnType<typeof vi.fn>).mockResolvedValue({
+      ...SET,
+      functions: [item({ id: 11, status: 'editado', qualifier: 4, qualifier_suggested: 3, qualifier_confirmed: true, original_code: 'b7300' })],
+    });
+    renderPage();
+    await choosePatient(/Juan Pérez/);
+    expect(await screen.findByTestId('note-11')).toHaveTextContent(
+      'Gravedad ajustada por el médico: 3 → 4. Código ajustado por el médico (sugerido: b7300)'
+    );
+  });
+
   it('carga la última sugerencia guardada al elegir el paciente', async () => {
     (icfService.getLatest as ReturnType<typeof vi.fn>).mockResolvedValue(SET);
     renderPage();
@@ -278,6 +315,33 @@ describe('icfReport y causas', () => {
     expect(text).not.toMatch(/b280.*sin confirmar/);
     expect(text).not.toMatch(/d450.*sin confirmar/);
     expect(text).toContain('κ ponderado de 0,312');
+  });
+
+  it('HU-07j: el reporte lleva la justificación del médico (o la del modelo) y lo que el médico cambió', () => {
+    const text = buildReportText(
+      {
+        ...SET,
+        functions: [
+          item({ id: 1, status: 'editado', qualifier: 4, qualifier_suggested: 3, qualifier_confirmed: true, justification_medico: 'No camina sin ayuda.' }) as never,
+          item({ id: 2, code: 'b280', title: 'Sensación de dolor', justification: 'Dolor lumbar', status: 'aceptado', qualifier_suggested: 3, qualifier_confirmed: true }) as never,
+        ],
+      } as never,
+      'Juan Pérez, 34 años'
+    );
+    expect(text).toContain('Justificación (del médico): No camina sin ayuda.');
+    expect(text).toContain('Gravedad ajustada por el médico: 3 → 4');
+    expect(text).toContain('Justificación: Dolor lumbar');
+    expect(text).toContain('Gravedad confirmada por el médico: 3');
+  });
+
+  it('HU-07j: decisionNote y justificationText', () => {
+    expect(decisionNote(item({ status: 'sugerido' }) as never)).toBe('');
+    expect(decisionNote(item({ component: 'd', status: 'aceptado' }) as never)).toBe('');
+    expect(decisionNote(item({ status: 'aceptado', qualifier_confirmed: true, qualifier_suggested: 3 }) as never, 'en')).toBe(
+      'Severity confirmed by the physician: 3'
+    );
+    expect(justificationText({ justification: ' del modelo ', justification_medico: null })).toBe('del modelo');
+    expect(justificationText({ justification: 'del modelo', justification_medico: 'del médico' })).toBe('del médico');
   });
 
   it('la lista de causas tiene 21 opciones oficiales en 3 grupos', () => {

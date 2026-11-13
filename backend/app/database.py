@@ -47,7 +47,8 @@ def get_db():
         db.close()
 
 def ensure_icf_columns(bind=None):
-    """Agrega a `icf_suggestions` las columnas de la gravedad confirmada (HU-07i) si la tabla ya existia.
+    """Agrega a `icf_suggestions` las columnas de la gravedad confirmada (HU-07i) y de la justificacion del medico
+    (HU-07j) si la tabla ya existia.
 
     El proyecto no usa migraciones y `create_all` no altera tablas existentes; sin esto, DEV/QA/PROD fallarian al
     consultar las columnas nuevas. Es idempotente: solo agrega lo que falta. Las filas anteriores quedan con
@@ -63,6 +64,7 @@ def ensure_icf_columns(bind=None):
     wanted = {
         "qualifier_suggested": "INTEGER",
         "qualifier_confirmed": f"BOOLEAN NOT NULL DEFAULT {false_literal}",
+        "justification_medico": "VARCHAR(500)",
     }
     with bind.begin() as connection:
         for name, ddl in wanted.items():

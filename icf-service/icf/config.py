@@ -5,6 +5,8 @@ ICF_MODE:
   rapido:                6 candidatos y solo codigos; ~20 s.
 Cada valor se puede forzar con ICF_BODY_CANDIDATES, ICF_LLM_JUSTIFY y ICF_LLM_NUM_PREDICT.
 ICF_S_EVIDENCE, ICF_MOTOR_LINK e ICF_MENTAL_LINK (por defecto "true") activan los dos ajustes de HU-07g; "false" devuelve el motor anterior.
+ICF_CASE_MEMORY ("true"): guarda los casos confirmados por el medico. ICF_CASE_EXAMPLES (3): cuantos usa como ejemplos; 0 apaga el uso
+(el motor medido en la validacion clinica no los usaba). ICF_CASE_MIN_SIMILARITY (0.80): similitud minima para usar un caso.
 """
 import os
 from dataclasses import dataclass
@@ -27,6 +29,9 @@ class Settings:
     mental_link: bool = True  # sin deficiencia fisica pero con psicosocial, estructuras en el capitulo 1 (s110; HU-07g, 26-oct-2026)
     motor_link: bool = True  # dificultad de movilidad (D4) -> candidatos b710, b730, b735, b760 y b770 (HU-07g, 26-oct-2026)
     use_llm: bool = True  # False: funciones y estructuras solo por similitud (sin modelo de generacion)
+    case_memory: bool = True  # guarda los casos que el medico confirma o edita (HU-07j); False desactiva POST /cases
+    case_examples: int = 3  # casos confirmados parecidos que se muestran al modelo como ejemplos; 0 los desactiva (HU-07j)
+    case_min_similarity: float = 0.80  # similitud coseno minima para usar un caso como ejemplo
 
 
 def _flag(value: str) -> bool:
@@ -52,4 +57,7 @@ def load_settings() -> Settings:
         motor_link=_flag(os.environ.get("ICF_MOTOR_LINK", "true")),
         mental_link=_flag(os.environ.get("ICF_MENTAL_LINK", "true")),
         use_llm=_flag(os.environ.get("ICF_USE_LLM", "true")),
+        case_memory=_flag(os.environ.get("ICF_CASE_MEMORY", "true")),
+        case_examples=max(0, int(os.environ.get("ICF_CASE_EXAMPLES", "3"))),
+        case_min_similarity=float(os.environ.get("ICF_CASE_MIN_SIMILARITY", "0.80")),
     )

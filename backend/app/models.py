@@ -82,6 +82,8 @@ class IcfSuggestion(Base):
     qualifier_cn = Column(Integer, nullable=True)  # solo s: naturaleza, 8 por defecto
     qualifier_cl = Column(Integer, nullable=True)  # solo s: localizacion, 8 por defecto
     justification = Column(String(400), nullable=True)
+    # HU-07j: justificacion que el medico escribe o corrige; sale en el reporte y se guarda con el caso en la memoria
+    justification_medico = Column(String(500), nullable=True)
     origin = Column(String(20), nullable=False, default="rules")  # llm, similarity o rules
 
     status = Column(String(12), nullable=False, default="sugerido")  # sugerido, aceptado, editado, rechazado

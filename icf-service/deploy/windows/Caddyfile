@@ -1,5 +1,5 @@
-# Puerta de entrada del servicio ICF. Exige el token Bearer en TODAS las rutas y solo deja pasar tres:
-#   POST /suggest  y  GET /health  -> servicio ICF
+# Puerta de entrada del servicio ICF. Exige el token Bearer en TODAS las rutas y solo deja pasar cuatro:
+#   POST /suggest, POST /cases (memoria de casos, HU-07j)  y  GET /health  -> servicio ICF
 #   GET  /api/tags                 -> Ollama (lo usa el diagnostico /icf/health del backend)
 # Cualquier otra ruta (por ejemplo /api/generate o /api/chat de Ollama) responde 404.
 #
@@ -19,6 +19,10 @@
 			reverse_proxy icf-service:8100
 		}
 		handle /health {
+			reverse_proxy icf-service:8100
+		}
+		handle /cases {
+			# HU-07j: el backend envia aqui los codigos que el medico confirma, edita o rechaza.
 			reverse_proxy icf-service:8100
 		}
 		handle /api/tags {

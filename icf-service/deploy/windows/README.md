@@ -11,7 +11,7 @@ servicio ICF ──▶ PostgreSQL + pgvector (contenedor, solo 127.0.0.1:5433) y
 
 - **Ollama** corre instalado en Windows (usa la GPU). Modelos: `gemma4:e4b` (generación) y `bge-m3` (embeddings).
 - **Docker Desktop** corre la base, el servicio ICF y Caddy (`restart: unless-stopped`).
-- **Caddy** exige el token Bearer en todas las rutas y solo deja pasar `/suggest`, `/health` y `/api/tags`; el resto responde 404 (por ejemplo, `/api/generate` de Ollama no se expone).
+- **Caddy** exige el token Bearer en todas las rutas y solo deja pasar `/suggest`, `/cases` (memoria de casos, HU-07j), `/health` y `/api/tags`; el resto responde 404 (por ejemplo, `/api/generate` de Ollama no se expone).
 - **Tailscale Funnel** publica solo el puerto 11435.
 - **Los secretos** (token y clave de la base) viven en `%USERPROFILE%\.hab-icf\.env`, **fuera del repositorio y de OneDrive**.
 - **Nada de pacientes se guarda en este PC.** La base solo tiene el catálogo CIF-IA y sus embeddings (se reconstruyen, ver abajo). Las sugerencias y las decisiones del médico se guardan en la base del backend en Render.

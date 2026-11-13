@@ -34,7 +34,9 @@ import {
   RESOLUTION_HEADER,
   SEVERITY_NOTICE,
   buildReportText,
+  decisionNote,
   formatCode,
+  justificationText,
   qualifierText,
   reportQualifierText,
   reportSections,
@@ -91,6 +93,7 @@ export default function FunctionalProfile() {
   const [editQ, setEditQ] = useState('');
   const [editCn, setEditCn] = useState('');
   const [editCl, setEditCl] = useState('');
+  const [editWhy, setEditWhy] = useState('');
   const [savingId, setSavingId] = useState<number | null>(null);
   // HU-07i: gravedad de b y s elegida en la fila y filas cuya gravedad el medico ya confirmo (aun sin guardar la decision).
   const [severityChoice, setSeverityChoice] = useState<Record<number, string>>({});
@@ -188,6 +191,7 @@ export default function FunctionalProfile() {
     setEditQ(item.qualifier === null ? '' : String(item.qualifier));
     setEditCn(String(item.qualifier_cn ?? 8));
     setEditCl(String(item.qualifier_cl ?? 8));
+    setEditWhy(justificationText(item));
   };
 
   const saveEdit = async () => {
@@ -200,6 +204,8 @@ export default function FunctionalProfile() {
         body.qualifier_cn = Number(editCn);
         body.qualifier_cl = Number(editCl);
       }
+      // HU-07j: solo se envia si el medico cambio el texto; vacio la borra (vuelve la del modelo)
+      if (editWhy.trim() !== justificationText(editing)) body.justification = editWhy.trim();
       replaceItem(await icfService.decide(editing.id, body));
       setEditing(null);
     } catch (e) {
@@ -233,10 +239,15 @@ export default function FunctionalProfile() {
     for (const section of reportSections(result)) {
       autoTable(doc, {
         startY: y,
-        head: [[section.title, 'Código', 'Calificador']],
+        head: [[section.title, 'Código', 'Calificador', 'Justificación']],
         body: section.rows.length
-          ? section.rows.map((r) => [r.title, formatCode(r), reportQualifierText(r)])
-          : [['(sin códigos)', '', '']],
+          ? section.rows.map((r) => [
+              r.title,
+              formatCode(r),
+              reportQualifierText(r),
+              [justificationText(r), decisionNote(r)].filter(Boolean).join('\n'),
+            ])
+          : [['(sin códigos)', '', '', '']],
         headStyles: { fillColor: [43, 108, 176] },
         styles: { fontSize: 9 },
       });
@@ -336,7 +347,17 @@ export default function FunctionalProfile() {
                       </>
                     )}
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground max-w-[220px]">{item.justification || '—'}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground max-w-[220px]">
+                    {justificationText(item) || '—'}
+                    {item.justification_medico && (
+                      <div className="mt-1">
+                        <Badge variant="outline" className="text-xs">{L('Del médico', 'By the physician')}</Badge>
+                      </div>
+                    )}
+                    {decisionNote(item, language) && (
+                      <div className="mt-1 text-xs" data-testid={`note-${item.id}`}>{decisionNote(item, language)}</div>
+                    )}
+                  </TableCell>
                   <TableCell>
                     <Badge className={STATUS_STYLE[item.status]}>{STATUS_TEXT[item.status] ?? item.status}</Badge>
                   </TableCell>
@@ -677,6 +698,16 @@ export default function FunctionalProfile() {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-j">{L('Justificación (aparece en el reporte)', 'Justification (appears in the report)')}</Label>
+              <Textarea id="edit-j" value={editWhy} maxLength={500} rows={3} onChange={(e) => setEditWhy(e.target.value)} />
+              <p className="text-xs text-muted-foreground">
+                {L(
+                  'Escriba por qué este código describe al paciente, en palabras que él pueda entender. Sin nombre, documento ni otros datos que lo identifiquen. Al confirmar, este caso se guarda en la memoria del sistema para mejorar las sugerencias.',
+                  'Write why this code describes the patient, in words they can understand. No name, ID or other identifying data. When confirmed, this case is saved in the system memory to improve suggestions.'
+                )}
+              </p>
             </div>
             {editing?.component === 's' && (
               <>
