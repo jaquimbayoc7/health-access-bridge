@@ -1755,8 +1755,8 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
       <div class="bg-white border border-slate-200 rounded-xl p-5 card"><div class="font-semibold mb-1">HU-07j · Memoria de casos y justificación</div><p class="text-slate-600 text-xs leading-relaxed">Cada código confirmado se guarda en la base vectorial (sin identificadores) y los casos parecidos se usan como ejemplos. El médico corrige la justificación, que sale en el reporte con lo que cambió. <b>El efecto de los ejemplos no está medido.</b></p></div>
     </div>
     <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-sm text-amber-900 mb-8">
-      <div class="font-semibold mb-1">Estado de los despliegues</div>
-      <p class="text-xs leading-relaxed">Todo está en <code>develop</code>. La promoción a <code>staging</code> (PR #107) incluyó HU-07i; HU-07j todavía no. <code>staging</code> → <code>master</code> y la activación de la memoria en el PC del servicio ICF (imagen nueva y <code>Caddyfile</code> con <code>/cases</code>) las realiza el responsable. Hasta entonces, producción muestra el comportamiento del cierre.</p>
+      <div class="font-semibold mb-1">Estado de los despliegues (13-nov-2026)</div>
+      <p class="text-xs leading-relaxed">HU-07i y HU-07j están en <code>develop</code>, <code>staging</code> y <code>master</code> (PR #107 a #110, 13 de noviembre) y los tres backends (DEV, QA y producción) ya publican los campos nuevos en su <code>/openapi.json</code>. Falta, a cargo del responsable, activar la memoria en el PC del servicio ICF (imagen nueva y <code>Caddyfile</code> con <code>/cases</code>): sin eso el backend no logra guardar los casos y el servicio sigue sin ejemplos.</p>
     </div>
     <div class="flex flex-wrap gap-3">
       <a href="reporte-posterior-cierre.html" class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-medium hover:bg-pdark transition-colors shadow-md text-sm">Leer el reporte completo →</a>
@@ -1861,8 +1861,8 @@ const D = {
     ['26-oct-2026', 'HU-08: el género aparecía como «femenino» y «Femenino» (dos categorías)', 'Verificación con sesión real en DEV', 'Se unifica y el filtro no distingue mayúsculas; prueba nueva'],
   ],
   langBytes: { TypeScript: 479576, Python: 355274, PowerShell: 4638, JavaScript: 4555, CSS: 3652, Shell: 2550, HTML: 1148, Dockerfile: 739 },
-  repo: { commits: 275, days: 24, prs: 65, closed: 21, merges: 67, from: '26-feb', to: '26-oct',
-          types: [['docs', 71, '#60A5FA'], ['fix', 58, '#F87171'], ['feat', 56, '#4ADE80'], ['merges', 67, '#A78BFA'], ['chore', 10, '#94A3B8'], ['ci', 5, '#22D3EE'], ['otros', 8, '#FBBF24']] },
+  repo: { commits: 330, days: 27, prs: 85, closed: 24, merges: 87, from: '26-feb', to: '13-nov',
+          types: [['docs', 93, '#60A5FA'], ['fix', 61, '#F87171'], ['feat', 59, '#4ADE80'], ['merges', 87, '#A78BFA'], ['chore', 13, '#94A3B8'], ['ci', 5, '#22D3EE'], ['otros', 12, '#FBBF24']] },
   docs: [],
 };
 

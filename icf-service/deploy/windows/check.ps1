@@ -37,6 +37,8 @@ foreach ($b in $bases) {
     $allOk = (Check "/health con token correcto" (Call $b.url "/health" $token) 200) -and $allOk
     $allOk = (Check "/api/tags con token correcto (Ollama)" (Call $b.url "/api/tags" $token) 200) -and $allOk
     $allOk = (Check "/api/generate con token correcto (bloqueado)" (Call $b.url "/api/generate" $token "POST" "{}") 404) -and $allOk
+    $allOk = (Check "/cases sin token (memoria de casos)" (Call $b.url "/cases" $null "POST" "{}") 401) -and $allOk
+    $allOk = (Check "/cases con token y cuerpo vacio (debe validar)" (Call $b.url "/cases" $token "POST" "{}") 422) -and $allOk
 }
 
 if ($Suggest) {
