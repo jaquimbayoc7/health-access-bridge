@@ -1,6 +1,6 @@
 # Manual de usuario
 
-**Health Access Bridge (HAB)** · Versión 2.0 · 27 de octubre de 2026
+**Health Access Bridge (HAB)** · Versión 2.1 · 13 de noviembre de 2026 (confirmación de la gravedad, justificación editable y memoria de casos)
 **Para:** médicos y administradores · **No necesita saber de informática.**
 
 > **Antes de empezar, tres ideas clave**
@@ -178,6 +178,8 @@ Sus decisiones **se guardan** y vuelven a aparecer al regresar a la pantalla con
 
 ### 6.5 Descargar el reporte
 Con **Descargar PDF** obtiene el borrador del perfil (con el aviso de «borrador de apoyo» y la advertencia sobre la gravedad). **Copiar** lo pasa al portapapeles. Si una función o estructura quedó sin confirmar la gravedad, el reporte la marca «*(gravedad sugerida, sin confirmar)*». El reporte incluye la **justificación** de cada código (la suya si la escribió; si no, la del modelo) y, debajo, lo que usted cambió, de modo que el paciente tenga una visión más completa de su perfil.
+
+![Reporte en PDF con la justificación de cada código y la nota sobre la gravedad](img/20-perfil-reporte-pdf.jpg)
 
 ### 6.6 Qué no hace
 - No genera el **certificado de discapacidad**; ese lo emite el equipo multidisciplinario en el aplicativo RLCPD (Resolución 1239 de 2022).

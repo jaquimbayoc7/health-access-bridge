@@ -1,6 +1,6 @@
 # Manual técnico
 
-**Health Access Bridge (HAB)** · Versión 2.0 · 27 de octubre de 2026
+**Health Access Bridge (HAB)** · Versión 2.1 · 13 de noviembre de 2026 (HU-07i y HU-07j)
 **Para:** desarrolladores y operadores que instalan, prueban, despliegan y mantienen el sistema.
 **Complementa:** [Manual de usuario](MANUAL_USUARIO.md) · [Manual del servicio ICF](MANUAL_ICF.md) · [Referencia de la API (ReDoc)](../api/redoc-api.html) · [Diagramas C4](../diagrams/).
 
