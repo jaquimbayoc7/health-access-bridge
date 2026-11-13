@@ -106,7 +106,8 @@ class IcfGenerateRequest(BaseModel):
 
 class IcfDecision(BaseModel):
     """Decision del medico sobre un codigo. `editado` permite cambiar calificadores y, con codigo y titulo
-    juntos, el codigo. `aceptado` y `rechazado` no cambian el contenido."""
+    juntos, el codigo. `aceptado` y `rechazado` no cambian el contenido; en funciones (b) y estructuras (s),
+    `aceptado` debe llevar la gravedad (`qualifier`) que el medico confirma (HU-07i)."""
     model_config = ConfigDict(extra="forbid")
 
     status: IcfStatus
@@ -125,6 +126,8 @@ class IcfSuggestionItem(BaseModel):
     qualifier: Optional[int] = None
     qualifier_cn: Optional[int] = None
     qualifier_cl: Optional[int] = None
+    qualifier_suggested: Optional[int] = None
+    qualifier_confirmed: bool = False
     justification: Optional[str] = None
     origin: str
     status: str

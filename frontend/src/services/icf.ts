@@ -13,6 +13,9 @@ export interface IcfItem {
   qualifier: number | null;
   qualifier_cn: number | null;
   qualifier_cl: number | null;
+  /** Gravedad que propuso el sistema (b y s) y si el medico la confirmo (HU-07i). */
+  qualifier_suggested?: number | null;
+  qualifier_confirmed?: boolean;
   justification: string | null;
   origin: IcfOrigin;
   status: IcfStatus;

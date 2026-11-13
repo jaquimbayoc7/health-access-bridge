@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { SeverityHelp } from '@/components/SeverityHelp';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -31,10 +32,13 @@ import {
   ORIGIN_LABELS,
   QUALIFIER_LABELS,
   RESOLUTION_HEADER,
+  SEVERITY_NOTICE,
   buildReportText,
   formatCode,
   qualifierText,
+  reportQualifierText,
   reportSections,
+  severityUnconfirmed,
 } from '@/lib/icfReport';
 
 import {
@@ -44,6 +48,7 @@ import {
   NOTES_DISCLAIMER,
   NOTE_EXAMPLES,
   NOTE_TIPS,
+  SEVERITY_HELP,
 } from '@/lib/icfGuideContent';
 
 const MIN_AGE = 6;
@@ -87,6 +92,9 @@ export default function FunctionalProfile() {
   const [editCn, setEditCn] = useState('');
   const [editCl, setEditCl] = useState('');
   const [savingId, setSavingId] = useState<number | null>(null);
+  // HU-07i: gravedad de b y s elegida en la fila y filas cuya gravedad el medico ya confirmo (aun sin guardar la decision).
+  const [severityChoice, setSeverityChoice] = useState<Record<number, string>>({});
+  const [severitySeen, setSeveritySeen] = useState<Record<number, boolean>>({});
 
   const patient = useMemo(() => patients.find((p) => p.id === Number(selectedId)) ?? null, [patients, selectedId]);
   const tooYoung = patient !== null && patient.edad < MIN_AGE;
@@ -147,10 +155,27 @@ export default function FunctionalProfile() {
     });
   };
 
-  const decide = async (item: IcfItem, status: 'aceptado' | 'rechazado') => {
+  const isBodyItem = (item: IcfItem) => item.component !== 'd';
+  const chosenSeverity = (item: IcfItem) =>
+    severityChoice[item.id] ?? (item.qualifier === null ? '' : String(item.qualifier));
+  const severityConfirmed = (item: IcfItem) => item.qualifier_confirmed === true || severitySeen[item.id] === true;
+
+  const pickSeverity = (item: IcfItem, value: string) => {
+    setSeverityChoice((prev) => ({ ...prev, [item.id]: value }));
+    setSeveritySeen((prev) => ({ ...prev, [item.id]: true }));
+  };
+
+  /** Acepta un codigo. En b y s lleva la gravedad confirmada; si el medico la cambio, se guarda como edicion. */
+  const accept = (item: IcfItem) => {
+    if (!isBodyItem(item)) return decide(item, 'aceptado');
+    const value = Number(chosenSeverity(item));
+    return value === item.qualifier ? decide(item, 'aceptado', value) : decide(item, 'editado', value);
+  };
+
+  const decide = async (item: IcfItem, status: 'aceptado' | 'rechazado' | 'editado', qualifier?: number) => {
     setSavingId(item.id);
     try {
-      replaceItem(await icfService.decide(item.id, { status }));
+      replaceItem(await icfService.decide(item.id, qualifier === undefined ? { status } : { status, qualifier }));
     } catch (e) {
       toast.error(e instanceof Error ? e.message : L('No se pudo guardar la decisión', 'Could not save the decision'));
     } finally {
@@ -210,7 +235,7 @@ export default function FunctionalProfile() {
         startY: y,
         head: [[section.title, 'Código', 'Calificador']],
         body: section.rows.length
-          ? section.rows.map((r) => [r.title, formatCode(r), qualifierText(r)])
+          ? section.rows.map((r) => [r.title, formatCode(r), reportQualifierText(r)])
           : [['(sin códigos)', '', '']],
         headStyles: { fillColor: [43, 108, 176] },
         styles: { fontSize: 9 },
@@ -218,7 +243,7 @@ export default function FunctionalProfile() {
       y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 6;
     }
     doc.setFontSize(8);
-    doc.text(doc.splitTextToSize(DRAFT_NOTICE, 180), 14, y + 4);
+    doc.text(doc.splitTextToSize(`${DRAFT_NOTICE} ${SEVERITY_NOTICE}`, 180), 14, y + 4);
     doc.save(`perfil-funcional-${patient?.id ?? 'paciente'}.pdf`);
   };
 
@@ -256,7 +281,61 @@ export default function FunctionalProfile() {
                       </Badge>
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm">{qualifierText(item)}</TableCell>
+                  <TableCell className="text-sm">
+                    {isBodyItem(item) && item.status === 'sugerido' ? (
+                      <div className="space-y-1">
+                        <Select value={chosenSeverity(item)} onValueChange={(value) => pickSeverity(item, value)}>
+                          <SelectTrigger
+                            className="h-8 w-[150px]"
+                            aria-label={`${L('Gravedad', 'Severity')} ${item.code}`}
+                            data-testid={`severity-${item.id}`}
+                          >
+                            <SelectValue placeholder="—" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {[0, 1, 2, 3, 4].map((value) => (
+                              <SelectItem key={value} value={String(value)}>
+                                {value} — {QUALIFIER_LABELS[value]}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {severityConfirmed(item) ? (
+                          <Badge className="bg-green-600 text-white text-xs">{SEVERITY_HELP.confirmed[language]}</Badge>
+                        ) : (
+                          <>
+                            <Badge variant="outline" className="border-amber-500 text-amber-700 text-xs">
+                              {SEVERITY_HELP.pending[language]}
+                              {item.qualifier !== null && ` · ${SEVERITY_HELP.suggested[language]}: ${item.qualifier}`}
+                            </Badge>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="secondary"
+                              className="h-6 px-2 text-xs"
+                              disabled={chosenSeverity(item) === ''}
+                              aria-label={`${L('Confirmar gravedad', 'Confirm severity')} ${item.code}`}
+                              onClick={() => pickSeverity(item, chosenSeverity(item))}
+                            >
+                              {L('Confirmar', 'Confirm')}
+                            </Button>
+                          </>
+                        )}
+                        {isStructure && <div className="text-xs text-muted-foreground">{qualifierText(item).split(' · ').slice(1).join(' · ')}</div>}
+                      </div>
+                    ) : (
+                      <>
+                        {qualifierText(item)}
+                        {severityUnconfirmed(item) && item.status !== 'rechazado' && (
+                          <div>
+                            <Badge variant="outline" className="border-amber-500 text-amber-700 text-xs">
+                              {SEVERITY_HELP.pending[language]}
+                            </Badge>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </TableCell>
                   <TableCell className="text-sm text-muted-foreground max-w-[220px]">{item.justification || '—'}</TableCell>
                   <TableCell>
                     <Badge className={STATUS_STYLE[item.status]}>{STATUS_TEXT[item.status] ?? item.status}</Badge>
@@ -266,8 +345,9 @@ export default function FunctionalProfile() {
                       size="icon"
                       variant="ghost"
                       aria-label={`${L('Aceptar', 'Accept')} ${item.code}`}
-                      disabled={savingId === item.id}
-                      onClick={() => decide(item, 'aceptado')}
+                      title={isBodyItem(item) && !severityConfirmed(item) ? SEVERITY_HELP.mustConfirm[language] : undefined}
+                      disabled={savingId === item.id || (isBodyItem(item) && !severityConfirmed(item))}
+                      onClick={() => accept(item)}
                     >
                       <Check className="h-4 w-4 text-green-600" />
                     </Button>
@@ -561,6 +641,8 @@ export default function FunctionalProfile() {
 
       {result && hasItems(result) && (
         <div className="space-y-4">
+          <SeverityHelp patient={patient} />
+          <p className="text-xs text-muted-foreground" data-testid="severity-notice">{SEVERITY_NOTICE}</p>
           {renderTable(L('Funciones corporales (b)', 'Body functions (b)'), result.functions)}
           {renderTable(L('Estructuras corporales (s)', 'Body structures (s)'), result.structures, true)}
           {renderTable(L('Actividades y participación (d)', 'Activities and participation (d)'), result.activities)}
@@ -584,6 +666,7 @@ export default function FunctionalProfile() {
                 {L('0 ninguna (0–4 %) · 1 leve (5–24 %) · 2 moderada (25–49 %) · 3 severa (50–95 %) · 4 completa (96–100 %)',
                    '0 none (0–4%) · 1 mild (5–24%) · 2 moderate (25–49%) · 3 severe (50–95%) · 4 complete (96–100%)')}
               </p>
+              {editing && editing.component !== 'd' && <SeverityHelp patient={patient} compact />}
               <Select value={editQ} onValueChange={setEditQ}>
                 <SelectTrigger id="edit-q">
                   <SelectValue placeholder="—" />

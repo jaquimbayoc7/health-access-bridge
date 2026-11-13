@@ -75,6 +75,10 @@ class IcfSuggestion(Base):
     code = Column(String(10), nullable=False)
     title = Column(String(300), nullable=False)
     qualifier = Column(Integer, nullable=True)  # 0-4 (en s: magnitud)
+    # Gravedad de b y s (HU-07i): lo que propuso el sistema (reglas) y si el medico la confirmo. Con las dos se mide,
+    # en el uso real, el acuerdo entre el sistema y los profesionales (el kappa de la validacion no cumplio la meta).
+    qualifier_suggested = Column(Integer, nullable=True)
+    qualifier_confirmed = Column(Boolean, nullable=False, default=False)
     qualifier_cn = Column(Integer, nullable=True)  # solo s: naturaleza, 8 por defecto
     qualifier_cl = Column(Integer, nullable=True)  # solo s: localizacion, 8 por defecto
     justification = Column(String(400), nullable=True)
