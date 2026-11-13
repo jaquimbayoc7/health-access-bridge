@@ -100,7 +100,7 @@ Diagnóstico de velocidad (dónde se va el tiempo y qué variante de prompt es m
 sudo docker run --rm --network host --env-file .env -v "$PWD:/srv" -w /srv icf-service python scripts/benchmark_llm.py
 ```
 
-Variables opcionales del servicio (en el `.env`; reiniciar el contenedor al cambiarlas): `ICF_MODE` (`calidad` por defecto, o `rapido`), `ICF_USE_LLM` (`true`/`false`), y para afinar un modo: `ICF_BODY_CANDIDATES` (12 o 6), `ICF_LLM_JUSTIFY` (`true`/`false`), `ICF_LLM_NUM_PREDICT` (300 o 120), `ICF_LLM_NUM_CTX` (2048 o 1024) e `ICF_SERVICE_LLM_TIMEOUT_S` (120). El backend de Render debe esperar 90 s (`ICF_LLM_TIMEOUT_S`) mientras se use un modelo con latencia de decenas de segundos; el valor final se ajusta con el modelo elegido en HU-07f.
+Variables opcionales del servicio (en el `.env`; reiniciar el contenedor al cambiarlas): `ICF_MODE` (`calidad` por defecto, o `rapido`), `ICF_USE_LLM` (`true`/`false`), y para afinar un modo: `ICF_BODY_CANDIDATES` (12 o 6), `ICF_LLM_JUSTIFY` (`true`/`false`), `ICF_LLM_NUM_PREDICT` (300 o 120), `ICF_LLM_NUM_CTX` (2048 o 1024) e `ICF_SERVICE_LLM_TIMEOUT_S` (120). Memoria de casos confirmados por el médico (HU-07j): `ICF_CASE_MEMORY` (`true`), `ICF_CASE_EXAMPLES` (`3`; `0` apaga su uso como ejemplos) e `ICF_CASE_MIN_SIMILARITY` (`0.80`); ver `POST /cases`, `sql/002_cases.sql` y la sección 3 de `docs/manuals/MANUAL_ICF.md`. El backend de Render debe esperar 90 s (`ICF_LLM_TIMEOUT_S`) mientras se use un modelo con latencia de decenas de segundos; el valor final se ajusta con el modelo elegido en HU-07f.
 
 ## Túnel autenticado (Caddy + Tailscale Funnel)
 
@@ -114,14 +114,14 @@ Funnel publica en internet y Ollama no tiene autenticación, así que **Funnel s
     route {
         @sintoken not header Authorization "Bearer TOKEN"
         respond @sintoken "No autorizado" 401
-        @servicio path /suggest /health
+        @servicio path /suggest /health /cases
         reverse_proxy @servicio 127.0.0.1:8100
         reverse_proxy 127.0.0.1:11434
     }
 }
 ```
 
-El bloque `route` es obligatorio: fija el orden de las directivas y garantiza que **el token se exige antes de cualquier ruta**. Sin él, Caddy puede atender `/suggest` sin pedir el token (probado). `/suggest` y `/health` van al servicio ICF (puerto 8100); todo lo demás va a Ollama.
+El bloque `route` es obligatorio: fija el orden de las directivas y garantiza que **el token se exige antes de cualquier ruta**. Sin él, Caddy puede atender `/suggest` sin pedir el token (probado). `/suggest`, `/cases` y `/health` van al servicio ICF (puerto 8100); todo lo demás va a Ollama.
 
 ```bash
 sudo caddy validate --config /etc/caddy/Caddyfile && sudo systemctl restart caddy

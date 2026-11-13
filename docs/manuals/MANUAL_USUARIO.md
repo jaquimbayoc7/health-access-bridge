@@ -169,12 +169,13 @@ Es la escala genérica de la CIF (OMS, 2001). En las **actividades (d)** el cali
 ![Editar el calificador](img/10-perfil-editar-calificador.jpg)
 
   Elija el nivel y pulse **Guardar**. El estado pasa a *Editado*.
+  El cuadro también trae la **Justificación (aparece en el reporte)**: parte del texto del modelo y usted puede corregirla o reescribirla con palabras que el propio paciente entienda («Camina con bastón y se cansa pronto»), sin nombre, documento ni otros datos que lo identifiquen. La tabla marca con «*Del médico*» la que usted escribió y, bajo cada código decidido, anota lo que cambió («*Gravedad ajustada por el médico: 3 → 4*», «*Código ajustado por el médico (sugerido: …)*»).
 - **✗ Rechazar:** el código no corresponde. El estado pasa a *Rechazado*.
 
-Sus decisiones **se guardan** y vuelven a aparecer al regresar a la pantalla con ese paciente. El sistema también guarda **qué gravedad sugirió y cuál fijó usted**, para medir con el uso real qué tanto coinciden. Todo código debe ser validado por usted antes de usarse.
+Sus decisiones **se guardan** y vuelven a aparecer al regresar a la pantalla con ese paciente. **Memoria del sistema:** cada código que usted confirma o edita (y, en b y s, con la gravedad confirmada) se guarda en una memoria del servicio de IA junto con el diagnóstico y las notas que escribió —**sin** nombre, documento ni identificador del paciente— y, si lo rechaza después, se retira. Cuando otro caso se parece a uno ya confirmado, el sistema se lo muestra al modelo como ejemplo para sugerir mejor. Por eso **no escriba datos que identifiquen a la persona en las notas**; un caso confirmado no es un caso verificado clínicamente, así que su revisión sigue siendo necesaria. El sistema también guarda **qué gravedad sugirió y cuál fijó usted**, para medir con el uso real qué tanto coinciden. Todo código debe ser validado por usted antes de usarse.
 
 ### 6.5 Descargar el reporte
-Con **Descargar PDF** obtiene el borrador del perfil (con el aviso de «borrador de apoyo» y la advertencia sobre la gravedad). **Copiar** lo pasa al portapapeles. Si una función o estructura quedó sin confirmar la gravedad, el reporte la marca «*(gravedad sugerida, sin confirmar)*».
+Con **Descargar PDF** obtiene el borrador del perfil (con el aviso de «borrador de apoyo» y la advertencia sobre la gravedad). **Copiar** lo pasa al portapapeles. Si una función o estructura quedó sin confirmar la gravedad, el reporte la marca «*(gravedad sugerida, sin confirmar)*». El reporte incluye la **justificación** de cada código (la suya si la escribió; si no, la del modelo) y, debajo, lo que usted cambió, de modo que el paciente tenga una visión más completa de su perfil.
 
 ### 6.6 Qué no hace
 - No genera el **certificado de discapacidad**; ese lo emite el equipo multidisciplinario en el aplicativo RLCPD (Resolución 1239 de 2022).
