@@ -112,7 +112,7 @@ Los dominios oficiales **Relaciones** (d7) y **Participación** (d9) no tienen e
 | 50 – 95 | `.3` | Problema grave |
 | 96 – 100 | `.4` | Problema completo |
 
-En María todos sus niveles están entre 50 y 95, así que **todos sus capítulos llevan calificador `.3` (grave)**. Esto lo calcula el código y **el LLM no lo decide**, para que no pueda equivocarse en la gravedad.
+En María todos sus niveles están entre 50 y 95, así que **todos sus capítulos llevan calificador `.3` (grave)**. Esto lo calcula el código y **el LLM no lo decide**, para que no pueda equivocarse en la gravedad. En funciones (b) y estructuras (s) esa gravedad es solo una **sugerencia sin validación suficiente** (κ ponderado de 0,312 con la revisora): desde el 13-nov-2026 la pantalla la muestra «por confirmar» y el médico la confirma o la cambia en cada fila (HU-07i).
 
 > ⚠️ **Limitación a tener en cuenta:** HAB mide un nivel por **capítulo** (ej. "Movilidad = 60"), pero la CIF codifica por **categoría** (ej. d450 Andar, d440 Uso fino de la mano), y oficialmente el calificador sale de **cada pregunta** del instrumento (0–4), no del porcentaje del dominio. El calificador de cada categoría sugerida se toma del nivel de su capítulo. Es una aproximación, queda marcada como **sugerida** y **el médico puede editarla**. En funciones (b) y estructuras (s) solo cuentan calificadores desde 1.
 
@@ -394,3 +394,18 @@ Resumen; el detalle, el entorno y las tablas completas están en [`docs/reports/
 - **Búsqueda:** buscar solo entre los códigos de 3 dígitos subió la cobertura de las pistas de 11 % a 40 % en funciones y de 48 % a 86 % en estructuras (con 12 candidatos).
 - **Modelos abiertos en un PC con GPU de 8 GB (07-oct-2026):** `gemma4:e4b` mejora la selección (funciones: precisión 43 % contra 29 % de la similitud; estructuras: cobertura 86 % contra 67 %) en ~3,4 s con GPU o ~15 s solo con CPU; `gemma4:e2b`, `medgemma:4b` y `qwen2.5:3b` no la superan de forma útil. Detalle en [`PRUEBAS_HU07F_MODELOS_ABIERTOS.md`](../reports/PRUEBAS_HU07F_MODELOS_ABIERTOS.md).
 - **Decisión (revisada):** sin APIs externas por privacidad; se prueban Gemma 4 y MedGemma en un PC con GPU para hallar el modelo mínimo viable (HU-07f) y dimensionar la máquina (HU-07h). El catálogo y la búsqueda siguen en el servidor propio; la similitud es el respaldo. La confiabilidad clínica real la mide un médico (HU-07g).
+
+## Memoria de casos confirmados (HU-07j, 13-nov-2026)
+
+```mermaid
+flowchart LR
+    MED["Médico confirma o edita un código<br/>(gravedad confirmada en b y s)"] --> BE["Backend<br/>PATCH /icf/suggestions/{id}"]
+    BE -->|"segundo plano, sin identificadores"| CASES["Servicio ICF<br/>POST /cases"]
+    CASES --> VEC[("pgvector<br/>icf_cases · icf_case_codes")]
+    NEW["Caso nuevo<br/>POST /suggest"] -->|"similitud ≥ 0,80, hasta 3"| VEC
+    VEC -->|"códigos como candidatos + ejemplos para el modelo"| LLM["Gemma 4<br/>elige solo entre candidatos del catálogo"]
+```
+
+- **Qué se guarda:** el texto clínico (diagnóstico CIE y notas), el grupo de edad, el código, la gravedad sugerida y la confirmada y la justificación (la del médico si la escribió). Nunca nombre, documento, orientación sexual, edad ni género. Rechazar un código lo retira.
+- **Qué cambia en `/suggest`:** los códigos de casos parecidos entran como candidatos (solo si el capítulo aplica y existen en el catálogo) y el modelo ve una línea «diagnóstico: códigos» por caso. Los calificadores siguen saliendo de las reglas.
+- **Qué no está medido:** la validación clínica se hizo sin esta memoria. Se apaga el uso con `ICF_CASE_EXAMPLES=0` y el guardado con `ICF_CASE_MEMORY=false`. Un caso confirmado no es un caso verificado.

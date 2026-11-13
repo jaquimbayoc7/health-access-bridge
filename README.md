@@ -17,7 +17,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad, el anál
 | **Servicio ICF** | ✅ En producción en un PC propio | PostgreSQL/pgvector + Ollama (`gemma4:e4b`, ~2 s por sugerencia) detrás de un túnel con token; ningún dato clínico sale a terceros |
 | **CI/CD** | ✅ Configurado | GitHub Actions → Render (auto-deploy y aprobación manual en producción) |
 | **Base de datos** | ✅ PostgreSQL en Render | 3 instancias independientes (dev/qa/prod) con seed de datos |
-| **Calidad** | ✅ 309 pruebas automáticas | Backend 123 (cobertura 90,7 %) · frontend 61 · servicio ICF 101 · E2E 17 · smoke 7 |
+| **Calidad** | ✅ 353 pruebas automáticas | Backend 141 (cobertura 91,3 %) · frontend 69 · servicio ICF 119 · E2E 17 · smoke 7 |
 
 ---
 
@@ -29,7 +29,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad, el anál
 | **Frontend** | React 18 · TypeScript · Vite · TailwindCSS · shadcn/ui · Recharts · React Query · jsPDF y xlsx (exportaciones) |
 | **Autenticación** | JWT con claims de rol (Admin, Médico) · Bcrypt |
 | **IA predictiva** | HybridModelDisability (K-Means + Gradient Boosting, embebido en el backend) |
-| **Servicio ICF (HU-07)** | Servicio en un PC propio (PostgreSQL/pgvector + embeddings `bge-m3` + modelo local `gemma4:e4b` con Ollama) que, mediante RAG sobre el catálogo CIF-IA y sin fine-tuning, sugiere códigos CIF según el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022. El médico acepta, edita o rechaza cada código; es un **borrador de apoyo**, no un certificado. Sin APIs externas por privacidad. Validado con una profesional de salud en tres rondas (ver [reporte final](./docs/presentation/reporte-afinamiento-icf.html)) |
+| **Servicio ICF (HU-07)** | Servicio en un PC propio (PostgreSQL/pgvector + embeddings `bge-m3` + modelo local `gemma4:e4b` con Ollama) que, mediante RAG sobre el catálogo CIF-IA y sin fine-tuning, sugiere códigos CIF según el Anexo Técnico de la Resolución 1239 del 21 de julio de 2022. El médico acepta, edita o rechaza cada código y **confirma la gravedad de funciones y estructuras** (HU-07i); sus casos confirmados quedan en una memoria que se usa como ejemplos y puede **corregir la justificación** que sale en el reporte (HU-07j); es un **borrador de apoyo**, no un certificado. Sin APIs externas por privacidad. Validado con una profesional de salud en tres rondas (ver [reporte final](./docs/presentation/reporte-afinamiento-icf.html)); lo realizado después del cierre está en el [reporte posterior al cierre](./docs/presentation/reporte-posterior-cierre.html) |
 | **Dashboard de análisis (HU-08)** | Endpoints `/analytics/*` con conteos y promedios agregados (sin datos identificables); gráficos interactivos con Recharts y exportación a Excel (5 hojas) y PDF |
 | **Despliegue** | Render · Web Service · PostgreSQL managed |
 | **CI/CD** | GitHub Actions · 3 workflows (dev/qa/prod) |
@@ -193,7 +193,7 @@ La referencia completa de la API (ReDoc) está en [`docs/api/redoc-api.html`](./
 |------|---------|-------------|
 | Backend | 123 (cobertura 90,7 %; el CI exige 80 %) | pytest · TestClient · SQLite |
 | Frontend | 61 | Vitest · Testing Library · jsdom |
-| Servicio ICF | 101 (92 en CI; 9 necesitan el catálogo de la OMS y corren en el PC propio) | pytest |
+| Servicio ICF | 119 (106 en CI; 13 corren en el PC propio: necesitan el catálogo de la OMS o una base con pgvector) | pytest |
 | E2E | 20 (+18 de aceptación bajo demanda) | Playwright · axe-core (accesibilidad WCAG 2.2 AA) |
 | Smoke | 7 (QA 4 · PROD 3) | GitHub Actions |
 
@@ -244,7 +244,7 @@ health-access-bridge/
 │   │   ├── seed.py          # Seed de datos de prueba (idempotente)
 │   │   ├── routers/         # users · patients · admin · icf · analytics
 │   │   ├── services/        # icf_client (servicio de IA) · analytics (agregados del dashboard)
-│   │   └── tests/           # 123 pruebas pytest
+│   │   └── tests/           # 141 pruebas pytest
 │   ├── requirements.txt · requirements-test.txt · build.sh · runtime.txt
 ├── frontend/
 │   ├── src/
@@ -253,10 +253,10 @@ health-access-bridge/
 │   │   ├── services/        # api.ts, patients.ts, icf.ts, analytics.ts
 │   │   ├── lib/             # analyticsExport (Excel/PDF), analyticsLabels, icfReport…
 │   │   ├── contexts/        # AuthContext (JWT), LanguageContext (ES/EN)
-│   │   └── __tests__/       # 61 pruebas Vitest + Testing Library
+│   │   └── __tests__/       # 69 pruebas Vitest + Testing Library
 │   ├── e2e/                 # 20 pruebas Playwright + guion de aceptación (UAT) de 18 escenarios
 │   └── package.json · vite.config.ts
-├── icf-service/             # Servicio de IA local (RAG sobre CIF-IA, Ollama, pgvector) · 101 pruebas
+├── icf-service/             # Servicio de IA local (RAG sobre CIF-IA, Ollama, pgvector) · 119 pruebas
 ├── docs/
 │   ├── presentation/        # Página de presentación del proyecto y reporte del afinamiento ICF
 │   ├── reports/             # Estado, pruebas, validación clínica, insights, release plan

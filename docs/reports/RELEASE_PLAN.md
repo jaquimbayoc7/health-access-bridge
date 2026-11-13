@@ -146,3 +146,7 @@ Cada release se promueve siguiendo el mismo flujo: `develop` → `staging` → `
 - Estado de cierre por Momento: [`PROJECT_STATUS.md`](./PROJECT_STATUS.md) (M1), [`PROJECT_STATUS_M2.md`](./PROJECT_STATUS_M2.md) (M2).
 - Evidencia de prácticas ágiles (roles, eventos, artefactos, métricas): [`AGILE_PRACTICES.md`](./AGILE_PRACTICES.md).
 - Resultado real de la prueba de carga y plan de escalado: [`test-report.md`](../test-report.md) §4.
+
+## Después del cierre (13 de noviembre de 2026)
+
+HU-07i y HU-07j se integraron en `develop` sin cambiar el alcance ni los puntos. **HU-07i** ya está en `staging` (PR #107); **HU-07j** está en `develop` y requiere, además de promoverse, activarla en el PC del servicio ICF (imagen nueva y `Caddyfile` con `/cases`). Las columnas nuevas de `icf_suggestions` se agregan solas al arrancar el backend, sin migración manual. Reversión: `ICF_CASE_EXAMPLES=0` (deja de usar los ejemplos) y `ICF_CASE_MEMORY=false` en el servicio y en el backend (deja de guardar); el código previo sigue siendo compatible con las columnas nuevas.
