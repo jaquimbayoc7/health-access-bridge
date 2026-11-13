@@ -149,6 +149,8 @@ def create_icf_batch(db: Session, patient_id: int, result: dict, diag_cie, clini
                 code=str(item["code"])[:10],
                 title=str(item["title"])[:300],
                 qualifier=item.get("qualifier"),
+                qualifier_suggested=item.get("qualifier"),
+                qualifier_confirmed=False,
                 qualifier_cn=item.get("qualifier_cn"),
                 qualifier_cl=item.get("qualifier_cl"),
                 justification=(str(item.get("justification") or "")[:400] or None),
@@ -197,10 +199,14 @@ def decide_icf_suggestion(db: Session, row: models.IcfSuggestion, decision: sche
             row.code, row.title = decision.code, decision.title
         if decision.qualifier is not None:
             row.qualifier = decision.qualifier
+            row.qualifier_confirmed = True  # el medico fijo la gravedad
         if decision.qualifier_cn is not None:
             row.qualifier_cn = decision.qualifier_cn
         if decision.qualifier_cl is not None:
             row.qualifier_cl = decision.qualifier_cl
+    elif decision.status == schemas.IcfStatus.aceptado and row.component in ("b", "s"):
+        row.qualifier = decision.qualifier  # la router ya valido que coincide o que no habia sugerencia
+        row.qualifier_confirmed = True
     row.status = decision.status.value
     row.decided_at = datetime.utcnow()
     row.decided_by_id = user_id

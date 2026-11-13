@@ -45,3 +45,26 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def ensure_icf_columns(bind=None):
+    """Agrega a `icf_suggestions` las columnas de la gravedad confirmada (HU-07i) si la tabla ya existia.
+
+    El proyecto no usa migraciones y `create_all` no altera tablas existentes; sin esto, DEV/QA/PROD fallarian al
+    consultar las columnas nuevas. Es idempotente: solo agrega lo que falta. Las filas anteriores quedan con
+    `qualifier_suggested` nulo (no se sabe que propuso el sistema) y `qualifier_confirmed` en falso."""
+    from sqlalchemy import inspect, text
+
+    bind = bind or engine
+    inspector = inspect(bind)
+    if "icf_suggestions" not in inspector.get_table_names():
+        return
+    present = {column["name"] for column in inspector.get_columns("icf_suggestions")}
+    false_literal = "FALSE" if bind.dialect.name == "postgresql" else "0"
+    wanted = {
+        "qualifier_suggested": "INTEGER",
+        "qualifier_confirmed": f"BOOLEAN NOT NULL DEFAULT {false_literal}",
+    }
+    with bind.begin() as connection:
+        for name, ddl in wanted.items():
+            if name not in present:
+                connection.execute(text(f"ALTER TABLE icf_suggestions ADD COLUMN {name} {ddl}"))

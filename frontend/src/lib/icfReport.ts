@@ -5,6 +5,10 @@ export const DRAFT_NOTICE =
   'Borrador de apoyo generado con ayuda de un modelo de lenguaje. No sustituye el certificado de discapacidad ' +
   'que emite el equipo multidisciplinario en el aplicativo RLCPD; cada código debe ser validado por un profesional.';
 
+export const SEVERITY_NOTICE =
+  'La gravedad de funciones y estructuras es una sugerencia por reglas sin validación clínica suficiente ' +
+  '(κ ponderado de 0,312 frente a la meta de 0,50): solo vale cuando el profesional la confirma.';
+
 export const QUALIFIER_LABELS: Record<number, string> = {
   0: 'Ninguna',
   1: 'Leve',
@@ -58,6 +62,25 @@ export function qualifierText(item: IcfItem): string {
   return `${base} · ${nature} · ${place}`;
 }
 
+/** Gravedad de una funcion o estructura que el medico aun no confirmo (HU-07i): en el reporte se marca como sugerida. */
+export function severityUnconfirmed(item: IcfItem): boolean {
+  return item.component !== 'd' && item.qualifier !== null && item.qualifier_confirmed !== true;
+}
+
+/** Texto de la columna Calificador del reporte: agrega «(gravedad sugerida)» si el medico no la confirmo. */
+export function reportQualifierText(item: IcfItem): string {
+  return severityUnconfirmed(item) ? `${qualifierText(item)} (gravedad sugerida, sin confirmar)` : qualifierText(item);
+}
+
+/** Calificador de la CIF (0-4) que corresponde a un nivel de HAB 0-100 (escala generica de la OMS). */
+export function qualifierFromLevel(level: number): number {
+  if (level <= 4) return 0;
+  if (level <= 24) return 1;
+  if (level <= 49) return 2;
+  if (level <= 95) return 3;
+  return 4;
+}
+
 export const ORIGIN_LABELS: Record<string, string> = {
   llm: 'Modelo',
   similarity: 'Similitud',
@@ -85,10 +108,11 @@ export function buildReportText(set: IcfSuggestionSet, patientLabel: string): st
     lines.push(section.title);
     if (section.rows.length === 0) lines.push('  (sin códigos)');
     for (const row of section.rows) {
-      lines.push(`  ${formatCode(row)}  ${row.title}  [${qualifierText(row)}]${row.status === 'editado' ? ' (editado)' : ''}`);
+      lines.push(`  ${formatCode(row)}  ${row.title}  [${reportQualifierText(row)}]${row.status === 'editado' ? ' (editado)' : ''}`);
     }
     lines.push('');
   }
   lines.push(DRAFT_NOTICE);
+  lines.push(SEVERITY_NOTICE);
   return lines.join('\n');
 }

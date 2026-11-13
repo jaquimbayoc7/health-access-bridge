@@ -171,8 +171,9 @@ describe('FunctionalProfile', () => {
     renderPage();
     const user = await choosePatient(/Juan Pérez/);
     await user.click(screen.getByRole('button', { name: /generar perfil funcional/i }));
-    await user.click(await screen.findByRole('button', { name: /aceptar b730/i }));
-    expect(icfService.decide).toHaveBeenCalledWith(11, { status: 'aceptado' });
+    await user.click(await screen.findByRole('button', { name: /confirmar gravedad b730/i }));
+    await user.click(screen.getByRole('button', { name: /aceptar b730/i }));
+    expect(icfService.decide).toHaveBeenCalledWith(11, { status: 'aceptado', qualifier: 3 });
     expect(await screen.findByText('Aceptado')).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /rechazar d450/i }));
     expect(icfService.decide).toHaveBeenCalledWith(13, { status: 'rechazado' });
@@ -190,7 +191,49 @@ describe('FunctionalProfile', () => {
     await user.click(await screen.findByRole('option', { name: /2 — Moderada/ }));
     await user.click(screen.getByRole('button', { name: /^guardar$/i }));
     await waitFor(() => expect(icfService.decide).toHaveBeenCalledWith(11, { status: 'editado', qualifier: 2 }));
-    expect(await screen.findByTestId('code-11')).toHaveTextContent('b730.2');
+    await waitFor(() => expect(screen.getByTestId('code-11')).toHaveTextContent('b730.2'));
+  });
+
+  it('HU-07i: no deja aceptar una función o estructura hasta confirmar la gravedad; las actividades sí', async () => {
+    (icfService.generate as ReturnType<typeof vi.fn>).mockResolvedValue(SET);
+    renderPage();
+    const user = await choosePatient(/Juan Pérez/);
+    await user.click(screen.getByRole('button', { name: /generar perfil funcional/i }));
+    expect(await screen.findByRole('button', { name: /aceptar b730/i })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /aceptar s750/i })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /aceptar d450/i })).toBeEnabled();
+    expect(screen.getAllByText(/Por confirmar/).length).toBe(2);
+    expect(screen.getAllByText(/Sugerida por reglas: 3/).length).toBe(2);
+    await user.click(screen.getByRole('button', { name: /confirmar gravedad b730/i }));
+    expect(screen.getByRole('button', { name: /aceptar b730/i })).toBeEnabled();
+    expect(screen.getByRole('button', { name: /aceptar s750/i })).toBeDisabled();
+  });
+
+  it('HU-07i: si el médico cambia la gravedad en la fila, aceptar guarda una edición con ese valor', async () => {
+    (icfService.generate as ReturnType<typeof vi.fn>).mockResolvedValue(SET);
+    (icfService.decide as ReturnType<typeof vi.fn>).mockResolvedValue(
+      item({ id: 11, qualifier: 4, status: 'editado', qualifier_suggested: 3, qualifier_confirmed: true })
+    );
+    renderPage();
+    const user = await choosePatient(/Juan Pérez/);
+    await user.click(screen.getByRole('button', { name: /generar perfil funcional/i }));
+    await user.click(await screen.findByRole('combobox', { name: /gravedad b730/i }));
+    await user.click(await screen.findByRole('option', { name: /4 — Completa/ }));
+    await user.click(screen.getByRole('button', { name: /aceptar b730/i }));
+    await waitFor(() => expect(icfService.decide).toHaveBeenCalledWith(11, { status: 'editado', qualifier: 4 }));
+    await waitFor(() => expect(screen.getByTestId('code-11')).toHaveTextContent('b730.4'));
+  });
+
+  it('HU-07i: muestra la ayuda de gravedad con los niveles D1–D6, la escala y el aviso de validación', async () => {
+    (icfService.generate as ReturnType<typeof vi.fn>).mockResolvedValue(SET);
+    renderPage();
+    const user = await choosePatient(/Juan Pérez/);
+    await user.click(screen.getByRole('button', { name: /generar perfil funcional/i }));
+    const help = await screen.findByTestId('severity-help');
+    expect(help).toHaveTextContent(/Ayuda para calificar la gravedad/);
+    expect(screen.getByTestId('severity-help-levels')).toHaveTextContent('D4 Movilidad: 50 → 3');
+    expect(help).toHaveTextContent(/solo sugirió 2 o 3/);
+    expect(screen.getByTestId('severity-notice')).toHaveTextContent(/0,312/);
   });
 
   it('carga la última sugerencia guardada al elegir el paciente', async () => {
@@ -217,6 +260,24 @@ describe('icfReport y causas', () => {
     expect(text).toContain('b730.3');
     expect(text).not.toContain('b280');
     expect(text).toContain('No sustituye el certificado');
+  });
+
+  it('HU-07i: el reporte marca la gravedad sugerida sin confirmar y no la marca cuando el médico la confirmó', () => {
+    const text = buildReportText(
+      {
+        ...SET,
+        functions: [
+          item({ id: 1 }) as never,
+          item({ id: 2, code: 'b280', qualifier_confirmed: true, status: 'aceptado' }) as never,
+        ],
+        activities: [item({ id: 3, component: 'd', code: 'd450', origin: 'rules' }) as never],
+      } as never,
+      'Juan Pérez, 34 años'
+    );
+    expect(text).toMatch(/b730\.3 .*\(gravedad sugerida, sin confirmar\)/);
+    expect(text).not.toMatch(/b280.*sin confirmar/);
+    expect(text).not.toMatch(/d450.*sin confirmar/);
+    expect(text).toContain('κ ponderado de 0,312');
   });
 
   it('la lista de causas tiene 21 opciones oficiales en 3 grupos', () => {

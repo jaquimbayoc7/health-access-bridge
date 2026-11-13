@@ -35,7 +35,7 @@
 **Principios de diseño**
 - **Privacidad:** el modelo corre en un equipo propio; ningún dato clínico va a servicios de terceros.
 - **Sin fine-tuning:** se usa un modelo abierto tal cual y se le acota el trabajo con búsqueda en el catálogo y reglas.
-- **Verificable:** los títulos salen del catálogo y los calificadores de las reglas; el modelo solo **elige** entre candidatos del catálogo.
+- **Verificable:** los títulos salen del catálogo y los calificadores de las reglas; el modelo solo **elige** entre candidatos del catálogo. La gravedad de funciones y estructuras es una **sugerencia** que el médico confirma (ver el apartado de la validación clínica).
 - **Degradación elegante:** si el modelo falla, el sistema devuelve la búsqueda por similitud; si el servicio falla del todo, la pantalla avisa y el resto de HAB sigue funcionando.
 
 ## 2. Arquitectura y flujo de una sugerencia
@@ -247,13 +247,15 @@ Las pruebas omitidas en el CI necesitan el catálogo CIF-IA (derechos de la OMS)
 
 **Validación clínica (HU-07g).** Una profesional de salud revisó el motor en **tres rondas** (24 casos sintéticos × 3, con una tercera ronda de **casos nuevos** y reglas fijadas por escrito antes de generar las sugerencias). Resultado final: **5 de 6 criterios cumplidos** sobre los casos nuevos; el que **no** cumple es la concordancia del calificador (κ ponderado 0,312 frente a la meta de 0,50). Por eso el sistema se presenta como **borrador de apoyo** y el calificador es un **valor inicial que el médico edita**; **no se aprueba el uso clínico autónomo**. Detalle y sustento de los umbrales: [`PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](../reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md) y [reporte final del afinamiento](../presentation/reporte-afinamiento-icf.html).
 
+**Cambio en la aplicación (HU-07i, 13-nov-2026).** Como el calificador no alcanzó la meta y no hay acceso a la profesional para una cuarta ronda, la pantalla ya no deja aceptar en bloque la gravedad de funciones (b) y estructuras (s): el médico la **confirma o la cambia en cada fila** con una ayuda a la vista (escala con porcentajes, categorías de HAB, niveles D1–D6 y el sesgo medido: el sistema solo sugirió 2 o 3 y la profesional usó también 4). El código y la justificación siguen viniendo del modelo; las actividades (d) se aceptan directamente. El backend rechaza (422) aceptar una b o s sin la gravedad confirmada y guarda `qualifier_suggested` (lo que sugirió el sistema) y `qualifier_confirmed`, de modo que el acuerdo sistema–médico podrá medirse con el uso real. **Exploración sin la profesional (13-nov-2026, no cambia el veredicto):** con los 125 códigos b y s que ella calificó a ciegas (rondas 1 y 3), la regla actual da κ ponderado de 0,533 (0,615 en la ronda 1 y 0,376 en la 3); subir un nivel o usar el nivel D relacionado no mejora, y `gemma4:e4b` proponiendo la gravedad da 0,545 (0,422 en la ronda 3), con intervalos que se solapan por completo. No hay diferencia atribuible al modelo, así que las reglas no se cambiaron. Es un análisis exploratorio con una sola revisora y casos sintéticos.
+
 **Límite aceptado:** no habrá segunda revisora (decisión del responsable por tiempo, 27-oct-2026); no se mide el acuerdo entre profesionales. **Recomendados que quedan abiertos:** calificador en escala 0–4 con mejor ajuste, apagar `ICF_MENTAL_LINK` y una cuarta ronda con casos nuevos.
 
 ## 12. Licencias, límites y riesgos
 - **Licencias** (verificadas el 7-oct-2026): Gemma 4 es Apache 2.0 (se puede usar); MedGemma no se usa. `bge-m3` se usa para embeddings. El **catálogo CIF-IA tiene derechos de la OMS**: no se redistribuye. Si se cambia el modelo, repetir la verificación.
 - **Equipo personal sin redundancia:** puede apagarse, suspenderse o perder internet. Mitigaciones: respaldo por similitud en el backend, arranque automático y este manual.
 - **Capacidad:** una sola máquina atiende a uno o pocos médicos a la vez (5 simultáneos: hasta 11,6 s).
-- **Calidad:** el modelo puede equivocarse; el calificador concuerda solo parcialmente con el criterio clínico. Todo código debe ser validado por un profesional.
+- **Calidad:** el modelo puede equivocarse; el calificador concuerda solo parcialmente con el criterio clínico, por lo que la gravedad de b y s se muestra «por confirmar» y la decide el médico. Todo código debe ser validado por un profesional.
 - **Consulta regulatoria** (si el software es o no dispositivo médico) y **permiso de uso de los títulos de la OMS**: se descartaron como actividades del proyecto; si el uso crece, conviene retomarlas.
 
 ## 13. Lista de comprobación rápida

@@ -136,10 +136,10 @@ Cada componente (**Funciones corporales (b)**, **Estructuras corporales (s)** y 
 |---|---|
 | **Código** y **Título** | Código y nombre oficial del catálogo CIF-IA |
 | **Origen** (etiqueta bajo el título) | *Modelo*: lo eligió la IA entre candidatos del catálogo · *Reglas*: salió de las reglas del Anexo 1239 · *Similitud*: respaldo cuando el modelo no respondió |
-| **Calificador** | Nivel de severidad (ver 6.3) |
+| **Calificador** | Nivel de severidad (ver 6.3). En funciones (b) y estructuras (s) es un **selector 0–4** con la etiqueta *Por confirmar* (ver 6.4) |
 | **Justificación** | Por qué se sugiere, en pocas palabras |
 | **Estado** | *Sugerido*, *Aceptado*, *Editado* o *Rechazado* |
-| **Acciones** | ✓ aceptar · lápiz editar · ✗ rechazar |
+| **Acciones** | ✓ aceptar (en b y s, solo después de confirmar la gravedad) · lápiz editar · ✗ rechazar |
 
 La tarjeta **Resumen** indica con qué modelo y en cuánto tiempo se generó, y tiene los botones **Copiar** y **Descargar PDF**.
 
@@ -157,21 +157,24 @@ Despliegue «**¿Qué significa el calificador (nivel de severidad)?**» en la p
 | **4** | Completa | 96–100 % |
 | **8 / 9** | Sin especificar / No aplicable | — |
 
-Es la escala genérica de la CIF (OMS, 2001). El que propone el sistema es un **punto de partida**; usted lo confirma o lo cambia. En las **estructuras (s)** además se indican la *naturaleza del cambio* y la *localización*; por defecto quedan «sin especificar» (8), así que edítelas cuando las conozca.
+Es la escala genérica de la CIF (OMS, 2001). En las **actividades (d)** el calificador sale del nivel D del capítulo. En las **funciones (b)** y **estructuras (s)** el sistema solo **sugiere** una gravedad inicial a partir de la categoría de discapacidad de HAB (leve = 1, moderada = 2, severa = 3, completa = 4) y **no está validada**: en la revisión con una profesional de la salud el acuerdo fue bajo (κ ponderado de 0,312 frente a la meta de 0,50), porque el sistema solo propone 2 o 3 y ella también usó 4. Por eso **la gravedad de b y s la decide usted**, fila por fila (ver 6.4). En las **estructuras (s)** además se indican la *naturaleza del cambio* y la *localización*; por defecto quedan «sin especificar» (8), así que edítelas cuando las conozca.
+
+**Ayuda para calificar la gravedad.** Encima de las tablas hay un desplegable «**Ayuda para calificar la gravedad de funciones y estructuras**» con la escala y los porcentajes, las categorías de HAB y los niveles D1–D6 del paciente (cada nivel con su calificador equivalente) y un aviso: ante una pérdida completa (ceguera total, sordera profunda, parálisis de las piernas), valore el **4**. Los niveles D1–D6 miden actividades y participación, no el cuerpo: orientan, no determinan. La misma ayuda aparece (resumida) en el cuadro de edición.
 
 ### 6.4 Aceptar, editar o rechazar
-- **✓ Aceptar:** está de acuerdo. El estado pasa a *Aceptado*.
-- **Lápiz — Editar:** se abre el cuadro para cambiar el calificador:
+- **Confirmar la gravedad (funciones y estructuras):** cada fila de b y s trae un selector 0–4 con la sugerencia del sistema y la etiqueta ámbar «*Por confirmar · Sugerida por reglas: n*». Mientras no la confirme, el botón ✓ está **deshabilitado**. Para confirmarla pulse **Confirmar** (si está de acuerdo) o **elija otro valor** en el selector; la etiqueta pasa a verde «*Confirmada*».
+- **✓ Aceptar:** está de acuerdo. En las **actividades (d)** se acepta directamente. En **b y s** acepta el código con la gravedad confirmada: si dejó el valor sugerido, el estado pasa a *Aceptado*; si lo cambió en el selector, a *Editado*.
+- **Lápiz — Editar:** se abre el cuadro para cambiar el calificador (en estructuras, también la naturaleza y la localización, y en b o s trae la ayuda de gravedad):
 
 ![Editar el calificador](img/10-perfil-editar-calificador.jpg)
 
   Elija el nivel y pulse **Guardar**. El estado pasa a *Editado*.
 - **✗ Rechazar:** el código no corresponde. El estado pasa a *Rechazado*.
 
-Sus decisiones **se guardan** y vuelven a aparecer al regresar a la pantalla con ese paciente. Todo código debe ser validado por usted antes de usarse.
+Sus decisiones **se guardan** y vuelven a aparecer al regresar a la pantalla con ese paciente. El sistema también guarda **qué gravedad sugirió y cuál fijó usted**, para medir con el uso real qué tanto coinciden. Todo código debe ser validado por usted antes de usarse.
 
 ### 6.5 Descargar el reporte
-Con **Descargar PDF** obtiene el borrador del perfil (con el aviso de «borrador de apoyo»). **Copiar** lo pasa al portapapeles.
+Con **Descargar PDF** obtiene el borrador del perfil (con el aviso de «borrador de apoyo» y la advertencia sobre la gravedad). **Copiar** lo pasa al portapapeles. Si una función o estructura quedó sin confirmar la gravedad, el reporte la marca «*(gravedad sugerida, sin confirmar)*».
 
 ### 6.6 Qué no hace
 - No genera el **certificado de discapacidad**; ese lo emite el equipo multidisciplinario en el aplicativo RLCPD (Resolución 1239 de 2022).
