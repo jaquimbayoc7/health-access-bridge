@@ -14,7 +14,7 @@ servicio ICF ──▶ PostgreSQL + pgvector (contenedor, solo 127.0.0.1:5433) y
 - **Caddy** exige el token Bearer en todas las rutas y solo deja pasar `/suggest`, `/cases` (memoria de casos, HU-07j), `/health` y `/api/tags`; el resto responde 404 (por ejemplo, `/api/generate` de Ollama no se expone).
 - **Tailscale Funnel** publica solo el puerto 11435.
 - **Los secretos** (token y clave de la base) viven en `%USERPROFILE%\.hab-icf\.env`, **fuera del repositorio y de OneDrive**.
-- **Ningún identificador de pacientes se guarda en este PC.** La base tiene el catálogo CIF-IA y sus embeddings (se reconstruyen, ver abajo) y, desde HU-07j, la memoria de casos: el texto clínico (diagnóstico y notas, sin nombre ni documento) de los casos que el médico confirma, con sus códigos. Esas tablas (`icf_cases` e `icf_case_codes`) **no se reconstruyen**: respáldalas con `docker exec icf-db pg_dump -U icf_user -d icf -t icf_cases -t icf_case_codes > casos.sql` (fuera de OneDrive y del repositorio). Las sugerencias y las decisiones del médico se guardan en la base del backend en Render.
+- **Ningún identificador de pacientes se guarda en este PC.** La base tiene el catálogo CIF-IA y sus embeddings (se reconstruyen, ver abajo) y, desde HU-07j, la memoria de casos: el texto clínico (diagnóstico y notas, sin nombre ni documento) de los casos que el médico confirma, con sus códigos. Esas tablas (`icf_cases` e `icf_case_codes`) **no se reconstruyen**: respáldalas como se indica en la sección «Respaldo de la memoria de casos» (fuera de OneDrive y del repositorio). Las sugerencias y las decisiones del médico se guardan en la base del backend en Render.
 
 ## Mediciones (07-oct-2026, RTX 5050 de 8 GB)
 
@@ -73,6 +73,16 @@ Todo vuelve solo cuando **inicia sesión el usuario de Windows**: Ollama y Docke
 Con corriente alterna, la suspensión y la hibernación están en «nunca» (configurado el 07-oct-2026). Con batería, el equipo se suspende a los 10 minutos: **mantén el cargador conectado**. Revisa también en *Panel de control → Opciones de energía → Elegir el comportamiento del cierre de la tapa* que, «con corriente», diga «No hacer nada»; en este equipo no se pudo comprobar desde la línea de comandos. Con la tapa cerrada el equipo necesita ventilación.
 
 Para volver a los valores originales: `powercfg /change standby-timeout-ac 30` y `powercfg /change hibernate-timeout-ac 180`.
+
+## Respaldo de la memoria de casos
+
+```powershell
+$dest = "$env:USERPROFILE\.hab-icfespaldos"; New-Item -ItemType Directory -Force $dest | Out-Null
+docker exec icf-db pg_dump -U icf_user -d icf -t icf_cases -t icf_case_codes -f /tmp/casos.sql
+docker cp icf-db:/tmp/casos.sql "$dest\casos-$(Get-Date -Format yyyyMMdd).sql"
+docker exec icf-db rm /tmp/casos.sql
+```
+Guárdalo en `%USERPROFILE%\.hab-icfespaldos` (fuera de OneDrive y del repositorio: contiene texto clínico). **No uses `>` de PowerShell** para redirigir `pg_dump`: en Windows PowerShell 5.1 escribe el archivo en UTF-16 y `psql` no lo restaura. Para restaurar: `docker cp casos-AAAAMMDD.sql icf-db:/tmp/casos.sql` y `docker exec icf-db psql -U icf_user -d icf -f /tmp/casos.sql`.
 
 ## Rotar el token
 

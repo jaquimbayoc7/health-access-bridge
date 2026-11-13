@@ -42,3 +42,7 @@ alembic/versions/*.pyc
 
 # Datos con copyright (catalogo CIF-IA de la OMS): solo local
 data/private/
+
+# Respaldos de la memoria de casos del servicio ICF (texto clinico): nunca al repositorio
+casos*.sql
+icf-service/deploy/windows/*.sql

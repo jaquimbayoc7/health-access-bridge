@@ -37,6 +37,7 @@ import {
   decisionNote,
   formatCode,
   justificationText,
+  pdfSafe,
   qualifierText,
   reportQualifierText,
   reportSections,
@@ -244,8 +245,8 @@ export default function FunctionalProfile() {
           ? section.rows.map((r) => [
               r.title,
               formatCode(r),
-              reportQualifierText(r),
-              [justificationText(r), decisionNote(r)].filter(Boolean).join('\n'),
+              pdfSafe(reportQualifierText(r)),
+              pdfSafe([justificationText(r), decisionNote(r)].filter(Boolean).join('\n')),
             ])
           : [['(sin códigos)', '', '', '']],
         headStyles: { fillColor: [43, 108, 176] },
@@ -254,7 +255,7 @@ export default function FunctionalProfile() {
       y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 6;
     }
     doc.setFontSize(8);
-    doc.text(doc.splitTextToSize(`${DRAFT_NOTICE} ${SEVERITY_NOTICE}`, 180), 14, y + 4);
+    doc.text(doc.splitTextToSize(pdfSafe(`${DRAFT_NOTICE} ${SEVERITY_NOTICE}`), 180), 14, y + 4);
     doc.save(`perfil-funcional-${patient?.id ?? 'paciente'}.pdf`);
   };
 
@@ -683,10 +684,12 @@ export default function FunctionalProfile() {
               <Label htmlFor="edit-q">
                 {editing?.component === 's' ? L('Magnitud', 'Extent') : L('Calificador', 'Qualifier')}
               </Label>
-              <p className="text-xs text-muted-foreground">
-                {L('0 ninguna (0–4 %) · 1 leve (5–24 %) · 2 moderada (25–49 %) · 3 severa (50–95 %) · 4 completa (96–100 %)',
-                   '0 none (0–4%) · 1 mild (5–24%) · 2 moderate (25–49%) · 3 severe (50–95%) · 4 complete (96–100%)')}
-              </p>
+              {editing?.component === 'd' && (
+                <p className="text-xs text-muted-foreground">
+                  {L('0 ninguna (0–4 %) · 1 leve (5–24 %) · 2 moderada (25–49 %) · 3 severa (50–95 %) · 4 completa (96–100 %)',
+                     '0 none (0–4%) · 1 mild (5–24%) · 2 moderate (25–49%) · 3 severe (50–95%) · 4 complete (96–100%)')}
+                </p>
+              )}
               {editing && editing.component !== 'd' && <SeverityHelp patient={patient} compact />}
               <Select value={editQ} onValueChange={setEditQ}>
                 <SelectTrigger id="edit-q">

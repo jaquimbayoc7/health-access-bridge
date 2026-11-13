@@ -216,7 +216,7 @@ Notas:
 - **Usuarios:** alta y desactivación desde el panel de administración. Rotar `JWT_SECRET` invalida todas las sesiones.
 - **Secretos:** nunca en el repositorio ni en chats; rótelos si se exponen (el token del ICF tiene procedimiento propio).
 - **Registros:** consulte los *logs* del servicio en Render; el servicio ICF, con `docker logs icf-service`.
-- **Copias de seguridad:** la base de producción es de pago y admite copias; el PC del ICF **no guarda identificadores de pacientes**, pero desde HU-07j guarda en su base el texto clínico sin identificadores de los casos que el médico confirma (`icf_cases` e `icf_case_codes`): respaldarlas con `pg_dump` (ver el manual del servicio ICF, sección 8.5).
+- **Copias de seguridad:** la base de producción es de pago y admite copias; el PC del ICF **no guarda identificadores de pacientes**, pero desde HU-07j guarda en su base el texto clínico sin identificadores de los casos que el médico confirma (`icf_cases` e `icf_case_codes`): respaldarlas con `pg_dump` y `docker cp` (ver el manual del servicio ICF, sección 8.5; no redirigir con `>` desde PowerShell).
 
 ## 13. Seguridad
 - Autenticación JWT, contraseñas con Bcrypt y control de acceso por rol en cada endpoint; borrado lógico de pacientes.
