@@ -37,6 +37,16 @@ node construir.mjs /ruta/a/archify/archify/bin/archify.mjs recorrido-medico-icf 
 
 **Nota sobre Windows + OneDrive:** la herramienta escribe archivos temporales y los renombra; sobre una carpeta sincronizada o montada en Docker puede fallar. Se construyó en un directorio de trabajo del contenedor y se copiaron solo los HTML.
 
+## Memoria de casos (HU-07j, 13-nov-2026)
+
+Las fuentes `fuentes/arquitectura-hab.json`, `fuentes/servicio-icf.json` y `fuentes/recorrido-medico-icf.json` ya muestran que **los casos que el médico confirma se guardan (sin identificadores) en una memoria vectorial y que el modelo los usa como ejemplos**:
+
+- `arquitectura-hab`: nodo «Memoria de casos» dentro del PC propio, conectado al servicio ICF («guarda y recupera casos»); Caddy pasa de 3 a 4 rutas (`/suggest · /cases`).
+- `servicio-icf`: el backend envía `POST /cases` a la memoria; el embedding busca casos parecidos y la memoria aporta «ejemplos» a la selección.
+- `recorrido-medico-icf`: tras la decisión, `POST /cases` y el guardado en la memoria; la decisión incluye confirmar la gravedad y la justificación.
+
+**Regenerados el 14-nov-2026** con Archify 3.2.0 (el `finalize` de `showcase` pasó en los tres; `construir.mjs` ahora acepta las traducciones en `locales/es.json` de la 3.2 y en `examples/locales/es.json` de la 3.0). Las capturas de `docs/documentacion-final/fuente/ani/` (arquitectura, servicio ICF y recorrido del médico) se volvieron a tomar y están en el Word v1.1. **Quedan sin regenerar** los videos `video/*.webm` de esas tres animaciones (se exportan desde el visor con **Exportar**).
+
 ## Datos y privacidad
 
 Los diagramas no contienen datos de pacientes; las rutas, los textos y las cifras salen de este repositorio (`BACKLOG.md`, `docs/manuals/MANUAL_ICF.md`, `docs/diagrams/rag-icf-postgresql.md`).

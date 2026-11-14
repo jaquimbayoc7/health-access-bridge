@@ -21,6 +21,17 @@ Plataforma web para la gestión clínica de pacientes con discapacidad, el anál
 
 ---
 
+## Estado final y trabajos futuros (14-nov-2026)
+
+El proyecto cerró el 28 de octubre de 2026 con 146 de 146 puntos; después se agregaron, sin cambiar los puntos, **HU-07i** (la gravedad de funciones y estructuras la confirma el médico) y **HU-07j** (memoria de casos confirmados, ejemplos para el modelo y justificación editable); ver el [reporte posterior al cierre](./docs/presentation/reporte-posterior-cierre.html).
+
+**Trabajos futuros**
+1. Confirmar con casos reales el umbral de similitud de 0,70 de la memoria, elegido de forma exploratoria con los 46 casos validados por la profesional; se repite con `evaluate_memory.py` cuando haya casos reales suficientes y se ve si el 0,70 se sostiene.
+2. Mejorar el κ del calificador de severidad con la historia clínica y casos reales confirmados: con al menos 30 pares reales se medirá con `case_memory_report.py` y solo si un predictor basado en casos supera a las reglas (con su intervalo de confianza) se activará; el acuerdo medido con el uso real es una cota superior por el anclaje al aceptar con el botón.
+3. El calificador de severidad (κ ponderado de 0,312 en la validación y de 0,533 con 125 códigos) es lo único que falta mejorar, y no se logra con reglas ni con un modelo mayor: HAB no mide funciones y estructuras por separado. Se recomienda alimentar el sistema con la historia clínica (diagnóstico CIE, hallazgos de la exploración y escalas funcionales en las notas) y con casos reales confirmados por médicos, para que el RAG aprenda de ellos. Se espera que esto estabilice el servicio, pero es una hipótesis aún no medida.
+
+---
+
 ## Stack Tecnológico
 
 | Capa | Tecnología |

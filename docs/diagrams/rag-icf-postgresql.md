@@ -402,7 +402,7 @@ flowchart LR
     MED["Médico confirma o edita un código<br/>(gravedad confirmada en b y s)"] --> BE["Backend<br/>PATCH /icf/suggestions/{id}"]
     BE -->|"segundo plano, sin identificadores"| CASES["Servicio ICF<br/>POST /cases"]
     CASES --> VEC[("pgvector<br/>icf_cases · icf_case_codes")]
-    NEW["Caso nuevo<br/>POST /suggest"] -->|"similitud ≥ 0,80, hasta 3"| VEC
+    NEW["Caso nuevo<br/>POST /suggest"] -->|"similitud ≥ 0,70, hasta 3"| VEC
     VEC -->|"códigos como candidatos + ejemplos para el modelo"| LLM["Gemma 4<br/>elige solo entre candidatos del catálogo"]
 ```
 
