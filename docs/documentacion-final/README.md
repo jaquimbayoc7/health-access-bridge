@@ -24,3 +24,5 @@ Las rutas a archivos del repositorio que aparecen en el documento son hipervínc
 **Actualización del mismo día (HU-07j):** la v1.1 también incluye la sección 5.3.6 (memoria de casos confirmados por el médico y justificación editable), el ajuste de 5.7, las cifras de pruebas de 7.3 y la fila de riesgos de la sección 9. Texto con tablas en `fuente/c3.md`, `c4.md` y `c5.md`.
 
 **Rutas del repositorio (13-nov-2026):** `master` ya incluye todo lo de `develop` (PR #110), de modo que los hipervínculos del documento a archivos del repositorio funcionan.
+
+**Base de datos vectorial (14-nov-2026):** la v1.1 agrega la sección 4.4.1 (descripción de la base vectorial del servicio ICF, su figura y su tabla, y cómo la memoria de casos se reutiliza para mejorar las métricas a futuro). `fuente/figs3.py` genera `fig/modelo-datos.png` (con la nota al día) y `fig/modelo-datos-vectorial.png`. Al insertar una figura y una tabla, las que seguían se renumeraron (figuras desde la 12 y tablas desde la 5) en el Word; la tabla 14 (conciliación de cifras del manuscrito) aparece en la lista de tablas pero su título ya no está en el cuerpo, algo anterior a este cambio.
