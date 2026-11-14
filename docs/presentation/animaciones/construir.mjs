@@ -6,7 +6,7 @@
 // Archify en examples/locales/es.json), valida con `finalize` (incluye una verificación en navegador real)
 // y escribe <nombre>.html en esta carpeta. Los HTML son autosuficientes: se abren sin instalar nada.
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -17,7 +17,10 @@ if (!bin) {
   process.exit(2);
 }
 const raizArchify = resolve(dirname(bin), '..');
-const traducciones = JSON.parse(readFileSync(join(raizArchify, 'examples', 'locales', 'es.json'), 'utf8'));
+// Archify 3.0.x trae las traducciones en examples/locales/es.json; la 3.2.x, en locales/es.json
+const rutaEs = [join(raizArchify, 'locales', 'es.json'), join(raizArchify, 'examples', 'locales', 'es.json')].find(existsSync);
+if (!rutaEs) { console.error('No se encontro locales/es.json en Archify'); process.exit(2); }
+const traducciones = JSON.parse(readFileSync(rutaEs, 'utf8'));
 delete traducciones.$schema;
 
 const fuentes = readdirSync(join(aqui, 'fuentes')).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5));

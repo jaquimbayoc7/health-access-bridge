@@ -15,16 +15,17 @@
     { "id": "predictor", "type": "backend", "label": "Modelo predictivo", "sublabel": "K-Means + Gradient Boosting", "pos": [560, 160], "size": [170, 64], "tag": "perfil 0/1/2" },
     { "id": "dbhab", "type": "database", "label": "PostgreSQL HAB", "sublabel": "pacientes y sugerencias", "pos": [560, 440], "size": [170, 64], "tag": "Render" },
     { "id": "funnel", "type": "cloud", "label": "Tailscale Funnel", "sublabel": "túnel HTTPS público", "pos": [840, 300], "size": [160, 64] },
-    { "id": "caddy", "type": "security", "label": "Caddy", "sublabel": "exige token Bearer", "pos": [1110, 300], "size": [150, 64], "tag": "3 rutas" },
+    { "id": "caddy", "type": "security", "label": "Caddy", "sublabel": "exige token Bearer", "pos": [1110, 300], "size": [150, 64], "tag": "4 rutas" },
     { "id": "icf", "type": "backend", "label": "Servicio ICF", "sublabel": "reglas + RAG (FastAPI)", "pos": [1370, 300], "size": [160, 64], "tag": "Docker" },
     { "id": "ollama", "type": "backend", "label": "Ollama", "sublabel": "gemma4:e4b + bge-m3", "pos": [1370, 160], "size": [160, 64], "tag": "GPU local" },
     { "id": "pgv", "type": "database", "label": "PostgreSQL + pgvector", "sublabel": "catálogo CIF-IA 1.593", "pos": [1370, 440], "size": [160, 64], "tag": "solo local" },
+    { "id": "memoria", "type": "database", "label": "Memoria de casos", "sublabel": "confirmados por el médico", "pos": [1110, 440], "size": [150, 64], "tag": "sin identificadores" },
     { "id": "github", "type": "external", "label": "GitHub", "sublabel": "develop → staging → master", "pos": [40, 590], "size": [170, 64] },
     { "id": "actions", "type": "cloud", "label": "GitHub Actions", "sublabel": "pruebas y CI/CD", "pos": [330, 590], "size": [160, 64], "tag": "3 flujos" }
   ],
   "boundaries": [
     { "kind": "region", "label": "Render (nube): DEV · QA · PROD", "wraps": ["front", "api", "predictor", "dbhab"] },
-    { "kind": "security-group", "label": "PC propio de producción (RTX 5050, 8 GB)", "wraps": ["caddy", "icf", "ollama", "pgv"] }
+    { "kind": "security-group", "label": "PC propio de producción (RTX 5050, 8 GB)", "wraps": ["caddy", "icf", "ollama", "pgv", "memoria"] }
   ],
   "connections": [
     { "id": "medico-front", "from": "medico", "to": "front", "label": "usa la app", "variant": "emphasis" },
@@ -34,15 +35,16 @@
     { "id": "api-db", "from": "api", "to": "dbhab", "label": "SQL", "fromSide": "bottom", "toSide": "top" },
     { "id": "api-funnel", "from": "api", "to": "funnel", "label": "HTTPS + token", "variant": "security" },
     { "id": "funnel-caddy", "from": "funnel", "to": "caddy", "label": "reenvía", "variant": "security" },
-    { "id": "caddy-icf", "from": "caddy", "to": "icf", "label": "/suggest", "variant": "security" },
+    { "id": "caddy-icf", "from": "caddy", "to": "icf", "label": "/suggest · /cases", "variant": "security" },
     { "id": "icf-ollama", "from": "icf", "to": "ollama", "label": "embeddings + elección", "fromSide": "top", "toSide": "bottom" },
     { "id": "icf-pgv", "from": "icf", "to": "pgv", "label": "búsqueda vectorial", "fromSide": "bottom", "toSide": "top" },
+    { "id": "icf-memoria", "from": "icf", "to": "memoria", "label": "guarda y recupera casos", "variant": "emphasis", "fromSide": "bottom", "toSide": "top" },
     { "id": "github-actions", "from": "github", "to": "actions", "label": "push / PR", "variant": "dashed" },
     { "id": "actions-front", "from": "actions", "to": "front", "label": "despliega en Render", "variant": "dashed", "fromSide": "top", "toSide": "bottom" }
   ],
   "cards": [
-    { "dot": "cyan", "title": "El médico", "items": ["Registra pacientes y ejecuta la predicción de barreras (perfil 0, 1 o 2)", "Genera el Perfil Funcional ICF: el sistema sugiere códigos CIF y el médico acepta, edita o rechaza", "Copia o descarga el reporte como borrador de apoyo"] },
+    { "dot": "cyan", "title": "El médico", "items": ["Registra pacientes y ejecuta la predicción de barreras (perfil 0, 1 o 2)", "Genera el Perfil Funcional ICF: el sistema sugiere códigos CIF; el médico confirma la gravedad y acepta, edita o rechaza", "Copia o descarga el reporte como borrador de apoyo"] },
     { "dot": "violet", "title": "El administrador", "items": ["Crea, activa y desactiva cuentas de médicos", "No ve pacientes: el backend responde 403", "Diagnostica el servicio de IA con /icf/health, sin ver la URL ni el token"] },
-    { "dot": "rose", "title": "IA privada", "items": ["La IA corre en el PC propio: ningún dato clínico sale hacia terceros", "Nunca viajan nombre, documento ni orientación sexual", "Si el equipo no responde, el backend usa la búsqueda por similitud y la app sigue funcionando"] }
+    { "dot": "rose", "title": "IA privada", "items": ["La IA corre en el PC propio: ningún dato clínico sale hacia terceros", "Nunca viajan nombre, documento ni orientación sexual; los casos que el médico confirma se guardan sin identificadores y el RAG los usa como ejemplos", "Si el equipo no responde, el backend usa la búsqueda por similitud y la app sigue funcionando"] }
   ]
 }

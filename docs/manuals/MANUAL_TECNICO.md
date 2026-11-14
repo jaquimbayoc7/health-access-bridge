@@ -244,6 +244,7 @@ Notas:
 - **Sin migraciones de base de datos** (`create_all`). Para cambios de esquema en producción se requiere una herramienta como Alembic.
 - **Rendimiento con carga alta** en el plan gratuito: con 200 usuarios simultáneos el p95 fue de 54,6 s (DEUDA-01; ver `docs/test-report.md`).
 - Lint (`eslint .`) y tipos (`tsc --noEmit`) están en cero errores desde el 27-oct-2026, pero **el CI no los exige** (decisión del responsable por tiempo, 27-oct-2026): una regresión no frenaría un despliegue. Quien mantenga el proyecto puede agregarlos como pasos del flujo (`npx eslint .` y `npx tsc --noEmit -p tsconfig.app.json`).
+- **Sin más validación médica ni modelos mayores:** la profesional que validó el motor ya no está disponible y la GPU de 8 GB no soporta modelos de 12 o 26 mil millones de parámetros. Para mejorar el calificador hace falta cargar más casos reales validados (memoria de casos, HU-07j) y medir con `icf-service/scripts/case_memory_report.py` antes de usar la gravedad guardada para predecir.
 - El servicio ICF corre en **un solo PC sin redundancia**; el respaldo por similitud mitiga una caída.
 - Validación clínica del ICF: **no habrá segunda revisora** (decisión del responsable por tiempo, 27-oct-2026), por lo que no se mide el acuerdo entre profesionales y el resultado refleja el criterio de una sola persona. Quedan como recomendaciones apagar `ICF_MENTAL_LINK` y, si hubiera una revisora, repetir la medición del calificador. Desde el 13-nov-2026 la gravedad de b y s la confirma el médico en la pantalla (HU-07i) y se registra qué sugirió el sistema y qué fijó el profesional; la exploración del calificador con los 125 códigos de las rondas 1 y 3 no encontró una variante mejor que las reglas actuales.
 - **No se hizo revisión con lectores de pantalla** (NVDA, VoiceOver) por tiempo (decisión del responsable, 27-oct-2026); la accesibilidad se verificó solo con axe-core, que cubre una parte de los criterios de WCAG, más el uso con teclado.
@@ -254,3 +255,8 @@ Notas:
 - OMS (2001). *Clasificación Internacional del Funcionamiento, de la Discapacidad y de la Salud (CIF)*.
 - Ministerio de Salud y Protección Social (2022). *Resolución 1239 de 2022*.
 - Documentos del proyecto: `BACKLOG.md`, `docs/reports/`, `docs/diagrams/`.
+
+## Trabajos futuros (14-nov-2026)
+1. Confirmar con casos reales el umbral de similitud de 0,70 de la memoria, elegido de forma exploratoria con los 46 casos validados por la profesional; se repite con `evaluate_memory.py` cuando haya casos reales suficientes y se ve si el 0,70 se sostiene.
+2. Mejorar el κ del calificador de severidad con la historia clínica y casos reales confirmados: con al menos 30 pares reales se medirá con `case_memory_report.py` y solo si un predictor basado en casos supera a las reglas (con su intervalo de confianza) se activará; el acuerdo medido con el uso real es una cota superior por el anclaje al aceptar con el botón.
+3. Los pendientes de infraestructura siguen los de las limitaciones de este manual: migraciones de base de datos, lint y tipos exigidos en el CI, redundancia del servicio de IA y revisión con lectores de pantalla.
