@@ -1,13 +1,13 @@
 # Manual técnico
 
-**Health Access Bridge (HAB)** · Versión 2.1 · 13 de noviembre de 2026 (HU-07i y HU-07j)
+**Health Access Bridge (HAB)** · Versión 2.2 · 14 de noviembre de 2026 (incluye la memoria de casos, HU-07i y HU-07j, y los trabajos futuros)
 **Para:** desarrolladores y operadores que instalan, prueban, despliegan y mantienen el sistema.
 **Complementa:** [Manual de usuario](MANUAL_USUARIO.md) · [Manual del servicio ICF](MANUAL_ICF.md) · [Referencia de la API (ReDoc)](../api/redoc-api.html) · [Diagramas C4](../diagrams/).
 
 ## Cómo funciona, de un vistazo
 ![Arquitectura completa de HAB: actores, Render, túnel autenticado, PC propio con la IA y CI/CD](img/diagrama-arquitectura.png)
 
-*El médico y el administrador usan el frontend; el backend guarda los datos en PostgreSQL y solo para el perfil funcional llama, por un túnel con token, al servicio de IA del PC propio. GitHub Actions prueba cada cambio y Render despliega los tres ambientes.*
+*El médico y el administrador usan el frontend; el backend guarda los datos en PostgreSQL y solo para el perfil funcional llama, por un túnel con token, al servicio de IA del PC propio. GitHub Actions prueba cada cambio y Render despliega los tres ambientes. El servicio de IA guarda además una memoria de los casos que el médico confirma.*
 **Versión interactiva y animada (Archify):** abra [`arquitectura-hab.html`](../presentation/animaciones/arquitectura-hab.html) en el navegador (clone el repositorio o descargue el archivo; GitHub muestra su código, no el diagrama). Permite trazar rutas entre nodos, exportar a PNG, SVG o video y ver los otros cinco diagramas desde [`index.html`](../presentation/animaciones/index.html).
 
 ## Contenido
@@ -26,7 +26,8 @@
 13. Seguridad
 14. Solución de problemas
 15. Limitaciones y deuda técnica
-16. Referencias
+16. Trabajos futuros
+17. Referencias
 
 ---
 
@@ -43,7 +44,7 @@ HAB es una aplicación web de tres capas más un servicio de IA propio.
                         │
                         └─HTTPS + token──▶ Tailscale Funnel ─▶ PC propio:
                                             Caddy ─▶ servicio ICF ─▶ Ollama (gemma4:e4b, bge-m3)
-                                                              └─▶ PostgreSQL + pgvector (catálogo CIF-IA)
+                                                              └─▶ PostgreSQL + pgvector (catálogo CIF-IA y memoria de casos)
 ```
 
 | Pieza | Tecnología | Dónde corre |
@@ -90,6 +91,18 @@ Las columnas `qualifier_suggested`, `qualifier_confirmed` (HU-07i) y `justificat
 
 Regenerar un perfil crea un **lote nuevo** y conserva los anteriores: queda la trazabilidad de qué sugirió la máquina y qué decidió el profesional.
 
+### Base de datos vectorial del servicio ICF
+El servicio ICF tiene su propia base (PostgreSQL con pgvector, en el PC propio; no se expone a internet). Guarda vectores de 1.024 dimensiones (`bge-m3`) y busca por similitud coseno. Esquema en `icf-service/sql/`:
+
+| Tabla | Qué guarda | Quién la escribe |
+|---|---|---|
+| `icf_codes` | 1.593 códigos CIF-IA con título, descripción y vector | La carga del catálogo (`load_catalog`, `embed_catalog`) |
+| `icf_hab_domains`, `icf_domain_map` | Dominios D1–D6 de HAB, capítulos de la CIF y los 32 códigos de actividades del Anexo 1239 | La carga inicial |
+| `icf_cases` | Un caso confirmado: texto clínico (diagnóstico y notas, sin identificadores), grupo de edad y vector | El servicio, al recibir `POST /cases`, o `load_validated_cases.py` |
+| `icf_case_codes` | Códigos confirmados de cada caso: componente, código, estado, gravedad del médico, gravedad sugerida y justificación | Igual que `icf_cases` |
+
+Es la **memoria de casos**: crece con el uso, se reutiliza como ejemplos para el modelo y **no se puede reconstruir** (se respalda con `pg_dump`; ver el Manual ICF, secciones 3.2 y 8.5). El backend no la consulta: solo le envía los casos tras cada decisión confirmada.
+
 ## 4. Backend (FastAPI)
 **Arranque** (`app/main.py`): configura CORS desde `ALLOWED_ORIGINS`, crea las tablas en el evento `startup` y, solo si `RUN_SEED=true`, ejecuta el *seed* idempotente (administrador y médicos de prueba). Documentación interactiva en `/docs`.
 
@@ -118,13 +131,13 @@ Regenerar un perfil crea un **lote nuevo** y conserva los anteriores: queda la t
 - **Rutas y páginas** (`src/pages`): Login, Dashboard (Panel), Patients, Predictions, FunctionalProfile, Analytics, PredictiveGuide, Help, Settings, AdminPanel.
 - **Servicios** (`src/services`): `api.ts` (cliente HTTP con el token), `patients.ts`, `icf.ts`, `analytics.ts`.
 - **Contextos:** `AuthContext` (JWT, rol, expiración de sesión) y `LanguageContext` (ES/EN, claves de traducción).
-- **Utilidades** (`src/lib`): `analyticsExport` (Excel de 5 hojas y PDF con gráficos), `analyticsLabels`, `icfReport`, `profile` (colores de perfil con contraste suficiente).
+- **Utilidades** (`src/lib`): `analyticsExport` (Excel de 5 hojas y PDF con gráficos), `analyticsLabels`, `icfReport` (reporte con justificación, notas de decisión y `pdfSafe`, que evita caracteres que la fuente del PDF no dibuja), `icfGuideContent`, `profile` (colores de perfil con contraste suficiente). El componente `SeverityHelp` es la ayuda para calificar la gravedad.
 - **Estilos:** Tailwind + variables CSS (`index.css`); el color primario `#2563eb` cumple contraste 4,5:1.
 - **Accesibilidad:** nombres accesibles en botones de íconos, `nav` con etiqueta, jerarquía de títulos, gráficos expuestos como imagen con nombre. Se verifica con axe-core (sección 9).
 - **Variables de *build*:** `VITE_API_BASE_URL` y `VITE_ENVIRONMENT` se incrustan al compilar; cambiarlas exige reconstruir.
 
 ## 6. Servicio ICF (resumen)
-Servicio independiente que sugiere códigos CIF-IA con RAG (reglas del Anexo 1239 + búsqueda semántica en pgvector + selección por un modelo local). Corre en un PC propio y solo es alcanzable desde el backend por un túnel con token. **Todo su diseño, instalación y operación están en el [Manual del servicio ICF](MANUAL_ICF.md).** El backend lo consume con `ICF_LLM_URL`, `ICF_LLM_TOKEN` y `ICF_LLM_MODEL`; si no responde, devuelve el respaldo por similitud y el resto de la aplicación sigue operando.
+Servicio independiente que sugiere códigos CIF-IA con RAG (reglas del Anexo 1239 + búsqueda semántica en pgvector + selección por un modelo local). Corre en un PC propio y solo es alcanzable desde el backend por un túnel con token. Desde HU-07j guarda además la memoria de casos que el médico confirma (`POST /cases`) y la usa como ejemplos. **Todo su diseño, instalación y operación están en el [Manual del servicio ICF](MANUAL_ICF.md).** El backend lo consume con `ICF_LLM_URL`, `ICF_LLM_TOKEN` y `ICF_LLM_MODEL`; si no responde, devuelve el respaldo por similitud y el resto de la aplicación sigue operando.
 
 ## 7. Instalación en local
 **Requisitos:** Git, Python 3.11, Node.js 20 y npm. PostgreSQL es opcional (sin `DATABASE_URL` se usa SQLite local).
@@ -170,11 +183,12 @@ npm run dev                                       # http://localhost:5173
 Tras cambiar una variable en Render hay que **reiniciar** el servicio (o reconstruir el sitio, si es del frontend).
 
 ## 9. Pruebas
+
 | Capa | Comando | Qué cubre |
 |---|---|---|
 | Backend | `cd backend && pytest app/tests/ -v` | Auth, RBAC, pacientes, predicción, ICF, causas y analítica. SQLite en memoria; el CI exige cobertura ≥ 80 % |
 | Frontend | `cd frontend && npm run test` | Vitest + Testing Library: contextos, páginas, exportaciones |
-| Servicio ICF | `cd icf-service && pytest -v` | Motor, reglas, revisión clínica; 9 pruebas necesitan el catálogo de la OMS y solo corren en el PC propio |
+| Servicio ICF | `cd icf-service && pytest -v` | Motor, reglas, revisión clínica, memoria de casos y su evaluación; 10 pruebas necesitan el catálogo de la OMS o una base con pgvector y solo corren en el PC propio |
 | E2E | `cd frontend && npm run test:e2e` | Playwright; `PLAYWRIGHT_BASE_URL` apunta a un ambiente desplegado |
 | Accesibilidad | `npx playwright test e2e/accessibility.spec.ts` | axe-core, WCAG 2.2 AA, sin violaciones |
 | Aceptación (UAT) | `UAT=1 npx playwright test e2e/uat-aceptacion.spec.ts` | 18 escenarios por rol; crea y borra datos de prueba: **solo bajo demanda y nunca en producción** |
@@ -182,6 +196,7 @@ Tras cambiar una variable en Render hay que **reiniciar** el servicio (o reconst
 Notas:
 - Los E2E que inician sesión de verdad deben apuntar al **frontend desplegado**; desde un origen local el navegador bloquea las llamadas por CORS.
 - `UAT_EVIDENCE_DIR=<carpeta>` guarda capturas de cada escenario.
+- **Resultados al 14-nov-2026:** backend 141 (cobertura 91,3 %), frontend 72 y servicio ICF 132 (122 pasan y 10 se omiten).
 - Resultados vigentes: ver [`REPORTE_FINAL_PRUEBAS_HU09.md`](../reports/REPORTE_FINAL_PRUEBAS_HU09.md) y [`TEST_CASES.md`](../reports/TEST_CASES.md).
 
 ## 10. CI/CD y flujo de ramas
@@ -222,12 +237,13 @@ Notas:
 - Autenticación JWT, contraseñas con Bcrypt y control de acceso por rol en cada endpoint; borrado lógico de pacientes.
 - CORS restringido a los orígenes del ambiente.
 - El análisis del dashboard usa datos agregados; los exports se generan en el navegador.
-- Al servicio ICF solo viajan edad, género, causa, categorías, niveles D1–D6, predicción y, si el médico los escribe, diagnóstico y notas; nunca nombre, documento ni orientación sexual. Caddy exige el token en todas las rutas y solo expone tres.
+- Al servicio ICF solo viajan edad, género, causa, categorías, niveles D1–D6, predicción y, si el médico los escribe, diagnóstico y notas; nunca nombre, documento ni orientación sexual. Caddy exige el token en todas las rutas y solo expone cuatro (`/suggest`, `/cases`, `/health` y `/api/tags`). La memoria de casos guarda texto clínico **sin identificadores** (Ley 1581 de 2012) y se respalda fuera de OneDrive y del repositorio.
 - El catálogo CIF-IA tiene derechos de la OMS y **no se publica** en el repositorio ([`LICENCIAS_COMPONENTES_ICF.md`](../reports/LICENCIAS_COMPONENTES_ICF.md)).
 - Marco legal: Ley 1581 de 2012 (datos personales) y Resolución 1239 de 2022. Las sugerencias de IA son un borrador de apoyo.
 - Recomendaciones antes de uso real a gran escala: rotar las credenciales de prueba, activar copias de la base y hacer una revisión de seguridad independiente.
 
 ## 14. Solución de problemas
+
 | Síntoma | Causa probable | Qué hacer |
 |---|---|---|
 | El login falla con error de red | CORS: `ALLOWED_ORIGINS` no incluye el frontend | Corregir la variable y reiniciar el backend |
@@ -236,7 +252,8 @@ Notas:
 | La primera petición tarda ~1 minuto | Servicio gratuito dormido | Esperar; los *smoke tests* de producción ya lo contemplan |
 | «No se pudo conectar con el servidor de IA» | PC del ICF apagado, Docker/Ollama detenidos o túnel caído | Manual ICF, secciones de operación y fallas |
 | Sin datos de prueba tras un despliegue nuevo | `RUN_SEED` no está en `true` | Activarlo una vez, reiniciar y volver a desactivarlo |
-| Una tabla nueva o una columna nueva no aparece | No hay migraciones; `create_all` no altera tablas existentes | Aplicar el cambio con SQL en la base, o recrear (solo en DEV/QA) |
+| Una tabla nueva o una columna nueva no aparece | No hay migraciones; `create_all` no altera tablas existentes (las columnas de `icf_suggestions` de HU-07i y HU-07j sí se agregan solas con `ensure_icf_columns`) | Para otros cambios, aplicar el SQL en la base o recrear (solo en DEV/QA) |
+| Los casos confirmados no llegan a la memoria | Falta la ruta `/cases` en Caddy, el servicio tiene una imagen anterior o `ICF_CASE_MEMORY=false` | Manual ICF, sección 10 |
 | E2E local falla en el login | Origen no permitido por CORS | Apuntar `PLAYWRIGHT_BASE_URL` al frontend desplegado |
 | Gráficos vacíos en el dashboard | Sin pacientes o filtros muy estrechos | Quitar filtros; revisar `/analytics/summary` |
 
@@ -249,14 +266,14 @@ Notas:
 - Validación clínica del ICF: **no habrá segunda revisora** (decisión del responsable por tiempo, 27-oct-2026), por lo que no se mide el acuerdo entre profesionales y el resultado refleja el criterio de una sola persona. Quedan como recomendaciones apagar `ICF_MENTAL_LINK` y, si hubiera una revisora, repetir la medición del calificador. Desde el 13-nov-2026 la gravedad de b y s la confirma el médico en la pantalla (HU-07i) y se registra qué sugirió el sistema y qué fijó el profesional; la exploración del calificador con los 125 códigos de las rondas 1 y 3 no encontró una variante mejor que las reglas actuales.
 - **No se hizo revisión con lectores de pantalla** (NVDA, VoiceOver) por tiempo (decisión del responsable, 27-oct-2026); la accesibilidad se verificó solo con axe-core, que cubre una parte de los criterios de WCAG, más el uso con teclado.
 
-## 16. Referencias
+## 16. Trabajos futuros (14-nov-2026)
+1. Confirmar con casos reales el umbral de similitud de 0,70 de la memoria, elegido de forma exploratoria con los 46 casos validados por la profesional; se repite con `evaluate_memory.py` cuando haya casos reales suficientes y se ve si el 0,70 se sostiene.
+2. Mejorar el κ del calificador de severidad con la historia clínica y casos reales confirmados: con al menos 30 pares reales se medirá con `case_memory_report.py` y solo si un predictor basado en casos supera a las reglas (con su intervalo de confianza) se activará; el acuerdo medido con el uso real es una cota superior por el anclaje al aceptar con el botón.
+3. Los pendientes de infraestructura siguen los de las limitaciones de este manual: migraciones de base de datos, lint y tipos exigidos en el CI, redundancia del servicio de IA y revisión con lectores de pantalla.
+
+## 17. Referencias
 - FastAPI: https://fastapi.tiangolo.com · SQLAlchemy: https://docs.sqlalchemy.org · Vite: https://vitejs.dev · Playwright: https://playwright.dev · axe-core: https://github.com/dequelabs/axe-core
 - W3C (2023). *Web Content Accessibility Guidelines (WCAG) 2.2*. https://www.w3.org/TR/WCAG22/
 - OMS (2001). *Clasificación Internacional del Funcionamiento, de la Discapacidad y de la Salud (CIF)*.
 - Ministerio de Salud y Protección Social (2022). *Resolución 1239 de 2022*.
 - Documentos del proyecto: `BACKLOG.md`, `docs/reports/`, `docs/diagrams/`.
-
-## Trabajos futuros (14-nov-2026)
-1. Confirmar con casos reales el umbral de similitud de 0,70 de la memoria, elegido de forma exploratoria con los 46 casos validados por la profesional; se repite con `evaluate_memory.py` cuando haya casos reales suficientes y se ve si el 0,70 se sostiene.
-2. Mejorar el κ del calificador de severidad con la historia clínica y casos reales confirmados: con al menos 30 pares reales se medirá con `case_memory_report.py` y solo si un predictor basado en casos supera a las reglas (con su intervalo de confianza) se activará; el acuerdo medido con el uso real es una cota superior por el anclaje al aceptar con el botón.
-3. Los pendientes de infraestructura siguen los de las limitaciones de este manual: migraciones de base de datos, lint y tipos exigidos en el CI, redundancia del servicio de IA y revisión con lectores de pantalla.

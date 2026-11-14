@@ -1,19 +1,20 @@
 # Manual del servicio ICF (perfil funcional con IA)
 
-**Health Access Bridge (HAB)** · Versión 2.1 · 13 de noviembre de 2026 (HU-07i y HU-07j)
+**Health Access Bridge (HAB)** · Versión 2.2 · 14 de noviembre de 2026 (incluye la memoria de casos, HU-07i y HU-07j, y los trabajos futuros)
 **Para:** quien instala, opera y mantiene el servicio de IA que sugiere códigos CIF. No requiere programar, pero sí usar PowerShell y Docker con calma.
+**Cómo leerlo:** la sección 1 explica qué es y qué no es; la 2 y la 3, cómo funciona; de la 5 a la 8, cómo instalarlo y mantenerlo; la 9 y la 10, seguridad y fallas; de la 11 a la 13, pruebas, límites, trabajos futuros y la lista de comprobación.
 **Complementa:** [Manual técnico](MANUAL_TECNICO.md) · [Manual de usuario](MANUAL_USUARIO.md) · [`icf-service/deploy/windows/`](../../icf-service/deploy/windows/) (archivos de despliegue) · [Diseño del RAG](../diagrams/rag-icf-postgresql.md).
 
 ## Cómo funciona, de un vistazo
-![Servicio ICF por dentro: entrada segura, reglas del Anexo, embedding, pgvector, selección por la IA, respaldo y validación final](img/diagrama-servicio-icf.png)
+![Servicio ICF por dentro: entrada segura, reglas del Anexo, embedding, pgvector, selección por la IA, respaldo, validación final y memoria de casos confirmados](img/diagrama-servicio-icf.png)
 
-*El backend envía un JSON sin nombre ni documento; las reglas del Anexo 1239 fijan edad y calificador; la búsqueda por significado trae 12 candidatos del catálogo; la IA solo elige entre ellos; todo se valida contra el catálogo y, si el modelo falla, entra el respaldo por similitud.*
+*El backend envía un JSON sin nombre ni documento; las reglas del Anexo 1239 fijan edad y calificador; la búsqueda por significado trae 12 candidatos del catálogo; la IA solo elige entre ellos; todo se valida contra el catálogo y, si el modelo falla, entra el respaldo por similitud. Los casos que el médico confirma se guardan (sin identificadores) en una memoria y los casos parecidos se muestran al modelo como ejemplos.*
 **Versión interactiva y animada (Archify):** abra [`servicio-icf.html`](../presentation/animaciones/servicio-icf.html) en el navegador (clone el repositorio o descargue el archivo; GitHub muestra su código, no el diagrama). Para el contexto completo (Render, túnel, CI/CD) use [`arquitectura-hab.html`](../presentation/animaciones/arquitectura-hab.html).
 
 ## Contenido
 1. Qué es y qué no es
 2. Arquitectura y flujo de una sugerencia
-3. Cómo decide el motor
+3. Cómo decide el motor (incluye la memoria de casos)
 4. Requisitos de la máquina y rendimiento medido
 5. Instalación desde cero
 6. Configuración
@@ -44,9 +45,9 @@ Médico ─▶ Frontend ─▶ Backend (Render) ──HTTPS + token──▶ Tai
                          │                                      │
                          │ guarda sugerencias y decisiones      ▼
                          ▼                          PC propio (Windows, 127.0.0.1)
-                  PostgreSQL (Render)                Caddy :11435  (exige Bearer; solo /suggest, /health, /api/tags)
+                  PostgreSQL (Render)                Caddy :11435  (exige Bearer; solo /suggest, /cases, /health, /api/tags)
                                                        ├─▶ servicio ICF  (contenedor, :8100, sin puerto publicado)
-                                                       │      ├─▶ PostgreSQL + pgvector  (catálogo CIF-IA; 127.0.0.1:5433)
+                                                       │      ├─▶ PostgreSQL + pgvector  (catálogo CIF-IA y memoria de casos; 127.0.0.1:5433)
                                                        │      └─▶ Ollama  (bge-m3 y gemma4:e4b; 127.0.0.1:11434)
                                                        └─▶ Ollama /api/tags  (diagnóstico)
 ```
@@ -55,8 +56,8 @@ Médico ─▶ Frontend ─▶ Backend (Render) ──HTTPS + token──▶ Tai
 |---|---|---|
 | **Ollama** | Ejecuta los modelos con la GPU: `bge-m3` (embeddings) y `gemma4:e4b` (selección) | Instalado en Windows |
 | **Servicio ICF** | Motor: reglas, búsqueda, selección y validación (`icf-service/app.py`) | Contenedor Docker |
-| **PostgreSQL + pgvector** | Catálogo CIF-IA y sus embeddings. **No guarda pacientes** | Contenedor Docker |
-| **Caddy** | Puerta de entrada: exige el token y solo deja pasar tres rutas | Contenedor Docker |
+| **PostgreSQL + pgvector** | Catálogo CIF-IA y sus embeddings, y la **memoria de casos** que el médico confirma (texto clínico sin identificadores). **No guarda identificadores de pacientes** | Contenedor Docker |
+| **Caddy** | Puerta de entrada: exige el token y solo deja pasar cuatro rutas (`/suggest`, `/cases`, `/health` y `/api/tags`) | Contenedor Docker |
 | **Tailscale Funnel** | Publica solo el puerto 11435 con HTTPS | Aplicación de Windows |
 | **Backend de HAB** | Pide la sugerencia y **guarda** resultado y decisiones del médico | Render |
 
@@ -72,26 +73,44 @@ Para cada pedido a `POST /suggest`:
 5. **Validación:** todo código se comprueba contra el catálogo; el título sale del catálogo y el calificador de las reglas, **nunca del modelo**.
 6. **Respaldo:** si el modelo no responde o devuelve algo inválido, se entregan los códigos más cercanos por similitud. Cada código lleva su **origen**: `llm` (modelo), `rules` (reglas) o `similarity` (respaldo).
 
-**Ajustes de la fase de validación clínica (HU-07g)**, activables con banderas (por defecto **activas**):
+### 3.1 Ajustes de la validación clínica (HU-07g)
+Se activan con banderas (por defecto **activas**):
+
 | Bandera | Qué hace |
 |---|---|
 | `ICF_S_EVIDENCE` | Las **estructuras** (s) se sugieren solo si hay evidencia en el diagnóstico o las notas; evita completar la cuota de tres con estructuras sin sustento |
 | `ICF_MOTOR_LINK` | Para cuadros motores, añade a los candidatos de **funciones** los códigos de fuerza, control del movimiento y marcha que la búsqueda por sí sola no traía |
 | `ICF_MENTAL_LINK` | Vínculo equivalente para cuadros mentales. **Se recomienda apagarlo (`false`)**: en la ronda 3 contribuyó a 6 de 7 estructuras rechazadas |
-| `ICF_CASE_MEMORY` | `true` por defecto: guarda en la base vectorial los casos que el médico confirma o edita (ver abajo). `false` desactiva `POST /cases` |
-| `ICF_CASE_EXAMPLES` | `3` por defecto: cuántos casos parecidos ya confirmados se muestran al modelo como ejemplos y aportan sus códigos como candidatos. **`0` apaga el uso** y deja el motor como se midió en la validación clínica |
-| `ICF_CASE_MIN_SIMILARITY` | `0.70` por defecto: similitud coseno mínima para usar un caso como ejemplo. Elegido en una evaluación exploratoria dejando un caso fuera (protocolo, sección 17); con 0,80 la mejora no era distinguible. Revísela con casos reales |
-
-
-**Memoria de casos (HU-07j, 13-nov-2026).** Cuando el médico acepta o edita un código, el backend envía a `POST /cases` el diagnóstico CIE y las notas (el mismo contexto de `/suggest`, sin nombre, documento ni orientación sexual), el código, la gravedad sugerida y la confirmada y la justificación. El servicio vectoriza el texto con `bge-m3` y lo guarda en `icf_cases` e `icf_case_codes` (se crean solas al arrancar; `sql/002_cases.sql`); rechazar un código lo retira. En `/suggest`, si un caso guardado supera la similitud mínima, sus códigos b y s entran como candidatos (solo si el capítulo aplica y existen en el catálogo) y el modelo ve una línea «diagnóstico: códigos» por caso; el modelo sigue eligiendo únicamente entre candidatos del catálogo y los calificadores siguen saliendo de las reglas. **Importante:** la validación clínica de la sección 11 se midió **sin** esta memoria; con ella el motor cambia y su efecto se midió de forma exploratoria el 14-nov con los 46 casos de la profesional dejando un caso fuera (cobertura a ciegas de 0,661 a 0,746 con similitud ≥ 0,70; protocolo, sección 17) y falta confirmarlo con casos reales. El registro de la gravedad sugerida y la confirmada permite medir el acuerdo con el uso real. Un caso confirmado no es un caso verificado: un error que se acepte puede repetirse como ejemplo; si se observa, apague el uso con `ICF_CASE_EXAMPLES=0` o borre filas de `icf_cases`. El backend (Render) tiene su propia variable `ICF_CASE_MEMORY` (`false` deja de enviar los casos).
-
-**Casos de la profesional ya cargados (14-nov-2026).** Los 46 casos con texto que validó a ciegas (C01–C25 sin C01, C10 y C19, que no tienen diagnóstico ni notas, y N01–N24) están en la memoria con 118 códigos de funciones y estructuras y su gravedad (`case_key` «medica-…»). Se cargaron con `icf-service/scripts/load_validated_cases.py` (`--sql-out` genera un script para `docker exec -i icf-db psql`, sin necesitar la clave de la base). **Al medir el motor con estos casos hay que dejar fuera el propio caso**: `icf-service/scripts/evaluate_memory.py` lo hace. Para retirarlos: `DELETE FROM icf_cases WHERE case_key LIKE 'medica-%';`.
-
-**Cómo hacer que la memoria mejore el calificador (pendiente de casos reales).** La memoria guarda la gravedad sugerida y la confirmada, pero hoy la gravedad no se usa para predecir: solo los códigos se usan como ejemplos. Para que la memoria pueda mejorar el calificador hacen falta casos reales validados en cantidad suficiente (al menos 30 pares, como en la validación) y comprobar, con el informe `icf-service/scripts/case_memory_report.py` y su intervalo de confianza, que un predictor basado en casos supera a las reglas. El acuerdo medido con el uso real es una cota superior, porque al aceptar con el botón la gravedad coincide con la sugerida (anclaje; Goddard et al., 2012) y no sustituye una validación a ciegas. Dos limitaciones de alcance: no se dispone de más validación médica y la máquina del servicio (GPU de 8 GB) no soporta modelos de 12 o 26 mil millones de parámetros, que por eso no se probaron. Para ver el acuerdo con el uso real (solo lectura; necesita `pip install psycopg[binary]` y la clave de `%USERPROFILE%\.hab-icf\.env`): `$env:ICF_DATABASE_URL = "postgresql://icf_user:<clave>@127.0.0.1:5433/icf"` y `python icf-service/scripts/case_memory_report.py`. El informe da pares, coincidencia exacta y a ±1 nivel, κ ponderado con su intervalo y cuántas veces el médico cambió la gravedad, y avisa si hay menos de 30 pares.
 
 Modos (`ICF_MODE`): **calidad** (predeterminado; 12 candidatos, justificación del modelo) y **rápido** (6 candidatos, solo códigos). `ICF_USE_LLM=false` desactiva el modelo y deja solo similitud (~0,6 s).
 
+### 3.2 Memoria de casos confirmados (HU-07j)
+**Qué hace.** Cuando el médico acepta o edita un código, el backend envía a `POST /cases` el diagnóstico CIE y las notas (el mismo contexto de `/suggest`, sin nombre, documento ni orientación sexual), el código, la gravedad sugerida y la confirmada, y la justificación. El servicio vectoriza el texto con `bge-m3` y lo guarda en `icf_cases` e `icf_case_codes` (se crean solas al arrancar; `sql/002_cases.sql`); rechazar un código lo retira. En `/suggest`, si un caso guardado supera la similitud mínima, sus códigos b y s entran como candidatos (solo si el capítulo aplica y existen en el catálogo) y el modelo ve una línea «diagnóstico: códigos» por caso. El modelo sigue eligiendo únicamente entre candidatos del catálogo y los calificadores siguen saliendo de las reglas.
+
+| Bandera | Qué hace |
+|---|---|
+| `ICF_CASE_MEMORY` | `true` por defecto: guarda en la base vectorial los casos que el médico confirma o edita. `false` desactiva `POST /cases` |
+| `ICF_CASE_EXAMPLES` | `3` por defecto: cuántos casos parecidos se muestran al modelo como ejemplos y aportan sus códigos como candidatos. **`0` apaga el uso** y deja el motor como se midió en la validación clínica |
+| `ICF_CASE_MIN_SIMILARITY` | `0.70` por defecto: similitud coseno mínima para usar un caso como ejemplo (ver la evaluación en la sección 11). Revísela con casos reales |
+
+El backend (Render) tiene su propia variable `ICF_CASE_MEMORY` (`false` deja de enviar los casos). Estas tres variables llegan al contenedor desde `%USERPROFILE%\.hab-icf\.env` (lo hace `deploy/windows/docker-compose.yml`).
+
+**Casos de la profesional ya cargados (14-nov-2026).** Los 46 casos con texto que validó a ciegas (C01–C25, salvo C01, C10 y C19, que no tienen diagnóstico ni notas, y N01–N24) están en la memoria con 118 códigos de funciones y estructuras y su gravedad (`case_key` «medica-…»). Para retirarlos: `DELETE FROM icf_cases WHERE case_key LIKE 'medica-%';`.
+
+**Herramientas** (en `icf-service/scripts/`):
+
+| Script | Para qué sirve |
+|---|---|
+| `load_validated_cases.py` | Carga los casos validados a ciegas por la profesional (`--sql-out` genera un script para `docker exec -i icf-db psql`, sin necesitar la clave de la base) |
+| `evaluate_memory.py` | Mide el efecto de la memoria dejando un caso fuera cada vez. **Úselo siempre que mida el motor con estos casos**: sin dejar fuera el propio caso la medición sería circular |
+| `case_memory_report.py` | Acuerdo entre la gravedad que sugirió el sistema y la que fijó el médico con el uso real (solo lectura) |
+
+**Qué se sabe y qué no.** La validación clínica de la sección 11 se midió **sin** esta memoria. Con ella, el efecto se midió de forma exploratoria el 14-nov-2026 con los 46 casos de la profesional (resultados en la sección 11): la cobertura de lo que ella eligió a ciegas sube de 0,661 a 0,746 con similitud ≥ 0,70. Falta confirmarlo con casos reales. Un caso confirmado no es un caso verificado: un error que se acepte puede repetirse como ejemplo; si se observa, apague el uso con `ICF_CASE_EXAMPLES=0` o borre filas de `icf_cases`.
+
+**Cómo hacer que la memoria mejore el calificador (pendiente de casos reales).** La memoria guarda la gravedad sugerida y la confirmada, pero hoy la gravedad no se usa para predecir: solo los códigos se usan como ejemplos. Para que pueda mejorar el calificador hacen falta casos reales validados en cantidad suficiente (al menos 30 pares, como en la validación) y comprobar, con `case_memory_report.py` y su intervalo de confianza, que un predictor basado en casos supera a las reglas. El acuerdo medido con el uso real es una cota superior, porque al aceptar con el botón la gravedad coincide con la sugerida (anclaje; Goddard et al., 2012) y no sustituye una validación a ciegas. Para verlo: instale `pip install psycopg[binary]`, defina `$env:ICF_DATABASE_URL = "postgresql://icf_user:<clave>@127.0.0.1:5433/icf"` (la clave está en `%USERPROFILE%\.hab-icf\.env`) y ejecute `python icf-service/scripts/case_memory_report.py`. El informe da pares, coincidencia exacta y a ±1 nivel, κ ponderado con su intervalo y cuántas veces el médico cambió la gravedad, y avisa si hay menos de 30 pares.
+
 ## 4. Requisitos de la máquina y rendimiento medido
+
 | Recurso | Mínimo medido | PC de producción |
 |---|---|---|
 | Modelo de generación | `gemma4:e4b` | `gemma4:e4b` |
@@ -102,6 +121,7 @@ Modos (`ICF_MODE`): **calidad** (predeterminado; 12 candidatos, justificación d
 | Red | Internet estable | — |
 
 Mediciones del 7-oct-2026 en la RTX 5050:
+
 | Situación | Tiempo por sugerencia |
 |---|---|
 | Modelo en memoria (uso normal) | ~2,6 s |
@@ -147,6 +167,7 @@ Se hizo el 7-oct-2026; estos pasos sirven para repetirla en otro PC.
 Si en el futuro se monta el servicio en un servidor **Linux**, la guía está en [`icf-service/README.md`](../../icf-service/README.md) (docker-compose propio y `ollama` en el servidor).
 
 ## 6. Configuración
+
 | Dónde | Variable | Valor / uso |
 |---|---|---|
 | PC (`%USERPROFILE%\.hab-icf\.env`) | `ICF_TOKEN` | Token Bearer (lo crea `init-env.ps1`). **Nunca** en chats ni en el repositorio |
@@ -218,8 +239,7 @@ docker run --rm --network hab-icf_default `
 Cuando cambie el código de `icf-service/`: `git pull`, `docker compose --env-file "$env:USERPROFILE\.hab-icf\.env" up -d --build` y `.\check.ps1 -Public -Suggest`.
 
 ### 8.5 Copias de seguridad
-El PC no tiene identificadores de pacientes. Lo que conviene respaldar: el archivo `%USERPROFILE%\.hab-icf\.env` (en un lugar seguro, **no** en OneDrive ni en el repositorio), el archivo del catálogo `catalog_cifia.tsv` y, desde HU-07j, **las tablas de la memoria de casos** (`icf_cases` e `icf_case_codes`), que no se pueden reconstruir: con `docker exec icf-db pg_dump -U icf_user -d icf -t icf_cases -t icf_case_codes -f /tmp/casos.sql` y luego `docker cp icf-db:/tmp/casos.sql %USERPROFILE%\.hab-icf
-espaldos\casos-AAAAMMDD.sql` (fuera de OneDrive y del repositorio: contiene texto clínico). **No redirija con `>` desde PowerShell**: el archivo queda en UTF-16 y no se restaura; vea el README de `icf-service/deploy/windows/`.
+El PC no tiene identificadores de pacientes. Lo que conviene respaldar: el archivo `%USERPROFILE%\.hab-icf\.env` (en un lugar seguro, **no** en OneDrive ni en el repositorio), el archivo del catálogo `catalog_cifia.tsv` y, desde HU-07j, **las tablas de la memoria de casos** (`icf_cases` e `icf_case_codes`), que no se pueden reconstruir: con `docker exec icf-db pg_dump -U icf_user -d icf -t icf_cases -t icf_case_codes -f /tmp/casos.sql` y luego `docker cp icf-db:/tmp/casos.sql %USERPROFILE%\.hab-icf\respaldos\casos-AAAAMMDD.sql` (fuera de OneDrive y del repositorio: contiene texto clínico). **No redirija con `>` desde PowerShell**: el archivo queda en UTF-16 y no se restaura; vea el README de `icf-service/deploy/windows/`.
 
 ## 9. Seguridad y privacidad
 - **Qué viaja al servicio:** edad, género, causa, categorías, niveles D1–D6, la predicción y, si el médico los escribe, diagnóstico y notas. **Nunca** el nombre, el documento ni la orientación sexual. El servicio guarda las notas **solo** de los casos que el médico confirma o edita (memoria de casos, sección 3), siempre sin identificadores y dentro del PC propio; sin esa confirmación no se guarda nada.
@@ -231,6 +251,7 @@ espaldos\casos-AAAAMMDD.sql` (fuera de OneDrive y del repositorio: contiene text
 - **Auditoría:** cada sugerencia guarda el modelo que la generó, el lote y la decisión del médico (en el backend).
 
 ## 10. Si algo falla
+
 | Síntoma | Causa probable | Qué hacer |
 |---|---|---|
 | La pantalla dice que no se pudo generar el perfil | PC apagado, sin sesión, sin internet o túnel caído | Verificar que el PC esté encendido con la sesión iniciada; `.\check.ps1 -Public`; `tailscale funnel status` |
@@ -244,24 +265,39 @@ espaldos\casos-AAAAMMDD.sql` (fuera de OneDrive y del repositorio: contiene text
 | La base está vacía o dañada | Contenedor recreado sin volumen | Reconstruir catálogo y embeddings (8.3) |
 | Códigos sin sentido para el caso | Notas genéricas o ausentes | Pedir al médico diagnóstico y notas más específicos; revisar la validación (sección 11) |
 | `docker` no responde | Docker Desktop apagado | Abrirlo y esperar a que arranque; `docker compose ... up -d` |
+| Los casos confirmados no aparecen en la memoria (`icf_case_codes` sigue vacía) | Caddy sin la ruta `/cases` o el contenedor tiene una imagen anterior | `git pull`, `docker compose ... up -d --build`, `docker compose ... restart caddy` y `.\check.ps1 -Public` (comprueba `/cases`); mire `docker logs icf-service` |
+| `POST /cases` responde 500 | La imagen no trae `sql/002_cases.sql` (corregido en el `Dockerfile`) | Reconstruir la imagen con `up -d --build` |
+| Las sugerencias parecen repetir un error | Un caso mal confirmado se está usando como ejemplo | `ICF_CASE_EXAMPLES=0` o borrar ese caso de `icf_cases` |
 
 ## 11. Pruebas y validación clínica
 **Pruebas automáticas**
+
 | Qué | Dónde | Cómo |
 |---|---|---|
-| Servicio ICF (67 pasan, 8 se omiten en el CI) | `icf-service/tests/` | `cd icf-service && pytest` |
-| Backend de sugerencias | `backend/app/tests/` (`test_icf_*.py`) | `cd backend && pytest app/tests/` |
-| Pantalla y guía | `frontend/src/__tests__/FunctionalProfile.test.tsx`, `IcfGuide.test.tsx` | `cd frontend && npm run test` |
+| Servicio ICF (122 pasan y 10 se omiten sin el catálogo o una base de pruebas) | `icf-service/tests/` | `cd icf-service && pytest` |
+| Backend de sugerencias (141 en total, cobertura 91,3 %) | `backend/app/tests/` (`test_icf_*.py`) | `cd backend && pytest app/tests/` |
+| Pantalla y guía (72 en total) | `frontend/src/__tests__/FunctionalProfile.test.tsx`, `IcfGuide.test.tsx` | `cd frontend && npm run test` |
 | E2E del perfil (5 casos, servicio simulado) | `frontend/e2e/functional-profile.spec.ts` | `npx playwright test e2e/functional-profile.spec.ts` |
 | Hoja de revisión clínica | `icf-service/scripts/review_sheet.py` (`generate`, `upgrade`, `score`) | Ver el protocolo |
 
-Las pruebas omitidas en el CI necesitan el catálogo CIF-IA (derechos de la OMS); se corren en el PC con `ICF_TEST_DATABASE_URL`.
+Las pruebas omitidas necesitan el catálogo CIF-IA (derechos de la OMS) o una base con pgvector; se corren en el PC con `ICF_TEST_DATABASE_URL`.
 
-**Validación clínica (HU-07g).** Una profesional de salud revisó el motor en **tres rondas** (24 casos sintéticos × 3, con una tercera ronda de **casos nuevos** y reglas fijadas por escrito antes de generar las sugerencias). Resultado final: **5 de 6 criterios cumplidos** sobre los casos nuevos; el que **no** cumple es la concordancia del calificador (κ ponderado 0,312 frente a la meta de 0,50). Por eso el sistema se presenta como **borrador de apoyo** y el calificador es un **valor inicial que el médico edita**; **no se aprueba el uso clínico autónomo**. Detalle y sustento de los umbrales: [`PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](../reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md) y [reporte final del afinamiento](../presentation/reporte-afinamiento-icf.html).
+**Validación clínica (HU-07g).** Una profesional de salud revisó el motor en **tres rondas** (24 casos sintéticos × 3, con una tercera ronda de **casos nuevos** y reglas fijadas por escrito antes de generar las sugerencias). Resultado final: **5 de 6 criterios cumplidos** sobre los casos nuevos; el que **no** cumple es la concordancia del calificador (κ ponderado 0,312 frente a la meta de 0,50). Por eso el sistema se presenta como **borrador de apoyo**: la gravedad de funciones y estructuras se muestra **«por confirmar»** y la decide el médico; **no se aprueba el uso clínico autónomo**. Detalle y sustento de los umbrales: [`PROTOCOLO_VALIDACION_CLINICA_HU07G.md`](../reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md) y [reporte final del afinamiento](../presentation/reporte-afinamiento-icf.html).
 
 **Cambio en la aplicación (HU-07i, 13-nov-2026).** Como el calificador no alcanzó la meta y no hay acceso a la profesional para una cuarta ronda, la pantalla ya no deja aceptar en bloque la gravedad de funciones (b) y estructuras (s): el médico la **confirma o la cambia en cada fila** con una ayuda a la vista (escala con porcentajes, categorías de HAB, niveles D1–D6 y el sesgo medido: el sistema solo sugirió 2 o 3 y la profesional usó también 4). El código y la justificación siguen viniendo del modelo; las actividades (d) se aceptan directamente. El backend rechaza (422) aceptar una b o s sin la gravedad confirmada y guarda `qualifier_suggested` (lo que sugirió el sistema) y `qualifier_confirmed`, de modo que el acuerdo sistema–médico podrá medirse con el uso real. **Exploración sin la profesional (13-nov-2026, no cambia el veredicto):** con los 125 códigos b y s que ella calificó a ciegas (rondas 1 y 3), la regla actual da κ ponderado de 0,533 (0,615 en la ronda 1 y 0,376 en la 3); subir un nivel o usar el nivel D relacionado no mejora, y `gemma4:e4b` proponiendo la gravedad da 0,545 (0,422 en la ronda 3), con intervalos que se solapan por completo. No hay diferencia atribuible al modelo, así que las reglas no se cambiaron. Es un análisis exploratorio con una sola revisora y casos sintéticos.
 
-**Límite aceptado:** no habrá segunda revisora (decisión del responsable por tiempo, 27-oct-2026); no se mide el acuerdo entre profesionales. **Recomendados que quedan abiertos:** calificador en escala 0–4 con mejor ajuste, apagar `ICF_MENTAL_LINK` y una cuarta ronda con casos nuevos.
+**Evaluación de la memoria con los casos de la profesional (14-nov-2026, exploratoria).** Con los 46 casos cargados y dejando fuera cada caso al evaluarlo (`evaluate_memory.py`), se comparó el motor sin memoria y con memoria a tres umbrales de similitud, frente a los 118 códigos que ella eligió a ciegas:
+
+| Variante | Cobertura de lo que ella eligió | Diferencia (IC 95 % por casos) | Casos con ejemplos |
+|---|---|---|---|
+| Sin memoria | 0,661 (78 de 118) | — | 0 |
+| Similitud ≥ 0,80 | 0,686 | +0,025 (−0,009 a +0,061): sin diferencia distinguible | 22 de 46 |
+| **Similitud ≥ 0,70 (por defecto)** | **0,746** | **+0,085 (0,027 a 0,137)** | 46 de 46 |
+| Similitud ≥ 0,60 | 0,763 | +0,102 (0,046 a 0,151) | 46 de 46 |
+
+La precisión frente a lo que ella eligió pasa de 0,415 a 0,468 con ≥ 0,70. **Cómo leerlo:** el umbral se eligió mirando estos mismos datos (la mejora está algo sobreestimada), son 46 casos sintéticos con una sola revisora y «acertar» significa coincidir con ella, no que el código sea clínicamente mejor. Es un resultado exploratorio; no se movió ninguna meta de la validación. Detalle: protocolo, sección 17.
+
+**Límites aceptados:** no habrá segunda revisora ni más validación médica (la profesional ya no está disponible), por lo que no se mide el acuerdo entre profesionales y el resultado refleja el criterio de una sola persona; y la máquina del servicio (GPU de 8 GB) no soporta modelos de 12 o 26 mil millones de parámetros, que por eso no se probaron. **Recomendado, sin bloquear:** apagar `ICF_MENTAL_LINK`. Los trabajos futuros están en la sección 12.
 
 ## 12. Licencias, límites, riesgos y trabajos futuros
 - **Licencias** (verificadas el 7-oct-2026): Gemma 4 es Apache 2.0 (se puede usar); MedGemma no se usa. `bge-m3` se usa para embeddings. El **catálogo CIF-IA tiene derechos de la OMS**: no se redistribuye. Si se cambia el modelo, repetir la verificación.
@@ -273,13 +309,14 @@ Las pruebas omitidas en el CI necesitan el catálogo CIF-IA (derechos de la OMS)
 **Trabajos futuros (14-nov-2026).**
 1. Confirmar con casos reales el umbral de similitud de 0,70 de la memoria, elegido de forma exploratoria con los 46 casos validados por la profesional; se repite con `evaluate_memory.py` cuando haya casos reales suficientes y se ve si el 0,70 se sostiene.
 2. Mejorar el κ del calificador de severidad con la historia clínica y casos reales confirmados: con al menos 30 pares reales se medirá con `case_memory_report.py` y solo si un predictor basado en casos supera a las reglas (con su intervalo de confianza) se activará; el acuerdo medido con el uso real es una cota superior por el anclaje al aceptar con el botón.
-3. **Recomendación a quien opere el servicio:** El calificador de severidad (κ ponderado de 0,312 en la validación y de 0,533 con 125 códigos) es lo único que falta mejorar, y no se logra con reglas ni con un modelo mayor: HAB no mide funciones y estructuras por separado. Se recomienda alimentar el sistema con la historia clínica (diagnóstico CIE, hallazgos de la exploración y escalas funcionales en las notas) y con casos reales confirmados por médicos, para que el RAG aprenda de ellos. Se espera que esto estabilice el servicio, pero es una hipótesis aún no medida. Esto deja la memoria creciendo sola con el uso; revise el informe `case_memory_report.py` cuando haya casos y respalde las tablas con `pg_dump`.
+3. **Recomendación a quien opere el servicio:** el calificador de severidad (κ ponderado de 0,312 en la validación y de 0,533 con 125 códigos) es lo único que falta mejorar, y no se logra con reglas ni con un modelo mayor: HAB no mide funciones y estructuras por separado. Se recomienda alimentar el sistema con la historia clínica (diagnóstico CIE, hallazgos de la exploración y escalas funcionales en las notas) y con casos reales confirmados por médicos, para que el RAG aprenda de ellos. Se espera que esto estabilice el servicio, pero es una hipótesis aún no medida. Esto deja la memoria creciendo sola con el uso; revise el informe `case_memory_report.py` cuando haya casos y respalde las tablas con `pg_dump`.
 
 ## 13. Lista de comprobación rápida
 **Cada mañana (30 segundos)**
 - [ ] El PC está encendido, con la sesión iniciada y el cargador conectado.
 - [ ] `.\check.ps1 -Public` termina en «Todo correcto.»
 
+**Cada semana:** respaldar la memoria de casos (8.5) y, si hay casos nuevos, ejecutar `case_memory_report.py`.
 **Después de un reinicio:** iniciar sesión → esperar 1–2 min → `.\check.ps1 -Public`.
 **Si el médico reporta que no genera el perfil:** `docker ps` → `tailscale funnel status` → `ollama list` → `.\check.ps1 -Public -Suggest`.
 **Si sospecha que se filtró el token:** rotarlo ya (8.1).

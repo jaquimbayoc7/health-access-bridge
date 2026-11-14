@@ -1,12 +1,13 @@
 # Manual de usuario
 
-**Health Access Bridge (HAB)** · Versión 2.1 · 13 de noviembre de 2026 (confirmación de la gravedad, justificación editable y memoria de casos)
+**Health Access Bridge (HAB)** · Versión 2.2 · 14 de noviembre de 2026 (confirmación de la gravedad, justificación editable y memoria de casos)
 **Para:** médicos y administradores · **No necesita saber de informática.**
 
-> **Antes de empezar, tres ideas clave**
+> **Antes de empezar, cuatro ideas clave**
 > 1. HAB le ayuda a **registrar pacientes**, **estimar sus barreras de acceso** y **preparar un borrador de su perfil funcional CIF**.
 > 2. Las sugerencias de la inteligencia artificial son un **borrador de apoyo**. Usted decide: acepta, edita o rechaza cada código. No reemplaza el certificado oficial de discapacidad.
 > 3. Usted solo ve **sus propios pacientes**. Los datos de otros médicos no se muestran.
+> 4. **La gravedad (0 a 4) de funciones y estructuras la decide usted**: el sistema solo la sugiere y usted debe confirmarla antes de aceptar el código. Con lo que usted confirma, el sistema va aprendiendo.
 
 ## Contenido
 1. Qué es HAB y quién lo usa
@@ -137,7 +138,7 @@ Cada componente (**Funciones corporales (b)**, **Estructuras corporales (s)** y 
 | **Código** y **Título** | Código y nombre oficial del catálogo CIF-IA |
 | **Origen** (etiqueta bajo el título) | *Modelo*: lo eligió la IA entre candidatos del catálogo · *Reglas*: salió de las reglas del Anexo 1239 · *Similitud*: respaldo cuando el modelo no respondió |
 | **Calificador** | Nivel de severidad (ver 6.3). En funciones (b) y estructuras (s) es un **selector 0–4** con la etiqueta *Por confirmar* (ver 6.4) |
-| **Justificación** | Por qué se sugiere, en pocas palabras |
+| **Justificación** | Por qué se sugiere, en pocas palabras. Usted puede corregirla o reescribirla (aparece en el reporte; la marca «Del médico» indica que es suya) |
 | **Estado** | *Sugerido*, *Aceptado*, *Editado* o *Rechazado* |
 | **Acciones** | ✓ aceptar (en b y s, solo después de confirmar la gravedad) · lápiz editar · ✗ rechazar |
 
@@ -251,11 +252,12 @@ HAB se puede usar **solo con el teclado**: **Tab** y **Mayús+Tab** para moverse
 ## 11. Privacidad y buenas prácticas
 - Los datos de salud son **sensibles** (Ley 1581 de 2012). Use HAB solo para su trabajo clínico.
 - **No comparta su sesión.** Cierre sesión en equipos compartidos.
-- En las **notas clínicas** del perfil funcional **no escriba nombre, documento, dirección ni teléfono**. Al servicio de IA solo viajan edad, género, causa, categorías, niveles D1–D6, la predicción y lo que usted escriba en diagnóstico y notas; **nunca** el nombre, el documento ni la orientación sexual. El servicio no guarda las notas.
+- En las **notas clínicas** del perfil funcional **no escriba nombre, documento, dirección ni teléfono**. Al servicio de IA solo viajan edad, género, causa, categorías, niveles D1–D6, la predicción y lo que usted escriba en diagnóstico y notas; **nunca** el nombre, el documento ni la orientación sexual. El servicio solo guarda el diagnóstico y las notas de los casos que usted confirma, sin ningún dato que identifique a la persona, para mejorar las sugerencias (ver 6.4).
 - Los archivos exportados (Excel y PDF) pueden contener datos personales: guárdelos en un lugar seguro y bórrelos cuando no los necesite.
 - El análisis usa datos agregados; aun así, con filtros muy estrechos un grupo pequeño podría identificar a alguien. Evite compartir esas capturas.
 
 ## 12. Preguntas frecuentes y solución de problemas
+
 | Situación | Qué hacer |
 |---|---|
 | La página tarda mucho al abrir | El servidor estaba dormido. Espere hasta un minuto y recargue |
@@ -267,17 +269,24 @@ HAB se puede usar **solo con el teclado**: **Tab** y **Mayús+Tab** para moverse
 | Todos los códigos salen genéricos | Falta diagnóstico y notas clínicas. Agréguelos y genere de nuevo |
 | El Excel o el PDF no se descarga | Permita las descargas del sitio en el navegador |
 | No se genera el perfil de un paciente | Revise que tenga 6 años o más y que el servicio de IA esté encendido |
+| El botón ✓ de una función o estructura no se activa | Falta confirmar la gravedad: pulse **Confirmar** o elija otro valor en el selector de esa fila |
+| El selector de gravedad aparece vacío («—») | Las categorías del paciente (física o psicosocial) no indican una gravedad reconocible. Elija usted el valor |
+| El PDF dice «gravedad sugerida, sin confirmar» | Esa fila no se confirmó. Vuelva a la pantalla, confirme la gravedad y descargue de nuevo |
 | Un usuario no puede entrar | Pida al administrador revisar que esté activo |
 
 **Soporte:** escriba al responsable del proyecto o abra un reporte en https://github.com/jaquimbayoc7/health-access-bridge/issues indicando la pantalla, lo que hizo y el mensaje que vio. **No incluya datos de pacientes.**
 
 ## 13. Glosario
+
 | Término | Significado |
 |---|---|
 | **CIF (ICF)** | Clasificación Internacional del Funcionamiento, de la Discapacidad y de la Salud (OMS) |
 | **CIF-IA** | Versión del catálogo CIF usada por el sistema (incluye infancia y adolescencia) |
 | **b / s / d** | Funciones corporales / Estructuras corporales / Actividades y participación (los tres componentes que sugiere HAB; la CIF tiene además **e**, factores ambientales) |
 | **Calificador** | Número que indica la severidad del problema (0 a 4; 8 y 9 son especiales) |
+| **Gravedad «por confirmar»** | Valor que el sistema sugiere en funciones y estructuras y que usted debe confirmar o cambiar antes de aceptar el código |
+| **Memoria del sistema** | Casos que usted confirma, guardados sin datos de identificación, que el sistema usa como ejemplos para sugerir mejor |
+| **Historia clínica** | Registro del paciente del que conviene tomar el diagnóstico y los hallazgos que escribe en las notas |
 | **Perfil de barreras (0, 1, 2)** | Resultado de la predicción: barreras bajas, moderadas o altas |
 | **D1–D6** | Seis dominios de barreras: aprendizaje, tareas generales, comunicación, movilidad, autocuidado y vida doméstica |
 | **Resolución 1239 de 2022** | Norma colombiana que define el procedimiento de certificación de discapacidad |
