@@ -33,7 +33,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 
 <header class="bg-white pt-14 pb-12 border-b border-slate-200">
   <div class="max-w-5xl mx-auto px-6">
-    <div class="inline-flex items-center gap-2 bg-plight text-primary text-xs font-semibold px-3 py-1 rounded-full mb-4">Posterior al cierre · 28 de octubre al 13 de noviembre de 2026</div>
+    <div class="inline-flex items-center gap-2 bg-plight text-primary text-xs font-semibold px-3 py-1 rounded-full mb-4">Posterior al cierre · 28 de octubre al 14 de noviembre de 2026 · cierre definitivo</div>
     <h1 class="text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-3">Después del cierre: el calificador queda en manos del médico y el sistema aprende de lo que el médico confirma</h1>
     <p class="text-slate-500 max-w-3xl">Reporte de lo realizado desde el cierre del proyecto (146 de 146 puntos, 28 de octubre de 2026) hasta hoy: la documentación final, la exploración del calificador sin acceso a la revisora y dos mejoras del perfil funcional ICF (HU-07i y HU-07j). Ninguna cambia los puntos del proyecto.</p>
     <p class="text-xs text-slate-400 mt-3">Autor: @jaquimbayoc7 · Fuente: historial de <code>develop</code>, <code>docs/reports/PROTOCOLO_VALIDACION_CLINICA_HU07G.md</code> (secciones 15 y 16) y <code>BACKLOG.md</code>.</p>
@@ -156,13 +156,14 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
       </ul>
     </div>
     <div class="bg-white border border-slate-200 rounded-xl p-5">
-      <div class="font-semibold mb-2">Pendientes (a cargo del responsable)</div>
+      <div class="font-semibold mb-2">Trabajos futuros y pendientes</div>
       <ul class="list-disc pl-5 text-slate-600 text-xs leading-relaxed space-y-1">
         <li>Despliegues hechos: <code>develop</code>, <code>staging</code> y <code>master</code> con HU-07i y HU-07j (PR #107 a #110); el CI de producción pasó y los tres backends publican los campos nuevos.</li>
         <li>Memoria activa en el PC del servicio ICF desde el 13-nov (imagen reconstruida y <code>Caddyfile</code> con <code>/cases</code>); una prueba real dejó 7 códigos confirmados en <code>icf_case_codes</code>. Falta respaldarla con <code>pg_dump</code> (no se reconstruye).</li>
         <li>Capturas nuevas (<code>img/10</code>, <code>11</code>, <code>19</code>, <code>20</code>), PDF de los manuales regenerados (Edge, versión 2.1) y Word v1.1 con la figura nueva: hechos el 13-nov. Al abrir el Word, aceptar la actualización de campos para el Contenido.</li>
         <li>Probar con una sesión real de médico (QA o producción): perfil generado antes, perfil nuevo, confirmar la gravedad, editar la justificación y descargar el PDF.</li>
-        <li>Si volviera a haber una revisora: repetir la medición del calificador y medir el efecto de los ejemplos.</li>
+        <li><b>Trabajo futuro 1:</b> confirmar con casos reales el umbral de similitud de 0,70 de la memoria, repitiendo <code>evaluate_memory.py</code> cuando haya casos reales suficientes.</li>
+        <li><b>Trabajo futuro 2:</b> mejorar el κ del calificador de severidad alimentando el sistema con la historia clínica y casos reales confirmados por médicos; con al menos 30 pares se medirá con <code>case_memory_report.py</code>. Se espera que esto estabilice el servicio; es una hipótesis aún no medida.</li>
       </ul>
     </div>
   </div>

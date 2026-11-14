@@ -255,3 +255,8 @@ Notas:
 - OMS (2001). *Clasificación Internacional del Funcionamiento, de la Discapacidad y de la Salud (CIF)*.
 - Ministerio de Salud y Protección Social (2022). *Resolución 1239 de 2022*.
 - Documentos del proyecto: `BACKLOG.md`, `docs/reports/`, `docs/diagrams/`.
+
+## Trabajos futuros (14-nov-2026)
+1. Confirmar con casos reales el umbral de similitud de 0,70 de la memoria, elegido de forma exploratoria con los 46 casos validados por la profesional; se repite con `evaluate_memory.py` cuando haya casos reales suficientes y se ve si el 0,70 se sostiene.
+2. Mejorar el κ del calificador de severidad con la historia clínica y casos reales confirmados: con al menos 30 pares reales se medirá con `case_memory_report.py` y solo si un predictor basado en casos supera a las reglas (con su intervalo de confianza) se activará; el acuerdo medido con el uso real es una cota superior por el anclaje al aceptar con el botón.
+3. Los pendientes de infraestructura siguen los de las limitaciones de este manual: migraciones de base de datos, lint y tipos exigidos en el CI, redundancia del servicio de IA y revisión con lectores de pantalla.

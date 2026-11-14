@@ -86,7 +86,7 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
 <div class="view" id="view-resumen" data-view="resumen">
   <section class="grid lg:grid-cols-5 gap-8 items-start mb-8">
     <div class="lg:col-span-3">
-      <span class="inline-flex items-center gap-2 bg-plight text-primary text-xs font-semibold px-3 py-1 rounded-full mb-4">Momentos 1 a 3 · cierre del 28 de octubre de 2026</span>
+      <span class="inline-flex items-center gap-2 bg-plight text-primary text-xs font-semibold px-3 py-1 rounded-full mb-4">Momentos 1 a 3 · cierre del 28 de octubre de 2026 · cierre definitivo del 14 de noviembre de 2026</span>
       <h1 class="text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-3">Health Access Bridge</h1>
       <p class="text-slate-600 text-base leading-relaxed mb-3 max-w-2xl">Plataforma web para que los médicos gestionen pacientes con discapacidad en zonas rurales de Colombia, <strong>predigan su perfil de barreras de acceso a la salud</strong> (modelo de ML) y documenten su <strong>perfil funcional ICF</strong> con ayuda de una IA que corre en infraestructura propia, sin enviar datos clínicos a terceros.</p>
       <p class="text-slate-500 text-sm leading-relaxed mb-6 max-w-2xl">Esta página resume el estado del proyecto en ocho vistas: <em>Producto</em> (qué hace y cómo está armado), <em>Proceso</em> (sprints y métricas), <em>Calidad</em> (pruebas y defectos), <em>IA y validación ICF</em> (el motor y su validación con una profesional de salud), <em>Usuarios</em> (investigación HCI), <em>Después del cierre</em> (lo realizado desde el 28 de octubre) y <em>Documentos</em>.</p>
@@ -114,13 +114,13 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
       <button data-go="proceso" class="card text-left bg-white rounded-xl border border-slate-200 p-5">
         <div class="text-xs font-semibold text-emerald-600 mb-1">PROCESO</div>
         <div class="font-semibold text-slate-800 mb-2">¿Cómo vamos?</div>
-        <ul class="text-xs text-slate-600 space-y-1.5 list-disc pl-4"><li><b>146 de 146 pts (100 %)</b>; proyecto cerrado el 28-oct-2026</li><li>Los tres momentos al 100 %: 14 historias de usuario completas</li><li>Metodología SCRUM, 3 workflows de CI/CD con aprobación manual en producción</li></ul>
+        <ul class="text-xs text-slate-600 space-y-1.5 list-disc pl-4"><li><b>146 de 146 pts (100 %)</b>; proyecto cerrado el 28-oct-2026 y cierre definitivo el 14-nov-2026 (mejoras HU-07i y HU-07j sin cambiar los puntos)</li><li>Los tres momentos al 100 %: 14 historias de usuario completas</li><li>Metodología SCRUM, 3 workflows de CI/CD con aprobación manual en producción</li></ul>
         <div class="text-xs text-primary mt-3 font-medium">Ver sprints y métricas →</div>
       </button>
       <button data-go="calidad" class="card text-left bg-white rounded-xl border border-slate-200 p-5">
         <div class="text-xs font-semibold text-orange-600 mb-1">CALIDAD</div>
         <div class="font-semibold text-slate-800 mb-2">¿Qué tan probado está?</div>
-        <ul class="text-xs text-slate-600 space-y-1.5 list-disc pl-4"><li><b>309 pruebas</b> automáticas (backend, frontend, servicio ICF, E2E y smoke)</li><li>Cobertura del backend: <b>90,7 %</b> (mínimo exigido 80 %)</li><li>Defectos hallados y corregidos con evidencia, incluidos los de HU-08</li></ul>
+        <ul class="text-xs text-slate-600 space-y-1.5 list-disc pl-4"><li><b>353 pruebas</b> automáticas (backend, frontend, servicio ICF, E2E y smoke)</li><li>Cobertura del backend: <b>91,3 %</b> (mínimo exigido 80 %)</li><li>Defectos hallados y corregidos con evidencia, incluidos los de HU-08</li></ul>
         <div class="text-xs text-primary mt-3 font-medium">Ver calidad →</div>
       </button>
       <button data-go="ia" class="card text-left bg-white rounded-xl border border-slate-200 p-5">
@@ -144,7 +144,15 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
     <div class="grid md:grid-cols-3 gap-4 text-sm">
       <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="flex justify-between items-start mb-2"><b>HU-09 · Pruebas completas y feedback</b><span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">8 pts ✅</span></div><p class="text-slate-600 text-xs">18 escenarios de aceptación (18/18), accesibilidad WCAG 2.2 AA sin violaciones en 14 pantallas y sesión de usabilidad con 10 usuarios (SUS 81,25).</p></div>
       <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="flex justify-between items-start mb-2"><b>HU-10 · Despliegue final y manuales</b><span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">5 pts ✅</span></div><p class="text-slate-600 text-xs">Despliegue verificado en los tres ambientes, manuales de usuario, técnico y del servicio ICF (con capturas y diagramas), documentación final con la guía de la profesora e Insights Report 6.</p></div>
-      <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="flex justify-between items-start mb-2"><b>Recomendado, sin bloquear</b><span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded">ICF</span></div><p class="text-slate-600 text-xs">Apagar <code>ICF_MENTAL_LINK</code>, repetir la validación del calificador y medir el efecto de los ejemplos si hay una revisora, y más pruebas con usuarios. La gravedad de b y s ya la confirma el médico (HU-07i, ver «Después del cierre»). No se hicieron por tiempo: segunda revisora, revisión con lectores de pantalla, lint y tipos en el CI, consulta regulatoria y permiso de la OMS.</p></div>
+      <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="flex justify-between items-start mb-2"><b>Recomendado, sin bloquear</b><span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded">ICF</span></div><p class="text-slate-600 text-xs">Apagar <code>ICF_MENTAL_LINK</code>, mejorar el κ del calificador con la historia clínica y casos reales, confirmar con casos reales el umbral 0,70 de la memoria y más pruebas con usuarios (ver «Trabajos futuros» abajo). La gravedad de b y s ya la confirma el médico (HU-07i, ver «Después del cierre»). No se hicieron por tiempo: segunda revisora, revisión con lectores de pantalla, lint y tipos en el CI, consulta regulatoria y permiso de la OMS.</p></div>
+    </div>
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-sm text-amber-900 mt-4">
+      <div class="font-semibold mb-1">Trabajos futuros (cierre definitivo, 14-nov-2026)</div>
+      <ol class="list-decimal pl-5 text-xs leading-relaxed space-y-1">
+        <li>Confirmar con casos reales el umbral de similitud de <b>0,70</b> de la memoria, elegido de forma exploratoria con los 46 casos validados por la profesional: se repite la medición cuando haya casos reales suficientes y se ve si se sostiene.</li>
+        <li>Mejorar el <b>κ del calificador de severidad</b> (0,312 en la validación): no se logra con reglas ni con un modelo mayor, sino alimentando el sistema con la <b>historia clínica</b> (diagnóstico CIE, exploración, escalas funcionales) y con <b>casos reales confirmados por médicos</b>, para que el RAG aprenda de ellos. Se espera que esto estabilice el servicio; es una hipótesis aún no medida. Ya no hay acceso a más validación médica ni a modelos de 12 o 26 mil millones de parámetros (GPU de 8 GB).</li>
+      </ol>
+      <p class="mt-2"><a class="underline" href="#posterior">Ver «Después del cierre»</a> · <a class="underline" href="reporte-posterior-cierre.html">Reporte completo</a></p>
     </div>
   </section>
 </div>
@@ -1793,11 +1801,11 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
   </section>
 
   <section id="posterior-limites" class="anchor mb-10">
-    <h2 class="text-xl font-bold mb-1 section-title">Qué ya no se puede hacer y qué hace falta para mejorar el calificador</h2>
+    <h2 class="text-xl font-bold mb-1 section-title">Qué ya no se puede hacer y trabajos futuros</h2>
     <div class="grid md:grid-cols-3 gap-4 text-sm mt-4">
       <div class="bg-white border border-slate-200 rounded-xl p-5"><div class="font-semibold mb-1">Sin acceso a más validación médica</div><p class="text-slate-600 text-xs leading-relaxed">La profesional que validó el motor en tres rondas ya no está disponible: no habrá cuarta ronda ni segunda revisora. El veredicto oficial (NO CUMPLE por el calificador, κ 0,312) queda como está y el calificador se presenta como sugerencia que el médico confirma.</p></div>
       <div class="bg-white border border-slate-200 rounded-xl p-5"><div class="font-semibold mb-1">Sin modelos más grandes</div><p class="text-slate-600 text-xs leading-relaxed">La máquina del servicio (GPU de 8 GB) no soporta modelos de 12 o 26 mil millones de parámetros, así que no se pudo probar si uno mayor mejora la elección. La exploración con <code>gemma4:e4b</code> mostró que, para el calificador, el modelo no es el cuello de botella: la gravedad sale de reglas.</p></div>
-      <div class="bg-white border border-slate-200 rounded-xl p-5"><div class="font-semibold mb-1">Lo que hace falta: más casos reales validados</div><p class="text-slate-600 text-xs leading-relaxed">La memoria ya guarda, por cada código, la gravedad que sugirió el sistema y la que fijó el médico. <b>Hoy esa gravedad todavía no se usa para predecir:</b> solo los códigos se usan como ejemplos. Con casos reales suficientes (al menos 30 pares) se podrá medir con <code>icf-service/scripts/case_memory_report.py</code> y, solo si un predictor basado en casos supera a las reglas con su intervalo, activarlo. Ojo: al aceptar con el botón el acuerdo sube por anclaje, así que esa cifra es una cota superior y no sustituye una validación a ciegas.</p></div>
+      <div class="bg-white border border-slate-200 rounded-xl p-5"><div class="font-semibold mb-1">Trabajos futuros: historia clínica y casos reales</div><p class="text-slate-600 text-xs leading-relaxed">La memoria ya guarda, por cada código, la gravedad que sugirió el sistema y la que fijó el médico. <b>Hoy esa gravedad todavía no se usa para predecir:</b> solo los códigos se usan como ejemplos. Con casos reales suficientes (al menos 30 pares) se podrá medir con <code>icf-service/scripts/case_memory_report.py</code> y, solo si un predictor basado en casos supera a las reglas con su intervalo, activarlo. Ojo: al aceptar con el botón el acuerdo sube por anclaje, así que esa cifra es una cota superior y no sustituye una validación a ciegas.</p></div>
     </div>
   </section>
 </div>
@@ -1842,7 +1850,7 @@ details.acc>.acc-body{padding:0 1.25rem 1.25rem}
 // Datos de la presentación (cierre 28-oct-2026). Todo lo que se repite en la página sale de aquí.
 // ============================================================================
 const D = {
-  asOf: '28 de octubre de 2026 (proyecto cerrado)',
+  asOf: '14 de noviembre de 2026 (cierre definitivo)',
   points: { done: 146, total: 146 },
   moments: [
     { id: 'M1', name: 'Momento 1 · Trabajo Integrador I', weeks: 'Semanas 1-9', done: 63, total: 63, state: 'done',
@@ -1978,7 +1986,7 @@ function renderResumen() {
     [`${p.done}/${p.total}`, 'puntos completados', 'text-primary'],
     [`${done} de ${D.hus.length}`, 'historias de usuario', 'text-emerald-600'],
     [fmt(total), 'pruebas automáticas', 'text-orange-600'],
-    ['90,7 %', 'cobertura del backend', 'text-green-600'],
+    ['91,3 %', 'cobertura del backend', 'text-green-600'],
     ['3', 'ambientes: DEV · QA · PROD', 'text-cyan-600'],
     ['~2 s', 'por sugerencia de IA local', 'text-purple-600'],
   ];

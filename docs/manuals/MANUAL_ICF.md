@@ -263,12 +263,17 @@ Las pruebas omitidas en el CI necesitan el catálogo CIF-IA (derechos de la OMS)
 
 **Límite aceptado:** no habrá segunda revisora (decisión del responsable por tiempo, 27-oct-2026); no se mide el acuerdo entre profesionales. **Recomendados que quedan abiertos:** calificador en escala 0–4 con mejor ajuste, apagar `ICF_MENTAL_LINK` y una cuarta ronda con casos nuevos.
 
-## 12. Licencias, límites y riesgos
+## 12. Licencias, límites, riesgos y trabajos futuros
 - **Licencias** (verificadas el 7-oct-2026): Gemma 4 es Apache 2.0 (se puede usar); MedGemma no se usa. `bge-m3` se usa para embeddings. El **catálogo CIF-IA tiene derechos de la OMS**: no se redistribuye. Si se cambia el modelo, repetir la verificación.
 - **Equipo personal sin redundancia:** puede apagarse, suspenderse o perder internet. Mitigaciones: respaldo por similitud en el backend, arranque automático y este manual.
 - **Capacidad:** una sola máquina atiende a uno o pocos médicos a la vez (5 simultáneos: hasta 11,6 s).
 - **Calidad:** el modelo puede equivocarse; el calificador concuerda solo parcialmente con el criterio clínico, por lo que la gravedad de b y s se muestra «por confirmar» y la decide el médico. Todo código debe ser validado por un profesional.
 - **Consulta regulatoria** (si el software es o no dispositivo médico) y **permiso de uso de los títulos de la OMS**: se descartaron como actividades del proyecto; si el uso crece, conviene retomarlas.
+
+**Trabajos futuros (14-nov-2026).**
+1. Confirmar con casos reales el umbral de similitud de 0,70 de la memoria, elegido de forma exploratoria con los 46 casos validados por la profesional; se repite con `evaluate_memory.py` cuando haya casos reales suficientes y se ve si el 0,70 se sostiene.
+2. Mejorar el κ del calificador de severidad con la historia clínica y casos reales confirmados: con al menos 30 pares reales se medirá con `case_memory_report.py` y solo si un predictor basado en casos supera a las reglas (con su intervalo de confianza) se activará; el acuerdo medido con el uso real es una cota superior por el anclaje al aceptar con el botón.
+3. **Recomendación a quien opere el servicio:** El calificador de severidad (κ ponderado de 0,312 en la validación y de 0,533 con 125 códigos) es lo único que falta mejorar, y no se logra con reglas ni con un modelo mayor: HAB no mide funciones y estructuras por separado. Se recomienda alimentar el sistema con la historia clínica (diagnóstico CIE, hallazgos de la exploración y escalas funcionales en las notas) y con casos reales confirmados por médicos, para que el RAG aprenda de ellos. Se espera que esto estabilice el servicio, pero es una hipótesis aún no medida. Esto deja la memoria creciendo sola con el uso; revise el informe `case_memory_report.py` cuando haya casos y respalde las tablas con `pg_dump`.
 
 ## 13. Lista de comprobación rápida
 **Cada mañana (30 segundos)**
