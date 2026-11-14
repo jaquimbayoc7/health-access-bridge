@@ -46,7 +46,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
   <h2 class="text-xl font-bold mb-1 section-title">Resumen</h2>
   <div class="grid md:grid-cols-4 gap-4 mt-6 mb-6">
     <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-primary">146/146</div><div class="text-xs text-blue-600 mt-1 font-medium">puntos: sin cambio (el trabajo posterior no suma puntos)</div></div>
-    <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-green-700">12</div><div class="text-xs text-green-600 mt-1 font-medium">commits en <code>develop</code> desde el cierre (con el de este reporte)</div></div>
+    <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-green-700">27</div><div class="text-xs text-green-600 mt-1 font-medium">commits propios en <code>develop</code> desde el cierre (sin los merges de promoción)</div></div>
     <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-amber-700">0,533</div><div class="text-xs text-amber-600 mt-1 font-medium">κ del calificador con los 125 códigos de las rondas 1 y 3 (oficial de la ronda 3: 0,312)</div></div>
     <div class="bg-purple-50 border border-purple-200 rounded-xl p-4 text-center"><div class="text-3xl font-extrabold text-purple-700">2</div><div class="text-xs text-purple-600 mt-1 font-medium">mejoras del perfil ICF: HU-07i y HU-07j</div></div>
   </div>
@@ -135,8 +135,8 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
     <thead><tr><th>Suite</th><th class="n">Al cierre (28-oct)</th><th class="n">Hoy (13-nov)</th><th>Observación</th></tr></thead>
     <tbody>
       <tr><td>Backend (pytest)</td><td class="n">123</td><td class="n">141</td><td>Todas pasan; cobertura de 91,3 % (el CI exige al menos 80 %).</td></tr>
-      <tr><td>Frontend (Vitest)</td><td class="n">61</td><td class="n">69</td><td>Todas pasan; <code>tsc</code> y <code>eslint</code> sin errores.</td></tr>
-      <tr><td>Servicio ICF (pytest)</td><td class="n">101</td><td class="n">119</td><td>106 pasan en el CI y 13 son locales (catálogo de la OMS o una base con pgvector).</td></tr>
+      <tr><td>Frontend (Vitest)</td><td class="n">61</td><td class="n">72</td><td>Todas pasan; <code>tsc</code> y <code>eslint</code> sin errores.<code>tsc</code> y <code>eslint</code> sin errores.</td></tr>
+      <tr><td>Servicio ICF (pytest)</td><td class="n">101</td><td class="n">132</td><td>122 pasan y 10 se omiten (necesitan el catálogo de la OMS o una base con pgvector).</td></tr>
       <tr><td>Memoria de casos contra PostgreSQL + pgvector reales</td><td class="n">—</td><td class="n">2</td><td>Corridas en un contenedor Docker propio: validan el SQL (guardar, buscar, actualizar, retirar, tablas inexistentes).</td></tr>
       <tr><td>E2E de Playwright</td><td class="n">20</td><td class="n">20</td><td>Se actualizó el caso de aceptar (confirmar la gravedad antes); <b>no se ejecutó</b> en esta sesión.</td></tr>
     </tbody></table></div>
@@ -148,7 +148,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
     <div class="bg-white border border-slate-200 rounded-xl p-5">
       <div class="font-semibold mb-2">Riesgos de lo nuevo</div>
       <ul class="list-disc pl-5 text-slate-600 text-xs leading-relaxed space-y-1">
-        <li><b>Los ejemplos no están medidos.</b> Las métricas de la validación clínica se obtuvieron sin la memoria; con ella el motor cambia (Kapoor y Narayanan 2023). Con la memoria vacía el comportamiento es idéntico al medido.</li>
+        <li><b>Los ejemplos se midieron solo de forma exploratoria.</b> Las métricas de la validación clínica se obtuvieron sin la memoria; con ella el motor cambia (Kapoor y Narayanan 2023) y su efecto se midió el 14-nov con los 46 casos de la profesional, a falta de confirmarlo con casos reales. Con la memoria vacía el comportamiento es idéntico al medido.</li>
         <li><b>Un caso confirmado no es un caso verificado:</b> un error aceptado puede repetirse como ejemplo.</li>
         <li><b>El umbral de similitud (0,70) se eligió sobre los mismos casos con los que se evaluó</b> (de 0,80, sin diferencia distinguible, a 0,70 y 0,60, con mejora de cobertura de 8 a 10 puntos): es exploratorio y hay que confirmarlo con casos reales.</li>
         <li><b>Privacidad:</b> las notas son texto libre; la pantalla advierte al médico que no escriba datos identificables (Ley 1581 de 2012). Para retirar un caso: <code>DELETE FROM icf_cases WHERE case_key = '…'</code>.</li>
