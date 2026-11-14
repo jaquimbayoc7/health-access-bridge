@@ -119,7 +119,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
       <div class="flex justify-between items-start mb-2"><b>HU-07j · Memoria de casos y justificación editable</b><span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">13-nov</span></div>
       <ul class="list-disc pl-5 text-slate-600 text-xs leading-relaxed space-y-1">
         <li>Cada código que el médico acepta o edita (en b y s, con la gravedad confirmada) se guarda en la base vectorial del servicio ICF con el diagnóstico y las notas, sin nombre, documento, orientación sexual, edad ni género. Si lo rechaza después, se retira.</li>
-        <li>Cuando un caso nuevo se parece a uno confirmado (similitud coseno ≥ 0,80, hasta 3), sus códigos entran como candidatos —siempre dentro del catálogo y de los capítulos que aplican— y se muestran al modelo como ejemplos.</li>
+        <li>Cuando un caso nuevo se parece a uno confirmado (similitud coseno ≥ 0,70, hasta 3), sus códigos entran como candidatos —siempre dentro del catálogo y de los capítulos que aplican— y se muestran al modelo como ejemplos.</li>
         <li>El médico corrige la justificación de cada código en el cuadro de edición; la tabla la marca «Del médico» y anota lo que cambió. El reporte y el PDF incluyen la justificación y esas notas, para que el paciente tenga una visión más completa de su perfil.</li>
         <li>El cuadro de edición se rediseñó para que quepa en pantalla y no repita información: la escala va en las opciones del selector («3 — Severa (50–95 %)»), la magnitud, la naturaleza y la localización de las estructuras van juntas, y los niveles D1–D6 y el criterio de la validación quedan en un desplegable cerrado.</li>
         <li>Un fallo de la memoria nunca bloquea la decisión del médico. <code>ICF_CASE_EXAMPLES=0</code> apaga el uso como ejemplos y <code>ICF_CASE_MEMORY=false</code> deja de guardar.</li>
@@ -150,7 +150,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
       <ul class="list-disc pl-5 text-slate-600 text-xs leading-relaxed space-y-1">
         <li><b>Los ejemplos no están medidos.</b> Las métricas de la validación clínica se obtuvieron sin la memoria; con ella el motor cambia (Kapoor y Narayanan 2023). Con la memoria vacía el comportamiento es idéntico al medido.</li>
         <li><b>Un caso confirmado no es un caso verificado:</b> un error aceptado puede repetirse como ejemplo.</li>
-        <li><b>El umbral de similitud (0,80) es un valor inicial sin calibrar.</b></li>
+        <li><b>El umbral de similitud (0,70) se eligió sobre los mismos casos con los que se evaluó</b> (de 0,80, sin diferencia distinguible, a 0,70 y 0,60, con mejora de cobertura de 8 a 10 puntos): es exploratorio y hay que confirmarlo con casos reales.</li>
         <li><b>Privacidad:</b> las notas son texto libre; la pantalla advierte al médico que no escriba datos identificables (Ley 1581 de 2012). Para retirar un caso: <code>DELETE FROM icf_cases WHERE case_key = '…'</code>.</li>
         <li>El calificador sigue sin validarse; la medición oficial queda en NO CUMPLE.</li>
       </ul>
@@ -173,8 +173,9 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
   <div class="bg-white border border-slate-200 rounded-xl p-5 text-sm text-slate-600 space-y-3 mt-6">
     <p><b class="text-slate-800">Lo que ya no se puede hacer.</b> Validar de nuevo con la profesional (no habrá cuarta ronda ni segunda revisora) y probar modelos de 12 o 26 mil millones de parámetros: la GPU de 8 GB del servicio no los soporta.</p>
     <p><b class="text-slate-800">Lo que hace falta.</b> Cargar más casos reales validados en la memoria. Hoy esta guarda la gravedad sugerida y la confirmada, pero <b>la gravedad todavía no se usa para predecir</b>: solo los códigos se usan como ejemplos. Con al menos 30 pares reales se medirá con <code>icf-service/scripts/case_memory_report.py</code> (solo lectura; κ ponderado con IC 95 % por remuestreo de casos) si un predictor basado en casos supera a las reglas (κ de 0,533 con 125 códigos), y solo entonces se activaría.</p>
+    <p><b class="text-slate-800">Casos de la médica en la memoria.</b> Los 46 casos con texto que ella validó a ciegas (118 códigos con su gravedad) se cargaron en la memoria de producción. Dejando un caso fuera en cada evaluación, la cobertura de lo que ella eligió subió de 0,661 sin memoria a 0,746 con similitud ≥ 0,70 (+0,085; IC 95 % 0,027–0,137) y a 0,763 con ≥ 0,60; con ≥ 0,80 no hubo diferencia distinguible. Es un resultado exploratorio (protocolo, sección 17).</p>
     <p><b class="text-slate-800">Cómo leer el resultado.</b> Al aceptar con el botón, la gravedad confirmada coincide con la sugerida (anclaje; Goddard 2012), de modo que el acuerdo medido con el uso real es una cota superior y no sustituye una validación a ciegas.</p>
-    <p><b class="text-slate-800">Diagramas.</b> Las fuentes de Archify de la arquitectura, del servicio ICF y del recorrido del médico ya incluyen la memoria de casos; falta regenerar sus HTML con Archify (ver <code>docs/presentation/animaciones/README.md</code>).</p>
+    <p><b class="text-slate-800">Diagramas.</b> Los diagramas de Archify de la arquitectura, del servicio ICF y del recorrido del médico se regeneraron el 14-nov con la memoria de casos (nodo «Memoria de casos», <code>POST /cases</code> y «ejemplos» hacia la selección). Quedan por exportar sus videos <code>.webm</code>.</p>
   </div>
 </section>
 

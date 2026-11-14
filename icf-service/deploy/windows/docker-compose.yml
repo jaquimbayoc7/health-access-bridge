@@ -46,6 +46,10 @@ services:
       ICF_LLM_KEEP_ALIVE: 30m
       ICF_MODE: ${ICF_MODE:-calidad}
       ICF_SERVICE_LLM_TIMEOUT_S: "120"
+      # Memoria de casos confirmados por el medico (HU-07j); se pueden cambiar en %USERPROFILE%\.hab-icf\.env
+      ICF_CASE_MEMORY: ${ICF_CASE_MEMORY:-true}
+      ICF_CASE_EXAMPLES: ${ICF_CASE_EXAMPLES:-3} # 0 = solo guarda, no usa ejemplos
+      ICF_CASE_MIN_SIMILARITY: ${ICF_CASE_MIN_SIMILARITY:-0.70}
     # Dentro del contenedor escucha en todas las interfaces, pero NO se publica en el host:
     # solo Caddy (misma red de compose) puede llegar a el.
     command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8100"]

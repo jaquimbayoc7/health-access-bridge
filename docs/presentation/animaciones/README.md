@@ -45,7 +45,7 @@ Las fuentes `fuentes/arquitectura-hab.json`, `fuentes/servicio-icf.json` y `fuen
 - `servicio-icf`: el backend envía `POST /cases` a la memoria; el embedding busca casos parecidos y la memoria aporta «ejemplos» a la selección.
 - `recorrido-medico-icf`: tras la decisión, `POST /cases` y el guardado en la memoria; la decisión incluye confirmar la gravedad y la justificación.
 
-**Los HTML de esta carpeta todavía no se regeneraron con estos cambios** (el 14-nov-2026 no se pudo ejecutar Archify desde la sesión de trabajo). Para regenerarlos: clonar Archify como se indica arriba y ejecutar `node construir.mjs <ruta>/archify/bin/archify.mjs arquitectura-hab servicio-icf recorrido-medico-icf`; si `finalize` marca una colisión de nodos o de líneas, ajustar las posiciones en el JSON (las de la memoria están en la fila inferior de `servicio-icf` y en `[1110, 440]` de `arquitectura-hab`). Después, volver a capturar `docs/documentacion-final/fuente/ani/*.png` y `video/*.webm`.
+**Regenerados el 14-nov-2026** con Archify 3.2.0 (el `finalize` de `showcase` pasó en los tres; `construir.mjs` ahora acepta las traducciones en `locales/es.json` de la 3.2 y en `examples/locales/es.json` de la 3.0). Las capturas de `docs/documentacion-final/fuente/ani/` (arquitectura, servicio ICF y recorrido del médico) se volvieron a tomar y están en el Word v1.1. **Quedan sin regenerar** los videos `video/*.webm` de esas tres animaciones (se exportan desde el visor con **Exportar**).
 
 ## Datos y privacidad
 

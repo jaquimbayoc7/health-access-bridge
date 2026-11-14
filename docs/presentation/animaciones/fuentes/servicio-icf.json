@@ -175,7 +175,7 @@
       "label": "Backend (Render)",
       "sublabel": "POST /cases · decisión confirmada",
       "pos": [
-        280,
+        40,
         580
       ],
       "size": [
@@ -355,7 +355,7 @@
       "items": [
         "gemma4:e4b recibe 12 candidatos del catálogo y responde con una lista cerrada",
         "No puede inventar códigos ni títulos: los títulos salen del catálogo",
-        "Los casos que el médico confirma se guardan en la memoria (sin identificadores) y los parecidos (≥ 0,80) se le muestran como ejemplos"
+        "Los casos que el médico confirma se guardan en la memoria (sin identificadores) y los parecidos (≥ 0,70) se le muestran como ejemplos"
       ]
     },
     {
