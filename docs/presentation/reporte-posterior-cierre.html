@@ -121,6 +121,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
         <li>Cada código que el médico acepta o edita (en b y s, con la gravedad confirmada) se guarda en la base vectorial del servicio ICF con el diagnóstico y las notas, sin nombre, documento, orientación sexual, edad ni género. Si lo rechaza después, se retira.</li>
         <li>Cuando un caso nuevo se parece a uno confirmado (similitud coseno ≥ 0,80, hasta 3), sus códigos entran como candidatos —siempre dentro del catálogo y de los capítulos que aplican— y se muestran al modelo como ejemplos.</li>
         <li>El médico corrige la justificación de cada código en el cuadro de edición; la tabla la marca «Del médico» y anota lo que cambió. El reporte y el PDF incluyen la justificación y esas notas, para que el paciente tenga una visión más completa de su perfil.</li>
+        <li>El cuadro de edición se rediseñó para que quepa en pantalla y no repita información: la escala va en las opciones del selector («3 — Severa (50–95 %)»), la magnitud, la naturaleza y la localización de las estructuras van juntas, y los niveles D1–D6 y el criterio de la validación quedan en un desplegable cerrado.</li>
         <li>Un fallo de la memoria nunca bloquea la decisión del médico. <code>ICF_CASE_EXAMPLES=0</code> apaga el uso como ejemplos y <code>ICF_CASE_MEMORY=false</code> deja de guardar.</li>
       </ul>
       <p class="text-[11px] text-slate-400 mt-3">Sustento: mantener el conocimiento en una memoria consultable que se actualiza sin reentrenar es la idea de la generación aumentada por recuperación (Lewis 2020).</p>
@@ -159,7 +160,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
       <ul class="list-disc pl-5 text-slate-600 text-xs leading-relaxed space-y-1">
         <li>Despliegues hechos: <code>develop</code>, <code>staging</code> y <code>master</code> con HU-07i y HU-07j (PR #107 a #110); el CI de producción pasó y los tres backends publican los campos nuevos.</li>
         <li>Memoria activa en el PC del servicio ICF desde el 13-nov (imagen reconstruida y <code>Caddyfile</code> con <code>/cases</code>); una prueba real dejó 7 códigos confirmados en <code>icf_case_codes</code>. Falta respaldarla con <code>pg_dump</code> (no se reconstruye).</li>
-        <li>Regenerar con la aplicación desplegada las capturas <code>img/09</code> a <code>img/11</code> y los PDF de los manuales; actualizar los campos del Word v1.1 (el Contenido).</li>
+        <li>Capturas nuevas (<code>img/10</code>, <code>11</code>, <code>19</code>, <code>20</code>), PDF de los manuales regenerados (Edge, versión 2.1) y Word v1.1 con la figura nueva: hechos el 13-nov. Al abrir el Word, aceptar la actualización de campos para el Contenido.</li>
         <li>Probar con una sesión real de médico (QA o producción): perfil generado antes, perfil nuevo, confirmar la gravedad, editar la justificación y descargar el PDF.</li>
         <li>Si volviera a haber una revisora: repetir la medición del calificador y medir el efecto de los ejemplos.</li>
       </ul>

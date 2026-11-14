@@ -203,7 +203,7 @@ describe('FunctionalProfile', () => {
     expect(screen.getByRole('button', { name: /aceptar s750/i })).toBeDisabled();
     expect(screen.getByRole('button', { name: /aceptar d450/i })).toBeEnabled();
     expect(screen.getAllByText(/Por confirmar/).length).toBe(2);
-    expect(screen.getAllByText(/Sugerida por reglas: 3/).length).toBe(2);
+    expect(screen.getAllByText(/Por confirmar · sugerida 3/).length).toBe(2);
     await user.click(screen.getByRole('button', { name: /confirmar gravedad b730/i }));
     expect(screen.getByRole('button', { name: /aceptar b730/i })).toBeEnabled();
     expect(screen.getByRole('button', { name: /aceptar s750/i })).toBeDisabled();
@@ -271,6 +271,40 @@ describe('FunctionalProfile', () => {
     expect(await screen.findByTestId('note-11')).toHaveTextContent(
       'Gravedad ajustada por el médico: 3 → 4. Código ajustado por el médico (sugerido: b7300)'
     );
+  });
+
+  it('el cuadro de edición es corto: la escala va en las opciones y la ayuda queda cerrada', async () => {
+    (icfService.generate as ReturnType<typeof vi.fn>).mockResolvedValue({
+      ...SET,
+      functions: [item({ id: 11, qualifier_suggested: 3 })],
+    });
+    renderPage();
+    const user = await choosePatient(/Juan Pérez/);
+    await user.click(screen.getByRole('button', { name: /generar perfil funcional/i }));
+    await user.click(await screen.findByRole('button', { name: /editar b730/i }));
+    expect(await screen.findByTestId('edit-hint')).toHaveTextContent('Sugerida por reglas: 3');
+    expect(screen.getByTestId('edit-hint')).toHaveTextContent(/valore 4/);
+    // la escala ya no se repite como texto suelto: solo las opciones del selector la llevan, con su rango
+    expect(screen.queryByText(/0 ninguna \(0–4 %\) · 1 leve/)).not.toBeInTheDocument();
+    const help = screen.getByTestId('severity-help-compact') as HTMLDetailsElement;
+    expect(help.tagName).toBe('DETAILS');
+    expect(help.open).toBe(false);
+    await user.click(screen.getByRole('combobox', { name: /calificador/i }));
+    expect(await screen.findByRole('option', { name: '3 — Severa (50–95 %)' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: '8 — Sin especificar' })).toBeInTheDocument();
+  });
+
+  it('en estructuras, magnitud, naturaleza y localización van juntas y el médico escribe la justificación', async () => {
+    (icfService.generate as ReturnType<typeof vi.fn>).mockResolvedValue(SET);
+    renderPage();
+    const user = await choosePatient(/Juan Pérez/);
+    await user.click(screen.getByRole('button', { name: /generar perfil funcional/i }));
+    await user.click(await screen.findByRole('button', { name: /editar s750/i }));
+    expect(await screen.findByLabelText('Magnitud')).toBeInTheDocument();
+    expect(screen.getByLabelText('Naturaleza del cambio')).toBeInTheDocument();
+    expect(screen.getByLabelText('Localización')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Justificación \(aparece en el reporte\)/i)).toBeInTheDocument();
+    expect(screen.getByTestId('edit-hint')).toHaveTextContent('Sin sugerencia');
   });
 
   it('carga la última sugerencia guardada al elegir el paciente', async () => {
