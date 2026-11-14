@@ -168,6 +168,35 @@
         150,
         64
       ]
+    },
+    {
+      "id": "casos_in",
+      "type": "external",
+      "label": "Backend (Render)",
+      "sublabel": "POST /cases · decisión confirmada",
+      "pos": [
+        280,
+        580
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "memoria",
+      "type": "database",
+      "label": "Memoria de casos",
+      "sublabel": "confirmados por el médico",
+      "pos": [
+        760,
+        580
+      ],
+      "size": [
+        150,
+        64
+      ],
+      "tag": "pgvector"
     }
   ],
   "boundaries": [
@@ -184,7 +213,8 @@
         "seleccion",
         "respaldo",
         "validacion",
-        "resultado"
+        "resultado",
+        "memoria"
       ]
     }
   ],
@@ -248,7 +278,7 @@
       "label": "elige",
       "variant": "dashed",
       "fromSide": "bottom",
-      "toSide": "right"
+      "toSide": "top"
     },
     {
       "id": "sel-respaldo",
@@ -283,6 +313,31 @@
       "variant": "emphasis",
       "fromSide": "bottom",
       "toSide": "top"
+    },
+    {
+      "id": "casos-mem",
+      "from": "casos_in",
+      "to": "memoria",
+      "label": "sin identificadores",
+      "variant": "security"
+    },
+    {
+      "id": "emb-mem",
+      "from": "embedding",
+      "to": "memoria",
+      "label": "casos parecidos",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "mem-sel",
+      "from": "memoria",
+      "to": "seleccion",
+      "label": "ejemplos",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "bottom"
     }
   ],
   "cards": [
@@ -299,7 +354,8 @@
       "title": "La IA solo elige",
       "items": [
         "gemma4:e4b recibe 12 candidatos del catálogo y responde con una lista cerrada",
-        "No puede inventar códigos ni títulos: los títulos salen del catálogo"
+        "No puede inventar códigos ni títulos: los títulos salen del catálogo",
+        "Los casos que el médico confirma se guardan en la memoria (sin identificadores) y los parecidos (≥ 0,80) se le muestran como ejemplos"
       ]
     },
     {

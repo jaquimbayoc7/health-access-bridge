@@ -26,7 +26,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
     <div class="hidden md:flex gap-5 text-slate-600 font-medium">
       <a href="#resumen" class="hover:text-primary">Resumen</a><a href="#linea" class="hover:text-primary">Línea de tiempo</a>
       <a href="#calificador" class="hover:text-primary">Calificador</a><a href="#cambios" class="hover:text-primary">Cambios</a>
-      <a href="#pruebas" class="hover:text-primary">Pruebas</a><a href="#riesgos" class="hover:text-primary">Riesgos</a><a href="#fuentes" class="hover:text-primary">Fuentes</a>
+      <a href="#pruebas" class="hover:text-primary">Pruebas</a><a href="#riesgos" class="hover:text-primary">Riesgos</a><a href="#limites" class="hover:text-primary">Límites</a><a href="#fuentes" class="hover:text-primary">Fuentes</a>
     </div>
   </div>
 </nav>
@@ -165,6 +165,16 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
         <li>Si volviera a haber una revisora: repetir la medición del calificador y medir el efecto de los ejemplos.</li>
       </ul>
     </div>
+  </div>
+</section>
+
+<section id="limites">
+  <h2 class="text-xl font-bold mb-1 section-title">Límites de alcance y camino para el calificador</h2>
+  <div class="bg-white border border-slate-200 rounded-xl p-5 text-sm text-slate-600 space-y-3 mt-6">
+    <p><b class="text-slate-800">Lo que ya no se puede hacer.</b> Validar de nuevo con la profesional (no habrá cuarta ronda ni segunda revisora) y probar modelos de 12 o 26 mil millones de parámetros: la GPU de 8 GB del servicio no los soporta.</p>
+    <p><b class="text-slate-800">Lo que hace falta.</b> Cargar más casos reales validados en la memoria. Hoy esta guarda la gravedad sugerida y la confirmada, pero <b>la gravedad todavía no se usa para predecir</b>: solo los códigos se usan como ejemplos. Con al menos 30 pares reales se medirá con <code>icf-service/scripts/case_memory_report.py</code> (solo lectura; κ ponderado con IC 95 % por remuestreo de casos) si un predictor basado en casos supera a las reglas (κ de 0,533 con 125 códigos), y solo entonces se activaría.</p>
+    <p><b class="text-slate-800">Cómo leer el resultado.</b> Al aceptar con el botón, la gravedad confirmada coincide con la sugerida (anclaje; Goddard 2012), de modo que el acuerdo medido con el uso real es una cota superior y no sustituye una validación a ciegas.</p>
+    <p><b class="text-slate-800">Diagramas.</b> Las fuentes de Archify de la arquitectura, del servicio ICF y del recorrido del médico ya incluyen la memoria de casos; falta regenerar sus HTML con Archify (ver <code>docs/presentation/animaciones/README.md</code>).</p>
   </div>
 </section>
 
