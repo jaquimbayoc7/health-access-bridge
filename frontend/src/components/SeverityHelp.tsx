@@ -28,44 +28,60 @@ const SCALE: Array<[number, string]> = [
 export function SeverityHelp({ patient, compact = false }: { patient: Patient | null; compact?: boolean }) {
   const { language } = useLanguage();
   const es = language === 'es';
-  const body = (
-    <div className="space-y-3 text-sm">
-      {!compact && <p className="text-muted-foreground">{SEVERITY_HELP.intro[language]}</p>}
-      <ul className="grid gap-1 sm:grid-cols-3" aria-label={es ? 'Escala de gravedad' : 'Severity scale'}>
-        {SCALE.map(([q, pct]) => (
-          <li key={q}>
-            <strong>{q} — {QUALIFIER_LABELS[q]}</strong> ({pct})
-          </li>
-        ))}
-      </ul>
-      {patient && (
-        <div data-testid="severity-help-levels">
-          <p className="text-xs">
-            <strong>{es ? 'Categorías de HAB' : 'HAB categories'}:</strong> {es ? 'física' : 'physical'} {patient.cat_fisica} ·{' '}
-            {es ? 'psicosocial' : 'psychosocial'} {patient.cat_psicosocial}
-          </p>
-          <div className="mt-1 grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs sm:grid-cols-3">
-            {DOMAINS.map(([key, id, label]) => {
-              const level = Number(patient[key]);
-              return (
-                <span key={id}>
-                  {id} {label}: {level} → {qualifierFromLevel(level)}
-                </span>
-              );
-            })}
-          </div>
-        </div>
-      )}
-      {!compact && <p className="text-muted-foreground">{SEVERITY_HELP.how[language]}</p>}
-      <p className="rounded bg-amber-100 p-2 text-amber-900 dark:bg-amber-950 dark:text-amber-100">{SEVERITY_HELP.bias[language]}</p>
-      {!compact && <p className="text-xs text-muted-foreground">{SEVERITY_HELP.source[language]}</p>}
+  const levels = patient && (
+    <div data-testid="severity-help-levels">
+      <p className="text-xs">
+        <strong>{es ? 'Categorías de HAB' : 'HAB categories'}:</strong> {es ? 'física' : 'physical'} {patient.cat_fisica} ·{' '}
+        {es ? 'psicosocial' : 'psychosocial'} {patient.cat_psicosocial}
+      </p>
+      <div className="mt-1 grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs sm:grid-cols-3">
+        {DOMAINS.map(([key, id, label]) => {
+          const level = Number(patient[key]);
+          return (
+            <span key={id}>
+              {id} {label}: {level} → {qualifierFromLevel(level)}
+            </span>
+          );
+        })}
+      </div>
     </div>
   );
-  if (compact) return <div data-testid="severity-help-compact">{body}</div>;
+  const bias = (
+    <p className="rounded bg-amber-100 p-2 text-xs text-amber-900 dark:bg-amber-950 dark:text-amber-100">{SEVERITY_HELP.bias[language]}</p>
+  );
+
+  // Cuadro de edicion: la escala ya esta en las opciones del selector, asi que solo se ofrece, cerrado, lo que no esta
+  // en otro lado (niveles D1-D6 del paciente y el criterio de la validacion).
+  if (compact) {
+    return (
+      <details className="rounded-md border bg-muted/40 p-2 text-sm" data-testid="severity-help-compact">
+        <summary className="cursor-pointer text-xs font-medium">
+          {es ? 'Ayuda: niveles D1–D6 y criterio' : 'Help: D1–D6 levels and criterion'}
+        </summary>
+        <div className="mt-2 space-y-2">
+          {levels}
+          {bias}
+        </div>
+      </details>
+    );
+  }
   return (
     <details className="rounded-md border bg-muted/40 p-3" data-testid="severity-help">
       <summary className="cursor-pointer text-sm font-medium">{SEVERITY_HELP.title[language]}</summary>
-      <div className="mt-2">{body}</div>
+      <div className="mt-2 space-y-3 text-sm">
+        <p className="text-muted-foreground">{SEVERITY_HELP.intro[language]}</p>
+        <ul className="grid gap-1 sm:grid-cols-3" aria-label={es ? 'Escala de gravedad' : 'Severity scale'}>
+          {SCALE.map(([q, pct]) => (
+            <li key={q}>
+              <strong>{q} — {QUALIFIER_LABELS[q]}</strong> ({pct})
+            </li>
+          ))}
+        </ul>
+        {levels}
+        <p className="text-muted-foreground">{SEVERITY_HELP.how[language]}</p>
+        {bias}
+        <p className="text-xs text-muted-foreground">{SEVERITY_HELP.source[language]}</p>
+      </div>
     </details>
   );
 }

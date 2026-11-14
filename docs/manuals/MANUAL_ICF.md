@@ -1,6 +1,6 @@
 # Manual del servicio ICF (perfil funcional con IA)
 
-**Health Access Bridge (HAB)** · Versión 2.0 · 27 de octubre de 2026
+**Health Access Bridge (HAB)** · Versión 2.1 · 13 de noviembre de 2026 (HU-07i y HU-07j)
 **Para:** quien instala, opera y mantiene el servicio de IA que sugiere códigos CIF. No requiere programar, pero sí usar PowerShell y Docker con calma.
 **Complementa:** [Manual técnico](MANUAL_TECNICO.md) · [Manual de usuario](MANUAL_USUARIO.md) · [`icf-service/deploy/windows/`](../../icf-service/deploy/windows/) (archivos de despliegue) · [Diseño del RAG](../diagrams/rag-icf-postgresql.md).
 
