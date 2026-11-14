@@ -18,7 +18,7 @@
 | [presentation/reporte-posterior-cierre.html](./presentation/reporte-posterior-cierre.html) | Reporte de lo realizado después del cierre (28-oct a 14-nov-2026): documentación final, exploración del calificador, HU-07i, HU-07j, memoria con los casos de la profesional y trabajos futuros |
 | [PENDIENTES_PROXIMA_SESION.md](./PENDIENTES_PROXIMA_SESION.md) | Punto de partida, pendientes y cuidados recurrentes |
 | [reports/TEST_CASES.md](./reports/TEST_CASES.md) | Casos de prueba y trazabilidad (suites 1 a 12) |
-| [reports/TESTING_REPORT.md](./reports/TESTING_REPORT.md) | Reporte de pruebas: 141 backend (91,3 % de cobertura), 69 frontend, 119 del servicio ICF, 17 E2E y 7 smoke (al 13-nov-2026) |
+| [reports/TESTING_REPORT.md](./reports/TESTING_REPORT.md) | Reporte de pruebas: 141 backend (91,3 % de cobertura), 72 frontend, 132 del servicio ICF, 17 E2E y 7 smoke (al 14-nov-2026) |
 | [test-report.md](./test-report.md) | Reporte de HU-06: integración de ML, E2E y prueba de carga con k6 |
 | [reports/INSIGHTS_REPORT5.md](./reports/INSIGHTS_REPORT5.md) | Insights R5 con adendas hasta el cierre de la validación clínica (R1 a R4 en la misma carpeta) |
 

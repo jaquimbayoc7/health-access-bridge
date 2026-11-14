@@ -408,4 +408,4 @@ flowchart LR
 
 - **Qué se guarda:** el texto clínico (diagnóstico CIE y notas), el grupo de edad, el código, la gravedad sugerida y la confirmada y la justificación (la del médico si la escribió). Nunca nombre, documento, orientación sexual, edad ni género. Rechazar un código lo retira.
 - **Qué cambia en `/suggest`:** los códigos de casos parecidos entran como candidatos (solo si el capítulo aplica y existen en el catálogo) y el modelo ve una línea «diagnóstico: códigos» por caso. Los calificadores siguen saliendo de las reglas.
-- **Qué no está medido:** la validación clínica se hizo sin esta memoria. Se apaga el uso con `ICF_CASE_EXAMPLES=0` y el guardado con `ICF_CASE_MEMORY=false`. Un caso confirmado no es un caso verificado.
+- **Qué se midió y qué no:** la validación clínica se hizo sin esta memoria; su efecto se midió de forma exploratoria el 14-nov con los 46 casos de la profesional dejando un caso fuera (cobertura a ciegas de 0,661 a 0,746 con similitud ≥ 0,70; protocolo, sección 17) y falta confirmarlo con casos reales. Se apaga el uso con `ICF_CASE_EXAMPLES=0` y el guardado con `ICF_CASE_MEMORY=false`. Un caso confirmado no es un caso verificado.
