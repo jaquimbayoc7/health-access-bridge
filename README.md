@@ -17,7 +17,7 @@ Plataforma web para la gestión clínica de pacientes con discapacidad, el anál
 | **Servicio ICF** | ✅ En producción en un PC propio | PostgreSQL/pgvector + Ollama (`gemma4:e4b`, ~2 s por sugerencia) detrás de un túnel con token; ningún dato clínico sale a terceros |
 | **CI/CD** | ✅ Configurado | GitHub Actions → Render (auto-deploy y aprobación manual en producción) |
 | **Base de datos** | ✅ PostgreSQL en Render | 3 instancias independientes (dev/qa/prod) con seed de datos |
-| **Calidad** | ✅ 353 pruebas automáticas | Backend 141 (cobertura 91,3 %) · frontend 69 · servicio ICF 119 · E2E 17 · smoke 7 |
+| **Calidad** | ✅ 369 pruebas automáticas | Backend 141 (cobertura 91,3 %) · frontend 72 · servicio ICF 132 · E2E 17 · smoke 7 |
 
 ---
 
@@ -204,7 +204,7 @@ La referencia completa de la API (ReDoc) está en [`docs/api/redoc-api.html`](./
 |------|---------|-------------|
 | Backend | 123 (cobertura 90,7 %; el CI exige 80 %) | pytest · TestClient · SQLite |
 | Frontend | 61 | Vitest · Testing Library · jsdom |
-| Servicio ICF | 119 (106 en CI; 13 corren en el PC propio: necesitan el catálogo de la OMS o una base con pgvector) | pytest |
+| Servicio ICF | 132 (122 pasan y 10 se omiten sin el catálogo de la OMS o una base con pgvector; corren en el PC propio) | pytest |
 | E2E | 20 (+18 de aceptación bajo demanda) | Playwright · axe-core (accesibilidad WCAG 2.2 AA) |
 | Smoke | 7 (QA 4 · PROD 3) | GitHub Actions |
 
@@ -264,10 +264,10 @@ health-access-bridge/
 │   │   ├── services/        # api.ts, patients.ts, icf.ts, analytics.ts
 │   │   ├── lib/             # analyticsExport (Excel/PDF), analyticsLabels, icfReport…
 │   │   ├── contexts/        # AuthContext (JWT), LanguageContext (ES/EN)
-│   │   └── __tests__/       # 69 pruebas Vitest + Testing Library
+│   │   └── __tests__/       # 72 pruebas Vitest + Testing Library
 │   ├── e2e/                 # 20 pruebas Playwright + guion de aceptación (UAT) de 18 escenarios
 │   └── package.json · vite.config.ts
-├── icf-service/             # Servicio de IA local (RAG sobre CIF-IA, Ollama, pgvector) · 119 pruebas
+├── icf-service/             # Servicio de IA local (RAG sobre CIF-IA, Ollama, pgvector) · 132 pruebas
 ├── docs/
 │   ├── presentation/        # Página de presentación del proyecto y reporte del afinamiento ICF
 │   ├── reports/             # Estado, pruebas, validación clínica, insights, release plan

@@ -493,14 +493,14 @@
   <!-- ─── TESTS ─── -->
   <section id="tests">
     <h2>Pruebas UI — Vitest + React Testing Library</h2>
-    <p>69 tests Vitest en 8 archivos (y 17 pruebas E2E de Playwright en <code>frontend/e2e/</code>). Ejecutar con <code>npm run test</code>. Integrados en los 3 workflows CI/CD (dev/qa/prod).</p>
+    <p>72 tests Vitest en 8 archivos (y 17 pruebas E2E de Playwright en <code>frontend/e2e/</code>). Ejecutar con <code>npm run test</code>. Integrados en los 3 workflows CI/CD (dev/qa/prod).</p>
     <table>
       <tr><th>Archivo</th><th>Tests</th><th>Cubre</th></tr>
       <tr><td><code>__tests__/AuthContext.test.tsx</code></td><td>4</td><td>Estado inicial, login exitoso, manejo de errores, logout + limpieza localStorage.</td></tr>
       <tr><td><code>__tests__/Login.test.tsx</code></td><td>4</td><td>Render del formulario, submit con credenciales, mensaje de error, redirección por rol.</td></tr>
       <tr><td><code>__tests__/DashboardLayout.test.tsx</code></td><td>4</td><td>Guard de ruta, render del sidebar, menú por rol (el análisis es para ambos roles).</td></tr>
       <tr><td><code>__tests__/Patients.test.tsx</code></td><td>4</td><td>Tabla de pacientes, búsqueda, diálogo de creación, estado vacío.</td></tr>
-      <tr><td><code>__tests__/FunctionalProfile.test.tsx</code></td><td>23</td><td>Generar, aceptar/editar/rechazar, errores 503 y menores de 6 años, reporte (HU-07); confirmar la gravedad de b y s y su ayuda (HU-07i); justificación editable y notas de decisión (HU-07j).</td></tr>
+      <tr><td><code>__tests__/FunctionalProfile.test.tsx</code></td><td>26</td><td>Generar, aceptar/editar/rechazar, errores 503 y menores de 6 años, reporte (HU-07); confirmar la gravedad de b y s y su ayuda (HU-07i); justificación editable y notas de decisión (HU-07j).</td></tr>
       <tr><td><code>__tests__/IcfGuide.test.tsx</code></td><td>7</td><td>Guía de uso del perfil funcional ICF (HU-07).</td></tr>
       <tr><td><code>__tests__/Analytics.test.tsx</code></td><td>12</td><td>Indicadores, idioma, estado vacío, filtros, edades con espera, error y reintento, pestaña ICF, filtro de médico solo admin, exportación Excel y PDF (HU-08).</td></tr>
       <tr><td><code>__tests__/analyticsExport.test.ts</code></td><td>11</td><td>Secciones del reporte, Excel de 5 hojas, PDF con y sin gráficos, sin datos identificables (HU-08).</td></tr>
