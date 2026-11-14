@@ -38,6 +38,7 @@ import {
   formatCode,
   justificationText,
   pdfSafe,
+  qualifierOptionLabel,
   qualifierText,
   reportQualifierText,
   reportSections,
@@ -318,7 +319,7 @@ export default function FunctionalProfile() {
                           <>
                             <Badge variant="outline" className="border-amber-500 text-amber-700 text-xs">
                               {SEVERITY_HELP.pending[language]}
-                              {item.qualifier !== null && ` · ${SEVERITY_HELP.suggested[language]}: ${item.qualifier}`}
+                              {item.qualifier !== null && ` · ${L('sugerida', 'suggested')} ${item.qualifier}`}
                             </Badge>
                             <Button
                               type="button"
@@ -672,49 +673,40 @@ export default function FunctionalProfile() {
       )}
 
       <Dialog open={editing !== null} onOpenChange={(open) => !open && setEditing(null)}>
-        <DialogContent>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {L('Editar calificador', 'Edit qualifier')} {editing?.code}
+              {L('Editar', 'Edit')} {editing?.code}
             </DialogTitle>
             <DialogDescription>{editing?.title}</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
+          <div className="space-y-3">
+            <div className="space-y-1.5">
               <Label htmlFor="edit-q">
                 {editing?.component === 's' ? L('Magnitud', 'Extent') : L('Calificador', 'Qualifier')}
               </Label>
-              {editing?.component === 'd' && (
-                <p className="text-xs text-muted-foreground">
-                  {L('0 ninguna (0–4 %) · 1 leve (5–24 %) · 2 moderada (25–49 %) · 3 severa (50–95 %) · 4 completa (96–100 %)',
-                     '0 none (0–4%) · 1 mild (5–24%) · 2 moderate (25–49%) · 3 severe (50–95%) · 4 complete (96–100%)')}
-                </p>
-              )}
-              {editing && editing.component !== 'd' && <SeverityHelp patient={patient} compact />}
               <Select value={editQ} onValueChange={setEditQ}>
                 <SelectTrigger id="edit-q">
                   <SelectValue placeholder="—" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(QUALIFIER_LABELS).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>{value} — {label}</SelectItem>
+                  {Object.keys(QUALIFIER_LABELS).map((value) => (
+                    <SelectItem key={value} value={value}>{qualifierOptionLabel(Number(value))}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-j">{L('Justificación (aparece en el reporte)', 'Justification (appears in the report)')}</Label>
-              <Textarea id="edit-j" value={editWhy} maxLength={500} rows={3} onChange={(e) => setEditWhy(e.target.value)} />
-              <p className="text-xs text-muted-foreground">
-                {L(
-                  'Escriba por qué este código describe al paciente, en palabras que él pueda entender. Sin nombre, documento ni otros datos que lo identifiquen. Al confirmar, este caso se guarda en la memoria del sistema para mejorar las sugerencias.',
-                  'Write why this code describes the patient, in words they can understand. No name, ID or other identifying data. When confirmed, this case is saved in the system memory to improve suggestions.'
-                )}
-              </p>
+              {editing && editing.component !== 'd' && (
+                <p className="text-xs text-muted-foreground" data-testid="edit-hint">
+                  {editing.qualifier_suggested !== null && editing.qualifier_suggested !== undefined
+                    ? `${L('Sugerida por reglas', 'Suggested by rules')}: ${editing.qualifier_suggested} · `
+                    : `${L('Sin sugerencia: la categoría de HAB no indica gravedad', 'No suggestion: the HAB category gives no severity')} · `}
+                  {L('pérdida completa (p. ej. ceguera total): valore 4', 'complete loss (e.g. total blindness): consider 4')}
+                </p>
+              )}
             </div>
             {editing?.component === 's' && (
-              <>
-                <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
                   <Label htmlFor="edit-cn">{L('Naturaleza del cambio', 'Nature of change')}</Label>
                   <Select value={editCn} onValueChange={setEditCn}>
                     <SelectTrigger id="edit-cn"><SelectValue /></SelectTrigger>
@@ -725,7 +717,7 @@ export default function FunctionalProfile() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <Label htmlFor="edit-cl">{L('Localización', 'Location')}</Label>
                   <Select value={editCl} onValueChange={setEditCl}>
                     <SelectTrigger id="edit-cl"><SelectValue /></SelectTrigger>
@@ -736,8 +728,19 @@ export default function FunctionalProfile() {
                     </SelectContent>
                   </Select>
                 </div>
-              </>
+              </div>
             )}
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-j">{L('Justificación (aparece en el reporte)', 'Justification (appears in the report)')}</Label>
+              <Textarea id="edit-j" value={editWhy} maxLength={500} rows={3} onChange={(e) => setEditWhy(e.target.value)} />
+              <p className="text-xs text-muted-foreground">
+                {L(
+                  'Con palabras que el paciente entienda y sin datos que lo identifiquen. Al confirmar, el caso se guarda en la memoria del sistema.',
+                  'In words the patient can understand, with no identifying data. When confirmed, the case is saved in the system memory.'
+                )}
+              </p>
+            </div>
+            {editing && editing.component !== 'd' && <SeverityHelp patient={patient} compact />}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditing(null)}>{L('Cancelar', 'Cancel')}</Button>

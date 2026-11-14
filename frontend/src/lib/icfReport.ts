@@ -19,6 +19,21 @@ export const QUALIFIER_LABELS: Record<number, string> = {
   9: 'No aplicable',
 };
 
+/** Rango del problema de cada calificador (escala generica de la CIF, OMS 2001); 8 y 9 no tienen rango. */
+export const QUALIFIER_RANGES: Record<number, string> = {
+  0: '0–4 %',
+  1: '5–24 %',
+  2: '25–49 %',
+  3: '50–95 %',
+  4: '96–100 %',
+};
+
+/** Texto de una opcion de calificador en el selector del cuadro de edicion: «3 — Severa (50–95 %)». */
+export function qualifierOptionLabel(value: number): string {
+  const range = QUALIFIER_RANGES[value];
+  return `${value} — ${QUALIFIER_LABELS[value]}${range ? ` (${range})` : ''}`;
+}
+
 export const NATURE_LABELS: Record<number, string> = {
   0: 'Sin cambio',
   1: 'Ausencia total',
